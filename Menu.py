@@ -10,8 +10,8 @@
 # Imports
 import tkinter as tk
 from tkinter import *
+from tkinter import ttk
 # Personal Imports
-import page1 as p1
 # =============================================================================
 
 
@@ -19,17 +19,38 @@ class Application(Tk):
     def __init__(self):
         Tk.__init__(self)
         self.creer_widgets()
+        self.withdraw()
+
+
+    def combo(self):
+        labelExample = tk.Label(self, text="Settings", fg="blue")
+        labelExample.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        labeltop = tk.Label(self, text="Choose your measuring tool")
+        labeltop.pack(expand=False, fill="none", side=TOP)
+        comboexample = ttk.Combobox(self, values=[
+                                     "Oven",
+                                     "low frequency generator",
+                                     "Signal generator",
+                                     "Oscilloscope"],
+                                state="readonly",)
+        comboexample.pack(padx=5, pady=5, expand=False, fill="none", side=TOP)
 
     def creer_widgets(self):
-        label = tk.Label(self, text="Menu")
+        newWindow = tk.Toplevel(self)
+        newWindow.title("UwU")
+        newWindow.geometry('100x100')
+        label = tk.Label(newWindow, text="Menu")
         label.pack()
-        bouton1 = tk.Button(self, text="Start", command=lambda: p1.Setting().comboexample())
+        bouton1 = tk.Button(newWindow, text="Start",command=lambda: [self.combo(), self.deiconify(), newWindow.withdraw()])
         bouton1.pack()
-        bouton2 = tk.Button(self, text="Quit", command=self.quit)
+        bouton2 = tk.Button(newWindow, text="Quit", command=newWindow.destroy)
         bouton2.pack()
 
-
+"""
 if __name__ == "__main__":
     app = Application()
-    app.title("Application for the automation of radiofrequency tests ")
+    app.title("Application for the automation of radiofrequency tests")
     app.mainloop()
+"""
+Application().mainloop()
+
