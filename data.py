@@ -18,7 +18,7 @@ def file():
     print("I am in the file")
     presentation = "My name is Teo.\nI have 20 year old"
     # open a new file
-    with open("Data.txt", "w+") as file:
+    with open("data.py.txt", "w+") as file:
         file.write(presentation)  # I write in the file
         file.seek(0)  # Replace cursor at start of file
         print(file.read())  # read all the file
@@ -30,7 +30,7 @@ def file():
 
 def delete_file():
     try :
-        os.remove("Data.txt")
+        os.remove("data.py.txt")
         print("File successfully deleted")
         showinfo("info", "File successfully deleted")
     except:
@@ -40,13 +40,13 @@ def delete_file():
 
 def write_file():
     text = input("What do you want to write ?")
-    with open("Data.txt", "w") as file:
+    with open("data.py.txt", "w") as file:
         file.write(text)
 
 
 def read_file():
     try:
-        file = open("Data.txt", "r")
+        file = open("data.py.txt", "r")
         print(file.read())
     except:
         print("The file does not exist")
