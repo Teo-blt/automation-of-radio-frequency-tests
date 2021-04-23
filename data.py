@@ -10,6 +10,8 @@
 # Imports
 import os
 from tkinter.messagebox import *
+
+
 # =============================================================================
 
 
@@ -29,7 +31,7 @@ def file():
 
 
 def delete_file():
-    try :
+    try:
         os.remove("data.py.txt")
         print("File successfully deleted")
         showinfo("info", "File successfully deleted")
@@ -53,4 +55,4 @@ def read_file():
         showerror("Error", "The file does not exist")
     finally:
         print("The program has been correctly ended")
-        showinfo("info","The program has been correctly ended")
+        showinfo("info", "The program has been correctly ended")

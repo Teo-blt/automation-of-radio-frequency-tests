@@ -14,5 +14,3 @@ import menu as me
 
 me.Application().mainloop()
 
-#blabla2.1
-

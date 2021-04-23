@@ -14,8 +14,10 @@ from tkinter import ttk
 from tkinter.messagebox import *
 from tkinter.colorchooser import askcolor
 import data as da
+
+
 # =============================================================================
-#pti test
+# pti test
 
 class Application(Tk):
     def __init__(self):
