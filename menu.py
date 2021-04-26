@@ -9,6 +9,7 @@
 # =============================================================================
 # Imports
 import tkinter as tk
+import sys
 from tkinter import *
 from tkinter import ttk
 from tkinter.messagebox import *
@@ -169,7 +170,7 @@ class Application(Tk):
         button2 = tk.Button(newwindow, text="Quit",
                             borderwidth=8, background=elcolor,
                             activebackground="green", cursor="right_ptr", overrelief="sunken",
-                            command=newwindow.quit)
+                            command=lambda: [sys.exit()]) #newwindow.destroy(), newwindow.quit()
         button2.pack(padx=30, pady=10, expand=True, fill="both", side=TOP)
         button_settings = tk.Button(newwindow, text="color", overrelief="sunken", bitmap="info", cursor="right_ptr",
                                     command=lambda: (self.dothewhat(newwindow)))
@@ -215,10 +216,10 @@ class Application(Tk):
         button8 = tk.Button(my_save_frame, text="Quit",
                             borderwidth=8, background=elcolor,
                             activebackground="green", cursor="right_ptr", overrelief="sunken",
-                            command=lambda: (self.leving()))
+                            command=lambda: (self.leaving()))
         button8.pack(padx=30, pady=10, expand=True, fill="both", side=TOP)
 
-    def leving(self):
+    def leaving(self):
         if askyesno('Warning', 'Are you sure you want to do exit ?'):
             if askyesno('Warning', 'your data is not saved, are you sure you want to continue'):
                 self.quit()
