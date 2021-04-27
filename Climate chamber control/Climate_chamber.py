@@ -16,7 +16,7 @@ import time
 import sys
 
 
-def init(temp_min):
+def init(temp_min, OOF):
     try:
         # sys.path.append('\\\\samba\\share\\projet\\e2b\\hardware\\Scripts_auto\\Python\\lib')
 
@@ -43,6 +43,9 @@ def init(temp_min):
         change_min_duration_h = 1
 
         nb_cycle = 20
+        if OOF:
+            VT.write(b"$00E 0020.0 0000.0 0000.0 0000.0 0000.0 0000000000000000\n\r")
+            quit(init)
 
         for i in range(0, nb_cycle):
             VT.write(b"$00I\n\r")
