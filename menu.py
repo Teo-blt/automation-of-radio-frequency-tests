@@ -14,7 +14,7 @@ from tkinter import *
 from tkinter import ttk
 from tkinter.messagebox import *
 from tkinter.colorchooser import askcolor
-import data as da
+import Data_managment as da
 
 
 # =============================================================================
@@ -52,7 +52,7 @@ class Application(Tk):
     def data_managment(self):
         my_data_managment_frame = LabelFrame(self, text="Data_managment")
         my_data_managment_frame.grid(row=1, column=0, ipadx=40, ipady=5, padx=0, pady=0)
-        label = tk.Label(my_data_managment_frame, text="data.py managment Menu")
+        label = tk.Label(my_data_managment_frame, text="Data managment Menu")
         label.pack()
         button6 = tk.Button(my_data_managment_frame, text="Write what you want in the file",
                             borderwidth=8, background=elcolor,
