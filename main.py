@@ -11,6 +11,6 @@
 # Personal Imports
 import menu as me
 # =============================================================================
-#blop
+
 me.Application().mainloop()
 
