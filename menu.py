@@ -14,11 +14,12 @@ from tkinter import *
 from tkinter import ttk
 from tkinter.messagebox import *
 from tkinter.colorchooser import askcolor
-import data as da
+import Data_managment as da
+import Graphic
 
 
 # =============================================================================
-# pti test
+
 
 class Application(Tk):
     def __init__(self):
@@ -31,7 +32,7 @@ class Application(Tk):
         self.title("Main menu")
         self.withdraw()
 
-    def oven(self):
+    def climatic_chamber(self):
         self.geometry(size)
         my_oven_frame = LabelFrame(self, text="Settings of the oven")
         my_oven_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
@@ -52,7 +53,7 @@ class Application(Tk):
     def data_managment(self):
         my_data_managment_frame = LabelFrame(self, text="Data_managment")
         my_data_managment_frame.grid(row=1, column=0, ipadx=40, ipady=5, padx=0, pady=0)
-        label = tk.Label(my_data_managment_frame, text="data.py managment Menu")
+        label = tk.Label(my_data_managment_frame, text="Data managment Menu")
         label.pack()
         button6 = tk.Button(my_data_managment_frame, text="Write what you want in the file",
                             borderwidth=8, background=elcolor,
@@ -75,16 +76,8 @@ class Application(Tk):
         button5.pack()
 
     def graphique(self):
-        my_graphic_frame = LabelFrame(self, text="Graphic")
-        my_graphic_frame.grid(row=0, column=3, ipadx=40, ipady=5, padx=0, pady=0)
-        canv = Canvas(my_graphic_frame, bg="white", height=200, width=200)
-        canv.pack()
-        oval = (0, 0, 200, 200)
-        line1 = (0, 0, 200, 200)
-        line2 = (0, 200, 200, 0)
-        canv.create_oval(oval, outline="red", width=10)
-        canv.create_line(line1, fill="black", width=10)
-        canv.create_line(line2, fill="black", width=10)
+        # Graphic.draw_4(self)
+        print("done")
 
     def lfg(self):
         print("Low frequency generator")
@@ -113,9 +106,9 @@ class Application(Tk):
             print("error")
             showerror("Error", "You must select a valid instrument")
         elif choice == 0:
-            print("Oven")
-            self.clear("Oven")
-            self.oven()
+            print("Climatic_chamber")
+            self.clear("Climatic_chamber")
+            self.climatic_chamber()
         elif choice == 1:
             print("Low frequency generator")
             self.clear("Low frequency generator")
@@ -137,7 +130,7 @@ class Application(Tk):
         labeltop = tk.Label(my_combo_frame, text="Choose your measuring tool")
         labeltop.pack(expand=False, fill="none", side=TOP)
         comboexample = ttk.Combobox(my_combo_frame, values=[
-            "Oven",
+            "Climatic chamber",
             "Low frequency generator",
             "Signal generator",
             "Oscilloscope"],
@@ -170,7 +163,7 @@ class Application(Tk):
         button2 = tk.Button(newwindow, text="Quit",
                             borderwidth=8, background=elcolor,
                             activebackground="green", cursor="right_ptr", overrelief="sunken",
-                            command=lambda: [sys.exit()]) #newwindow.destroy(), newwindow.quit()
+                            command=lambda: [sys.exit()])  # newwindow.destroy(), newwindow.quit()
         button2.pack(padx=30, pady=10, expand=True, fill="both", side=TOP)
         button_settings = tk.Button(newwindow, text="color", overrelief="sunken", bitmap="info", cursor="right_ptr",
                                     command=lambda: (self.dothewhat(newwindow)))
@@ -184,18 +177,32 @@ class Application(Tk):
         self.create_widgets()
 
     def scale(self):
-        v = IntVar()
+        a = IntVar()
+        f = IntVar()
         my_scale_frame = LabelFrame(self, text="A scale")
         my_scale_frame.grid(row=0, column=2, ipadx=40, ipady=40, padx=0, pady=0)
-        scale1 = Scale(my_scale_frame, orient='vertical', variable=v, troughcolor=elcolor, from_=0, to=100,
+        scale1 = Scale(my_scale_frame, orient='vertical', variable=a, troughcolor=elcolor, from_=0, to=100,
                        resolution=1, tickinterval=25, length=100, command=0,
-                       label='Power', state="active")
+                       label='amplitude', state="active")
         scale1.pack(side=LEFT)
-        power = Entry(my_scale_frame, validate="all", textvariable=v,
-                      invalidcommand=lambda: showerror("Error", "Therre is an error"))
-        power.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-        label4 = tk.Label(my_scale_frame, text="Menu", textvariable=v)
-        label4.pack(padx=0, pady=0, expand=True, fill="none", side=TOP)
+        scale2 = Scale(my_scale_frame, orient='vertical', variable=f, troughcolor=elcolor, from_=0, to=100,
+                       resolution=1, tickinterval=25, length=100, command=0,
+                       label='frequency', state="active")
+        scale2.pack(side=LEFT)
+        amplitude = Entry(my_scale_frame, validate="all", textvariable=a)
+        amplitude.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        frequency = Entry(my_scale_frame, validate="all", textvariable=f)
+        frequency.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        button11 = tk.Button(my_scale_frame, text="Draw",
+                             borderwidth=8, background=elcolor,
+                             activebackground="green", cursor="right_ptr", overrelief="sunken",
+                             command=lambda: Graphic.draw_4(self, scale1.get(), scale2.get()))
+        button11.pack(padx=30, pady=10, expand=True, fill="both", side=TOP)
+        button12 = tk.Button(my_scale_frame, text="Draw.2",
+                             borderwidth=8, background=elcolor,
+                             activebackground="green", cursor="right_ptr", overrelief="sunken",
+                             command=lambda: Graphic.draw_5(self, elcolor, scale1, scale2))
+        button12.pack(padx=30, pady=10, expand=True, fill="both", side=TOP)
 
     def clear(self, get_tilte):
         print("clear")
@@ -225,10 +232,4 @@ class Application(Tk):
                 self.quit()
 
 
-"""
-if __name__ == "__main__":
-    app = Application()
-    app.title("Application for the automation of radiofrequency tests")
-    app.mainloop()
-"""
 Application().mainloop()

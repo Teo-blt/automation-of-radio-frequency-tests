@@ -1,11 +1,3 @@
-<<<<<<< HEAD
-import tkinter as tk
-from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
-from matplotlib.figure import Figure
-import numpy as np
-from matplotlib.animation import FuncAnimation
-from random import randint
-=======
 from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk  # ("""FigureCanvasTkAgg,""")
 from matplotlib.figure import Figure
 import numpy as np
@@ -17,7 +9,6 @@ import matplotlib.animation as animation
 from matplotlib import style
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
->>>>>>> origin/main
 
 def draw_4(self, amplitude, frequency):
     root = tk.Toplevel(self)
@@ -38,8 +29,6 @@ def draw_4(self, amplitude, frequency):
     button.pack(side=tk.BOTTOM)
 
 
-<<<<<<< HEAD
-=======
 def draw_5(self, elcolor, scale1, scale2):
     root = tk.Toplevel(self)
     root.title('This is my Draw window')
@@ -74,7 +63,6 @@ def draw_5(self, elcolor, scale1, scale2):
 
     root.mainloop()
 
->>>>>>> origin/main
 
 """"
 def draw_2(self):
