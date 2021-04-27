@@ -1,9 +1,23 @@
+<<<<<<< HEAD
 import tkinter as tk
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 from matplotlib.figure import Figure
 import numpy as np
 from matplotlib.animation import FuncAnimation
 from random import randint
+=======
+from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk  # ("""FigureCanvasTkAgg,""")
+from matplotlib.figure import Figure
+import numpy as np
+# from matplotlib.animation import FuncAnimation
+# from random import randint
+import tkinter as tk
+from matplotlib import pyplot as plt
+import matplotlib.animation as animation
+from matplotlib import style
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
+>>>>>>> origin/main
 
 def draw_4(self, amplitude, frequency):
     root = tk.Toplevel(self)
@@ -24,6 +38,43 @@ def draw_4(self, amplitude, frequency):
     button.pack(side=tk.BOTTOM)
 
 
+<<<<<<< HEAD
+=======
+def draw_5(self, elcolor, scale1, scale2):
+    root = tk.Toplevel(self)
+    root.title('This is my Draw window')
+    root.config(background='#fafafa')
+
+    xar = []
+    yar = []
+
+    style.use('ggplot')
+    fig = plt.figure(figsize=(10, 4.5), dpi=100)
+    ax1 = fig.add_subplot(1, 1, 1)
+    ax1.set_ylim(0, 100)
+    line, = ax1.plot(xar, yar, 'r', marker='o')
+
+    button12 = tk.Button(root, text="quit",
+                         borderwidth=8, background=elcolor,
+                         activebackground="green", cursor="right_ptr", overrelief="sunken",
+                         command=lambda: root.destroy())
+    button12.grid(row=1, column=1, ipadx=4, ipady=4, padx=0, pady=0)
+
+
+    def animate(i):
+        print(scale1.get())
+        yar.append(99 - scale1.get())
+        xar.append(i)
+        line.set_data(xar, yar)
+        ax1.set_xlim(0, i + 1)
+
+    plotcanvas = FigureCanvasTkAgg(fig, root)
+    plotcanvas.get_tk_widget().grid(column=0, row=0)
+    ani = animation.FuncAnimation(fig, animate, interval=1000, blit=False)
+
+    root.mainloop()
+
+>>>>>>> origin/main
 
 """"
 def draw_2(self):
