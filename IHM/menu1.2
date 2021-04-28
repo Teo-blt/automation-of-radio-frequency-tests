@@ -178,6 +178,7 @@ class Application(Tk):
     def scale(self):
         a = IntVar()
         f = IntVar()
+        b = IntVar()
         my_scale_frame = LabelFrame(self, text="A scale")
         my_scale_frame.grid(row=0, column=2, ipadx=40, ipady=40, padx=0, pady=0)
         scale1 = Scale(my_scale_frame, orient='vertical', variable=a, troughcolor=elcolor, from_=0, to=100,
@@ -202,6 +203,12 @@ class Application(Tk):
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
                              command=lambda: Graphic.draw_5(self, elcolor, scale1, scale2))
         button12.pack(padx=30, pady=10, expand=True, fill="both", side=TOP)
+        RB1 = tk.Radiobutton(my_scale_frame, text="mono_cycle",
+                             variable=b, value=0, cursor="right_ptr", command=lambda: [print("1")])
+        RB1.pack(padx=30, pady=10, expand=False, fill="none", side=TOP)
+        RB2 = tk.Radiobutton(my_scale_frame, text="multi_cycles",
+                             variable=b, value=1, cursor="right_ptr", command=lambda: [print("2")])
+        RB2.pack(padx=30, pady=10, expand=False, fill="none", side=TOP)
 
     def clear(self, get_tilte):
         print("clear")

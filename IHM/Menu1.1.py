@@ -230,5 +230,4 @@ class Application(Tk):
             if askyesno('Warning', 'your data is not saved, are you sure you want to continue'):
                 self.quit()
 
-#blop
 Application().mainloop()
