@@ -31,9 +31,16 @@ def draw_4(self, amplitude, frequency):
 
 
 def draw_5(self, elcolor):
+    b = IntVar()
     root = tk.Toplevel(self)
     root.title('This is my Draw window')
     root.config(background='#fafafa')
+    my_scale_frame = LabelFrame(root, text="A scale")
+    my_scale_frame.grid(row=1, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+    my_scale_frame.config(background='#fafafa')
+    my_RB_frame = LabelFrame(root, text="Choice")
+    my_RB_frame.grid(row=0, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+    my_RB_frame.config(background='#fafafa')
 
     xar = []
     yar = []
@@ -43,30 +50,65 @@ def draw_5(self, elcolor):
     ax1 = fig.add_subplot(1, 1, 1)
     ax1.set_ylim(0, 100)
     line, = ax1.plot(xar, yar, 'r', marker='o')
-    scale_root_1 = Scale(root, orient='vertical', troughcolor=elcolor, from_=100, to=0,
-                   resolution=1, tickinterval=25, length=100, command=0,
-                   label='amplitude', state="active")
-    scale_root_1.grid(row=0, column=0, ipadx=4, ipady=4, padx=0, pady=0)
-    scale_root_2 = Scale(root, orient='vertical', troughcolor=elcolor, from_=100, to=10,
-                   resolution=1, tickinterval=25, length=100, command=0,
-                   label='lenght', state="active")
-    scale_root_2.grid(row=0, column=1, ipadx=4, ipady=4, padx=0, pady=0)
-    button12 = tk.Button(root, text="quit",
+
+    scale_root_1 = Scale(my_scale_frame, orient='vertical', troughcolor=elcolor, from_=100, to=0,
+                         resolution=1, tickinterval=25, length=100, command=0,
+                         label='amplitude', state="active")
+    scale_root_1.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
+    scale_root_2 = Scale(my_scale_frame, orient='vertical', troughcolor=elcolor, from_=100, to=-100,
+                         resolution=1, tickinterval=50, length=100, command=0,
+                         label='+', state="active")
+    scale_root_2.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
+    scale_root_2.set(1)
+    scale_root_4 = Scale(my_scale_frame, orient='vertical', troughcolor=elcolor, from_=100, to=-100,
+                         resolution=1, tickinterval=50, length=100, command=0,
+                         label='-', state="active")
+    scale_root_4.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
+    scale_root_3 = Scale(my_scale_frame, orient='vertical', troughcolor=elcolor, from_=10, to=0,
+                         resolution=1, tickinterval=2, length=100, command=0,
+                         label='delay in second', state="active")
+    scale_root_3.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
+    scale_root_3.set(1)
+    button13 = tk.Button(my_scale_frame, text="Start",
+                         borderwidth=8, background=elcolor,
+                         activebackground="green", cursor="right_ptr", overrelief="sunken",
+                         command=lambda: [])
+    button13.pack(padx=1, pady=1, expand=True, fill="both", side=TOP)
+    button14 = tk.Button(my_scale_frame, text="Stop",
+                         borderwidth=8, background=elcolor,
+                         activebackground="green", cursor="right_ptr", overrelief="sunken",
+                         command=lambda: [])
+    button14.pack(padx=1, pady=1, expand=True, fill="both", side=BOTTOM)
+    button11 = tk.Button(my_scale_frame, text="quit",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
                          command=lambda: root.destroy())
-    button12.grid(row=0, column=2, ipadx=4, ipady=4, padx=0, pady=0)
+    button11.pack(padx=1, pady=1, expand=True, fill="both", side=LEFT)
+    button12 = tk.Button(my_scale_frame, text="reset",
+                         borderwidth=8, background=elcolor,
+                         activebackground="green", cursor="right_ptr", overrelief="sunken",
+                         command=lambda: [scale_root_1.set(0), scale_root_2.set(1), scale_root_3.set(1),
+                                          scale_root_4.set(0)])
+    button12.pack(padx=1, pady=1, expand=True, fill="both", side=LEFT)
 
+    RB2 = tk.Radiobutton(my_RB_frame, text="Manual",
+                         variable=b, value=1, cursor="right_ptr",
+                         indicatoron=1, command=lambda: [print("2")])
+    RB2.pack(padx=0, pady=0, expand=False, fill="none", side=BOTTOM)
+    RB1 = tk.Radiobutton(my_RB_frame, text="Automatic",
+                         variable=b, value=0, cursor="right_ptr",
+                         indicatoron=1, command=lambda: [print("1")])
+    RB1.pack(padx=0, pady=0, expand=False, fill="none", side=BOTTOM)
 
     def animate(i):
-        yar.append(99 - scale_root_1.get())
+        yar.append(scale_root_1.get())
         xar.append(i)
         line.set_data(xar, yar)
-        ax1.set_xlim(0, i + scale_root_2.get())
+        ax1.set_xlim(scale_root_4.get(), i + scale_root_2.get())
 
     plotcanvas = FigureCanvasTkAgg(fig, root)
     plotcanvas.get_tk_widget().grid(column=0, row=0)
-    ani = animation.FuncAnimation(fig, animate, interval=1000, blit=False)
+    ani = animation.FuncAnimation(fig, animate, interval=(scale_root_3.get() * 1000), blit=False)
 
     root.mainloop()
 

@@ -178,7 +178,6 @@ class Application(Tk):
     def scale(self):
         a = IntVar()
         f = IntVar()
-        b = IntVar()
         my_scale_frame = LabelFrame(self, text="A scale")
         my_scale_frame.grid(row=0, column=2, ipadx=0, ipady=0, padx=0, pady=0)
         my_scale_frame_2 = LabelFrame(my_scale_frame)
@@ -205,15 +204,6 @@ class Application(Tk):
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
                              command=lambda: Graphic.draw_4(self, scale1.get(), scale2.get()))
         button11.pack(padx=10, pady=0,ipadx=40, ipady=10, expand=False, fill="none", side=RIGHT)
-        RB2 = tk.Radiobutton(my_scale_frame, text="Manual",
-                             variable=b, value=1, cursor="right_ptr",
-                             indicatoron=1, command=lambda: [print("2")])
-        RB2.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-        RB2.select()
-        RB1 = tk.Radiobutton(my_scale_frame, text="Automatic",
-                             variable=b, value=0, cursor="right_ptr",
-                             indicatoron=1, command=lambda: [print("1")])
-        RB1.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
 
     def clear(self, get_tilte):
         print("clear")
