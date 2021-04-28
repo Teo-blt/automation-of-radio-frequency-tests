@@ -4,6 +4,7 @@ import numpy as np
 # from matplotlib.animation import FuncAnimation
 # from random import randint
 import tkinter as tk
+from tkinter import *
 from matplotlib import pyplot as plt
 import matplotlib.animation as animation
 from matplotlib import style
@@ -29,7 +30,7 @@ def draw_4(self, amplitude, frequency):
     button.pack(side=tk.BOTTOM)
 
 
-def draw_5(self, elcolor, scale1, scale2):
+def draw_5(self, elcolor):
     root = tk.Toplevel(self)
     root.title('This is my Draw window')
     root.config(background='#fafafa')
@@ -42,20 +43,26 @@ def draw_5(self, elcolor, scale1, scale2):
     ax1 = fig.add_subplot(1, 1, 1)
     ax1.set_ylim(0, 100)
     line, = ax1.plot(xar, yar, 'r', marker='o')
-
+    scale_root_1 = Scale(root, orient='vertical', troughcolor=elcolor, from_=100, to=0,
+                   resolution=1, tickinterval=25, length=100, command=0,
+                   label='amplitude', state="active")
+    scale_root_1.grid(row=0, column=0, ipadx=4, ipady=4, padx=0, pady=0)
+    scale_root_2 = Scale(root, orient='vertical', troughcolor=elcolor, from_=100, to=10,
+                   resolution=1, tickinterval=25, length=100, command=0,
+                   label='lenght', state="active")
+    scale_root_2.grid(row=0, column=1, ipadx=4, ipady=4, padx=0, pady=0)
     button12 = tk.Button(root, text="quit",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
                          command=lambda: root.destroy())
-    button12.grid(row=1, column=1, ipadx=4, ipady=4, padx=0, pady=0)
+    button12.grid(row=0, column=2, ipadx=4, ipady=4, padx=0, pady=0)
 
 
     def animate(i):
-        print(scale1.get())
-        yar.append(99 - scale1.get())
+        yar.append(99 - scale_root_1.get())
         xar.append(i)
         line.set_data(xar, yar)
-        ax1.set_xlim(0, i + scale2.get())
+        ax1.set_xlim(0, i + scale_root_2.get())
 
     plotcanvas = FigureCanvasTkAgg(fig, root)
     plotcanvas.get_tk_widget().grid(column=0, row=0)
