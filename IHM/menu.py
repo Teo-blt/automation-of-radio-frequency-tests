@@ -9,7 +9,6 @@
 # =============================================================================
 # Imports
 import tkinter as tk
-import sys
 from tkinter import *
 from tkinter import ttk
 from tkinter.messagebox import *
@@ -32,7 +31,7 @@ class Application(Tk):
         self.title("Main menu")
         self.withdraw()
 
-    def oven(self):
+    def climatic_chamber(self):
         self.geometry(size)
         my_oven_frame = LabelFrame(self, text="Settings of the oven")
         my_oven_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
@@ -106,9 +105,9 @@ class Application(Tk):
             print("error")
             showerror("Error", "You must select a valid instrument")
         elif choice == 0:
-            print("Oven")
-            self.clear("Oven")
-            self.oven()
+            print("Climatic_chamber")
+            self.clear("Climatic_chamber")
+            self.climatic_chamber()
         elif choice == 1:
             print("Low frequency generator")
             self.clear("Low frequency generator")
@@ -130,7 +129,7 @@ class Application(Tk):
         labeltop = tk.Label(my_combo_frame, text="Choose your measuring tool")
         labeltop.pack(expand=False, fill="none", side=TOP)
         comboexample = ttk.Combobox(my_combo_frame, values=[
-            "Oven",
+            "Climatic chamber",
             "Low frequency generator",
             "Signal generator",
             "Oscilloscope"],
@@ -231,5 +230,5 @@ class Application(Tk):
             if askyesno('Warning', 'your data is not saved, are you sure you want to continue'):
                 self.quit()
 
-#blop
+
 Application().mainloop()
