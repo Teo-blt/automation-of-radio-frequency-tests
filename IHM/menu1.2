@@ -203,12 +203,15 @@ class Application(Tk):
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
                              command=lambda: Graphic.draw_5(self, elcolor, scale1, scale2))
         button12.pack(padx=30, pady=10, expand=True, fill="both", side=TOP)
-        RB1 = tk.Radiobutton(my_scale_frame, text="mono_cycle",
-                             variable=b, value=0, cursor="right_ptr", command=lambda: [print("1")])
-        RB1.pack(padx=30, pady=10, expand=False, fill="none", side=TOP)
-        RB2 = tk.Radiobutton(my_scale_frame, text="multi_cycles",
-                             variable=b, value=1, cursor="right_ptr", command=lambda: [print("2")])
-        RB2.pack(padx=30, pady=10, expand=False, fill="none", side=TOP)
+        RB2 = tk.Radiobutton(my_scale_frame, text="Manual",
+                             variable=b, value=1, cursor="right_ptr",
+                             indicatoron=1, command=lambda: [print("2")])
+        RB2.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        RB2.select()
+        RB1 = tk.Radiobutton(my_scale_frame, text="Automatic",
+                             variable=b, value=0, cursor="right_ptr",
+                             indicatoron=1, command=lambda: [print("1")])
+        RB1.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
 
     def clear(self, get_tilte):
         print("clear")

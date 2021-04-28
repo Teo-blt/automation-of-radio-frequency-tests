@@ -55,7 +55,7 @@ def draw_5(self, elcolor, scale1, scale2):
         yar.append(99 - scale1.get())
         xar.append(i)
         line.set_data(xar, yar)
-        ax1.set_xlim(0, i + 1)
+        ax1.set_xlim(0, i + scale2.get())
 
     plotcanvas = FigureCanvasTkAgg(fig, root)
     plotcanvas.get_tk_widget().grid(column=0, row=0)
