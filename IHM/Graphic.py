@@ -132,15 +132,22 @@ def draw_5(self, elcolor):
         yar = []
 
         style.use('ggplot')
+
         fig = plt.figure(figsize=(10, 4.5), dpi=100)
-        fig2 = plt.figure(figsize=(10, 4.5), dpi=100)
         ax1 = fig.add_subplot(1, 1, 1)
         ax1.set_ylim(-40, 120)
+        ax2 = fig.add_subplot(1, 1, 1)
+        ax2.set_ylim(-40, 120)
         line, = ax1.plot(xar, yar, 'r', marker='o')
+        line2, = ax2.plot(xar, yar, 'b', marker='o')
 
         def init():
             line.set_ydata(np.ma.array(xar, mask=True))
             return line,
+
+        def init2():
+            line2.set_ydata(np.ma.array(xar, mask=True))
+            return line2,
 
         def animate(i):
             yar.append(scale_root_1.get())
@@ -155,18 +162,18 @@ def draw_5(self, elcolor):
             else:
                 ax1.set_xlim(0, i + 1)
 
-        def animate2(i):
+        def animate2(r):
             yar.append(random.randint(-40, 120))
-            xar.append(i)
-            line.set_data(xar, yar)
+            xar.append(r)
+            line2.set_data(xar, yar)
 
-            if i >= scale_root_2.get():
-                a = i - scale_root_2.get()
-                ax1.set_xlim(a, i + 1)
+            if r >= scale_root_2.get():
+                a = r - scale_root_2.get()
+                ax2.set_xlim(a, r + 1)
                 if scale_root_2.get() == 100:
-                    ax1.set_xlim(0, i + 1)
+                    ax2.set_xlim(0, r + 1)
             else:
-                ax1.set_xlim(0, i + 1)
+                ax2.set_xlim(0, r + 1)
 
         plotcanvas = FigureCanvasTkAgg(fig, root)
         plotcanvas.get_tk_widget().grid(column=0, row=0)
@@ -175,7 +182,7 @@ def draw_5(self, elcolor):
         toolbar.update()
 
         ani = animation.FuncAnimation(fig, animate, interval=(scale_root_3.get() * 1000), blit=False, init_func=init)
-        ani2 = animation.FuncAnimation(fig, animate2, interval=(scale_root_3.get() * 1000), blit=False, init_func=init)
+        ani2 = animation.FuncAnimation(fig, animate2, interval=(scale_root_3.get() * 1000), blit=False, init_func=init2)
         return [ani, ani2]
 
     root.mainloop()

@@ -79,45 +79,37 @@ class Application(Tk):
         print("done")
 
     def lfg(self):
-        print("Low frequency generator")
         self.geometry(size)
         my_lfg_frame = LabelFrame(self, text="Settings of the Low frequency generator")
         my_lfg_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
         self.graphique()
 
     def sg(self):
-        print("Signal generator")
         self.geometry(size)
         my_sg_frame = LabelFrame(self, text="Settings of the Signal generator")
         my_sg_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
         self.graphique()
 
     def osl(self):
-        print("Oscilloscope")
         self.geometry(size)
         my_osl_frame = LabelFrame(self, text="Settings of the Oscilloscope")
         my_osl_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
         self.graphique()
 
     def interface(self, choice):
-        print("your choice is :", choice)
         if choice == -1:
             print("error")
             showerror("Error", "You must select a valid instrument")
         elif choice == 0:
-            print("Climatic_chamber")
             self.clear("Climatic_chamber")
             self.climatic_chamber()
         elif choice == 1:
-            print("Low frequency generator")
             self.clear("Low frequency generator")
             self.lfg()
         elif choice == 2:
-            print("Signal generator")
             self.clear("Signal generator")
             self.sg()
         else:
-            print("Oscilloscope")
             self.clear("Oscilloscope")
             self.osl()
 
@@ -190,7 +182,6 @@ class Application(Tk):
         button11.pack(padx=10, pady=0,ipadx=40, ipady=10, expand=False, fill="none", side=RIGHT)
 
     def clear(self, get_tilte):
-        print("clear")
         self.destroy()
         Tk.__init__(self)
         self.title(get_tilte + " menu")
