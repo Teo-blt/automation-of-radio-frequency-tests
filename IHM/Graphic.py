@@ -4,6 +4,7 @@ import numpy as np
 # from matplotlib.animation import FuncAnimation
 import tkinter as tk
 from tkinter import *
+import random
 from matplotlib import pyplot as plt
 import matplotlib.animation as animation
 from matplotlib import style
@@ -49,7 +50,7 @@ def draw_4(self, elcolor):
 
 def draw_5(self, elcolor):
     global ani
-    n = 0
+    global ani2
     b = IntVar()
     root = tk.Toplevel(self)
     root.title('This is my Draw window')
@@ -60,11 +61,15 @@ def draw_5(self, elcolor):
     my_scale_frame = LabelFrame(my_settings_frame, bd=0)  # , text="Scales"
     my_scale_frame.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
     my_scale_frame.config(background='#fafafa')
+    my_auto_scale_frame = LabelFrame(my_settings_frame, bd=0,
+                                     text="my_auto_scale_frame")  # , text="my_auto_scale_frame"
+    my_auto_scale_frame.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
+    my_auto_scale_frame.config(background='#fafafa')
     my_button_frame = LabelFrame(my_settings_frame, bd=0)  # , text="Buttons"
-    my_button_frame.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
+    my_button_frame.pack(padx=0, pady=0, expand=True, fill="both", side=RIGHT)
     my_button_frame.config(background='#fafafa')
     my_RB_frame = LabelFrame(my_settings_frame, bd=0)  # , text="Choice"
-    my_RB_frame.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
+    my_RB_frame.pack(padx=0, pady=0, expand=True, fill="both", side=RIGHT)
     my_RB_frame.config(background='#fafafa')
 
     button12 = tk.Button(my_scale_frame, text="Reset",
@@ -89,7 +94,7 @@ def draw_5(self, elcolor):
     button13 = tk.Button(my_button_frame, text="Start",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [a(scale_root_3, n).resume()])
+                         command=lambda: [a(scale_root_3)[0].resume()])
     button13.pack(padx=1, pady=1, expand=True, fill="both", side=TOP)
     button14 = tk.Button(my_button_frame, text="Stop",
                          borderwidth=8, background=elcolor,
@@ -108,22 +113,27 @@ def draw_5(self, elcolor):
     button11.pack(padx=1, pady=1, expand=True, fill="both", side=TOP)
     RB2 = tk.Radiobutton(my_RB_frame, text="Automatic",
                          variable=b, value=1, cursor="right_ptr",
-                         indicatoron=1, command=lambda: [my_scale_frame.pack_forget()])
+                         indicatoron=1, command=lambda: [my_scale_frame.pack_forget(),
+                                                         my_auto_scale_frame.pack(padx=0, pady=0,
+                                                                                  expand=True, fill="both", side=LEFT)])
     RB2.pack(padx=0, pady=0, expand=False, fill="none", side=BOTTOM)
     RB1 = tk.Radiobutton(my_RB_frame, text="Manual",
                          variable=b, value=0, cursor="right_ptr",
                          indicatoron=1, command=lambda: [my_scale_frame.pack(padx=0, pady=0,
-                                                                             expand=True, fill="both", side=LEFT)])
+                                                                             expand=True, fill="both", side=LEFT),
+                                                         my_auto_scale_frame.pack_forget()])
     RB1.pack(padx=0, pady=0, expand=False, fill="none", side=BOTTOM)
     RB1.invoke()
 
-    def a(scale_root_3, n):
+    def a(scale_root_3):
         global ani
+        global ani2
         xar = []
         yar = []
 
         style.use('ggplot')
         fig = plt.figure(figsize=(10, 4.5), dpi=100)
+        fig2 = plt.figure(figsize=(10, 4.5), dpi=100)
         ax1 = fig.add_subplot(1, 1, 1)
         ax1.set_ylim(-40, 120)
         line, = ax1.plot(xar, yar, 'r', marker='o')
@@ -145,6 +155,19 @@ def draw_5(self, elcolor):
             else:
                 ax1.set_xlim(0, i + 1)
 
+        def animate2(i):
+            yar.append(random.randint(-40, 120))
+            xar.append(i)
+            line.set_data(xar, yar)
+
+            if i >= scale_root_2.get():
+                a = i - scale_root_2.get()
+                ax1.set_xlim(a, i + 1)
+                if scale_root_2.get() == 100:
+                    ax1.set_xlim(0, i + 1)
+            else:
+                ax1.set_xlim(0, i + 1)
+
         plotcanvas = FigureCanvasTkAgg(fig, root)
         plotcanvas.get_tk_widget().grid(column=0, row=0)
 
@@ -152,7 +175,8 @@ def draw_5(self, elcolor):
         toolbar.update()
 
         ani = animation.FuncAnimation(fig, animate, interval=(scale_root_3.get() * 1000), blit=False, init_func=init)
-        return ani
+        ani2 = animation.FuncAnimation(fig, animate2, interval=(scale_root_3.get() * 1000), blit=False, init_func=init)
+        return [ani, ani2]
 
     root.mainloop()
 
