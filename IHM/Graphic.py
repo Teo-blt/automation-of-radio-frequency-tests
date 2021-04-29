@@ -19,14 +19,16 @@ def draw_4(self, elcolor):
     my_scale_frame_2 = LabelFrame(root)
     my_scale_frame_2.pack()
     scale1 = Scale(my_scale_frame_2, orient='vertical', variable=a, troughcolor=elcolor, from_=100, to=0,
-                   resolution=1, tickinterval=25, length=100, command=0,
+                   resolution=1, tickinterval=25, length=100,
+                   command=lambda: [eldraw(scale1, scale2)],
                    label='amplitude', state="active")
     scale1.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
     scale1.set(1)
     amplitude = Entry(my_scale_frame_2, validate="all", textvariable=a)
     amplitude.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
     scale2 = Scale(my_scale_frame_2, orient='vertical', variable=f, troughcolor=elcolor, from_=10, to=0,
-                   resolution=1, tickinterval=1, length=100, command=0,
+                   resolution=1, tickinterval=1, length=100,
+                   command=lambda: [eldraw(scale1, scale2)],
                    label='frequency', state="active")
     scale2.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
     scale2.set(1)
@@ -34,20 +36,16 @@ def draw_4(self, elcolor):
     frequency.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
     button1 = tk.Button(master=my_scale_frame_2, text="Quit", command=lambda: root.destroy())
     button1.pack(side=LEFT)
-    button2 = tk.Button(master=my_scale_frame_2, text="Start", command=lambda: eldraw(scale1, scale2))
-    button2.pack(side=LEFT)
     fig = Figure(figsize=(5, 4), dpi=100)
     canvas = FigureCanvasTkAgg(fig, master=root)  # A tk.DrawingArea.
-    toolbar = NavigationToolbar2Tk(canvas, root)
+    toolbar = NavigationToolbar2Tk(canvas, root, pack_toolbar=False)
     canvas.draw()
     toolbar.update()
-    toolbar.push_current()
 
     def eldraw(scale1, scale2):
         t = np.arange(0, 3, .01)
         canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-        fig.add_subplot(111).plot(t, scale1.get() * np.sin(scale2.get() * np.pi * t))
-
+        fig.add_subplot().plot(t, scale1.get() * np.sin(scale2.get() * np.pi * t))
 
 def draw_5(self, elcolor):
     global ani
@@ -102,12 +100,12 @@ def draw_5(self, elcolor):
     button14 = tk.Button(my_button_frame, text="Stop",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [ani.pause()])
+                         command=lambda: [ani.pause(), ani2.pause()])
     button14.pack_forget()
     button15 = tk.Button(my_button_frame, text="Resume",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [ani.resume()])
+                         command=lambda: [ani.resume(), ani2.resume()])
     button15.pack_forget()
     button11 = tk.Button(my_button_frame, text="Quit",
                          borderwidth=8, background=elcolor,
