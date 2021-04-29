@@ -31,6 +31,9 @@ def draw_4(self, amplitude, frequency):
 
 
 def draw_5(self, elcolor):
+    global ani
+    global first_time
+    first_time = 0
     b = IntVar()
     root = tk.Toplevel(self)
     root.title('This is my Draw window')
@@ -42,20 +45,16 @@ def draw_5(self, elcolor):
     my_RB_frame.grid(row=0, column=1, ipadx=0, ipady=0, padx=0, pady=0)
     my_RB_frame.config(background='#fafafa')
 
-    xar = []
-    yar = []
-
-    style.use('ggplot')
-    fig = plt.figure(figsize=(10, 4.5), dpi=100)
-    ax1 = fig.add_subplot(1, 1, 1)
-    ax1.set_ylim(-40, 120)
-    line, = ax1.plot(xar, yar, 'r', marker='o')
-
+    button12 = tk.Button(my_scale_frame, text="Reset",
+                         borderwidth=8, background=elcolor,
+                         activebackground="green", cursor="right_ptr", overrelief="sunken",
+                         command=lambda: [scale_root_1.set(0), scale_root_2.set(40), scale_root_3.set(1)])
+    button12.pack(padx=1, pady=1, expand=True, fill="both", side=LEFT)
     scale_root_1 = Scale(my_scale_frame, orient='vertical', troughcolor=elcolor, from_=120, to=-40,
                          resolution=1, tickinterval=25, length=100, command=0,
                          label='Order', state="active")
     scale_root_1.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
-    scale_root_2 = Scale(my_scale_frame, orient='vertical', troughcolor=elcolor, from_=100, to=0,
+    scale_root_2 = Scale(my_scale_frame, orient='vertical', troughcolor=elcolor, from_=100, to=1,
                          resolution=1, tickinterval=50, length=100, command=0,
                          label='window length', state="active")
     scale_root_2.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
@@ -68,23 +67,23 @@ def draw_5(self, elcolor):
     button13 = tk.Button(my_scale_frame, text="Start",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [ani.resume()])
+                         command=lambda: [a().resume()])
     button13.pack(padx=1, pady=1, expand=True, fill="both", side=TOP)
     button14 = tk.Button(my_scale_frame, text="Stop",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
                          command=lambda: [ani.pause()])
     button14.pack(padx=1, pady=1, expand=True, fill="both", side=TOP)
+    button15 = tk.Button(my_scale_frame, text="Resume",
+                         borderwidth=8, background=elcolor,
+                         activebackground="green", cursor="right_ptr", overrelief="sunken",
+                         command=lambda: [ani.resume()])
+    button15.pack(padx=1, pady=1, expand=True, fill="both", side=TOP)
     button11 = tk.Button(my_scale_frame, text="Quit",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
                          command=lambda: root.destroy())
     button11.pack(padx=1, pady=1, expand=True, fill="both", side=TOP)
-    button12 = tk.Button(my_scale_frame, text="Reset",
-                         borderwidth=8, background=elcolor,
-                         activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [scale_root_1.set(0), scale_root_2.set(40), scale_root_3.set(1)])
-    button12.pack(padx=1, pady=1, expand=True, fill="both", side=TOP)
     RB2 = tk.Radiobutton(my_RB_frame, text="Manual",
                          variable=b, value=1, cursor="right_ptr",
                          indicatoron=1, command=lambda: [print("2")])
@@ -94,24 +93,45 @@ def draw_5(self, elcolor):
                          indicatoron=1, command=lambda: [print("1")])
     RB1.pack(padx=0, pady=0, expand=False, fill="none", side=BOTTOM)
 
-    def animate(i):
-        test = random.randint(-40, 120)
-        yar.append(test)  # (scale_root_1.get())
-        xar.append(i)
-        line.set_data(xar, yar)
-        if i >= scale_root_2.get():
-            a = i - scale_root_2.get()
-            print(a)
-            ax1.set_xlim(a, i+1)
-        else:
-            ax1.set_xlim(0, i+1)
+    def a():
+        global ani
+        global first_time
+        xar = []
+        yar = []
 
-    plotcanvas = FigureCanvasTkAgg(fig, root)
-    plotcanvas.get_tk_widget().grid(column=0, row=0)
-    toolbar = NavigationToolbar2Tk(plotcanvas, my_scale_frame)
-    toolbar.update()
+        style.use('ggplot')
+        fig = plt.figure(figsize=(10, 4.5), dpi=100)
+        ax1 = fig.add_subplot(1, 1, 1)
+        ax1.set_ylim(-40, 120)
+        line, = ax1.plot(xar, yar, 'r', marker='o')
 
-    ani = animation.FuncAnimation(fig, animate, interval=(scale_root_3.get() * 1000), blit=False)
+        def init():
+            line.set_ydata(np.ma.array(xar, mask=True))
+            return line,
+
+        def animate(i):
+            test = random.randint(-40, 120)
+            yar.append(test)  # (scale_root_1.get())
+            xar.append(i)
+            line.set_data(xar, yar)
+            if i >= scale_root_2.get():
+                a = i - scale_root_2.get()
+                print(a)
+                ax1.set_xlim(a, i + 1)
+            else:
+                ax1.set_xlim(0, i + 1)
+
+        plotcanvas = FigureCanvasTkAgg(fig, root)
+        plotcanvas.get_tk_widget().grid(column=0, row=0)
+
+        if first_time != 1:
+            toolbar = NavigationToolbar2Tk(plotcanvas, my_scale_frame)
+            toolbar.update()
+        first_time = 1
+
+        ani = animation.FuncAnimation(fig, animate, interval=(scale_root_3.get() * 1000), blit=False, init_func=init)
+        return ani
+
     root.mainloop()
 
 
