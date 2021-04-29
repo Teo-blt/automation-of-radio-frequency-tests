@@ -15,7 +15,7 @@ from tkinter.messagebox import *
 from tkinter.colorchooser import askcolor
 import Data_managment as da
 import Graphic
-
+import sys
 
 # =============================================================================
 
@@ -176,24 +176,8 @@ class Application(Tk):
         self.create_widgets()
 
     def scale(self):
-        a = IntVar()
-        f = IntVar()
-        my_scale_frame = LabelFrame(self, text="A scale")
+        my_scale_frame = LabelFrame(self, text="Draw")
         my_scale_frame.grid(row=0, column=2, ipadx=0, ipady=0, padx=0, pady=0)
-        my_scale_frame_2 = LabelFrame(my_scale_frame)
-        my_scale_frame_2.pack()
-        scale1 = Scale(my_scale_frame_2, orient='vertical', variable=a, troughcolor=elcolor, from_=100, to=0,
-                       resolution=1, tickinterval=25, length=100, command=0,
-                       label='amplitude', state="active")
-        scale1.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
-        amplitude = Entry(my_scale_frame_2, validate="all", textvariable=a)
-        amplitude.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
-        scale2 = Scale(my_scale_frame_2, orient='vertical', variable=f, troughcolor=elcolor, from_=10, to=0,
-                       resolution=1, tickinterval=1, length=100, command=0,
-                       label='frequency', state="active")
-        scale2.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
-        frequency = Entry(my_scale_frame_2, validate="all", textvariable=f)
-        frequency.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
         button12 = tk.Button(my_scale_frame, text="Draw.2",
                              borderwidth=8, background=elcolor,
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
@@ -202,7 +186,7 @@ class Application(Tk):
         button11 = tk.Button(my_scale_frame, text="Draw",
                              borderwidth=8, background=elcolor,
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
-                             command=lambda: Graphic.draw_4(self, scale1.get(), scale2.get()))
+                             command=lambda: Graphic.draw_4(self, elcolor))
         button11.pack(padx=10, pady=0,ipadx=40, ipady=10, expand=False, fill="none", side=RIGHT)
 
     def clear(self, get_tilte):

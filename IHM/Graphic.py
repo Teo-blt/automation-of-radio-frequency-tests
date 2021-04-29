@@ -2,7 +2,6 @@ from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk  # ("""Figure
 from matplotlib.figure import Figure
 import numpy as np
 # from matplotlib.animation import FuncAnimation
-import random
 import tkinter as tk
 from tkinter import *
 from matplotlib import pyplot as plt
@@ -11,38 +10,63 @@ from matplotlib import style
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
-def draw_4(self, amplitude, frequency):
+def draw_4(self, elcolor):
+    a = IntVar()
+    f = IntVar()
     root = tk.Toplevel(self)
     root.wm_title("Embedding in Tk")
     fig = Figure(figsize=(5, 4), dpi=100)
     t = np.arange(0, 3, .01)
 
-    fig.add_subplot(111).plot(t, amplitude * np.sin(frequency * np.pi * t))
-
     canvas = FigureCanvasTkAgg(fig, master=root)  # A tk.DrawingArea.
     canvas.draw()
     canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+    my_scale_frame_2 = LabelFrame(root)
+    my_scale_frame_2.pack()
+
+    scale1 = Scale(my_scale_frame_2, orient='vertical', variable=a, troughcolor=elcolor, from_=100, to=0,
+                   resolution=1, tickinterval=25, length=100, command=0,
+                   label='amplitude', state="active")
+    scale1.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
+    amplitude = Entry(my_scale_frame_2, validate="all", textvariable=a)
+    amplitude.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
+    scale2 = Scale(my_scale_frame_2, orient='vertical', variable=f, troughcolor=elcolor, from_=10, to=0,
+                   resolution=1, tickinterval=1, length=100, command=0,
+                   label='frequency', state="active")
+    scale2.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
+    frequency = Entry(my_scale_frame_2, validate="all", textvariable=f)
+    frequency.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
 
     toolbar = NavigationToolbar2Tk(canvas, root)
     toolbar.update()
     canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-    button = tk.Button(master=root, text="Quit", command=lambda: root.destroy())
-    button.pack(side=tk.BOTTOM)
+    button1 = tk.Button(master=root, text="Quit", command=lambda: root.destroy())
+    button1.pack(side=tk.BOTTOM)
+    button2 = tk.Button(master=root, text="Start", command=lambda: eldraw(scale1, scale2, t))
+    button2.pack(side=tk.BOTTOM)
+
+    def eldraw(scale1, scale2, t):
+        fig.add_subplot(111).plot(t, scale1.get() * np.sin(scale2.get() * np.pi * t))
 
 
 def draw_5(self, elcolor):
     global ani
-    global first_time
-    first_time = 0
+    n = 0
     b = IntVar()
     root = tk.Toplevel(self)
     root.title('This is my Draw window')
     root.config(background='#fafafa')
-    my_scale_frame = LabelFrame(root, text="A scale")
-    my_scale_frame.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+    my_settings_frame = LabelFrame(root, text="Settings")
+    my_settings_frame.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+    my_settings_frame.config(background='#fafafa')
+    my_scale_frame = LabelFrame(my_settings_frame, bd=0)  # , text="Scales"
+    my_scale_frame.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
     my_scale_frame.config(background='#fafafa')
-    my_RB_frame = LabelFrame(root, text="Choice")
-    my_RB_frame.grid(row=0, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+    my_button_frame = LabelFrame(my_settings_frame, bd=0)  # , text="Buttons"
+    my_button_frame.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
+    my_button_frame.config(background='#fafafa')
+    my_RB_frame = LabelFrame(my_settings_frame, bd=0)  # , text="Choice"
+    my_RB_frame.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
     my_RB_frame.config(background='#fafafa')
 
     button12 = tk.Button(my_scale_frame, text="Reset",
@@ -56,30 +80,30 @@ def draw_5(self, elcolor):
     scale_root_1.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
     scale_root_2 = Scale(my_scale_frame, orient='vertical', troughcolor=elcolor, from_=100, to=1,
                          resolution=1, tickinterval=50, length=100, command=0,
-                         label='window length', state="active")
+                         label="window length", state="active")
     scale_root_2.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
     scale_root_2.set(40)
-    scale_root_3 = Scale(my_scale_frame, orient='vertical', troughcolor=elcolor, from_=10, to=0,
-                         resolution=1, tickinterval=2, length=100, command=0,
+    scale_root_3 = Scale(my_scale_frame, orient='vertical', troughcolor=elcolor, from_=10, to=0.1,
+                         resolution=0.1, tickinterval=1, length=100, command=0,
                          label='delay in second', state="active")
     scale_root_3.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
     scale_root_3.set(1)
-    button13 = tk.Button(my_scale_frame, text="Start",
+    button13 = tk.Button(my_button_frame, text="Start",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [a().resume()])
+                         command=lambda: [a(scale_root_3, n).resume()])
     button13.pack(padx=1, pady=1, expand=True, fill="both", side=TOP)
-    button14 = tk.Button(my_scale_frame, text="Stop",
+    button14 = tk.Button(my_button_frame, text="Stop",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
                          command=lambda: [ani.pause()])
     button14.pack(padx=1, pady=1, expand=True, fill="both", side=TOP)
-    button15 = tk.Button(my_scale_frame, text="Resume",
+    button15 = tk.Button(my_button_frame, text="Resume",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
                          command=lambda: [ani.resume()])
     button15.pack(padx=1, pady=1, expand=True, fill="both", side=TOP)
-    button11 = tk.Button(my_scale_frame, text="Quit",
+    button11 = tk.Button(my_button_frame, text="Quit",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
                          command=lambda: root.destroy())
@@ -93,9 +117,8 @@ def draw_5(self, elcolor):
                          indicatoron=1, command=lambda: [print("1")])
     RB1.pack(padx=0, pady=0, expand=False, fill="none", side=BOTTOM)
 
-    def a():
+    def a(scale_root_3, n):
         global ani
-        global first_time
         xar = []
         yar = []
 
@@ -110,24 +133,23 @@ def draw_5(self, elcolor):
             return line,
 
         def animate(i):
-            test = random.randint(-40, 120)
-            yar.append(test)  # (scale_root_1.get())
+            yar.append(scale_root_1.get())
             xar.append(i)
             line.set_data(xar, yar)
+
             if i >= scale_root_2.get():
                 a = i - scale_root_2.get()
-                print(a)
                 ax1.set_xlim(a, i + 1)
+                if scale_root_2.get() == 100:
+                    ax1.set_xlim(0, i + 1)
             else:
                 ax1.set_xlim(0, i + 1)
 
         plotcanvas = FigureCanvasTkAgg(fig, root)
         plotcanvas.get_tk_widget().grid(column=0, row=0)
 
-        if first_time != 1:
-            toolbar = NavigationToolbar2Tk(plotcanvas, my_scale_frame)
-            toolbar.update()
-        first_time = 1
+        toolbar = NavigationToolbar2Tk(plotcanvas, my_button_frame)
+        toolbar.update()
 
         ani = animation.FuncAnimation(fig, animate, interval=(scale_root_3.get() * 1000), blit=False, init_func=init)
         return ani
