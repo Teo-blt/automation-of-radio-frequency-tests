@@ -41,6 +41,7 @@ def draw_4(self, elcolor):
     toolbar = NavigationToolbar2Tk(canvas, root)
     canvas.draw()
     toolbar.update()
+    toolbar.push_current()
 
     def eldraw(scale1, scale2):
         t = np.arange(0, 3, .01)
@@ -94,22 +95,24 @@ def draw_5(self, elcolor):
     button13 = tk.Button(my_button_frame, text="Start",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [a(scale_root_3)[0].resume()])
+                         command=lambda: [a(scale_root_3)[0].resume(), a(scale_root_3)[1].resume(),
+                                          button14.pack(padx=1, pady=1, expand=True, fill="both", side=TOP),
+                                          button15.pack(padx=1, pady=1, expand=True, fill="both", side=TOP)])
     button13.pack(padx=1, pady=1, expand=True, fill="both", side=TOP)
     button14 = tk.Button(my_button_frame, text="Stop",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
                          command=lambda: [ani.pause()])
-    button14.pack(padx=1, pady=1, expand=True, fill="both", side=TOP)
+    button14.pack_forget()
     button15 = tk.Button(my_button_frame, text="Resume",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
                          command=lambda: [ani.resume()])
-    button15.pack(padx=1, pady=1, expand=True, fill="both", side=TOP)
+    button15.pack_forget()
     button11 = tk.Button(my_button_frame, text="Quit",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: root.destroy())
+                         command=lambda: [root.destroy(), root.quit()])
     button11.pack(padx=1, pady=1, expand=True, fill="both", side=TOP)
     RB2 = tk.Radiobutton(my_RB_frame, text="Automatic",
                          variable=b, value=1, cursor="right_ptr",
@@ -131,22 +134,24 @@ def draw_5(self, elcolor):
         xar = []
         yar = []
 
-        style.use('ggplot')
+        xar2 = []
+        yar2 = []
 
+        style.use('ggplot')
         fig = plt.figure(figsize=(10, 4.5), dpi=100)
+
         ax1 = fig.add_subplot(1, 1, 1)
         ax1.set_ylim(-40, 120)
-        ax2 = fig.add_subplot(1, 1, 1)
-        ax2.set_ylim(-40, 120)
         line, = ax1.plot(xar, yar, 'r', marker='o')
-        line2, = ax2.plot(xar, yar, 'b', marker='o')
+        line2, = ax1.plot(xar2, yar2, 'b', marker='o')
+
 
         def init():
             line.set_ydata(np.ma.array(xar, mask=True))
             return line,
 
         def init2():
-            line2.set_ydata(np.ma.array(xar, mask=True))
+            line2.set_ydata(np.ma.array(xar2, mask=True))
             return line2,
 
         def animate(i):
@@ -163,22 +168,23 @@ def draw_5(self, elcolor):
                 ax1.set_xlim(0, i + 1)
 
         def animate2(r):
-            yar.append(random.randint(-40, 120))
-            xar.append(r)
-            line2.set_data(xar, yar)
+            yar2.append(random.randint(-40, 120))
+            xar2.append(r)
+            line2.set_data(xar2, yar2)
 
             if r >= scale_root_2.get():
                 a = r - scale_root_2.get()
-                ax2.set_xlim(a, r + 1)
+                ax1.set_xlim(a, r + 1)
                 if scale_root_2.get() == 100:
-                    ax2.set_xlim(0, r + 1)
+                    ax1.set_xlim(0, r + 1)
             else:
-                ax2.set_xlim(0, r + 1)
+                ax1.set_xlim(0, r + 1)
 
         plotcanvas = FigureCanvasTkAgg(fig, root)
         plotcanvas.get_tk_widget().grid(column=0, row=0)
 
         toolbar = NavigationToolbar2Tk(plotcanvas, my_button_frame)
+        toolbar.push_current()
         toolbar.update()
 
         ani = animation.FuncAnimation(fig, animate, interval=(scale_root_3.get() * 1000), blit=False, init_func=init)
