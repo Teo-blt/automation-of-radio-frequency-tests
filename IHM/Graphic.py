@@ -15,37 +15,35 @@ def draw_4(self, elcolor):
     f = IntVar()
     root = tk.Toplevel(self)
     root.wm_title("Embedding in Tk")
-    fig = Figure(figsize=(5, 4), dpi=100)
-    t = np.arange(0, 3, .01)
-
-    canvas = FigureCanvasTkAgg(fig, master=root)  # A tk.DrawingArea.
-    canvas.draw()
-    canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
     my_scale_frame_2 = LabelFrame(root)
     my_scale_frame_2.pack()
-
     scale1 = Scale(my_scale_frame_2, orient='vertical', variable=a, troughcolor=elcolor, from_=100, to=0,
                    resolution=1, tickinterval=25, length=100, command=0,
                    label='amplitude', state="active")
     scale1.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
+    scale1.set(1)
     amplitude = Entry(my_scale_frame_2, validate="all", textvariable=a)
     amplitude.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
     scale2 = Scale(my_scale_frame_2, orient='vertical', variable=f, troughcolor=elcolor, from_=10, to=0,
                    resolution=1, tickinterval=1, length=100, command=0,
                    label='frequency', state="active")
     scale2.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
+    scale2.set(1)
     frequency = Entry(my_scale_frame_2, validate="all", textvariable=f)
     frequency.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
-
+    button1 = tk.Button(master=my_scale_frame_2, text="Quit", command=lambda: root.destroy())
+    button1.pack(side=LEFT)
+    button2 = tk.Button(master=my_scale_frame_2, text="Start", command=lambda: eldraw(scale1, scale2))
+    button2.pack(side=LEFT)
+    fig = Figure(figsize=(5, 4), dpi=100)
+    canvas = FigureCanvasTkAgg(fig, master=root)  # A tk.DrawingArea.
     toolbar = NavigationToolbar2Tk(canvas, root)
+    canvas.draw()
     toolbar.update()
-    canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-    button1 = tk.Button(master=root, text="Quit", command=lambda: root.destroy())
-    button1.pack(side=tk.BOTTOM)
-    button2 = tk.Button(master=root, text="Start", command=lambda: eldraw(scale1, scale2, t))
-    button2.pack(side=tk.BOTTOM)
 
-    def eldraw(scale1, scale2, t):
+    def eldraw(scale1, scale2):
+        t = np.arange(0, 3, .01)
+        canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
         fig.add_subplot(111).plot(t, scale1.get() * np.sin(scale2.get() * np.pi * t))
 
 
@@ -108,14 +106,16 @@ def draw_5(self, elcolor):
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
                          command=lambda: root.destroy())
     button11.pack(padx=1, pady=1, expand=True, fill="both", side=TOP)
-    RB2 = tk.Radiobutton(my_RB_frame, text="Manual",
+    RB2 = tk.Radiobutton(my_RB_frame, text="Automatic",
                          variable=b, value=1, cursor="right_ptr",
-                         indicatoron=1, command=lambda: [print("2")])
+                         indicatoron=1, command=lambda: [my_scale_frame.pack_forget()])
     RB2.pack(padx=0, pady=0, expand=False, fill="none", side=BOTTOM)
-    RB1 = tk.Radiobutton(my_RB_frame, text="Automatic",
+    RB1 = tk.Radiobutton(my_RB_frame, text="Manual",
                          variable=b, value=0, cursor="right_ptr",
-                         indicatoron=1, command=lambda: [print("1")])
+                         indicatoron=1, command=lambda: [my_scale_frame.pack(padx=0, pady=0,
+                                                                             expand=True, fill="both", side=LEFT)])
     RB1.pack(padx=0, pady=0, expand=False, fill="none", side=BOTTOM)
+    RB1.invoke()
 
     def a(scale_root_3, n):
         global ani
