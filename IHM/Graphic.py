@@ -25,22 +25,6 @@ from Climate_chamber_control import Climate_chamber
 
 
 # =============================================================================
-class Mythread(threading.Thread):
-    def __init__(self, data):  # data = additional data
-        threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
-        self.data = data  # additional data added to the class
-
-    def run(self):
-        for i in range(0, 100):
-            print("thread ", i)
-            time.sleep(1)  # wait 100 milliseconds without doing anything,  makes the display easier to read
-
-m = Mythread(10)  # build the thread
-m.start()  # lunch the thread,
-
-
-# instruction is executed in milliseconds, whatever the length of the thread
-
 
 def draw_4(self, elcolor):
     global my_scale_frame_1
@@ -146,7 +130,7 @@ def draw_5(self, elcolor):
     button16 = tk.Button(my_auto_scale_frame, text="Start",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [Climate_chamber.init(scale1.get(), 0)])
+                         command=lambda: [Climate_chamber.Mythread.init(self,scale1.get(),0)])
     button16.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
     button17 = tk.Button(my_auto_scale_frame, text="Quit",
                          borderwidth=8, background=elcolor,
@@ -156,7 +140,7 @@ def draw_5(self, elcolor):
     button18 = tk.Button(my_auto_scale_frame, text="Off",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [Climate_chamber.init(scale1.get(), 1)])
+                         command=lambda: [0])
     button18.grid(row=0, column=3, ipadx=40, ipady=20, padx=0, pady=0)
     scale1 = Scale(my_auto_scale_frame, orient='vertical', troughcolor=elcolor, from_=100, to=-20,
                    resolution=1, tickinterval=20, length=100, command=0,
