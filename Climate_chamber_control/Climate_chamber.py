@@ -28,7 +28,9 @@ class Mythread(threading.Thread):
     def init(self, temp_min, OOF):
         try:
             # sys.path.append('\\\\samba\\share\\projet\\e2b\\hardware\\Scripts_auto\\Python\\lib')
-
+            print(self)
+            print(temp_min)
+            print(OOF)
             ################################################
             ##### VISA instrument
             serial_speed = 9600
@@ -127,7 +129,13 @@ class Mythread(threading.Thread):
         except:
             print("error")
 
-        """# Votsch climatic chamber VT4002
+
+"""
+for i in range(0, 10):
+    print("programme ", i)
+    time.sleep(0.2)  # wait 100 milliseconds without doing anything,  makes the display easier to read
+
+# Votsch climatic chamber VT4002
         
         # Set temperature +80 & mise à ON
         $00E 0080.0 0000.0 0000.0 0000.0 0000.0 0101000000000000
