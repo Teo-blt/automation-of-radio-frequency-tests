@@ -1,7 +1,6 @@
 from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk  # ("""FigureCanvasTkAgg,""")
 from matplotlib.figure import Figure
 import numpy as np
-# from matplotlib.animation import FuncAnimation
 import tkinter as tk
 from tkinter import *
 import random
@@ -12,42 +11,76 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
 def draw_4(self, elcolor):
-    global scale1
-    global scale2
-    a = IntVar()
-    f = IntVar()
+    global my_scale_frame_1
+    global first_time
+
+    first_time = 1
     root = tk.Toplevel(self)
     root.wm_title("Embedding in Tk")
     my_scale_frame_2 = LabelFrame(root)
     my_scale_frame_2.pack()
-    scale1 = Scale(my_scale_frame_2, orient='vertical', variable=a, troughcolor=elcolor, from_=100, to=0,
-                   resolution=1, tickinterval=25, length=100,
+
+    def Enter(event):
+        eldraw()
+        print("a")
+
+    a = IntVar()
+    f = IntVar()
+    root.bind("<Return>", Enter)
+
+    scale1 = Scale(my_scale_frame_2, orient='vertical', variable=a, from_=100, to=0,
+                   resolution=1, tickinterval=25, length=100, troughcolor=elcolor,
                    command=lambda x: eldraw(),
                    label='amplitude', state="active")
     scale1.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
     scale1.set(1)
     amplitude = Entry(my_scale_frame_2, validate="all", textvariable=a)
     amplitude.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
-    scale2 = Scale(my_scale_frame_2, orient='vertical', variable=f, troughcolor=elcolor, from_=10, to=0,
-                   resolution=1, tickinterval=1, length=100,
+    scale2 = Scale(my_scale_frame_2, orient='vertical', variable=f, from_=10, to=0,
+                   resolution=1, tickinterval=1, length=100, troughcolor=elcolor,
                    command=lambda x: eldraw(),
                    label='frequency', state="active")
     scale2.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
     scale2.set(1)
     frequency = Entry(my_scale_frame_2, validate="all", textvariable=f)
     frequency.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
-    button1 = tk.Button(master=my_scale_frame_2, text="Quit", command=lambda: root.destroy())
+    button1 = Button(master=my_scale_frame_2, text="Quit", background=elcolor, command=lambda: root.destroy())
     button1.pack(side=LEFT)
-    fig = Figure(figsize=(5, 4), dpi=100)
-    canvas = FigureCanvasTkAgg(fig, master=root)  # A tk.DrawingArea.
-    toolbar = NavigationToolbar2Tk(canvas, root, pack_toolbar=False)
-    canvas.draw()
-    toolbar.update()
+    """
+    button2 = Button(master=my_scale_frame_2, text="Clean", background=elcolor, command=lambda: clean())
+    button2.pack(side=LEFT)
+    button3 = Button(master=my_scale_frame_2, text="create", background=elcolor, command=lambda: create())
+    button3.pack(side=LEFT)
+    """
+
+    def clean():
+        global my_scale_frame_1
+        my_scale_frame_1.destroy()
+
+    def create():
+        global my_scale_frame_1
+        my_scale_frame_1 = LabelFrame(root)
+        my_scale_frame_1.pack(side=BOTTOM)
+        t = np.arange(0, 3, .01)
+        fig = Figure(figsize=(5, 4), dpi=100)
+        fig.add_subplot().plot(t, scale1.get() * np.sin(scale2.get() * np.pi * t))
+        canvas = FigureCanvasTkAgg(fig, master=my_scale_frame_1)
+        toolbar = NavigationToolbar2Tk(canvas, my_scale_frame_1, pack_toolbar=False)
+        toolbar.update()
+        canvas.draw()
+        canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
+        toolbar.pack(side=BOTTOM, fill=X)
 
     def eldraw():
-        t = np.arange(0, 3, .01)
-        canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-        fig.add_subplot().plot(t, scale1.get() * np.sin(scale2.get() * np.pi * t))
+        global my_scale_frame_1
+        global first_time
+        if first_time == 1:
+            create()
+            first_time = 2
+        else:
+            clean()
+            create()
+
 
 def draw_5(self, elcolor):
     global ani
@@ -144,7 +177,6 @@ def draw_5(self, elcolor):
         ax1.set_ylim(-40, 120)
         line, = ax1.plot(xar, yar, 'r', marker='o')
         line2, = ax1.plot(xar2, yar2, 'b', marker='o')
-
 
         def init():
             line.set_ydata(np.ma.array(xar, mask=True))
