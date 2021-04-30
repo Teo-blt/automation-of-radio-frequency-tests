@@ -1,3 +1,13 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# =============================================================================
+# Created By  : Bulteau Téo
+# Created Date: April 23 16:15:00 2021
+# For Kerlik, all rights reserved
+# =============================================================================
+"""The Module Has Been Build for the automation of radio frequency tests"""
+# =============================================================================
+# Imports
 from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk  # ("""FigureCanvasTkAgg,""")
 from matplotlib.figure import Figure
 import numpy as np
@@ -8,6 +18,7 @@ from matplotlib import pyplot as plt
 import matplotlib.animation as animation
 from matplotlib import style
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+# =============================================================================
 
 
 def draw_4(self, elcolor):
@@ -88,6 +99,7 @@ def draw_5(self, elcolor):
     global first_time
     first_time = 1
     b = IntVar()
+    y = IntVar()
     root = tk.Toplevel(self)
     root.title('This is my Draw window')
     root.config(background='#fafafa')
@@ -97,8 +109,7 @@ def draw_5(self, elcolor):
     my_scale_frame = LabelFrame(my_settings_frame, bd=0)  # , text="Scales"
     my_scale_frame.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
     my_scale_frame.config(background='#fafafa')
-    my_auto_scale_frame = LabelFrame(my_settings_frame, bd=0,
-                                     text="my_auto_scale_frame")  # , text="my_auto_scale_frame"
+    my_auto_scale_frame = LabelFrame(my_settings_frame, bd=0)  # , text="my_auto_scale_frame"
     my_auto_scale_frame.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
     my_auto_scale_frame.config(background='#fafafa')
     my_button_frame = LabelFrame(my_settings_frame, bd=0)  # , text="Buttons"
@@ -107,6 +118,46 @@ def draw_5(self, elcolor):
     my_rb_frame = LabelFrame(my_settings_frame, bd=0)  # , text="Choice"
     my_rb_frame.pack(padx=0, pady=0, expand=True, fill="both", side=RIGHT)
     my_rb_frame.config(background='#fafafa')
+
+
+    label = tk.Label(my_auto_scale_frame, text="Settings_chamber", bg="white", font="arial",
+                     fg="black", relief="groove")
+    label.grid(row=0, column=0, ipadx=40, ipady=40, padx=0, pady=0)
+    button16 = tk.Button(my_auto_scale_frame, text="Start",
+                        borderwidth=8, background=elcolor,
+                        activebackground="green", cursor="right_ptr", overrelief="sunken",
+                        command=lambda: [Climate_chamber.init(scale1.get(), 0)])
+    button16.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
+    button17 = tk.Button(my_auto_scale_frame, text="Quit",
+                        borderwidth=8, background=elcolor,
+                        activebackground="green", cursor="right_ptr", overrelief="sunken",
+                        command=lambda: [sys.exit()])
+    button17.grid(row=0, column=2, ipadx=40, ipady=20, padx=0, pady=0)
+    button18 = tk.Button(my_auto_scale_frame, text="Off",
+                        borderwidth=8, background=elcolor,
+                        activebackground="green", cursor="right_ptr", overrelief="sunken",
+                        command=lambda: [Climate_chamber.init(scale1.get(), 1)])
+    button18.grid(row=0, column=3, ipadx=40, ipady=20, padx=0, pady=0)
+    scale1 = Scale(my_auto_scale_frame, orient='vertical', troughcolor=elcolor, from_=100, to=-20,
+                   resolution=1, tickinterval=20, length=100, command=0,
+                   label='temperature_min', state="active")
+    scale1.grid(row=1, column=0, ipadx=40, ipady=40, padx=0, pady=0)
+    scale2 = Scale(my_auto_scale_frame, orient='vertical', troughcolor=elcolor, from_=100, to=-20,
+                   resolution=1, tickinterval=20, length=100, command=0,
+                   label='temperature_max', state="active")
+    scale2.grid(row=2, column=0, ipadx=40, ipady=40, padx=0, pady=0)
+    rb3 = tk.Radiobutton(my_auto_scale_frame, text="mono_cycle",
+                         variable=y, value=0, cursor="right_ptr", command=lambda: [scale3.configure(state="disabled")])
+    rb3.grid(row=1, column=1, ipadx=40, ipady=40, padx=0, pady=0)
+    rb4 = tk.Radiobutton(my_auto_scale_frame, text="multi_cycles",
+                         variable=y, value=1, cursor="right_ptr", command=lambda: [scale3.configure(state="active")])
+    rb4.grid(row=1, column=2, ipadx=40, ipady=40, padx=0, pady=0)
+    scale3 = Scale(my_auto_scale_frame, orient='horizontal', troughcolor=elcolor, from_=0, to=20,
+                   resolution=1, tickinterval=5, length=100, command=0,
+                   label='nomber of cycles', state="disabled", relief="flat")
+    scale3.grid(row=2, column=1, ipadx=40, ipady=40, padx=0, pady=0)
+
+
 
     button12 = tk.Button(my_scale_frame, text="Reset",
                          borderwidth=8, background=elcolor,
@@ -154,13 +205,16 @@ def draw_5(self, elcolor):
                          variable=b, value=1, cursor="right_ptr",
                          indicatoron=1, command=lambda: [my_scale_frame.pack_forget(),
                                                          my_auto_scale_frame.pack(padx=0, pady=0,
-                                                                                  expand=True, fill="both", side=LEFT)])
+                                                                                  expand=True, fill="both", side=LEFT),
+                                                         my_button_frame.pack_forget()])
     rb2.pack(padx=0, pady=0, expand=False, fill="none", side=BOTTOM)
     rb1 = tk.Radiobutton(my_rb_frame, text="Manual",
                          variable=b, value=0, cursor="right_ptr",
                          indicatoron=1, command=lambda: [my_scale_frame.pack(padx=0, pady=0,
                                                                              expand=True, fill="both", side=LEFT),
-                                                         my_auto_scale_frame.pack_forget()])
+                                                         my_auto_scale_frame.pack_forget(),
+                                                         my_button_frame.pack(padx=0, pady=0,
+                                                                              expand=True, fill="both", side=RIGHT)])
     rb1.pack(padx=0, pady=0, expand=False, fill="none", side=BOTTOM)
     rb1.invoke()
 
