@@ -21,7 +21,6 @@ import threading
 
 
 class Mythread(threading.Thread):
-
     def __init__(self, data):  # data = additional data
         threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
         self.data = data  # additional data added to the class
@@ -39,6 +38,7 @@ class Mythread(threading.Thread):
             ################################################################################################
             ## MEASUREMENT Loop
             ################################################################################################
+
             print("\n################################################\n")
             print("\nStart of Test\n")
             time_start = time.time()
@@ -127,7 +127,7 @@ class Mythread(threading.Thread):
         except:
             print("error")
 
-"""# Votsch climatic chamber VT4002
+        """# Votsch climatic chamber VT4002
         
         # Set temperature +80 & mise à ON
         $00E 0080.0 0000.0 0000.0 0000.0 0000.0 0101000000000000
