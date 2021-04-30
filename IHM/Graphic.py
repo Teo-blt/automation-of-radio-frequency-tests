@@ -13,6 +13,9 @@ from matplotlib.figure import Figure
 import numpy as np
 import tkinter as tk
 from tkinter import *
+import threading
+import sys
+import time
 import random
 from matplotlib import pyplot as plt
 import matplotlib.animation as animation
@@ -20,7 +23,23 @@ from matplotlib import style
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from Climate_chamber_control import Climate_chamber
 
+
 # =============================================================================
+class Mythread(threading.Thread):
+    def __init__(self, data):  # data = additional data
+        threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
+        self.data = data  # additional data added to the class
+
+    def run(self):
+        for i in range(0, 100):
+            print("thread ", i)
+            time.sleep(1)  # wait 100 milliseconds without doing anything,  makes the display easier to read
+
+m = Mythread(10)  # build the thread
+m.start()  # lunch the thread,
+
+
+# instruction is executed in milliseconds, whatever the length of the thread
 
 
 def draw_4(self, elcolor):

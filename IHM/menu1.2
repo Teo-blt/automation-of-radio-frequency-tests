@@ -133,9 +133,7 @@ class Application(Tk):
                             activebackground="green", disabledforeground="grey",
                             cursor="right_ptr",
                             overrelief="sunken",
-                            command=lambda: [print(comboexample.current(),
-                                                   comboexample.get()),
-                                             self.interface(comboexample.current())])
+                            command=lambda: [self.interface(comboexample.current())])
         button3.pack(padx=30, pady=10, expand=True, fill="both", side=TOP)
 
     def create_widgets(self):  # creation of a lobby menu
