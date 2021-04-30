@@ -195,12 +195,12 @@ class Application(Tk):
         button11 = tk.Button(my_scale_frame, text="Draw",
                              borderwidth=8, background=elcolor,
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
-                             command=lambda: Graphic.draw_4(self, scale1.get(), scale2.get()))
+                             command=lambda: Graphic.draw_4(self, elcolor))
         button11.pack(padx=30, pady=10, expand=True, fill="both", side=TOP)
         button12 = tk.Button(my_scale_frame, text="Draw.2",
                              borderwidth=8, background=elcolor,
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
-                             command=lambda: Graphic.draw_5(self, elcolor, scale1, scale2))
+                             command=lambda: Graphic.draw_5(self, elcolor))
         button12.pack(padx=30, pady=10, expand=True, fill="both", side=TOP)
 
     def clear(self, get_tilte):

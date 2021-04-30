@@ -12,6 +12,8 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
 def draw_4(self, elcolor):
+    global scale1
+    global scale2
     a = IntVar()
     f = IntVar()
     root = tk.Toplevel(self)
@@ -20,7 +22,7 @@ def draw_4(self, elcolor):
     my_scale_frame_2.pack()
     scale1 = Scale(my_scale_frame_2, orient='vertical', variable=a, troughcolor=elcolor, from_=100, to=0,
                    resolution=1, tickinterval=25, length=100,
-                   command=lambda: [eldraw(scale1, scale2)],
+                   command=lambda x: eldraw(),
                    label='amplitude', state="active")
     scale1.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
     scale1.set(1)
@@ -28,7 +30,7 @@ def draw_4(self, elcolor):
     amplitude.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
     scale2 = Scale(my_scale_frame_2, orient='vertical', variable=f, troughcolor=elcolor, from_=10, to=0,
                    resolution=1, tickinterval=1, length=100,
-                   command=lambda: [eldraw(scale1, scale2)],
+                   command=lambda x: eldraw(),
                    label='frequency', state="active")
     scale2.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
     scale2.set(1)
@@ -42,7 +44,7 @@ def draw_4(self, elcolor):
     canvas.draw()
     toolbar.update()
 
-    def eldraw(scale1, scale2):
+    def eldraw():
         t = np.arange(0, 3, .01)
         canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
         fig.add_subplot().plot(t, scale1.get() * np.sin(scale2.get() * np.pi * t))
