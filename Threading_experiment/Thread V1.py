@@ -19,7 +19,7 @@ class Mythread(threading.Thread):
 
 
 m = Mythread(10)  # build the thread
-m.start()  # lunch the thread,
+#m.start()  # lunch the thread,
 
 
 # instruction is executed in milliseconds, whatever the length of the thread
@@ -55,6 +55,11 @@ class Climate(Tk):
                             activebackground="green", cursor="right_ptr", overrelief="sunken",
                             command=lambda: [print("2")])
         button3.grid(row=0, column=3, ipadx=40, ipady=20, padx=0, pady=0)
+        button4 = tk.Button(my_settings_chamber_frame, text="Thread",
+                            borderwidth=8, background=elcolor,
+                            activebackground="green", cursor="right_ptr", overrelief="sunken",
+                            command=lambda: [m.start()])
+        button4.grid(row=0, column=3, ipadx=40, ipady=20, padx=0, pady=0)
         scale1 = Scale(my_settings_chamber_frame, orient='vertical', troughcolor=elcolor, from_=100, to=-20,
                        resolution=1, tickinterval=20, length=100, command=0,
                        label='temperature_min', state="active")
