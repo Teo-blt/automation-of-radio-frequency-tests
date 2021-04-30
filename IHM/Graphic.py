@@ -18,6 +18,8 @@ from matplotlib import pyplot as plt
 import matplotlib.animation as animation
 from matplotlib import style
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from Climate_chamber_control import Climate_chamber
+
 # =============================================================================
 
 
@@ -119,24 +121,23 @@ def draw_5(self, elcolor):
     my_rb_frame.pack(padx=0, pady=0, expand=True, fill="both", side=RIGHT)
     my_rb_frame.config(background='#fafafa')
 
-
     label = tk.Label(my_auto_scale_frame, text="Settings_chamber", bg="white", font="arial",
                      fg="black", relief="groove")
     label.grid(row=0, column=0, ipadx=40, ipady=40, padx=0, pady=0)
     button16 = tk.Button(my_auto_scale_frame, text="Start",
-                        borderwidth=8, background=elcolor,
-                        activebackground="green", cursor="right_ptr", overrelief="sunken",
-                        command=lambda: [Climate_chamber.init(scale1.get(), 0)])
+                         borderwidth=8, background=elcolor,
+                         activebackground="green", cursor="right_ptr", overrelief="sunken",
+                         command=lambda: [Climate_chamber.init(scale1.get(), 0)])
     button16.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
     button17 = tk.Button(my_auto_scale_frame, text="Quit",
-                        borderwidth=8, background=elcolor,
-                        activebackground="green", cursor="right_ptr", overrelief="sunken",
-                        command=lambda: [sys.exit()])
+                         borderwidth=8, background=elcolor,
+                         activebackground="green", cursor="right_ptr", overrelief="sunken",
+                         command=lambda: [sys.exit()])
     button17.grid(row=0, column=2, ipadx=40, ipady=20, padx=0, pady=0)
     button18 = tk.Button(my_auto_scale_frame, text="Off",
-                        borderwidth=8, background=elcolor,
-                        activebackground="green", cursor="right_ptr", overrelief="sunken",
-                        command=lambda: [Climate_chamber.init(scale1.get(), 1)])
+                         borderwidth=8, background=elcolor,
+                         activebackground="green", cursor="right_ptr", overrelief="sunken",
+                         command=lambda: [Climate_chamber.init(scale1.get(), 1)])
     button18.grid(row=0, column=3, ipadx=40, ipady=20, padx=0, pady=0)
     scale1 = Scale(my_auto_scale_frame, orient='vertical', troughcolor=elcolor, from_=100, to=-20,
                    resolution=1, tickinterval=20, length=100, command=0,
@@ -156,8 +157,6 @@ def draw_5(self, elcolor):
                    resolution=1, tickinterval=5, length=100, command=0,
                    label='nomber of cycles', state="disabled", relief="flat")
     scale3.grid(row=2, column=1, ipadx=40, ipady=40, padx=0, pady=0)
-
-
 
     button12 = tk.Button(my_scale_frame, text="Reset",
                          borderwidth=8, background=elcolor,
@@ -278,10 +277,9 @@ def draw_5(self, elcolor):
         plotcanvas = FigureCanvasTkAgg(fig, root)
         plotcanvas.get_tk_widget().grid(column=0, row=0)
 
-
         if first_time == 1:
             first_time = first_time + 1
-        elif(first_time % 2) == 0:
+        elif (first_time % 2) == 0:
             toolbar = NavigationToolbar2Tk(plotcanvas, my_button_frame)
             toolbar.update()
             toolbar.pack(side=BOTTOM, fill=X)
