@@ -332,8 +332,8 @@ def draw_6(self, elcolor, temperature_min, temperature_max,
                        temperature_max_duration_h + temperature_min_duration_h +
                        var + change_min_duration_h + change_min_duration_h):
             data[i] = temperature_min
-        var = var + temperature_max_duration_h + temperature_min_duration_h + \
-              change_min_duration_h + change_min_duration_h
+        var = var + temperature_max_duration_h + temperature_min_duration_h + change_min_duration_h + \
+              change_min_duration_h
 
     print(data)
     names = list(data.keys())
