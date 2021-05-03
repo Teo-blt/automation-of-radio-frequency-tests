@@ -132,7 +132,7 @@ def draw_5(self, elcolor):
     button18 = tk.Button(my_auto_scale_frame, text="Off",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [Climate_chamber.Mythread(0, 0, 0, 0, 0, 1).start()])
+                         command=lambda: [Climate_chamber.off()])
     button18.grid(row=0, column=3, ipadx=40, ipady=20, padx=0, pady=0)
     button19 = tk.Button(my_auto_scale_frame, text="Simulation",
                          borderwidth=8, background=elcolor,
@@ -143,7 +143,7 @@ def draw_5(self, elcolor):
     button20 = tk.Button(my_auto_scale_frame, text="request",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [Climate_chamber.read()])
+                         command=lambda: [Climate_chamber.read(), print()])
     button20.grid(row=2, column=3, ipadx=40, ipady=20, padx=0, pady=0)
     scale1 = Scale(my_auto_scale_frame, orient='vertical', troughcolor=elcolor, from_=120, to=-40,
                    resolution=1, tickinterval=20, length=100, command=0,
