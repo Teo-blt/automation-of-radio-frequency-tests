@@ -24,15 +24,15 @@ from Climate_chamber_control import Climate_chamber
 # =============================================================================
 
 
-def draw_4(self, elcolor, scales):
+def draw_4(self, elcolor):
     global my_scale_frame_1
     global first_time
-
     first_time = 1
     root = tk.Toplevel(self)
     root.wm_title("Embedding in Tk")
     my_scale_frame_2 = LabelFrame(root)
     my_scale_frame_2.pack()
+
     def clean():
         global my_scale_frame_1
         my_scale_frame_1.destroy()
@@ -88,15 +88,6 @@ def draw_4(self, elcolor, scales):
     button1 = Button(master=my_scale_frame_2, text="Quit", background=elcolor, command=lambda: root.destroy())
     button1.pack(side=LEFT)
 
-    if scales == 1:
-        scale1.pack_forget()
-        amplitude.pack_forget()
-        scale2.pack_forget()
-        frequency.pack_forget()
-        eldraw()
-
-
-
 
 def draw_5(self, elcolor):
     global ani
@@ -104,7 +95,6 @@ def draw_5(self, elcolor):
     global first_time
     first_time = 1
     b = IntVar()
-    y = IntVar()
     root = tk.Toplevel(self)
     root.title('Draw window')
     root.config(background='#fafafa')
@@ -146,7 +136,8 @@ def draw_5(self, elcolor):
     button18 = tk.Button(my_auto_scale_frame, text="Simulation",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [draw_4(self, elcolor, 1)])
+                         command=lambda: [draw_6(self, elcolor, scale1.get(), scale2.get(),
+                                                 scale3.get(), scale4.get(), scale5.get())])
     button18.grid(row=1, column=3, ipadx=40, ipady=20, padx=0, pady=0)
     scale1 = Scale(my_auto_scale_frame, orient='vertical', troughcolor=elcolor, from_=120, to=-40,
                    resolution=1, tickinterval=20, length=100, command=0,
@@ -168,7 +159,7 @@ def draw_5(self, elcolor):
     scale5.set(1)
     scale3 = Scale(my_auto_scale_frame, orient='horizontal', troughcolor=elcolor, from_=1, to=20,
                    resolution=1, tickinterval=5, length=100, command=0,
-                   label='number of cycles', state="active", relief="flat")
+                   label='number_of_cycles', state="active", relief="flat")
     scale3.grid(row=2, column=2, ipadx=30, ipady=0, padx=0, pady=0)
     scale3.set(1)
     button12 = tk.Button(my_scale_frame, text="Reset",
@@ -306,6 +297,39 @@ def draw_5(self, elcolor):
         return [ani, ani2]
 
     root.mainloop()
+
+
+def draw_6(self, elcolor, temperature_min, temperature_max,
+           number_of_cycles, temperature_min_duration_h, temperature_max_duration_h):
+    root = tk.Toplevel(self)
+    root.wm_title("Embedding in Tk")
+    my_draw_6_frame_2 = LabelFrame(root)
+    my_draw_6_frame_2.pack()
+    my_draw_6_frame_1 = LabelFrame(root)
+    my_draw_6_frame_1.pack(side=BOTTOM)
+    data = {}
+    data[0] = 0
+    var = 0
+    for p in range(0, number_of_cycles):
+        for i in range(1 + var, temperature_max_duration_h + var):
+            data[i] = temperature_max
+        for i in range(temperature_max_duration_h + var, temperature_max_duration_h + temperature_min_duration_h + var):
+            data[i] = temperature_min
+        var = var + temperature_max_duration_h + temperature_min_duration_h
+
+    print(data)
+    names = list(data.keys())
+    values = list(data.values())
+    fig = Figure(figsize=(5, 4), dpi=100)
+    fig.add_subplot().plot(names, values)
+    canvas = FigureCanvasTkAgg(fig, master=my_draw_6_frame_1)
+    toolbar = NavigationToolbar2Tk(canvas, my_draw_6_frame_1, pack_toolbar=False)
+    toolbar.update()
+    canvas.draw()
+    canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
+    toolbar.pack(side=BOTTOM, fill=X)
+    button1 = Button(master=my_draw_6_frame_2, text="Quit", background=elcolor, command=lambda: root.destroy())
+    button1.pack(side=LEFT)
 
 
 """"
