@@ -24,7 +24,7 @@ from Climate_chamber_control import Climate_chamber
 # =============================================================================
 
 
-def draw_4(self, elcolor):
+def draw_4(self, elcolor, scales):
     global my_scale_frame_1
     global first_time
 
@@ -33,34 +33,6 @@ def draw_4(self, elcolor):
     root.wm_title("Embedding in Tk")
     my_scale_frame_2 = LabelFrame(root)
     my_scale_frame_2.pack()
-
-    def enter(event):
-        eldraw()
-        print("a")
-
-    a = IntVar()
-    f = IntVar()
-    root.bind("<Return>", enter)
-
-    scale1 = Scale(my_scale_frame_2, orient='vertical', variable=a, from_=100, to=0,
-                   resolution=1, tickinterval=25, length=100, troughcolor=elcolor,
-                   command=lambda x: eldraw(),
-                   label='amplitude', state="active")
-    scale1.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
-    scale1.set(1)
-    amplitude = Entry(my_scale_frame_2, validate="all", textvariable=a)
-    amplitude.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
-    scale2 = Scale(my_scale_frame_2, orient='vertical', variable=f, from_=10, to=0,
-                   resolution=1, tickinterval=1, length=100, troughcolor=elcolor,
-                   command=lambda x: eldraw(),
-                   label='frequency', state="active")
-    scale2.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
-    scale2.set(1)
-    frequency = Entry(my_scale_frame_2, validate="all", textvariable=f)
-    frequency.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
-    button1 = Button(master=my_scale_frame_2, text="Quit", background=elcolor, command=lambda: root.destroy())
-    button1.pack(side=LEFT)
-
     def clean():
         global my_scale_frame_1
         my_scale_frame_1.destroy()
@@ -89,6 +61,42 @@ def draw_4(self, elcolor):
             clean()
             create()
 
+    def enter(event):
+        eldraw()
+        print("a")
+
+    a = IntVar()
+    f = IntVar()
+    root.bind("<Return>", enter)
+
+    scale1 = Scale(my_scale_frame_2, orient='vertical', variable=a, from_=100, to=0,
+                   resolution=1, tickinterval=25, length=100, troughcolor=elcolor,
+                   command=lambda x: eldraw(),
+                   label='amplitude', state="active")
+    scale1.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
+    scale1.set(1)
+    amplitude = Entry(my_scale_frame_2, validate="all", textvariable=a)
+    amplitude.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
+    scale2 = Scale(my_scale_frame_2, orient='vertical', variable=f, from_=10, to=0,
+                   resolution=1, tickinterval=1, length=100, troughcolor=elcolor,
+                   command=lambda x: eldraw(),
+                   label='frequency', state="active")
+    scale2.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
+    scale2.set(1)
+    frequency = Entry(my_scale_frame_2, validate="all", textvariable=f)
+    frequency.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
+    button1 = Button(master=my_scale_frame_2, text="Quit", background=elcolor, command=lambda: root.destroy())
+    button1.pack(side=LEFT)
+
+    if scales == 1:
+        scale1.pack_forget()
+        amplitude.pack_forget()
+        scale2.pack_forget()
+        frequency.pack_forget()
+        eldraw()
+
+
+
 
 def draw_5(self, elcolor):
     global ani
@@ -98,7 +106,7 @@ def draw_5(self, elcolor):
     b = IntVar()
     y = IntVar()
     root = tk.Toplevel(self)
-    root.title('This is my Draw window')
+    root.title('Draw window')
     root.config(background='#fafafa')
     my_settings_frame = LabelFrame(root, text="Settings")
     my_settings_frame.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
@@ -122,7 +130,8 @@ def draw_5(self, elcolor):
     button16 = tk.Button(my_auto_scale_frame, text="Start",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [Climate_chamber.Mythread(scale1.get(),0).start()])
+                         command=lambda: [Climate_chamber.Mythread(scale1.get(),
+                                                                   scale2.get(), 0, 1, 1, scale3.get()).start()])
     button16.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
     button17 = tk.Button(my_auto_scale_frame, text="Quit",
                          borderwidth=8, background=elcolor,
@@ -132,27 +141,36 @@ def draw_5(self, elcolor):
     button18 = tk.Button(my_auto_scale_frame, text="Off",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [Climate_chamber.Mythread(0,1).start()])
+                         command=lambda: [Climate_chamber.Mythread(0, 0, 1, 0, 0, 0).start()])
     button18.grid(row=0, column=3, ipadx=40, ipady=20, padx=0, pady=0)
-    scale1 = Scale(my_auto_scale_frame, orient='vertical', troughcolor=elcolor, from_=100, to=-20,
+    button18 = tk.Button(my_auto_scale_frame, text="Simulation",
+                         borderwidth=8, background=elcolor,
+                         activebackground="green", cursor="right_ptr", overrelief="sunken",
+                         command=lambda: [draw_4(self, elcolor, 1)])
+    button18.grid(row=1, column=3, ipadx=40, ipady=20, padx=0, pady=0)
+    scale1 = Scale(my_auto_scale_frame, orient='vertical', troughcolor=elcolor, from_=120, to=-40,
                    resolution=1, tickinterval=20, length=100, command=0,
                    label='temperature_min', state="active")
-    scale1.grid(row=1, column=0, ipadx=40, ipady=40, padx=0, pady=0)
-    scale2 = Scale(my_auto_scale_frame, orient='vertical', troughcolor=elcolor, from_=100, to=-20,
+    scale1.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+    scale2 = Scale(my_auto_scale_frame, orient='vertical', troughcolor=elcolor, from_=120, to=-40,
                    resolution=1, tickinterval=20, length=100, command=0,
                    label='temperature_max', state="active")
-    scale2.grid(row=2, column=0, ipadx=40, ipady=40, padx=0, pady=0)
-    rb3 = tk.Radiobutton(my_auto_scale_frame, text="mono_cycle",
-                         variable=y, value=0, cursor="right_ptr", command=lambda: [scale3.configure(state="disabled")])
-    rb3.grid(row=1, column=1, ipadx=40, ipady=40, padx=0, pady=0)
-    rb4 = tk.Radiobutton(my_auto_scale_frame, text="multi_cycles",
-                         variable=y, value=1, cursor="right_ptr", command=lambda: [scale3.configure(state="active")])
-    rb4.grid(row=1, column=2, ipadx=40, ipady=40, padx=0, pady=0)
-    scale3 = Scale(my_auto_scale_frame, orient='horizontal', troughcolor=elcolor, from_=0, to=20,
+    scale2.grid(row=2, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+    scale4 = Scale(my_auto_scale_frame, orient='horizontal', troughcolor=elcolor, from_=0, to=20,
+                   resolution=1, tickinterval=20, length=100, command=0,
+                   label='temperature_min_duration_h', state="active")
+    scale4.grid(row=1, column=1, ipadx=30, ipady=0, padx=0, pady=0)
+    scale4.set(1)
+    scale5 = Scale(my_auto_scale_frame, orient='horizontal', troughcolor=elcolor, from_=0, to=20,
+                   resolution=1, tickinterval=20, length=100, command=0,
+                   label='temperature_max_duration_h', state="active")
+    scale5.grid(row=2, column=1, ipadx=30, ipady=0, padx=0, pady=0)
+    scale5.set(1)
+    scale3 = Scale(my_auto_scale_frame, orient='horizontal', troughcolor=elcolor, from_=1, to=20,
                    resolution=1, tickinterval=5, length=100, command=0,
-                   label='nomber of cycles', state="disabled", relief="flat")
-    scale3.grid(row=2, column=1, ipadx=40, ipady=40, padx=0, pady=0)
-
+                   label='number of cycles', state="active", relief="flat")
+    scale3.grid(row=2, column=2, ipadx=30, ipady=0, padx=0, pady=0)
+    scale3.set(1)
     button12 = tk.Button(my_scale_frame, text="Reset",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
@@ -231,7 +249,7 @@ def draw_5(self, elcolor):
         line, = ax1.plot(xar, yar, 'r', marker='o')
         line2, = ax1.plot(xar2, yar2, 'b', marker='o')
 
-        def Clean():
+        def clean():
             global toolbar
             toolbar.pack_forget()
 
@@ -280,7 +298,7 @@ def draw_5(self, elcolor):
             toolbar.pack(side=BOTTOM, fill=X)
             first_time = first_time + 1
         else:
-            Clean()
+            clean()
             first_time = first_time + 1
 
         ani = animation.FuncAnimation(fig, animate, interval=(scale_root_3.get() * 1000), blit=False, init_func=init)
@@ -324,43 +342,7 @@ def draw_2(self):
         if flag == 0:  # for only one loop
             flag = 1
         move()
-
-    my_graphic_frame_2 = LabelFrame(self, text="Graphic")
-    my_graphic_frame_2.grid(row=0, column=3, ipadx=40, ipady=5, padx=0, pady=0)
-    can1 = Canvas(my_graphic_frame_2, bg='dark grey', height=250, width=250)
-    can1.pack(side=LEFT, padx=5, pady=5)
-    oval1 = can1.create_oval(x1, y1, x1 + 30, y1 + 30, width=2, fill='red')
-    bou1 = Button(my_graphic_frame_2, text='Quit', width=8, command=my_graphic_frame_2.destroy)
-    bou1.pack(side=BOTTOM)
-    bou2 = Button(my_graphic_frame_2, text='Start', width=8, command=start_it)
-    bou2.pack()
-    bou3 = Button(my_graphic_frame_2, text='Stop', width=8, command=stop_it)
-    bou3.pack()
     ====================================================================
-def draw_3(self)
-    my_graphic_frame_2 = LabelFrame(self, text="Graphic")
-    my_graphic_frame_2.grid(row=0, column=3, ipadx=40, ipady=5, padx=0, pady=0)
-    canv = Canvas(my_graphic_frame_2, bg="white", height=200, width=200)
-    canv.pack()
-    oval = (0, 0, 200, 200)
-    line1 = (0, 0, 200, 200)
-    line2 = (0, 200, 200, 0)
-    canv.create_oval(oval, outline="red", width=10)
-    canv.create_line(line1, fill="black", width=10)
-    canv.create_line(line2, fill="black", width=10)
-    canv.create_rectangle((0, 0), (200, 200),
-                          fill="cyan", outline="blue", width=5)
-
-    canv.create_oval((0, 0), (200, 200),
-                     fill="pink", outline="red", width=3)
-
-    canv.create_line((0, 0), (180, 100), (200, 200),
-                     fill="gray", width=3, dash=(8, 4))
-
-    canv.create_line((0, 0), (180, 100), (200, 200),
-                     fill="black", width=5, smooth=True,
-                     arrow="last", arrowshape=(30, 45, 15))
-=================================================================
 def draw_1(self, small_width, small_height):
     global chain
     my_graphic_frame_1 = LabelFrame(self, text="Graphic")

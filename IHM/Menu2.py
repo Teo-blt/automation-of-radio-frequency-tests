@@ -175,7 +175,7 @@ class Application(Tk):
         button11 = tk.Button(my_scale_frame, text="Draw",
                              borderwidth=8, background=elcolor,
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
-                             command=lambda: Graphic.draw_4(self, elcolor))
+                             command=lambda: Graphic.draw_4(self, elcolor, 0))
         button11.pack(padx=10, pady=0,ipadx=40, ipady=10, expand=False, fill="none", side=RIGHT)
 
     def clear(self, get_tilte):

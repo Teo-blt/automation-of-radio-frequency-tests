@@ -1,11 +1,11 @@
 ################################################################################################
-## Climatic chamber control
-## 29/06/2020
-## File status: OK
+# Climatic chamber control
+# 29/06/2020
+# File status: OK
 ################################################################################################
 
 ################################################
-##### Cycle SETTINGS
+# Cycle SETTINGS
 ################################################
 
 
@@ -16,28 +16,39 @@ import sys
 import threading
 
 CLIMATIC_CHAMBER_STOP = b"$00E 0020.0 0000.0 0000.0 0000.0 0000.0 0000000000000000\n\r"
+SET_TEMP_MIN = b"$00E %06.1f 0000.0 0000.0 0000.0 0000.0 0101000000000000\n\r"
+SET_TEMP_MAX = b"$00E %06.1f 0000.0 0000.0 0000.0 0000.0 0101000000000000\n\r"
 
 
 class Mythread(threading.Thread):
-    def __init__(self, temp_min, OOF):  # data = additional data
+    def __init__(self, temp_min, temp_max, oof, temp_min_duration_h,
+                 temp_max_duration_h, nb_cycle):  # data = additional data
         threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
         self.temp_min = temp_min  # additional data added to the class
-        self.OOF = OOF
+        self.temp_max = temp_max
+        self.temp_min_duration_h = temp_min_duration_h
+        self.temp_max_duration_h = temp_max_duration_h
+        self.nb_cycle = nb_cycle
+        self.oof = oof
 
     def run(self):
         try:
             # sys.path.append('\\\\samba\\share\\projet\\e2b\\hardware\\Scripts_auto\\Python\\lib')
-            print(self)
             print(self.temp_min)
-            print(self.OOF)
+            print(self.temp_max)
+            print(self.temp_min_duration_h)
+            print(self.temp_max_duration_h)
+            print(self.nb_cycle)
+            print(self.oof)
+
             ################################################
-            ##### VISA instrument
+            # VISA instrument
             serial_speed = 9600
             serial_timeout = 5
-            VT = serial.Serial('COM11', serial_speed, timeout=serial_timeout)
+            vt = serial.Serial('COM11', serial_speed, timeout=serial_timeout)
 
             ################################################################################################
-            ## MEASUREMENT Loop
+            # MEASUREMENT Loop
             ################################################################################################
 
             print("\n################################################\n")
@@ -46,23 +57,16 @@ class Mythread(threading.Thread):
 
             # ToDo : Display cycles carac
 
-            temp_min_duration_h = 1
-
-            temp_max = 20
-            temp_max_duration_h = 1
-
             change_min_duration_h = 1
 
-            nb_cycle = 20
-
-            if self.OOF:
-                VT.write(CLIMATIC_CHAMBER_STOP)
+            if self.oof:
+                vt.write(CLIMATIC_CHAMBER_STOP)
                 quit(code=self.run)
 
-            for i in range(0, nb_cycle):
-                VT.write(b"$00I\n\r")
+            for i in range(0, self.nb_cycle):
+                vt.write(b"$00I\n\r")
                 time.sleep(0.5)
-                received_frame = VT.read_all().decode('utf-8')
+                received_frame = vt.read_all().decode('utf-8')
                 print(received_frame)
                 print("\n")
                 # ToDo print actual temp
@@ -71,47 +75,47 @@ class Mythread(threading.Thread):
                 print(f'Start cycle {i} low temp:\n')
 
                 # Set Temp Min
-                VT.write(b"$00E %06.1f 0000.0 0000.0 0000.0 0000.0 0101000000000000\n\r" % self.temp_min)
+                vt.write(SET_TEMP_MIN % self.temp_min)
                 time.sleep(2)
 
                 # Wait temperature stabilisation
                 change_cycle_start_time = time.time()
                 while time.time() <= change_cycle_start_time + change_min_duration_h * 3600:
                     # Read temp every 5 min
-                    VT.write(b"$00I\n\r")
-                    received_frame = VT.read_all().decode('utf-8')
+                    vt.write(b"$00I\n\r")
+                    received_frame = vt.read_all().decode('utf-8')
                     print(received_frame)
                     print("\n")
                     time.sleep(5 * 60)
 
                 low_cycle_start_time = time.time()
-                while time.time() < low_cycle_start_time + (temp_min_duration_h * 3600):
+                while time.time() < low_cycle_start_time + (self.temp_min_duration_h * 3600):
                     # Read temp every 5 min
-                    VT.write(b"$00I\n\r")
-                    received_frame = VT.read_all().decode('utf-8')
+                    vt.write(b"$00I\n\r")
+                    received_frame = vt.read_all().decode('utf-8')
                     print(received_frame)
                     print("\n")
                     time.sleep(5 * 60)
 
                 print(f'Start cycle {i} High temp:\n')
                 # Set Temp Max
-                VT.write(b"$00E %06.1f 0000.0 0000.0 0000.0 0000.0 0101000000000000\n\r" % temp_max)
+                vt.write(SET_TEMP_MAX % self.temp_max)
                 time.sleep(2)
 
                 change_cycle_start_time = time.time()
                 while time.time() < change_cycle_start_time + (change_min_duration_h * 3600):
                     # Read temp every 5 min
-                    VT.write(b"$00I\n\r")
-                    received_frame = VT.read_all().decode('utf-8')
+                    vt.write(b"$00I\n\r")
+                    received_frame = vt.read_all().decode('utf-8')
                     print(received_frame)
                     print("\n")
                     time.sleep(5 * 60)
 
                 high_cycle_start_time = time.time()
-                while time.time() < high_cycle_start_time + (temp_max_duration_h * 3600):
+                while time.time() < high_cycle_start_time + (self.temp_max_duration_h * 3600):
                     # Read temp every 5 min
-                    VT.write(b"$00I\n\r")
-                    received_frame = VT.read_all().decode('utf-8')
+                    vt.write(b"$00I\n\r")
+                    received_frame = vt.read_all().decode('utf-8')
                     print(received_frame)
                     print("\n")
                     time.sleep(5 * 60)
@@ -119,15 +123,16 @@ class Mythread(threading.Thread):
                 print(f'End of cycle {i}: {time.time() - time_start}\n')
 
             # Stop climatic chamber
-            VT.write(CLIMATIC_CHAMBER_STOP)
+            vt.write(CLIMATIC_CHAMBER_STOP)
 
             time_stop = time.time()
             print("\n################################################\n")
             print("\nEnd of Test\n")
             print(f'Test duration: {time_stop - time_start}\n')
-            VT.close()
+            vt.close()
         except:
             print("error")
+
 
 """
 for i in range(0, 10):
