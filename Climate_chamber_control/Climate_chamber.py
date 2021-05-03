@@ -12,7 +12,6 @@
 # import visa
 import serial  # requirment pyserial
 import time
-import sys
 import threading
 
 CLIMATIC_CHAMBER_STOP = b"$00E 0020.0 0000.0 0000.0 0000.0 0000.0 0000000000000000\n\r"
@@ -62,7 +61,6 @@ class Mythread(threading.Thread):
             if self.oof:
                 vt.write(CLIMATIC_CHAMBER_STOP)
                 quit(code=self.run)
-
 
             for i in range(0, self.nb_cycle):
                 vt.write(b"$00I\n\r")
@@ -133,6 +131,7 @@ class Mythread(threading.Thread):
             vt.close()
         except:
             print("error")
+
 
 def read():
     serial_speed = 9600

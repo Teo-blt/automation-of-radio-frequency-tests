@@ -323,14 +323,17 @@ def draw_6(self, elcolor, temperature_min, temperature_max,
     data[0] = 0
     temperature_max_duration_h = temperature_max_duration_h + 1
     temperature_min_duration_h = temperature_min_duration_h + 1
+    change_min_duration_h = (change_min_duration_h - 1)
     var = 1
     for p in range(0, number_of_cycles):
-        for i in range(var, temperature_max_duration_h + var):
+        for i in range(var + change_min_duration_h, temperature_max_duration_h + var + change_min_duration_h):
             data[i] = temperature_max
-        for i in range(temperature_max_duration_h + var,
-                       temperature_max_duration_h + temperature_min_duration_h + var):
+        for i in range(temperature_max_duration_h + var + change_min_duration_h + change_min_duration_h,
+                       temperature_max_duration_h + temperature_min_duration_h +
+                       var + change_min_duration_h + change_min_duration_h):
             data[i] = temperature_min
-        var = var + temperature_max_duration_h + temperature_min_duration_h
+        var = var + temperature_max_duration_h + temperature_min_duration_h + \
+              change_min_duration_h + change_min_duration_h
 
     print(data)
     names = list(data.keys())
