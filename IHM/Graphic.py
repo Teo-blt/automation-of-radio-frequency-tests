@@ -121,7 +121,7 @@ def draw_5(self, elcolor):
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
                          command=lambda: [Climate_chamber.Mythread(scale1.get(), scale2.get(),
-                                                                   scale4.get(), scale5.get(), scale6.get(),
+                                                                   scale4.get(), scale5.get(),
                                                                    scale3.get(), 0).start()])
     button16.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
     button17 = tk.Button(my_auto_scale_frame, text="Quit",
@@ -132,13 +132,13 @@ def draw_5(self, elcolor):
     button18 = tk.Button(my_auto_scale_frame, text="Off",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [Climate_chamber.Mythread(0, 0, 0, 0, 0, 0, 1).start()])
+                         command=lambda: [Climate_chamber.Mythread(0, 0, 0, 0, 0, 1).start()])
     button18.grid(row=0, column=3, ipadx=40, ipady=20, padx=0, pady=0)
     button19 = tk.Button(my_auto_scale_frame, text="Simulation",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
                          command=lambda: [draw_6(self, elcolor, scale1.get(), scale2.get(),
-                                                 scale3.get(), scale4.get(), scale5.get(), scale6.get())])
+                                                 scale3.get(), scale4.get(), scale5.get())])
     button19.grid(row=1, column=3, ipadx=40, ipady=20, padx=0, pady=0)
     button20 = tk.Button(my_auto_scale_frame, text="request",
                          borderwidth=8, background=elcolor,
@@ -169,10 +169,6 @@ def draw_5(self, elcolor):
                    resolution=1, tickinterval=5, length=100, command=0,
                    label='number_of_cycles', state="active", relief="flat")
     scale3.grid(row=2, column=2, ipadx=30, ipady=0, padx=0, pady=0)
-    scale6 = Scale(my_auto_scale_frame, orient='horizontal', troughcolor=elcolor, from_=1, to=3,
-                   resolution=1, tickinterval=1, length=100, command=0,
-                   label='change_min_duration_h', state="active", relief="flat")
-    scale6.grid(row=1, column=2, ipadx=30, ipady=0, padx=0, pady=0)
     scale3.set(1)
     button12 = tk.Button(my_scale_frame, text="Reset",
                          borderwidth=8, background=elcolor,
@@ -221,7 +217,7 @@ def draw_5(self, elcolor):
                          indicatoron=1, command=lambda: [my_scale_frame.pack_forget(),
                                                          my_auto_scale_frame.pack(padx=0, pady=0,
                                                                                   expand=True, fill="both", side=LEFT),
-                                                         my_button_frame.pack_forget()])
+                                                         my_button_frame.pack_forget(), display()])
     rb2.pack(padx=0, pady=0, expand=False, fill="none", side=BOTTOM)
     rb1 = tk.Radiobutton(my_rb_frame, text="Manual",
                          variable=b, value=0, cursor="right_ptr",
@@ -232,6 +228,14 @@ def draw_5(self, elcolor):
                                                                               expand=True, fill="both", side=RIGHT)])
     rb1.pack(padx=0, pady=0, expand=False, fill="none", side=BOTTOM)
     rb1.invoke()
+
+    def display():
+        style.use('ggplot')
+        fig = plt.figure(figsize=(10, 4.5), dpi=100)
+        ax1 = fig.add_subplot(1, 1, 1)
+        ax1.set_ylim(-40, 120)
+        plotcanvas = FigureCanvasTkAgg(fig, root)
+        plotcanvas.get_tk_widget().grid(column=0, row=0)
 
     def eldraw2(scale_root_3):
         global ani
@@ -312,7 +316,7 @@ def draw_5(self, elcolor):
 
 
 def draw_6(self, elcolor, temperature_min, temperature_max,
-           number_of_cycles, temperature_min_duration_h, temperature_max_duration_h, change_min_duration_h):
+           number_of_cycles, temperature_min_duration_h, temperature_max_duration_h):
     root = tk.Toplevel(self)
     root.wm_title("Embedding in Tk")
     my_draw_6_frame_2 = LabelFrame(root)
@@ -323,17 +327,15 @@ def draw_6(self, elcolor, temperature_min, temperature_max,
     data[0] = 0
     temperature_max_duration_h = temperature_max_duration_h + 1
     temperature_min_duration_h = temperature_min_duration_h + 1
-    change_min_duration_h = (change_min_duration_h - 1)
     var = 1
     for p in range(0, number_of_cycles):
-        for i in range(var + change_min_duration_h, temperature_max_duration_h + var + change_min_duration_h):
+        for i in range(var, temperature_max_duration_h + var):
             data[i] = temperature_max
-        for i in range(temperature_max_duration_h + var + change_min_duration_h + change_min_duration_h,
+        for i in range(temperature_max_duration_h + var,
                        temperature_max_duration_h + temperature_min_duration_h +
-                       var + change_min_duration_h + change_min_duration_h):
+                       var):
             data[i] = temperature_min
-        var = var + temperature_max_duration_h + temperature_min_duration_h + change_min_duration_h + \
-              change_min_duration_h
+        var = var + temperature_max_duration_h + temperature_min_duration_h
 
     print(data)
     names = list(data.keys())

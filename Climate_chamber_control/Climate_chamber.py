@@ -21,13 +21,13 @@ SET_TEMP_MAX = b"$00E %06.1f 0000.0 0000.0 0000.0 0000.0 0101000000000000\n\r"
 
 class Mythread(threading.Thread):
     def __init__(self, temp_min, temp_max, temp_min_duration_h,
-                 temp_max_duration_h, change_min_duration_h, nb_cycle, oof):  # data = additional data
+                 temp_max_duration_h, nb_cycle, oof):  # data = additional data
         threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
         self.temp_min = temp_min  # additional data added to the class
         self.temp_max = temp_max
         self.temp_min_duration_h = temp_min_duration_h
         self.temp_max_duration_h = temp_max_duration_h
-        self.change_min_duration_h = change_min_duration_h
+        self.change_min_duration_h = 1
         self.nb_cycle = nb_cycle
         self.oof = oof
 
@@ -39,7 +39,6 @@ class Mythread(threading.Thread):
                 print(self.temp_max)
                 print(self.temp_min_duration_h)
                 print(self.temp_max_duration_h)
-                print(self.change_min_duration_h)
                 print(self.nb_cycle)
                 print(self.oof)
 
