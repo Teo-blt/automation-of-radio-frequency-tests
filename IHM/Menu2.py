@@ -17,8 +17,7 @@ import Data_managment as da
 import Graphic
 import sys
 
-# =============================================================================
-
+# ============================================================================
 
 class Application(Tk):
     def __init__(self):
@@ -46,28 +45,28 @@ class Application(Tk):
         button4.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         self.graphique()
         self.scale()
-        self.data_managment()
+        self.data_management()
         self.save()
 
-    def data_managment(self):
-        my_data_managment_frame = LabelFrame(self, text="Data_managment")
-        my_data_managment_frame.grid(row=1, column=0, ipadx=40, ipady=5, padx=0, pady=0)
-        label = tk.Label(my_data_managment_frame, text="Data managment Menu")
+    def data_management(self):
+        my_data_management_frame = LabelFrame(self, text="Data_management")
+        my_data_management_frame.grid(row=1, column=0, ipadx=40, ipady=5, padx=0, pady=0)
+        label = tk.Label(my_data_management_frame, text="Data management Menu")
         label.pack()
-        button6 = tk.Button(my_data_managment_frame, text="Write what you want in the file",
+        button6 = tk.Button(my_data_management_frame, text="Write what you want in the file",
                             borderwidth=8, background=elcolor,
                             activebackground="green", disabledforeground="grey",
                             cursor="right_ptr",
                             overrelief="sunken",
                             command=lambda: da.write_file())
         button6.pack()
-        button7 = tk.Button(my_data_managment_frame, text="Read the file",
+        button7 = tk.Button(my_data_management_frame, text="Read the file",
                             borderwidth=8, background=elcolor,
                             activebackground="green", disabledforeground="grey",
                             cursor="right_ptr",
                             overrelief="sunken", command=lambda: da.read_file())
         button7.pack()
-        button5 = tk.Button(my_data_managment_frame, text="Delete file",
+        button5 = tk.Button(my_data_management_frame, text="Delete file",
                             borderwidth=8, background=elcolor,
                             activebackground="green", disabledforeground="grey",
                             cursor="right_ptr",

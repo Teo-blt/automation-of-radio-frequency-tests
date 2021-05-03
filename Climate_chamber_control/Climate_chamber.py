@@ -18,6 +18,7 @@ import threading
 
 
 # test of the functioning of the threading
+CLIMATIC_CHAMBER_STOP = b"$00E 0020.0 0000.0 0000.0 0000.0 0000.0 0000000000000000\n\r"
 
 
 class Mythread(threading.Thread):
@@ -55,9 +56,10 @@ class Mythread(threading.Thread):
             change_min_duration_h = 1
 
             nb_cycle = 20
+
             if OOF:
-                VT.write(b"$00E 0020.0 0000.0 0000.0 0000.0 0000.0 0000000000000000\n\r")
-                quit(init)
+                VT.write(CLIMATIC_CHAMBER_STOP)
+                quit(code=self.init)
 
             for i in range(0, nb_cycle):
                 VT.write(b"$00I\n\r")
@@ -119,7 +121,7 @@ class Mythread(threading.Thread):
                 print(f'End of cycle {i}: {time.time() - time_start}\n')
 
             # Stop climatic chamber
-            VT.write(b"$00E 0020.0 0000.0 0000.0 0000.0 0000.0 0000000000000000\n\r")
+            VT.write(CLIMATIC_CHAMBER_STOP)
 
             time_stop = time.time()
             print("\n################################################\n")
@@ -129,6 +131,9 @@ class Mythread(threading.Thread):
         except:
             print("error")
 
+for i in range(0, 10):
+    print("programme ", i)
+    time.sleep(1)
 
 """
 for i in range(0, 10):
