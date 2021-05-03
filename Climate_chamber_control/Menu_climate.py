@@ -8,12 +8,8 @@
 """The Module Has Been Build for the automation of radio frequency tests"""
 # =============================================================================
 # Imports
-import os
-from tkinter.messagebox import *
 import tkinter as tk
-import sys
 from tkinter import *
-from tkinter import ttk
 import Climate_chamber
 
 
@@ -36,7 +32,7 @@ class Climate(Tk):
         button1 = tk.Button(my_settings_chamber_frame, text="Start",
                             borderwidth=8, background=elcolor,
                             activebackground="green", cursor="right_ptr", overrelief="sunken",
-                            command=lambda: [Climate_chamber.cycle(scale1.get(),0)])
+                            command=lambda: [Climate_chamber.cycle(scale1.get(), 0)])
         button1.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
         button2 = tk.Button(my_settings_chamber_frame, text="Quit",
                             borderwidth=8, background=elcolor,
@@ -46,7 +42,7 @@ class Climate(Tk):
         button3 = tk.Button(my_settings_chamber_frame, text="Off",
                             borderwidth=8, background=elcolor,
                             activebackground="green", cursor="right_ptr", overrelief="sunken",
-                            command=lambda: [Climate_chamber.cycle(scale1.get(),1)])
+                            command=lambda: [Climate_chamber.cycle(scale1.get(), 1)])
         button3.grid(row=0, column=3, ipadx=40, ipady=20, padx=0, pady=0)
         scale1 = Scale(my_settings_chamber_frame, orient='vertical', troughcolor=elcolor, from_=100, to=-20,
                        resolution=1, tickinterval=20, length=100, command=0,

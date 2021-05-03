@@ -13,9 +13,6 @@ from matplotlib.figure import Figure
 import numpy as np
 import tkinter as tk
 from tkinter import *
-import threading
-import sys
-import time
 import random
 from matplotlib import pyplot as plt
 import matplotlib.animation as animation

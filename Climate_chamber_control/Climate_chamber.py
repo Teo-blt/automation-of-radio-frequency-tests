@@ -11,7 +11,6 @@
 
 # import visa
 import serial  # requirment pyserial
-import os
 import time
 import sys
 import threading
