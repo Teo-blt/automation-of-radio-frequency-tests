@@ -21,13 +21,14 @@ SET_TEMP_MAX = b"$00E %06.1f 0000.0 0000.0 0000.0 0000.0 0101000000000000\n\r"
 
 
 class Mythread(threading.Thread):
-    def __init__(self, temp_min, temp_max, oof, temp_min_duration_h,
-                 temp_max_duration_h, nb_cycle):  # data = additional data
+    def __init__(self, temp_min, temp_max, temp_min_duration_h,
+                 temp_max_duration_h, change_min_duration_h, nb_cycle, oof):  # data = additional data
         threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
         self.temp_min = temp_min  # additional data added to the class
         self.temp_max = temp_max
         self.temp_min_duration_h = temp_min_duration_h
         self.temp_max_duration_h = temp_max_duration_h
+        self.change_min_duration_h = change_min_duration_h
         self.nb_cycle = nb_cycle
         self.oof = oof
 
@@ -38,6 +39,7 @@ class Mythread(threading.Thread):
             print(self.temp_max)
             print(self.temp_min_duration_h)
             print(self.temp_max_duration_h)
+            print(self.change_min_duration_h)
             print(self.nb_cycle)
             print(self.oof)
 
@@ -56,8 +58,6 @@ class Mythread(threading.Thread):
             time_start = time.time()
 
             # ToDo : Display cycles carac
-
-            change_min_duration_h = 1
 
             if self.oof:
                 vt.write(CLIMATIC_CHAMBER_STOP)
@@ -80,7 +80,7 @@ class Mythread(threading.Thread):
 
                 # Wait temperature stabilisation
                 change_cycle_start_time = time.time()
-                while time.time() <= change_cycle_start_time + change_min_duration_h * 3600:
+                while time.time() <= change_cycle_start_time + self.change_min_duration_h * 3600:
                     # Read temp every 5 min
                     vt.write(b"$00I\n\r")
                     received_frame = vt.read_all().decode('utf-8')
@@ -103,7 +103,7 @@ class Mythread(threading.Thread):
                 time.sleep(2)
 
                 change_cycle_start_time = time.time()
-                while time.time() < change_cycle_start_time + (change_min_duration_h * 3600):
+                while time.time() < change_cycle_start_time + (self.change_min_duration_h * 3600):
                     # Read temp every 5 min
                     vt.write(b"$00I\n\r")
                     received_frame = vt.read_all().decode('utf-8')

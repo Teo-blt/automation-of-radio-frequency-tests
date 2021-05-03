@@ -120,8 +120,9 @@ def draw_5(self, elcolor):
     button16 = tk.Button(my_auto_scale_frame, text="Start",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [Climate_chamber.Mythread(scale1.get(),
-                                                                   scale2.get(), 0, 1, 1, scale3.get()).start()])
+                         command=lambda: [Climate_chamber.Mythread(scale1.get(), scale2.get(),
+                                                                   scale4.get(), scale5.get(), scale6.get(),
+                                                                   scale3.get(), 0).start()])
     button16.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
     button17 = tk.Button(my_auto_scale_frame, text="Quit",
                          borderwidth=8, background=elcolor,
@@ -131,36 +132,42 @@ def draw_5(self, elcolor):
     button18 = tk.Button(my_auto_scale_frame, text="Off",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [Climate_chamber.Mythread(0, 0, 1, 0, 0, 0).start()])
+                         command=lambda: [Climate_chamber.Mythread(0, 0, 0, 0, 0, 0, 1).start()])
     button18.grid(row=0, column=3, ipadx=40, ipady=20, padx=0, pady=0)
     button18 = tk.Button(my_auto_scale_frame, text="Simulation",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
                          command=lambda: [draw_6(self, elcolor, scale1.get(), scale2.get(),
-                                                 scale3.get(), scale4.get(), scale5.get())])
+                                                 scale3.get(), scale4.get(), scale5.get(), scale6.get())])
     button18.grid(row=1, column=3, ipadx=40, ipady=20, padx=0, pady=0)
     scale1 = Scale(my_auto_scale_frame, orient='vertical', troughcolor=elcolor, from_=120, to=-40,
                    resolution=1, tickinterval=20, length=100, command=0,
                    label='temperature_min', state="active")
-    scale1.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+    scale1.grid(row=2, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+    scale1.set(-1)
     scale2 = Scale(my_auto_scale_frame, orient='vertical', troughcolor=elcolor, from_=120, to=-40,
                    resolution=1, tickinterval=20, length=100, command=0,
                    label='temperature_max', state="active")
-    scale2.grid(row=2, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+    scale2.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+    scale2.set(1)
     scale4 = Scale(my_auto_scale_frame, orient='horizontal', troughcolor=elcolor, from_=0, to=20,
                    resolution=1, tickinterval=20, length=100, command=0,
                    label='temperature_min_duration_h', state="active")
-    scale4.grid(row=1, column=1, ipadx=30, ipady=0, padx=0, pady=0)
+    scale4.grid(row=2, column=1, ipadx=30, ipady=0, padx=0, pady=0)
     scale4.set(1)
     scale5 = Scale(my_auto_scale_frame, orient='horizontal', troughcolor=elcolor, from_=0, to=20,
                    resolution=1, tickinterval=20, length=100, command=0,
                    label='temperature_max_duration_h', state="active")
-    scale5.grid(row=2, column=1, ipadx=30, ipady=0, padx=0, pady=0)
+    scale5.grid(row=1, column=1, ipadx=30, ipady=0, padx=0, pady=0)
     scale5.set(1)
     scale3 = Scale(my_auto_scale_frame, orient='horizontal', troughcolor=elcolor, from_=1, to=20,
                    resolution=1, tickinterval=5, length=100, command=0,
                    label='number_of_cycles', state="active", relief="flat")
     scale3.grid(row=2, column=2, ipadx=30, ipady=0, padx=0, pady=0)
+    scale6 = Scale(my_auto_scale_frame, orient='horizontal', troughcolor=elcolor, from_=1, to=3,
+                   resolution=1, tickinterval=1, length=100, command=0,
+                   label='change_min_duration_h', state="active", relief="flat")
+    scale6.grid(row=1, column=2, ipadx=30, ipady=0, padx=0, pady=0)
     scale3.set(1)
     button12 = tk.Button(my_scale_frame, text="Reset",
                          borderwidth=8, background=elcolor,
@@ -300,7 +307,7 @@ def draw_5(self, elcolor):
 
 
 def draw_6(self, elcolor, temperature_min, temperature_max,
-           number_of_cycles, temperature_min_duration_h, temperature_max_duration_h):
+           number_of_cycles, temperature_min_duration_h, temperature_max_duration_h, change_min_duration_h):
     root = tk.Toplevel(self)
     root.wm_title("Embedding in Tk")
     my_draw_6_frame_2 = LabelFrame(root)
@@ -309,11 +316,14 @@ def draw_6(self, elcolor, temperature_min, temperature_max,
     my_draw_6_frame_1.pack(side=BOTTOM)
     data = {}
     data[0] = 0
-    var = 0
+    temperature_max_duration_h = temperature_max_duration_h + 1
+    temperature_min_duration_h = temperature_min_duration_h + 1
+    var = 1
     for p in range(0, number_of_cycles):
-        for i in range(1 + var, temperature_max_duration_h + var):
+        for i in range(var, temperature_max_duration_h + var):
             data[i] = temperature_max
-        for i in range(temperature_max_duration_h + var, temperature_max_duration_h + temperature_min_duration_h + var):
+        for i in range(temperature_max_duration_h + var,
+                       temperature_max_duration_h + temperature_min_duration_h + var):
             data[i] = temperature_min
         var = var + temperature_max_duration_h + temperature_min_duration_h
 
