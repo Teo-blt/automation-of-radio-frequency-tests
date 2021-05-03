@@ -12,8 +12,7 @@ class Mythread(threading.Thread):
     def run(self):
         for i in range(0, self.data):
             print("thread ", i)
-            time.sleep(0.2)  # wait 100 milliseconds without doing anything,  makes the display easier to read
-
+            time.sleep(0.2)
 
 m = Mythread(10)  # build the thread
 m.start()  # lunch the thread,

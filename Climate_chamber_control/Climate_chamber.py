@@ -15,22 +15,21 @@ import time
 import sys
 import threading
 
-
-# test of the functioning of the threading
 CLIMATIC_CHAMBER_STOP = b"$00E 0020.0 0000.0 0000.0 0000.0 0000.0 0000000000000000\n\r"
 
 
 class Mythread(threading.Thread):
-    def __init__(self, data):  # data = additional data
+    def __init__(self, temp_min, OOF):  # data = additional data
         threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
-        self.data = data  # additional data added to the class
+        self.temp_min = temp_min  # additional data added to the class
+        self.OOF = OOF
 
-    def cycle(self, temp_min, OOF):
+    def run(self):
         try:
             # sys.path.append('\\\\samba\\share\\projet\\e2b\\hardware\\Scripts_auto\\Python\\lib')
             print(self)
-            print(temp_min)
-            print(OOF)
+            print(self.temp_min)
+            print(self.OOF)
             ################################################
             ##### VISA instrument
             serial_speed = 9600
@@ -56,9 +55,9 @@ class Mythread(threading.Thread):
 
             nb_cycle = 20
 
-            if OOF:
+            if self.OOF:
                 VT.write(CLIMATIC_CHAMBER_STOP)
-                quit(code=self.cycle)
+                quit(code=self.run)
 
             for i in range(0, nb_cycle):
                 VT.write(b"$00I\n\r")
@@ -72,7 +71,7 @@ class Mythread(threading.Thread):
                 print(f'Start cycle {i} low temp:\n')
 
                 # Set Temp Min
-                VT.write(b"$00E %06.1f 0000.0 0000.0 0000.0 0000.0 0101000000000000\n\r" % temp_min)
+                VT.write(b"$00E %06.1f 0000.0 0000.0 0000.0 0000.0 0101000000000000\n\r" % self.temp_min)
                 time.sleep(2)
 
                 # Wait temperature stabilisation

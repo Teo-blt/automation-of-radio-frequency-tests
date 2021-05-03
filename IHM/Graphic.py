@@ -60,12 +60,6 @@ def draw_4(self, elcolor):
     frequency.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
     button1 = Button(master=my_scale_frame_2, text="Quit", background=elcolor, command=lambda: root.destroy())
     button1.pack(side=LEFT)
-    """
-    button2 = Button(master=my_scale_frame_2, text="Clean", background=elcolor, command=lambda: clean())
-    button2.pack(side=LEFT)
-    button3 = Button(master=my_scale_frame_2, text="create", background=elcolor, command=lambda: create())
-    button3.pack(side=LEFT)
-    """
 
     def clean():
         global my_scale_frame_1
@@ -128,7 +122,7 @@ def draw_5(self, elcolor):
     button16 = tk.Button(my_auto_scale_frame, text="Start",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [Climate_chamber.Mythread.cycle(self, scale1.get(), 0)])
+                         command=lambda: [Climate_chamber.Mythread(-40,0).start()])
     button16.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
     button17 = tk.Button(my_auto_scale_frame, text="Quit",
                          borderwidth=8, background=elcolor,
@@ -138,7 +132,7 @@ def draw_5(self, elcolor):
     button18 = tk.Button(my_auto_scale_frame, text="Off",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [Climate_chamber.Mythread.cycle(self, scale1.get(), 1)])
+                         command=lambda: [Climate_chamber.Mythread(0,0).start()])
     button18.grid(row=0, column=3, ipadx=40, ipady=20, padx=0, pady=0)
     scale1 = Scale(my_auto_scale_frame, orient='vertical', troughcolor=elcolor, from_=100, to=-20,
                    resolution=1, tickinterval=20, length=100, command=0,
