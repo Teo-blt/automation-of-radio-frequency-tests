@@ -131,17 +131,17 @@ def draw_5(self, elcolor):
     button16 = tk.Button(my_auto_scale_frame, text="Start",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [Climate_chamber.Mythread.init(self, scale1.get(), 0)])
+                         command=lambda: [Climate_chamber.Mythread.cycle(self, scale1.get(), 0)])
     button16.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
     button17 = tk.Button(my_auto_scale_frame, text="Quit",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [sys.exit()])
+                         command=lambda: [root.destroy()])
     button17.grid(row=0, column=2, ipadx=40, ipady=20, padx=0, pady=0)
     button18 = tk.Button(my_auto_scale_frame, text="Off",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [Climate_chamber.Mythread.init(self, scale1.get(), 1)])
+                         command=lambda: [Climate_chamber.Mythread.cycle(self, scale1.get(), 1)])
     button18.grid(row=0, column=3, ipadx=40, ipady=20, padx=0, pady=0)
     scale1 = Scale(my_auto_scale_frame, orient='vertical', troughcolor=elcolor, from_=100, to=-20,
                    resolution=1, tickinterval=20, length=100, command=0,

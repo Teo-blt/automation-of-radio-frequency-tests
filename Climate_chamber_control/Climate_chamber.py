@@ -26,7 +26,7 @@ class Mythread(threading.Thread):
         threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
         self.data = data  # additional data added to the class
 
-    def init(self, temp_min, OOF):
+    def cycle(self, temp_min, OOF):
         try:
             # sys.path.append('\\\\samba\\share\\projet\\e2b\\hardware\\Scripts_auto\\Python\\lib')
             print(self)
@@ -59,7 +59,7 @@ class Mythread(threading.Thread):
 
             if OOF:
                 VT.write(CLIMATIC_CHAMBER_STOP)
-                quit(code=self.init)
+                quit(code=self.cycle)
 
             for i in range(0, nb_cycle):
                 VT.write(b"$00I\n\r")
@@ -130,10 +130,6 @@ class Mythread(threading.Thread):
             VT.close()
         except:
             print("error")
-
-for i in range(0, 10):
-    print("programme ", i)
-    time.sleep(1)
 
 """
 for i in range(0, 10):
