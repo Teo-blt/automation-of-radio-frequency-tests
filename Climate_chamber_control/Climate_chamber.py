@@ -63,6 +63,7 @@ class Mythread(threading.Thread):
                 vt.write(CLIMATIC_CHAMBER_STOP)
                 quit(code=self.run)
 
+
             for i in range(0, self.nb_cycle):
                 vt.write(b"$00I\n\r")
                 time.sleep(0.5)
@@ -81,21 +82,21 @@ class Mythread(threading.Thread):
                 # Wait temperature stabilisation
                 change_cycle_start_time = time.time()
                 while time.time() <= change_cycle_start_time + self.change_min_duration_h * 3600:
-                    # Read temp every 5 min
+                    # Read temp every min
                     vt.write(b"$00I\n\r")
                     received_frame = vt.read_all().decode('utf-8')
                     print(received_frame)
                     print("\n")
-                    time.sleep(5 * 60)
+                    time.sleep(60)
 
                 low_cycle_start_time = time.time()
                 while time.time() < low_cycle_start_time + (self.temp_min_duration_h * 3600):
-                    # Read temp every 5 min
+                    # Read temp every min
                     vt.write(b"$00I\n\r")
                     received_frame = vt.read_all().decode('utf-8')
                     print(received_frame)
                     print("\n")
-                    time.sleep(5 * 60)
+                    time.sleep(60)
 
                 print(f'Start cycle {i} High temp:\n')
                 # Set Temp Max
@@ -132,6 +133,16 @@ class Mythread(threading.Thread):
             vt.close()
         except:
             print("error")
+
+def read():
+    serial_speed = 9600
+    serial_timeout = 5
+    vt = serial.Serial('COM11', serial_speed, timeout=serial_timeout)
+    vt.write(b"$00I\n\r")
+    time.sleep(0.5)
+    received_frame = vt.read_all().decode('utf-8')
+    print(received_frame)
+    print("\n")
 
 
 """
