@@ -99,15 +99,28 @@ class Mythread(threading.Thread):
         print(f'Test duration: {time_stop - time_start}\n')
 
     def read(self):
-        VT.write(b"$00I\n\r")
-        time.sleep(0.5)
-        received_frame = VT.read_all().decode('utf-8')
-        word = received_frame.split(" ")
-        strings = str(word[1])
-        number = float(strings)
-        return number
+        try :
+            VT.write(b"$00I\n\r")
+            time.sleep(0.5)
+            received_frame = VT.read_all().decode('utf-8')
+            word = received_frame.split(" ")
+            strings = str(word[1])
+            number = float(strings)
+            strings2 = str(word[0])
+            number2 = float(strings2)
+            return [number, number2]
+        except:
+            print("error, it's too early")
 
     def order(self, value):
+        print("The new order value is : {}".format(value.get()))
+        print(Mythread.read(self))
         VT.write(ON % value.get())
-        print(value.get())
-        print(VT.write(ON % value.get()))
+        print(Mythread.read(self))
+
+
+
+
+
+
+

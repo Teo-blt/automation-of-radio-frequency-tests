@@ -145,7 +145,8 @@ def draw_5(self, elcolor):
     button20 = tk.Button(my_auto_scale_frame, text="request",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [print(VARIABLE.Mythread.read(self))])
+                         command=lambda: [print("The actual themperature is : {}".format(VARIABLE.Mythread.read(self)[0])),
+                                          print("The actual order is : {}".format(VARIABLE.Mythread.read(self)[1]))])
     button20.grid(row=2, column=3, ipadx=40, ipady=20, padx=0, pady=0)
     scale1 = Scale(my_auto_scale_frame, orient='vertical', troughcolor=elcolor, from_=120, to=-40,
                    resolution=1, tickinterval=20, length=100, command=0,
@@ -233,7 +234,7 @@ def draw_5(self, elcolor):
 
     def display():
         style.use('ggplot')
-        fig = plt.figure(figsize=(10, 4.5), dpi=100)
+        fig = plt.figure(figsize=(10, 4), dpi=100)
         ax1 = fig.add_subplot(1, 1, 1)
         ax1.set_ylim(-40, 120)
         plotcanvas = FigureCanvasTkAgg(fig, root)
