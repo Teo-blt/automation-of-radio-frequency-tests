@@ -17,6 +17,7 @@ from matplotlib import pyplot as plt
 import matplotlib.animation as animation
 from matplotlib import style
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import time
 #from Climate_chamber_control import Climate_chamber
 from Climate_chamber_control import Climate_chamber_V2
 
@@ -270,6 +271,7 @@ def draw_5(self, elcolor):
 
         def animate(i):
             yar.append(scale_root_1.get())
+            time.sleep(0.5)
             xar.append(i)
             line.set_data(xar, yar)
 

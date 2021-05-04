@@ -25,6 +25,7 @@ VT = serial.Serial('COM11', SERIAL_SPEED, timeout=SERIAL_TIMEOUT)
 FIRST_TIME = False
 
 
+
 class Mythread(threading.Thread):
 
     def __init__(self, temp_min, temp_max, temp_min_duration_h,
@@ -60,13 +61,15 @@ class Mythread(threading.Thread):
 
         if self.oof:
             off()
-
+        global i
+        i = 0
         for i in range(0, self.nb_cycle):
             self.loop()
 
     def loop(self):
         global FIRST_TIME, time_start_min
         VT.write(SET_TEMP_MIN % self.temp_min)
+        time.sleep(0.5)
         print("the temperature is {}".format(read()))
         if read() > self.temp_min:
             self.root.after(500, self.loop)  # => loop after 0.5 seconde
@@ -89,6 +92,7 @@ class Mythread(threading.Thread):
             print("Error, the climate chamber is already offline")
 
     def exit(self):
+        global i
         print(f'End of cycle {i}: {time.time() - time_start}\n')
         # Stop climatic chamber
         self.off()
