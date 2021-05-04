@@ -24,6 +24,7 @@ from Climate_chamber_control import Climate_chamber_V2
 
 # =============================================================================
 VARIABLE = Climate_chamber_V2 #Climate_chamber
+FRAME = (-40, 30)
 
 def draw_4(self, elcolor):
     global my_scale_frame_1
@@ -123,7 +124,7 @@ def draw_5(self, elcolor):
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
                          command=lambda: [VARIABLE.Mythread(scale1.get(), scale2.get(),
                                                                    scale4.get(), scale5.get(),
-                                                                   scale3.get(), 0, my_auto_scale_frame, 1).start()])
+                                                                   scale3.get(), 0, my_auto_scale_frame).start()])
     button16.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
     button17 = tk.Button(my_auto_scale_frame, text="Quit",
                          borderwidth=8, background=elcolor,
@@ -177,19 +178,19 @@ def draw_5(self, elcolor):
                          command=lambda: [scale_root_1.set(0), scale_root_2.set(40), scale_root_3.set(1)])
     button12.pack(padx=1, pady=1, expand=True, fill="both", side=LEFT)
     scale_root_1 = Scale(my_scale_frame, orient='vertical', troughcolor=elcolor, from_=120, to=-40,
-                         resolution=1, tickinterval=25, length=100, command=0,
-                         label='Order', state="active")
+                         resolution=1, tickinterval=25, length=100,
+                         label='Order', command=lambda x: VARIABLE.Mythread.order(self, scale_root_1), state="active")
     scale_root_1.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
     scale_root_2 = Scale(my_scale_frame, orient='vertical', troughcolor=elcolor, from_=100, to=1,
                          resolution=1, tickinterval=50, length=100, command=0,
                          label="window length", state="active")
     scale_root_2.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
-    scale_root_2.set(40)
+    scale_root_2.set(100)
     scale_root_3 = Scale(my_scale_frame, orient='vertical', troughcolor=elcolor, from_=10, to=0.1,
                          resolution=0.1, tickinterval=1, length=100, command=0,
                          label='delay in second', state="active")
     scale_root_3.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
-    scale_root_3.set(1)
+    scale_root_3.set(5)
     button13 = tk.Button(my_button_frame, text="Start",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
@@ -253,7 +254,7 @@ def draw_5(self, elcolor):
         fig = plt.figure(figsize=(10, 4.5), dpi=100)
 
         ax1 = fig.add_subplot(1, 1, 1)
-        ax1.set_ylim(-40, 120)
+        ax1.set_ylim(FRAME)
         line, = ax1.plot(xar, yar, 'r', marker='o')
         line2, = ax1.plot(xar2, yar2, 'b', marker='o')
 
@@ -283,7 +284,7 @@ def draw_5(self, elcolor):
                 ax1.set_xlim(0, i + 1)
 
         def animate2(r):
-            value = VARIABLE.read()
+            value = VARIABLE.Mythread.read(self)
             yar2.append(value)
             xar2.append(r)
             line2.set_data(xar2, yar2)
