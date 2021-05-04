@@ -140,6 +140,7 @@ def read():
     word = received_frame.split(" ")
     #print(word)
     print("the temperature is " + word[1])
+    return word[1]
 
 
 

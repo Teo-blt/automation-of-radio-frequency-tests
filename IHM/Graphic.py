@@ -13,7 +13,6 @@ from matplotlib.figure import Figure
 import numpy as np
 import tkinter as tk
 from tkinter import *
-import random
 from matplotlib import pyplot as plt
 import matplotlib.animation as animation
 from matplotlib import style
@@ -282,7 +281,9 @@ def draw_5(self, elcolor):
                 ax1.set_xlim(0, i + 1)
 
         def animate2(r):
-            yar2.append(random.randint(-40, 120))
+            value = Climate_chamber.read()
+            print(value)
+            yar2.append(value)
             xar2.append(r)
             line2.set_data(xar2, yar2)
 
