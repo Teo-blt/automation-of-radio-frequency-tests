@@ -135,13 +135,11 @@ def read():
     vt.write(b"$00I\n\r")
     time.sleep(0.5)
     received_frame = vt.read_all().decode('utf-8')
-    #print(received_frame)
-    #print("\n")
     word = received_frame.split(" ")
-    #print(word)
-    print("the temperature is " + word[1])
-    return word[1]
-
+    strings = str(word[1])
+    number = float(strings)
+    print("the temperature is {}".format(number))
+    return number
 
 
 def off():
