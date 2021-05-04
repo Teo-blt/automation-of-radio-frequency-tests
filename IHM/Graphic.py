@@ -123,7 +123,7 @@ def draw_5(self, elcolor):
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
                          command=lambda: [VARIABLE.Mythread(scale1.get(), scale2.get(),
                                                                    scale4.get(), scale5.get(),
-                                                                   scale3.get(), 0, my_auto_scale_frame, root).start()])
+                                                                   scale3.get(), 0, my_auto_scale_frame, 1).start()])
     button16.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
     button17 = tk.Button(my_auto_scale_frame, text="Quit",
                          borderwidth=8, background=elcolor,
@@ -144,7 +144,7 @@ def draw_5(self, elcolor):
     button20 = tk.Button(my_auto_scale_frame, text="request",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [VARIABLE.read()])
+                         command=lambda: [print(VARIABLE.Mythread.read(self))])
     button20.grid(row=2, column=3, ipadx=40, ipady=20, padx=0, pady=0)
     scale1 = Scale(my_auto_scale_frame, orient='vertical', troughcolor=elcolor, from_=120, to=-40,
                    resolution=1, tickinterval=20, length=100, command=0,
@@ -271,7 +271,6 @@ def draw_5(self, elcolor):
 
         def animate(i):
             yar.append(scale_root_1.get())
-            time.sleep(0.5)
             xar.append(i)
             line.set_data(xar, yar)
 

@@ -29,7 +29,7 @@ FIRST_TIME = False
 class Mythread(threading.Thread):
 
     def __init__(self, temp_min, temp_max, temp_min_duration_h,
-                 temp_max_duration_h, nb_cycle, oof, my_auto_scale_frame, main):  # data = additional data
+                 temp_max_duration_h, nb_cycle, oof, my_auto_scale_frame, type):  # data = additional data
         threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
         self.temp_min = temp_min  # additional data added to the class
         self.temp_max = temp_max
@@ -38,40 +38,43 @@ class Mythread(threading.Thread):
         self.nb_cycle = nb_cycle
         self.oof = oof
         self.root = my_auto_scale_frame
-        self.main = main
+        self.type = type
 
     def run(self):
-        VT.write(SET_TEMP_MIN % self.temp_min)
-        p = 0
-        while p < 1:
-            print("start-up, please wait")
-            time.sleep(2)
-            print("start-up, please wait.")
-            time.sleep(2)
-            print("start-up, please wait..")
-            time.sleep(2)
-            print("start-up, please wait...")
-            time.sleep(2)
-            p = p + 1
+        if type == 1:
+            VT.write(SET_TEMP_MIN % self.temp_min)
+            p = 0
+            while p < 1:
+                print("start-up, please wait")
+                time.sleep(2)
+                print("start-up, please wait.")
+                time.sleep(2)
+                print("start-up, please wait..")
+                time.sleep(2)
+                print("start-up, please wait...")
+                time.sleep(2)
+                p = p + 1
 
-        time_start = time.time()
+            time_start = time.time()
 
-        print("\n################################################\n")
-        print("\nStart of Test\n")
+            print("\n################################################\n")
+            print("\nStart of Test\n")
 
-        if self.oof:
-            off()
-        global i
-        i = 0
-        for i in range(0, self.nb_cycle):
-            self.loop()
+            if self.oof:
+                off()
+            global i
+            i = 0
+            for i in range(0, self.nb_cycle):
+                self.loop()
+        else:
+            print("deux")
 
     def loop(self):
         global FIRST_TIME, time_start_min
         VT.write(SET_TEMP_MIN % self.temp_min)
         time.sleep(0.5)
         print("the temperature is {}".format(read()))
-        if read() > self.temp_min:
+        if self.read() > self.temp_min:
             self.root.after(500, self.loop)  # => loop after 0.5 seconde
         else:
             if not FIRST_TIME:
@@ -102,11 +105,11 @@ class Mythread(threading.Thread):
         print(f'Test duration: {time_stop - time_start}\n')
 
 
-def read():
-    VT.write(b"$00I\n\r")
-    time.sleep(0.5)
-    received_frame = VT.read_all().decode('utf-8')
-    word = received_frame.split(" ")
-    strings = str(word[1])
-    number = float(strings)
-    return number
+    def read(self):
+        VT.write(b"$00I\n\r")
+        time.sleep(0.5)
+        received_frame = VT.read_all().decode('utf-8')
+        word = received_frame.split(" ")
+        strings = str(word[1])
+        number = float(strings)
+        return number

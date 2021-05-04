@@ -13,9 +13,10 @@ from tkinter import *
 from tkinter import ttk
 from tkinter.messagebox import *
 from tkinter.colorchooser import askcolor
-import Data_managment as da
+import Data_managment as DA
 import Graphic
 import sys
+
 
 # ============================================================================
 
@@ -43,7 +44,6 @@ class Application(Tk):
                          cursor="right_ptr",
                          overrelief="sunken", command=lambda: print("you are " + name.get()))
         button4.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-        self.graphique()
         self.scale()
         self.data_management()
         self.save()
@@ -58,42 +58,35 @@ class Application(Tk):
                             activebackground="green", disabledforeground="grey",
                             cursor="right_ptr",
                             overrelief="sunken",
-                            command=lambda: da.write_file())
+                            command=lambda: DA.write_file())
         button6.pack()
         button7 = tk.Button(my_data_management_frame, text="Read the file",
                             borderwidth=8, background=elcolor,
                             activebackground="green", disabledforeground="grey",
                             cursor="right_ptr",
-                            overrelief="sunken", command=lambda: da.read_file())
+                            overrelief="sunken", command=lambda: Da.read_file())
         button7.pack()
         button5 = tk.Button(my_data_management_frame, text="Delete file",
                             borderwidth=8, background=elcolor,
                             activebackground="green", disabledforeground="grey",
                             cursor="right_ptr",
-                            overrelief="sunken", command=lambda: da.delete_file())
+                            overrelief="sunken", command=lambda: Da.delete_file())
         button5.pack()
-
-    def graphique(self):
-        # Graphic.draw_4(self)
-        print("done")
 
     def lfg(self):
         self.geometry(size)
         my_lfg_frame = LabelFrame(self, text="Settings of the Low frequency generator")
         my_lfg_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
-        self.graphique()
 
     def sg(self):
         self.geometry(size)
         my_sg_frame = LabelFrame(self, text="Settings of the Signal generator")
         my_sg_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
-        self.graphique()
 
     def osl(self):
         self.geometry(size)
         my_osl_frame = LabelFrame(self, text="Settings of the Oscilloscope")
         my_osl_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
-        self.graphique()
 
     def interface(self, choice):
         if choice == -1:
@@ -171,12 +164,12 @@ class Application(Tk):
                              borderwidth=8, background=elcolor,
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
                              command=lambda: Graphic.draw_5(self, elcolor))
-        button12.pack(padx=10, pady=0,ipadx=40, ipady=10, expand=False, fill="none", side=RIGHT)
+        button12.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=RIGHT)
         button11 = tk.Button(my_scale_frame, text="Draw",
                              borderwidth=8, background=elcolor,
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
                              command=lambda: Graphic.draw_4(self, elcolor))
-        button11.pack(padx=10, pady=0,ipadx=40, ipady=10, expand=False, fill="none", side=RIGHT)
+        button11.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=RIGHT)
 
     def clear(self, get_tilte):
         self.destroy()
