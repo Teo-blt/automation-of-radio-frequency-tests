@@ -17,11 +17,12 @@ from matplotlib import pyplot as plt
 import matplotlib.animation as animation
 from matplotlib import style
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from Climate_chamber_control import Climate_chamber
+#from Climate_chamber_control import Climate_chamber
+from Climate_chamber_control import Climate_chamber_V2
 
 
 # =============================================================================
-
+VARIABLE = Climate_chamber_V2 #Climate_chamber
 
 def draw_4(self, elcolor):
     global my_scale_frame_1
@@ -119,9 +120,9 @@ def draw_5(self, elcolor):
     button16 = tk.Button(my_auto_scale_frame, text="Start",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [Climate_chamber.Mythread(scale1.get(), scale2.get(),
+                         command=lambda: [VARIABLE.Mythread(scale1.get(), scale2.get(),
                                                                    scale4.get(), scale5.get(),
-                                                                   scale3.get(), 0).start()])
+                                                                   scale3.get(), 0, my_auto_scale_frame, root).start()])
     button16.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
     button17 = tk.Button(my_auto_scale_frame, text="Quit",
                          borderwidth=8, background=elcolor,
@@ -131,7 +132,7 @@ def draw_5(self, elcolor):
     button18 = tk.Button(my_auto_scale_frame, text="Off",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [Climate_chamber.off()])
+                         command=lambda: [VARIABLE.Mythread.off(self)])
     button18.grid(row=0, column=3, ipadx=40, ipady=20, padx=0, pady=0)
     button19 = tk.Button(my_auto_scale_frame, text="Simulation",
                          borderwidth=8, background=elcolor,
@@ -142,7 +143,7 @@ def draw_5(self, elcolor):
     button20 = tk.Button(my_auto_scale_frame, text="request",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [Climate_chamber.read(), print()])
+                         command=lambda: [VARIABLE.read()])
     button20.grid(row=2, column=3, ipadx=40, ipady=20, padx=0, pady=0)
     scale1 = Scale(my_auto_scale_frame, orient='vertical', troughcolor=elcolor, from_=120, to=-40,
                    resolution=1, tickinterval=20, length=100, command=0,
@@ -281,8 +282,7 @@ def draw_5(self, elcolor):
                 ax1.set_xlim(0, i + 1)
 
         def animate2(r):
-            value = Climate_chamber.read()
-            print(value)
+            value = VARIABLE.read()
             yar2.append(value)
             xar2.append(r)
             line2.set_data(xar2, yar2)
@@ -319,7 +319,7 @@ def draw_5(self, elcolor):
 def draw_6(self, elcolor, temperature_min, temperature_max,
            number_of_cycles, temperature_min_duration_h, temperature_max_duration_h):
     root = tk.Toplevel(self)
-    root.wm_title("Embedding in Tk")
+    root.wm_title("simulation graph")
     my_draw_6_frame_2 = LabelFrame(root)
     my_draw_6_frame_2.pack()
     my_draw_6_frame_1 = LabelFrame(root)
@@ -349,8 +349,16 @@ def draw_6(self, elcolor, temperature_min, temperature_max,
     canvas.draw()
     canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
     toolbar.pack(side=BOTTOM, fill=X)
-    button1 = Button(master=my_draw_6_frame_2, text="Quit", background=elcolor, command=lambda: root.destroy())
-    button1.pack(side=LEFT)
+    button1 = Button(master=my_draw_6_frame_2, text="Quit", background=elcolor,
+                     cursor="right_ptr", borderwidth=5, activebackground="green",
+                     overrelief="sunken", command=lambda: root.destroy())
+    button1.pack(side=RIGHT)
+    label = tk.Label(my_draw_6_frame_2, text="The value of the time duration of "
+                                             "the transition between two level of temperature "
+                                             "was arbitrarly fixed to one hour", bg="white", font="arial",
+                     fg="black", relief="groove")
+    label.pack()
+
 
 
 """"
