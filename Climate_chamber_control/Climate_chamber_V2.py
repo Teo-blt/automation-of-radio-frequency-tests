@@ -71,10 +71,10 @@ class Mythread(threading.Thread):
         VT.write(ON % self.temp_min)
 
         for i in range(0, self.nb_cycle):
-            self.loop(FIRST_TIME, VALUE_STABILISATION)
+            self.loop()
 
-    def loop(self, FIRST_TIME, VALUE_STABILISATION):
-        global time_start_min
+    def loop(self):
+        global time_start_min, FIRST_TIME, VALUE_STABILISATION
         temp = self.read()[1]
         temp2 = self.read()[0]
         print("#################################")
@@ -82,12 +82,12 @@ class Mythread(threading.Thread):
         print("The actual order is : {}".format(temp))
         if temp2 != self.temp_min:
             VALUE_STABILISATION = 0
-            self.root.after(5000, self.loop(FIRST_TIME, VALUE_STABILISATION))  # => loop after 5 secondes
+            self.root.after(5000, self.loop)  # => loop after 5 secondes
         elif temp2 == self.temp_min:
             if VALUE_STABILISATION < 25:
                 VALUE_STABILISATION = VALUE_STABILISATION + 1
                 print("p vaut {}".format(VALUE_STABILISATION))
-                self.root.after(5000, self.loop(FIRST_TIME, VALUE_STABILISATION))
+                self.root.after(5000, self.loop)
             else:
                 if not FIRST_TIME:
                     time_start_min = time.time()
@@ -95,7 +95,7 @@ class Mythread(threading.Thread):
                 print(time.time())
                 print(time_start_min + (60)) # self.temp_min_duration_h * 3600)
                 if time.time() < time_start_min + (60):
-                    self.root.after(5000, self.loop(FIRST_TIME, VALUE_STABILISATION))  # => loop after 5 secondes
+                    self.root.after(5000, self.loop)  # => loop after 5 secondes
                 else:
                     self.exit()
 
