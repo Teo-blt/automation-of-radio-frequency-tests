@@ -91,7 +91,6 @@ def draw_4(self, elcolor):
 
 def draw_5(self, elcolor):
     def display():
-        print("display")
         style.use('ggplot')
         fig = plt.figure(figsize=(10, 3), dpi=100)
         ax1 = fig.add_subplot(1, 1, 1)
@@ -181,15 +180,16 @@ def draw_5(self, elcolor):
                    label='number_of_cycles', state="active", relief="flat")
     scale3.grid(row=2, column=2, ipadx=30, ipady=0, padx=0, pady=0)
     scale3.set(1)
-    button12 = tk.Button(my_scale_frame, text="Reset",
+    button12 = tk.Button(my_scale_frame, text="Request",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [scale_root_1.set(0), scale_root_3.set(1)])
+                         command=lambda: print("The actual temperature is : {}\nThe actual order is : {}".format
+                                               (VARIABLE.Mythread.read(self)[0], VARIABLE.Mythread.read(self)[1])))
+
     button12.pack(padx=1, pady=1, expand=True, fill="both", side=LEFT)
     scale_root_1 = Scale(my_scale_frame, orient='vertical', troughcolor=elcolor, from_=80, to=-40,
                          resolution=1, tickinterval=20, length=100,
-                         label='Order', command=lambda x: [VARIABLE.Mythread.order(self, scale_root_1),
-                                                           button16.invoke()], state="active")
+                         label='Order', command=lambda x: [VARIABLE.Mythread.order(self, scale_root_1)], state="active")
     scale_root_1.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
     scale_root_3 = Scale(my_scale_frame, orient='vertical', troughcolor=elcolor, from_=10, to=0.1,
                          resolution=0.1, tickinterval=1, length=100, command=0,
@@ -274,7 +274,6 @@ def draw_5(self, elcolor):
             ax1.set_xlim(0, i + 1)
 
         def animate2(r):
-            print(VARIABLE.Mythread.read(self))
             value = VARIABLE.Mythread.read(self)[0]
             yar2.append(value)
             xar2.append(r)

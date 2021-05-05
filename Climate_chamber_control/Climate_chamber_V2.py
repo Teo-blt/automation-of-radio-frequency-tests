@@ -20,11 +20,13 @@ ON = b"$00E %06.1f 0000.0 0000.0 0000.0 0000.0 0101000000000000\n\r"
 SERIAL_SPEED = 9600
 SERIAL_TIMEOUT = 5
 CONNECTION = 'COM11'
-try :
-    VT = serial.Serial(CONNECTION, SERIAL_SPEED, timeout=SERIAL_TIMEOUT)
-except :
-    print("impossible connection")
 FIRST_TIME = False
+VALUE_STABILISATION = 0
+
+try:
+    VT = serial.Serial(CONNECTION, SERIAL_SPEED, timeout=SERIAL_TIMEOUT)
+except:
+    print("impossible connection")
 
 
 class Mythread(threading.Thread):
@@ -43,7 +45,7 @@ class Mythread(threading.Thread):
     def run(self):
         VT.write(ON % self.temp_min)
         p = 0
-        while p < 1:
+        while p < 0:
             print("start-up, please wait")
             time.sleep(2)
             print("start-up, please wait.")
@@ -54,6 +56,7 @@ class Mythread(threading.Thread):
             time.sleep(2)
             p = p + 1
 
+        global time_start
         time_start = time.time()
 
         print("\n################################################\n")
@@ -61,29 +64,40 @@ class Mythread(threading.Thread):
 
         if self.oof:
             self.off()
+
         global i
         i = 0
-        for i in range(0, self.nb_cycle):
-            self.loop(time_start)
 
-    def loop(self, time_start):
-        global FIRST_TIME, time_start_min
         VT.write(ON % self.temp_min)
-        time.sleep(0.5)
-        print("the temperature is {}".format(self.read()))
-        if self.read()[1] > self.temp_min:
-            self.root.after(500, self.loop)  # => loop after 0.5 seconde
-        else:
-            if not FIRST_TIME:
-                time_start_min = time.time()
-                FIRST_TIME = True
 
-            print(time.time())
-            print(time_start_min + (self.temp_min_duration_h * 3600))
-            if time.time() < time_start_min + (self.temp_min_duration_h * 3600):
-                self.root.after(500, self.loop)  # => loop after 0.5 seconde
+        for i in range(0, self.nb_cycle):
+            self.loop(FIRST_TIME, VALUE_STABILISATION)
+
+    def loop(self, FIRST_TIME, VALUE_STABILISATION):
+        global time_start_min
+        temp = self.read()[1]
+        temp2 = self.read()[0]
+        print("#################################")
+        print("The actual themperature is : {}".format(temp2))
+        print("The actual order is : {}".format(temp))
+        if temp2 != self.temp_min:
+            VALUE_STABILISATION = 0
+            self.root.after(5000, self.loop(FIRST_TIME, VALUE_STABILISATION))  # => loop after 5 secondes
+        elif temp2 == self.temp_min:
+            if VALUE_STABILISATION < 25:
+                VALUE_STABILISATION = VALUE_STABILISATION + 1
+                print("p vaut {}".format(VALUE_STABILISATION))
+                self.root.after(5000, self.loop(FIRST_TIME, VALUE_STABILISATION))
             else:
-                self.exit(time_start)
+                if not FIRST_TIME:
+                    time_start_min = time.time()
+                    FIRST_TIME = True
+                print(time.time())
+                print(time_start_min + (60)) # self.temp_min_duration_h * 3600)
+                if time.time() < time_start_min + (60):
+                    self.root.after(5000, self.loop(FIRST_TIME, VALUE_STABILISATION))  # => loop after 5 secondes
+                else:
+                    self.exit()
 
     def off(self):
         try:
@@ -91,8 +105,9 @@ class Mythread(threading.Thread):
         except:
             print("Error, the climate chamber is already offline")
 
-    def exit(self, time_start):
+    def exit(self):
         global i
+        global time_start
         print(f'End of cycle {i}: {time.time() - time_start}\n')
         # Stop climatic chamber
         self.off()
@@ -102,26 +117,20 @@ class Mythread(threading.Thread):
         print(f'Test duration: {time_stop - time_start}\n')
 
     def read(self):
-        try :
-            VT.write(b"$00I\n\r")
-            time.sleep(0.5)
-            received_frame = VT.read_all().decode('utf-8')
-            word = received_frame.split(" ")
-            strings = str(word[1])
-            number = float(strings)
-            strings2 = str(word[0])
-            number2 = float(strings2)
-            return [number, number2]
-        except:
-            print("error, it's too early")
+        VT.write(b"$00I\n\r")
+        time.sleep(0.3)
+        received_frame = VT.read_all().decode('utf-8')
+        word = received_frame.split(" ")
+        strings = str(word[1])
+        number = float(strings)
+        strings2 = str(word[0])
+        number2 = strings2[-6:]
+        number3 = float(number2)
+        return [number, number3]
 
     def order(self, value):
-        print("The new order value is : {}".format(value.get()))
-        VT.write(ON % value.get())
-
-
-
-
-
-
-
+        try:
+            VT.write(ON % value.get())
+            # print("The new order is : {}".format(value.get()))
+        except:
+            print("too fast, please slow down")
