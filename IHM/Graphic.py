@@ -17,13 +17,11 @@ from matplotlib import pyplot as plt
 import matplotlib.animation as animation
 from matplotlib import style
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-# from Climate_chamber_control import Climate_chamber
 from Climate_chamber_control import Climate_chamber_V2
 
 # =============================================================================
 VARIABLE = Climate_chamber_V2  # Climate_chamber
 FRAME = (-50, 90)
-
 
 def draw_4(self, elcolor):
     global my_scale_frame_1

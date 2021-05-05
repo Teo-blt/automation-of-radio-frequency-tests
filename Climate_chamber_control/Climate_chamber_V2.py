@@ -12,7 +12,6 @@ import serial  # requirment pyserial
 import time
 import threading
 from tkinter import *
-from tkinter.ttk import *
 
 # =============================================================================
 

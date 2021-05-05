@@ -64,13 +64,13 @@ class Application(Tk):
                             borderwidth=8, background=elcolor,
                             activebackground="green", disabledforeground="grey",
                             cursor="right_ptr",
-                            overrelief="sunken", command=lambda: Da.read_file())
+                            overrelief="sunken", command=lambda: DA.read_file())
         button7.pack()
         button5 = tk.Button(my_data_management_frame, text="Delete file",
                             borderwidth=8, background=elcolor,
                             activebackground="green", disabledforeground="grey",
                             cursor="right_ptr",
-                            overrelief="sunken", command=lambda: Da.delete_file())
+                            overrelief="sunken", command=lambda: DA.delete_file())
         button5.pack()
 
     def lfg(self):
