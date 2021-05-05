@@ -22,7 +22,7 @@ from Climate_chamber_control import Climate_chamber_V2
 
 # =============================================================================
 VARIABLE = Climate_chamber_V2  # Climate_chamber
-FRAME = (-40, 30)
+FRAME = (-50, 90)
 
 
 def draw_4(self, elcolor):
@@ -178,8 +178,8 @@ def draw_5(self, elcolor):
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
                          command=lambda: [scale_root_1.set(0), scale_root_3.set(1)])
     button12.pack(padx=1, pady=1, expand=True, fill="both", side=LEFT)
-    scale_root_1 = Scale(my_scale_frame, orient='vertical', troughcolor=elcolor, from_=120, to=-40,
-                         resolution=1, tickinterval=25, length=100,
+    scale_root_1 = Scale(my_scale_frame, orient='vertical', troughcolor=elcolor, from_=80, to=-40,
+                         resolution=1, tickinterval=20, length=100,
                          label='Order', command=lambda x: VARIABLE.Mythread.order(self, scale_root_1), state="active")
     scale_root_1.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
     scale_root_3 = Scale(my_scale_frame, orient='vertical', troughcolor=elcolor, from_=10, to=0.1,
