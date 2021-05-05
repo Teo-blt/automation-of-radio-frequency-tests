@@ -20,7 +20,10 @@ ON = b"$00E %06.1f 0000.0 0000.0 0000.0 0000.0 0101000000000000\n\r"
 SERIAL_SPEED = 9600
 SERIAL_TIMEOUT = 5
 CONNECTION = 'COM11'
-VT = serial.Serial(CONNECTION, SERIAL_SPEED, timeout=SERIAL_TIMEOUT)
+try :
+    VT = serial.Serial(CONNECTION, SERIAL_SPEED, timeout=SERIAL_TIMEOUT)
+except :
+    print("impossible connection")
 FIRST_TIME = False
 
 

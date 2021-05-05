@@ -23,6 +23,7 @@ from Climate_chamber_control import Climate_chamber_V2
 VARIABLE = Climate_chamber_V2  # Climate_chamber
 FRAME = (-50, 90)
 
+
 def draw_4(self, elcolor):
     global my_scale_frame_1
     global first_time
@@ -89,6 +90,15 @@ def draw_4(self, elcolor):
 
 
 def draw_5(self, elcolor):
+    def display():
+        print("display")
+        style.use('ggplot')
+        fig = plt.figure(figsize=(10, 3), dpi=100)
+        ax1 = fig.add_subplot(1, 1, 1)
+        ax1.set_ylim(-40, 120)
+        plotcanvas = FigureCanvasTkAgg(fig, root)
+        plotcanvas.get_tk_widget().grid(column=0, row=0)
+
     global ani
     global ani2
     global first_time
@@ -112,7 +122,7 @@ def draw_5(self, elcolor):
     my_rb_frame = LabelFrame(my_settings_frame, bd=0)  # , text="Choice"
     my_rb_frame.pack(padx=0, pady=0, expand=True, fill="both", side=RIGHT)
     my_rb_frame.config(background='#fafafa')
-
+    display()
     label = tk.Label(my_auto_scale_frame, text="Settings_chamber", bg="white", font="arial",
                      fg="black", relief="groove")
     label.grid(row=0, column=0, ipadx=20, ipady=20, padx=0, pady=0)
@@ -178,7 +188,8 @@ def draw_5(self, elcolor):
     button12.pack(padx=1, pady=1, expand=True, fill="both", side=LEFT)
     scale_root_1 = Scale(my_scale_frame, orient='vertical', troughcolor=elcolor, from_=80, to=-40,
                          resolution=1, tickinterval=20, length=100,
-                         label='Order', command=lambda x: VARIABLE.Mythread.order(self, scale_root_1), state="active")
+                         label='Order', command=lambda x: [VARIABLE.Mythread.order(self, scale_root_1),
+                                                           button16.invoke()], state="active")
     scale_root_1.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
     scale_root_3 = Scale(my_scale_frame, orient='vertical', troughcolor=elcolor, from_=10, to=0.1,
                          resolution=0.1, tickinterval=1, length=100, command=0,
@@ -225,14 +236,6 @@ def draw_5(self, elcolor):
     rb1.pack(padx=0, pady=0, expand=False, fill="none", side=BOTTOM)
     rb1.invoke()
 
-    def display():
-        style.use('ggplot')
-        fig = plt.figure(figsize=(10, 3), dpi=100)
-        ax1 = fig.add_subplot(1, 1, 1)
-        ax1.set_ylim(-40, 120)
-        plotcanvas = FigureCanvasTkAgg(fig, root)
-        plotcanvas.get_tk_widget().grid(column=0, row=0)
-
     def eldraw2(scale_root_3):
         global ani
         global ani2
@@ -245,7 +248,7 @@ def draw_5(self, elcolor):
         yar2 = []
 
         style.use('ggplot')
-        fig = plt.figure(figsize=(10, 4.5), dpi=100)
+        fig = plt.figure(figsize=(10, 3), dpi=100)
 
         ax1 = fig.add_subplot(1, 1, 1)
         ax1.set_ylim(FRAME)

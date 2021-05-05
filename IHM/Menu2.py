@@ -163,7 +163,7 @@ class Application(Tk):
         button12 = tk.Button(my_scale_frame, text="Draw.2",
                              borderwidth=8, background=elcolor,
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
-                             command=lambda: Graphic.draw_5(self, elcolor))
+                             command=lambda : [Graphic.draw_5(self, elcolor)])
         button12.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=RIGHT)
         button11 = tk.Button(my_scale_frame, text="Draw",
                              borderwidth=8, background=elcolor,
