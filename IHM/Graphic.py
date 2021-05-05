@@ -117,7 +117,7 @@ def draw_5(self, elcolor):
 
     label = tk.Label(my_auto_scale_frame, text="Settings_chamber", bg="white", font="arial",
                      fg="black", relief="groove")
-    label.grid(row=0, column=0, ipadx=40, ipady=40, padx=0, pady=0)
+    label.grid(row=0, column=0, ipadx=20, ipady=20, padx=0, pady=0)
     button16 = tk.Button(my_auto_scale_frame, text="Start",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
@@ -229,7 +229,7 @@ def draw_5(self, elcolor):
 
     def display():
         style.use('ggplot')
-        fig = plt.figure(figsize=(10, 4), dpi=100)
+        fig = plt.figure(figsize=(10, 3), dpi=100)
         ax1 = fig.add_subplot(1, 1, 1)
         ax1.set_ylim(-40, 120)
         plotcanvas = FigureCanvasTkAgg(fig, root)
@@ -273,6 +273,7 @@ def draw_5(self, elcolor):
             ax1.set_xlim(0, i + 1)
 
         def animate2(r):
+            print(VARIABLE.Mythread.read(self))
             value = VARIABLE.Mythread.read(self)[0]
             yar2.append(value)
             xar2.append(r)
