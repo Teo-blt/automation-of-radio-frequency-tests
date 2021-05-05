@@ -57,7 +57,7 @@ class Mythread(threading.Thread):
         print("\nStart of Test\n")
 
         if self.oof:
-            off()
+            self.off()
         global i
         i = 0
         for i in range(0, self.nb_cycle):
