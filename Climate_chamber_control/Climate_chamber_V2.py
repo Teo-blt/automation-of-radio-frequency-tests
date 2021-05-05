@@ -12,6 +12,7 @@ import serial  # requirment pyserial
 import time
 import threading
 from tkinter import *
+from tkinter.ttk import *
 
 # =============================================================================
 
@@ -62,7 +63,7 @@ class Mythread(threading.Thread):
         for i in range(0, self.nb_cycle):
             self.loop(time_start)
 
-    def loop(self,  time_start):
+    def loop(self, time_start):
         global FIRST_TIME, time_start_min
         VT.write(ON % self.temp_min)
         time.sleep(0.5)
@@ -87,7 +88,7 @@ class Mythread(threading.Thread):
         except:
             print("Error, the climate chamber is already offline")
 
-    def exit(self,  time_start):
+    def exit(self, time_start):
         global i
         print(f'End of cycle {i}: {time.time() - time_start}\n')
         # Stop climatic chamber
