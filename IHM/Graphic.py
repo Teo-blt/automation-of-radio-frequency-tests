@@ -273,7 +273,7 @@ def draw_5(self, elcolor):
             ax1.set_xlim(0, i + 1)
 
         def animate2(r):
-            value = VARIABLE.Mythread.read(self)
+            value = VARIABLE.Mythread.read(self)[0]
             yar2.append(value)
             xar2.append(r)
             line2.set_data(xar2, yar2)

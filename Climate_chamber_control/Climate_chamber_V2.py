@@ -114,9 +114,7 @@ class Mythread(threading.Thread):
 
     def order(self, value):
         print("The new order value is : {}".format(value.get()))
-        print(Mythread.read(self))
         VT.write(ON % value.get())
-        print(Mythread.read(self))
 
 
 
