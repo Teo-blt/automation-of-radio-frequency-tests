@@ -17,14 +17,13 @@ from matplotlib import pyplot as plt
 import matplotlib.animation as animation
 from matplotlib import style
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import time
-#from Climate_chamber_control import Climate_chamber
+# from Climate_chamber_control import Climate_chamber
 from Climate_chamber_control import Climate_chamber_V2
 
-
 # =============================================================================
-VARIABLE = Climate_chamber_V2 #Climate_chamber
+VARIABLE = Climate_chamber_V2  # Climate_chamber
 FRAME = (-40, 30)
+
 
 def draw_4(self, elcolor):
     global my_scale_frame_1
@@ -123,8 +122,8 @@ def draw_5(self, elcolor):
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
                          command=lambda: [VARIABLE.Mythread(scale1.get(), scale2.get(),
-                                                                   scale4.get(), scale5.get(),
-                                                                   scale3.get(), 0, my_auto_scale_frame).start()])
+                                                            scale4.get(), scale5.get(),
+                                                            scale3.get(), 0, my_auto_scale_frame).start()])
     button16.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
     button17 = tk.Button(my_auto_scale_frame, text="Quit",
                          borderwidth=8, background=elcolor,
@@ -145,8 +144,9 @@ def draw_5(self, elcolor):
     button20 = tk.Button(my_auto_scale_frame, text="request",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [print("The actual themperature is : {}".format(VARIABLE.Mythread.read(self)[0])),
-                                          print("The actual order is : {}".format(VARIABLE.Mythread.read(self)[1]))])
+                         command=lambda: [
+                             print("The actual themperature is : {}".format(VARIABLE.Mythread.read(self)[0])),
+                             print("The actual order is : {}".format(VARIABLE.Mythread.read(self)[1]))])
     button20.grid(row=2, column=3, ipadx=40, ipady=20, padx=0, pady=0)
     scale1 = Scale(my_auto_scale_frame, orient='vertical', troughcolor=elcolor, from_=120, to=-40,
                    resolution=1, tickinterval=20, length=100, command=0,
@@ -176,17 +176,12 @@ def draw_5(self, elcolor):
     button12 = tk.Button(my_scale_frame, text="Reset",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [scale_root_1.set(0), scale_root_2.set(40), scale_root_3.set(1)])
+                         command=lambda: [scale_root_1.set(0), scale_root_3.set(1)])
     button12.pack(padx=1, pady=1, expand=True, fill="both", side=LEFT)
     scale_root_1 = Scale(my_scale_frame, orient='vertical', troughcolor=elcolor, from_=120, to=-40,
                          resolution=1, tickinterval=25, length=100,
                          label='Order', command=lambda x: VARIABLE.Mythread.order(self, scale_root_1), state="active")
     scale_root_1.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
-    scale_root_2 = Scale(my_scale_frame, orient='vertical', troughcolor=elcolor, from_=100, to=1,
-                         resolution=1, tickinterval=50, length=100, command=0,
-                         label="window length", state="active")
-    scale_root_2.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
-    scale_root_2.set(100)
     scale_root_3 = Scale(my_scale_frame, orient='vertical', troughcolor=elcolor, from_=10, to=0.1,
                          resolution=0.1, tickinterval=1, length=100, command=0,
                          label='delay in second', state="active")
@@ -275,28 +270,14 @@ def draw_5(self, elcolor):
             yar.append(scale_root_1.get())
             xar.append(i)
             line.set_data(xar, yar)
-
-            if i >= scale_root_2.get():
-                a = i - scale_root_2.get()
-                ax1.set_xlim(a, i + 1)
-                if scale_root_2.get() == 100:
-                    ax1.set_xlim(0, i + 1)
-            else:
-                ax1.set_xlim(0, i + 1)
+            ax1.set_xlim(0, i + 1)
 
         def animate2(r):
             value = VARIABLE.Mythread.read(self)
             yar2.append(value)
             xar2.append(r)
             line2.set_data(xar2, yar2)
-
-            if r >= scale_root_2.get():
-                a = r - scale_root_2.get()
-                ax1.set_xlim(a, r + 1)
-                if scale_root_2.get() == 100:
-                    ax1.set_xlim(0, r + 1)
-            else:
-                ax1.set_xlim(0, r + 1)
+            ax1.set_xlim(0, r + 1)
 
         plotcanvas = FigureCanvasTkAgg(fig, root)
         plotcanvas.get_tk_widget().grid(column=0, row=0)
@@ -361,7 +342,6 @@ def draw_6(self, elcolor, temperature_min, temperature_max,
                                              "was arbitrarly fixed to one hour", bg="white", font="arial",
                      fg="black", relief="groove")
     label.pack()
-
 
 
 """"
