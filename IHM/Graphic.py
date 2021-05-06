@@ -151,12 +151,12 @@ def draw_5(self, elcolor):
                              print("The actual themperature is : {}".format(VARIABLE.Mythread.read(self)[0])),
                              print("The actual order is : {}".format(VARIABLE.Mythread.read(self)[1]))])
     button20.grid(row=2, column=3, ipadx=40, ipady=20, padx=0, pady=0)
-    scale1 = Scale(my_auto_scale_frame, orient='vertical', troughcolor=elcolor, from_=120, to=-40,
+    scale1 = Scale(my_auto_scale_frame, orient='vertical', troughcolor=elcolor, from_=80, to=-40,
                    resolution=1, tickinterval=20, length=100, command=0,
                    label='temperature_min', state="active")
     scale1.grid(row=2, column=0, ipadx=0, ipady=0, padx=0, pady=0)
     scale1.set(-1)
-    scale2 = Scale(my_auto_scale_frame, orient='vertical', troughcolor=elcolor, from_=120, to=-40,
+    scale2 = Scale(my_auto_scale_frame, orient='vertical', troughcolor=elcolor, from_=80, to=-40,
                    resolution=1, tickinterval=20, length=100, command=0,
                    label='temperature_max', state="active")
     scale2.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
@@ -267,16 +267,20 @@ def draw_5(self, elcolor):
             return line2,
 
         def animate(i):
-            yar.append(VARIABLE.Mythread.read(self)[1])
+            value = VARIABLE.Mythread.read(self)[1]
+            yar.append(value)
             xar.append(i * 5)
             line.set_data(xar, yar)
             ax1.set_xlim(0, i * 5 + 1)
 
+
         def animate2(r):
-            yar2.append(VARIABLE.Mythread.read(self)[0])
+            value = VARIABLE.Mythread.read(self)
+            yar2.append(value[0])
             xar2.append(r * 5)
             line2.set_data(xar2, yar2)
             ax1.set_xlim(0, r * 5 + 1)
+            ax1.set_ylim(min(value) - 1, max(value) + 1)
 
         plotcanvas = FigureCanvasTkAgg(fig, root)
         plotcanvas.get_tk_widget().grid(column=0, row=0)
