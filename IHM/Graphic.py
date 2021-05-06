@@ -130,7 +130,8 @@ def draw_5(self, elcolor):
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
                          command=lambda: [VARIABLE.Mythread(scale1.get(), scale2.get(),
                                                             scale4.get(), scale5.get(),
-                                                            scale3.get(), 0, my_auto_scale_frame).start()])
+                                                            scale3.get(), 0, my_auto_scale_frame).start(),
+                                          eldraw2(scale_root_3)[0].resume(), eldraw2(scale_root_3)[1].resume()])
     button16.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
     button17 = tk.Button(my_auto_scale_frame, text="Quit",
                          borderwidth=8, background=elcolor,
@@ -224,7 +225,7 @@ def draw_5(self, elcolor):
                          indicatoron=1, command=lambda: [my_scale_frame.pack_forget(),
                                                          my_auto_scale_frame.pack(padx=0, pady=0,
                                                                                   expand=True, fill="both", side=LEFT),
-                                                         my_button_frame.pack_forget(), display()])
+                                                         my_button_frame.pack_forget()])
     rb2.pack(padx=0, pady=0, expand=False, fill="none", side=BOTTOM)
     rb1 = tk.Radiobutton(my_rb_frame, text="Manual",
                          variable=b, value=0, cursor="right_ptr",
@@ -232,7 +233,8 @@ def draw_5(self, elcolor):
                                                                              expand=True, fill="both", side=LEFT),
                                                          my_auto_scale_frame.pack_forget(),
                                                          my_button_frame.pack(padx=0, pady=0,
-                                                                              expand=True, fill="both", side=RIGHT)])
+                                                                              expand=True, fill="both", side=RIGHT),
+                                                         scale_root_1.set(VARIABLE.Mythread.read(self)[1])])
     rb1.pack(padx=0, pady=0, expand=False, fill="none", side=BOTTOM)
     rb1.invoke()
 
@@ -268,14 +270,13 @@ def draw_5(self, elcolor):
             return line2,
 
         def animate(i):
-            yar.append(scale_root_1.get())
+            yar.append(VARIABLE.Mythread.read(self)[1])
             xar.append(i)
             line.set_data(xar, yar)
             ax1.set_xlim(0, i + 1)
 
         def animate2(r):
-            value = VARIABLE.Mythread.read(self)[0]
-            yar2.append(value)
+            yar2.append(VARIABLE.Mythread.read(self)[0])
             xar2.append(r)
             line2.set_data(xar2, yar2)
             ax1.set_xlim(0, r + 1)

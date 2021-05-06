@@ -86,7 +86,8 @@ class Mythread(threading.Thread):
         elif temp2 == self.temp_min:
             if VALUE_STABILISATION < 25:
                 VALUE_STABILISATION = VALUE_STABILISATION + 1
-                print("p vaut {}".format(VALUE_STABILISATION))
+                print("The climate chamber is stabilized since {} seconds of the "
+                      "25 request ".format(VALUE_STABILISATION * 5))
                 self.root.after(5000, self.loop)
             else:
                 if not FIRST_TIME:
