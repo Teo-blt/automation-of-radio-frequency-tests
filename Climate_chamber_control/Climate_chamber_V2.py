@@ -45,7 +45,7 @@ class Mythread(threading.Thread):
     def run(self):
         VT.write(ON % self.temp_min)
         p = 0
-        while p < 0:
+        while p < 1:
             print("start-up, please wait")
             time.sleep(2)
             print("start-up, please wait.")
@@ -68,8 +68,6 @@ class Mythread(threading.Thread):
         global i
         i = 0
 
-        VT.write(ON % self.temp_min)
-
         for i in range(0, self.nb_cycle):
             self.loop()
 
@@ -91,10 +89,11 @@ class Mythread(threading.Thread):
                 self.root.after(5000, self.loop)
             else:
                 if not FIRST_TIME:
+                    print("The climate chamber is stabilized with success")
                     time_start_min = time.time()
                     FIRST_TIME = True
                 print(time.time())
-                print(time_start_min + (60)) # self.temp_min_duration_h * 3600)
+                print(time_start_min + (60))  # self.temp_min_duration_h * 3600)
                 if time.time() < time_start_min + (60):
                     self.root.after(5000, self.loop)  # => loop after 5 secondes
                 else:
@@ -118,20 +117,23 @@ class Mythread(threading.Thread):
         print(f'Test duration: {time_stop - time_start}\n')
 
     def read(self):
-        VT.write(b"$00I\n\r")
-        time.sleep(0.3)
-        received_frame = VT.read_all().decode('utf-8')
-        word = received_frame.split(" ")
-        strings = str(word[1])
-        number = float(strings)
-        strings2 = str(word[0])
-        number2 = strings2[-6:]
-        number3 = float(number2)
-        return [number, number3]
+        try:
+            VT.write(b"$00I\n\r")
+            time.sleep(0.3)
+            received_frame = VT.read_all().decode('utf-8')
+            word = received_frame.split(" ")
+            strings = str(word[1])
+            number = float(strings)
+            strings2 = str(word[0])
+            number2 = strings2[-6:]
+            number3 = float(number2)
+            return [number, number3]
+        except:
+            print("too fast, please slow down")
 
     def order(self, value):
         try:
-            VT.write(ON % value.get())
-            # print("The new order is : {}".format(value.get()))
+            VT.write(ON % value)
+            #print("The new order is : {}".format(value.get()))
         except:
             print("too fast, please slow down")
