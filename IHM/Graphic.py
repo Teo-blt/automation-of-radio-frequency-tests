@@ -280,7 +280,9 @@ def draw_5(self, elcolor):
             xar2.append(r * 5)
             line2.set_data(xar2, yar2)
             ax1.set_xlim(0, r * 5 + 1)
-            ax1.set_ylim(min(value) - 1, max(value) + 1)
+            #ax1.set_ylim(min(value) - 1, max(value) + 1)
+            ax1.set_ylim(0 - 1, 0 + 1)
+
 
         plotcanvas = FigureCanvasTkAgg(fig, root)
         plotcanvas.get_tk_widget().grid(column=0, row=0)

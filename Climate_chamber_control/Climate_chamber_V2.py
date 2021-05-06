@@ -49,8 +49,12 @@ class Mythread(threading.Thread):
         self.cycle = 0
 
     def run(self):
+
+        self.temps = 1/60
+        self.temperature = self.temp_min
+        VT.write(ON % self.temperature)
+
         p = 0
-        VT.write(ON % self.temp_min)
         while p < 1:
             print("start-up, please wait")
             time.sleep(2)
@@ -71,8 +75,6 @@ class Mythread(threading.Thread):
         if self.oof:
             self.off()
 
-        self.temps = 1/60
-        self.temperature = self.temp_min
         self.loop(self.temperature, self.temps)
 # ==============================================================================================
 
@@ -108,8 +110,10 @@ class Mythread(threading.Thread):
                         self.exit()
                     else:
                         if order == self.temp_max:
+                            VT.write(ON % self.temp_min)
                             self.loop(self.temp_min, self.temp_min_duration_h)
                         else:
+                            VT.write(ON % self.temp_max)
                             self.loop(self.temp_max, self.temp_max_duration_h)
 
 
