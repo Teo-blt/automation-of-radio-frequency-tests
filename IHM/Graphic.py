@@ -90,7 +90,6 @@ def draw_4(self, elcolor):
 
 
 def draw_5(self, elcolor):
-
     def display():
         style.use('ggplot')
         fig = plt.figure(figsize=(9, 4), dpi=100)
@@ -193,7 +192,7 @@ def draw_5(self, elcolor):
                          command=lambda: [VARIABLE.Mythread.order(self, scale_root_1.get())])
     button21.pack(padx=1, pady=1, expand=True, fill="both", side=RIGHT)
     label2 = tk.Label(my_button_frame, text="Graphic settings", bg="white", font="arial",
-                     fg="black", relief="groove")
+                      fg="black", relief="groove")
     label2.pack(padx=1, pady=1, expand=True, fill="both", side=TOP)
     button13 = tk.Button(my_button_frame, text="Start",
                          borderwidth=8, background=elcolor,
@@ -269,20 +268,35 @@ def draw_5(self, elcolor):
         def animate(i):
             value = VARIABLE.Mythread.read(self)[1]
             yar.append(value)
-            xar.append(i * 5)
-            line.set_data(xar, yar)
-            ax1.set_xlim(0, i * 5 + 1)
-
+            if i * (1 / 12) < 60:
+                xar.append(i * (1 / 12))
+                line.set_data(xar, yar)
+                ax1.set_xlim(0, i * (1 / 12) + 1)
+            else:
+                xar.append(i * (1 / 720))
+                line.set_data(xar, yar)
+                ax1.set_xlim(0, i * (1 / 720) + 1)
 
         def animate2(r):
+            global m, M
             value = VARIABLE.Mythread.read(self)
             yar2.append(value[0])
-            xar2.append(r * 5)
-            line2.set_data(xar2, yar2)
-            ax1.set_xlim(0, r * 5 + 1)
-            #ax1.set_ylim(min(value) - 1, max(value) + 1)
-            ax1.set_ylim(0 - 1, 0 + 1)
-
+            if r * (1 / 12) < 60:
+                xar2.append(r * (1 / 12))
+                line2.set_data(xar2, yar2)
+                ax1.set_xlim(0, r * (1 / 12) + 1)
+            else:
+                xar2.append(r * (1 / 720))
+                line2.set_data(xar2, yar2)
+                ax1.set_xlim(0, r * (1 / 720) + 1)
+            if r == 0:
+                m = min(value)
+                M = max(value)
+            if min(value) < m:
+                m = min(value)
+            if max(value) > M:
+                M = max(value)
+            ax1.set_ylim(m - 1, M + 1)
 
         plotcanvas = FigureCanvasTkAgg(fig, root)
         plotcanvas.get_tk_widget().grid(column=0, row=0)

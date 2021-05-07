@@ -12,10 +12,11 @@ import serial  # requirment pyserial
 import time
 import threading
 from tkinter import *
+import sys
 
 # =============================================================================
 
-CLIMATIC_CHAMBER_STOP = b"$00E 0020.0 0000.0 0000.0 0000.0 0000.0 0000000000000000\n\r"
+CLIMATIC_CHAMBER_STOP = b"$00E 0000.0 0000.0 0000.0 0000.0 0000.0 0000000000000000\n\r"
 ON = b"$00E %06.1f 0000.0 0000.0 0000.0 0000.0 0101000000000000\n\r"
 SERIAL_SPEED = 9600
 SERIAL_TIMEOUT = 5
@@ -47,6 +48,7 @@ class Mythread(threading.Thread):
         self.temp = 0
         self.temp2 = 0
         self.cycle = 0
+        self.time_start_min = 0
 
     def run(self):
 
@@ -79,41 +81,44 @@ class Mythread(threading.Thread):
 # ==============================================================================================
 
     def loop(self, order, timer):
-        global time_start_min
         [self.temp, self.temp2] = self.read()
         print("#################################")
         print("The actual themperature is : {}".format(self.temp))
         print("The actual order is : {}".format(self.temp2))
         if self.temp != order:
             self.VALUE_STABILISATION = 0
+            self.FIRST_TIME = False
             self.root.after(5000, lambda: self.loop(order, timer))  # => loop after 5 secondes
         elif self.temp == order:
-            if self.VALUE_STABILISATION < 30:
+            if self.VALUE_STABILISATION < 60:
                 print("The climate chamber is stabilized since {} seconds of the "
-                      "30 request ".format(self.VALUE_STABILISATION))
+                      "60 request ".format(self.VALUE_STABILISATION))
                 self.VALUE_STABILISATION = self.VALUE_STABILISATION + 5
                 self.root.after(5000, lambda: self.loop(order, timer))
             else:
                 if not self.FIRST_TIME:
                     print("The climate chamber is stabilized with success")
-                    time_start_min = time.time()
+                    self.time_start_min = time.time()
                     self.FIRST_TIME = True
                 print(time.time())
-                print(time_start_min + (timer * 3600))
-                if time.time() < time_start_min + (timer * 3600):
+                print(self.time_start_min + (timer * 3600))
+                if time.time() < self.time_start_min + (timer * 3600):
                     self.root.after(5000, lambda: self.loop(order, timer))  # => loop after 5 secondes
                 else:
                     global time_start
                     print(f'End of cycle {self.i}: {time.time() - time_start}\n')
+                    self.i = self.i + 1
                     self.cycle = self.cycle + 0.5
                     if self.cycle == self.nb_cycle:
                         self.exit()
                     else:
                         if order == self.temp_max:
                             VT.write(ON % self.temp_min)
+                            self.FIRST_TIME = False
                             self.loop(self.temp_min, self.temp_min_duration_h)
                         else:
                             VT.write(ON % self.temp_max)
+                            self.FIRST_TIME = False
                             self.loop(self.temp_max, self.temp_max_duration_h)
 
 
@@ -130,6 +135,7 @@ class Mythread(threading.Thread):
         print("\n################################################\n")
         print("\nEnd of Test\n")
         print(f'Test duration: {time_stop - time_start}\n')
+        sys.exit()
 
     def read(self):
         try:
