@@ -53,7 +53,12 @@ class Mythread(threading.Thread):
     def run(self):
 
         self.temps = 1/60
-        self.temperature = self.temp_min
+
+        if nlanla:
+            self.temperature = self.temp_min
+        else:
+            self.temperature = self.temp_max
+
         VT.write(ON % self.temperature)
 
         p = 0
@@ -89,7 +94,7 @@ class Mythread(threading.Thread):
             self.VALUE_STABILISATION = 0
             self.FIRST_TIME = False
             self.root.after(5000, lambda: self.loop(order, timer))  # => loop after 5 secondes
-        elif self.temp == order:
+        elif abs(self.temp - order) < 0.2:
             if self.VALUE_STABILISATION < 60:
                 print("The climate chamber is stabilized since {} seconds of the "
                       "60 request ".format(self.VALUE_STABILISATION))
@@ -100,8 +105,12 @@ class Mythread(threading.Thread):
                     print("The climate chamber is stabilized with success")
                     self.time_start_min = time.time()
                     self.FIRST_TIME = True
-                print(time.time())
-                print(self.time_start_min + (timer * 3600))
+                a = time.localtime(self.time_start_min)
+                b = time.localtime(time.time())
+                c = time.localtime(self.time_start_min + (timer * 3600))
+                print("The actual time is {} hours and {} minutes".format(b[3], b[4]))
+                print("The test started at {} hours and {} minutes".format(a[3], a[4]))
+                print("The test finish in {} hours and {} minutes".format(c[3], c[4]))
                 if time.time() < self.time_start_min + (timer * 3600):
                     self.root.after(5000, lambda: self.loop(order, timer))  # => loop after 5 secondes
                 else:

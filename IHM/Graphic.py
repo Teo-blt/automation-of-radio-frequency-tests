@@ -102,6 +102,7 @@ def draw_5(self, elcolor):
     global ani2
     global first_time
     first_time = 1
+    a = IntVar()
     b = IntVar()
     root = tk.Toplevel(self)
     root.title('Draw window')
@@ -121,6 +122,9 @@ def draw_5(self, elcolor):
     my_rb_frame = LabelFrame(my_settings_frame, bd=0)  # , text="Choice"
     my_rb_frame.pack(padx=0, pady=0, expand=True, fill="both", side=RIGHT)
     my_rb_frame.config(background='#fafafa')
+    my_rb_frame_2 = LabelFrame(my_auto_scale_frame, bd=0)  # , text="Choice"
+    my_rb_frame_2.grid(column=3, row=1)
+    my_rb_frame_2.config(background='#fafafa')
     display()
     label = tk.Label(my_auto_scale_frame, text="Settings_chamber", bg="white", font="arial",
                      fg="black", relief="groove")
@@ -148,7 +152,7 @@ def draw_5(self, elcolor):
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
                          command=lambda: [
                              print("The actual themperature is : {}".format(VARIABLE.Mythread.read(self)[0])),
-                             print("The actual order is : {}".format(VARIABLE.Mythread.read(self)[1]))])
+                             print("The actual order is : {}".format(VARIABLE.Mythread.read(self)[1])), print(a)])
     button20.grid(row=2, column=3, ipadx=40, ipady=20, padx=0, pady=0)
     scale1 = Scale(my_auto_scale_frame, orient='vertical', troughcolor=elcolor, from_=80, to=-40,
                    resolution=1, tickinterval=20, length=100, command=0,
@@ -178,10 +182,10 @@ def draw_5(self, elcolor):
     button12 = tk.Button(my_scale_frame, text="Request",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: print("The actual temperature is : {}\nThe actual order is : {}".format
-                                               (VARIABLE.Mythread.read(self)[0], VARIABLE.Mythread.read(self)[1])))
+                         command=lambda: [print("The actual temperature is : {}\nThe actual order is : {}".format
+                                               (VARIABLE.Mythread.read(self)[0], VARIABLE.Mythread.read(self)[1]))])
 
-    button12.pack(padx=1, pady=1, expand=True, fill="both", side=RIGHT)
+    button12.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
     scale_root_1 = Scale(my_scale_frame, orient='vertical', troughcolor=elcolor, from_=80, to=-40,
                          resolution=1, tickinterval=20, length=100,
                          label='Order', command=lambda x: [], state="active")
@@ -190,7 +194,12 @@ def draw_5(self, elcolor):
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
                          command=lambda: [VARIABLE.Mythread.order(self, scale_root_1.get())])
-    button21.pack(padx=1, pady=1, expand=True, fill="both", side=RIGHT)
+    button21.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
+    button22 = tk.Button(my_scale_frame, text="Off",
+                         borderwidth=8, background=elcolor,
+                         activebackground="green", cursor="right_ptr", overrelief="sunken",
+                         command=lambda: [VARIABLE.Mythread.off(self)])
+    button22.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
     label2 = tk.Label(my_button_frame, text="Graphic settings", bg="white", font="arial",
                       fg="black", relief="groove")
     label2.pack(padx=1, pady=1, expand=True, fill="both", side=TOP)
@@ -233,6 +242,16 @@ def draw_5(self, elcolor):
                                                          scale_root_1.set(VARIABLE.Mythread.read(self)[1])])
     rb1.pack(padx=0, pady=0, expand=False, fill="none", side=BOTTOM)
     rb1.invoke()
+    rb3 = tk.Radiobutton(my_rb_frame_2, text="Start_with_high_temp",
+                         variable=a, value=1, cursor="right_ptr",
+                         indicatoron=0, command=lambda: [], background=elcolor, activebackground="green", bd=4,selectcolor="green")
+    rb3.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
+    rb4 = tk.Radiobutton(my_rb_frame_2, text="Start_with_low_temp",
+                         variable=a, value=0, cursor="right_ptr",
+                         indicatoron=0, command=lambda: [], background=elcolor, activebackground="green", bd=4,selectcolor="green")
+    rb4.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
+    rb4.invoke()
+
 
     def eldraw2():
         global ani
@@ -268,27 +287,17 @@ def draw_5(self, elcolor):
         def animate(i):
             value = VARIABLE.Mythread.read(self)[1]
             yar.append(value)
-            if i * (1 / 12) < 60:
-                xar.append(i * (1 / 12))
-                line.set_data(xar, yar)
-                ax1.set_xlim(0, i * (1 / 12) + 1)
-            else:
-                xar.append(i * (1 / 720))
-                line.set_data(xar, yar)
-                ax1.set_xlim(0, i * (1 / 720) + 1)
+            xar.append(i * (1 / 12))
+            line.set_data(xar, yar)
+            ax1.set_xlim(0, i * (1 / 12) + 1)
 
         def animate2(r):
             global m, M
             value = VARIABLE.Mythread.read(self)
             yar2.append(value[0])
-            if r * (1 / 12) < 60:
-                xar2.append(r * (1 / 12))
-                line2.set_data(xar2, yar2)
-                ax1.set_xlim(0, r * (1 / 12) + 1)
-            else:
-                xar2.append(r * (1 / 720))
-                line2.set_data(xar2, yar2)
-                ax1.set_xlim(0, r * (1 / 720) + 1)
+            xar2.append(r * (1 / 12))
+            line2.set_data(xar2, yar2)
+            ax1.set_xlim(0, r * (1 / 12) + 1)
             if r == 0:
                 m = min(value)
                 M = max(value)
