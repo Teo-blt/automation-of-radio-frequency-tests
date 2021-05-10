@@ -260,16 +260,16 @@ def draw_5(self, elcolor):
                                                          my_auto_stair_scale_frame.pack_forget()])
     rb1.pack(padx=0, pady=0, expand=False, fill="none", side=BOTTOM)
     rb1.invoke()
-    rb3 = tk.Radiobutton(my_rb_frame_2, text="Start_with_high_temp",
+    rb3 = tk.Radiobutton(my_auto_scale_frame, text="Start_with_high_temp",
                          variable=a, value=0, cursor="right_ptr",
                          indicatoron=0, command=lambda: [], background=elcolor, activebackground="green",
-                         bd=4, selectcolor="green")
-    rb3.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
-    rb4 = tk.Radiobutton(my_rb_frame_2, text="Start_with_low_temp",
+                         bd=8, selectcolor="green",overrelief="sunken")
+    rb3.grid(row=1, column=2, ipadx=10, ipady=10, padx=0, pady=0)
+    rb4 = tk.Radiobutton(my_auto_scale_frame, text="Start_with_low_temp",
                          variable=a, value=1, cursor="right_ptr",
                          indicatoron=0, command=lambda: [], background=elcolor, activebackground="green",
-                         bd=4, selectcolor="green")
-    rb4.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
+                         bd=8, selectcolor="green",overrelief="sunken")
+    rb4.grid(row=1, column=3, ipadx=10, ipady=10, padx=0, pady=0)
     rb4.invoke()
     rb5 = tk.Radiobutton(my_rb_frame_3, text="Stair",
                          variable=c, value=1, cursor="right_ptr",
@@ -286,7 +286,7 @@ def draw_5(self, elcolor):
     button23 = tk.Button(my_auto_stair_scale_frame, text="Start",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [VARIABLE.Mythread(0, 0,
+                         command=lambda: [VARIABLE.Mythread(scale8.get(),  scale8.get(),
                                                             scale9.get(), scale9.get(),
                                                             scale10.get(), 0, my_auto_scale_frame, 0, c.get(),
                                                             scale7.get()).start()])
@@ -313,6 +313,11 @@ def draw_5(self, elcolor):
                    label='temperature', state="active")
     scale7.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
     scale7.set(1)
+    scale8 = Scale(my_auto_stair_scale_frame, orient='vertical', troughcolor=elcolor, from_=80, to=-40,
+                   resolution=1, tickinterval=20, length=100, command=0,
+                   label='Start temperature', state="active")
+    scale8.grid(row=2, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+    scale8.set(1)
     scale9 = Scale(my_auto_stair_scale_frame, orient='horizontal', troughcolor=elcolor, from_=0, to=20,
                    resolution=1, tickinterval=20, length=100, command=0,
                    label='temperature_duration_h', state="active")

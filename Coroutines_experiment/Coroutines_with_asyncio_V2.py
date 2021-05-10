@@ -63,8 +63,6 @@ class Mythread(threading.Thread):
         else:
             self.temperature = self.temp_max
             self.timer = self.temp_max_duration_h
-        if self.stair == 1:
-            self.temperature = self.stair_temp
 
         VT.write(ON % self.temperature)
         p = 0
