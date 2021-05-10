@@ -17,11 +17,12 @@ from matplotlib import pyplot as plt
 import matplotlib.animation as animation
 from matplotlib import style
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from Climate_chamber_control import Climate_chamber_V2
+#from Climate_chamber_control import Climate_chamber_V2
+import coroutines_with_asyncio_V2
 from loguru import logger
 
 # =============================================================================
-VARIABLE = Climate_chamber_V2  # Climate_chamber
+VARIABLE = coroutines_with_asyncio_V2  # Climate_chamber, Climate_chamber_V2, coroutines_with_asyncio_V2
 FRAME = (-50, 90)
 
 
