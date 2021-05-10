@@ -84,7 +84,7 @@ class Mythread(threading.Thread):
         asyncio.run(self.several_methods_run_together())
 
     async def wait_temperature_reach_consign(self, timer):
-        while abs(self.temp - self.temperature) > 0.2 or self.VALUE_STABILISATION <= 60:
+        while abs(self.temp - self.temperature) >= 0.2 or self.VALUE_STABILISATION <= 120:
             await asyncio.sleep(5)
             [self.temp, self.temp2] = self.read()
             logger.info("#################################")
@@ -92,21 +92,22 @@ class Mythread(threading.Thread):
             logger.info("The actual order is : {}".format(self.temp2))
             if abs(self.temp - self.temperature) < 0.2:
                 logger.info("The climate chamber is stabilized since {} seconds of the "
-                            "60 request ".format(self.VALUE_STABILISATION))
+                            "120 request ".format(self.VALUE_STABILISATION))
                 self.VALUE_STABILISATION = self.VALUE_STABILISATION + 5
-
+            else:
+                self.VALUE_STABILISATION = 0
         logger.info("The climate chamber is stabilized with success")
         self.time_start_min = time.time()
         while time.time() < self.time_start_min + (timer * 3600):
             await asyncio.sleep(5)
             [self.temp, self.temp2] = self.read()
             logger.info("#################################")
-            logger.info(f"The actual themperature is : {self.temp}")
+            logger.info(f"The actual temperature is : {self.temp}")
             logger.info("The actual order is : {}".format(self.temp2))
-            a = time.localtime(self.time_start_min)
-            b = time.localtime((self.time_start_min + (timer * 3600)) - time.time())
-            logger.info("The test started at {} hours {} minutes and {} secondes".format(a[3], a[4], a[5]))
-            logger.info("The test finish in {} hours {} minutes and {} secondes".format(b[3], b[4], b[5]))
+            b = time.localtime(abs((self.time_start_min + (timer * 3600)) - time.time()))
+            c = time.localtime(self.time_start_min + (timer * 3600))
+            logger.info("The test will finish at {}H{} and {} second(s)".format(c[3], c[4], c[5]))
+            logger.info("{} hour(s) {} minute(s) and {} second remain".format(b[3], b[4], b[5]))
         return 1  # without a return, the while loop will run continuously.
 
     async def do_something_else(self):
@@ -126,8 +127,8 @@ class Mythread(threading.Thread):
                 self.temperature = self.temp_max
 
             self.i = self.i + 1
-            a = time.localtime(time.time() - self.time_start)
-            logger.info(f'End of cycle {self.i}: {a}')
+            a = time.localtime(time.time())
+            logger.info(f'End of cycle {self.i}: {a[3]}H{a[4]} and {a[5]} second(s)')
         self.exit()
 
     def off(self):
