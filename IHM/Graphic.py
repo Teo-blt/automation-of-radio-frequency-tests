@@ -135,7 +135,7 @@ def draw_5(self, elcolor):
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
                          command=lambda: [VARIABLE.Mythread(scale1.get(), scale2.get(),
                                                             scale4.get(), scale5.get(),
-                                                            scale3.get(), 0, my_auto_scale_frame, a.get()).start()])
+                                                            scale3.get(), 0, my_auto_scale_frame, a.get(), 0, 0).start()])
     button16.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
     button18 = tk.Button(my_auto_scale_frame, text="Off",
                          borderwidth=8, background=elcolor,

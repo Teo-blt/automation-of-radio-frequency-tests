@@ -7,15 +7,12 @@
 # =============================================================================
 """The Module Has Been Build for the automation of radio frequency tests"""
 # =============================================================================
-# import
 import asyncio
-import sys
 from loguru import logger
 import threading
 import time
 import serial
 from tkinter import *
-from IHM import Graphic
 
 # =============================================================================
 CLIMATIC_CHAMBER_STOP = b"$00E 0000.0 0000.0 0000.0 0000.0 0000.0 0000000000000000\n\r"
@@ -34,7 +31,7 @@ except:
 class Mythread(threading.Thread):
 
     def __init__(self, temp_min, temp_max, temp_min_duration_h,
-                 temp_max_duration_h, nb_cycle, oof, my_auto_scale_frame, up_down):  # data = additional data
+                 temp_max_duration_h, nb_cycle, oof, my_auto_scale_frame, up_down, stair, stair_temp):  # data = additional data
         threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
         self.temp_min = temp_min  # additional data added to the class
         self.temp_max = temp_max
@@ -54,6 +51,8 @@ class Mythread(threading.Thread):
         self.time_start_min = 0
         self.up_down = up_down
         self.timer = 1 / 60
+        self.stair = stair
+        self.stair_temp = stair_temp
 
     def run(self):
         if self.oof:
@@ -88,7 +87,7 @@ class Mythread(threading.Thread):
             await asyncio.sleep(5)
             [self.temp, self.temp2] = self.read()
             logger.info("#################################")
-            logger.info(f"The actual themperature is : {self.temp}")
+            logger.info(f"The actual temperature is : {self.temp}")
             logger.info("The actual order is : {}".format(self.temp2))
             if abs(self.temp - self.temperature) < 0.2:
                 logger.info("The climate chamber is stabilized since {} seconds of the "
@@ -116,15 +115,20 @@ class Mythread(threading.Thread):
     async def several_methods_run_together(self):
         while self.nb_cycle != self.cycle:
             statements = [self.wait_temperature_reach_consign(self.timer), self.do_something_else()]
-            await asyncio.gather(*statements)  # Gather is used to allow both funtions to run at the same time.*
+            await asyncio.gather(*statements)  # Gather is used to allow both functions to run at the same time.*
             self.cycle = self.cycle + 0.5
 
-            if self.temperature == self.temp_max:
-                VT.write(ON % self.temp_min)
-                self.temperature = self.temp_min
+            if self.stair == 0:
+                if self.temperature == self.temp_max:
+                    VT.write(ON % self.temp_min)
+                    self.temperature = self.temp_min
+                else:
+                    VT.write(ON % self.temp_max)
+                    self.temperature = self.temp_max
             else:
-                VT.write(ON % self.temp_max)
-                self.temperature = self.temp_max
+                self.temperature = self.temperature + self.stair_temp
+                if self.temperature > 80 or self.temperature < -40:
+                    self.exit()
 
             self.i = self.i + 1
             a = time.localtime(time.time())
