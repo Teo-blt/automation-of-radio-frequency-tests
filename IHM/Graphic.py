@@ -287,9 +287,9 @@ def draw_5(self, elcolor):
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
                          command=lambda: [VARIABLE.Mythread(0, 0,
-                                                            0, 0,
-                                                            0, 0, my_auto_scale_frame, 0, 0,
-                                                            0).start()])
+                                                            scale9.get(), scale9.get(),
+                                                            scale10.get(), 0, my_auto_scale_frame, 0, c.get(),
+                                                            scale7.get()).start()])
     button23.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
     button24 = tk.Button(my_auto_stair_scale_frame, text="Off",
                          borderwidth=8, background=elcolor,
