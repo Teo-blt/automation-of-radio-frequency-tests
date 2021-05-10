@@ -11,7 +11,8 @@
 import tkinter as tk
 from tkinter import *
 import Climate_chamber
-from IHM import void
+from After_experiment import Tests_after
+
 
 # =============================================================================
 
@@ -32,7 +33,7 @@ class Climate(Tk):
         button1 = tk.Button(my_settings_chamber_frame, text="Start",
                             borderwidth=8, background=elcolor,
                             activebackground="green", cursor="right_ptr", overrelief="sunken",
-                            command=lambda : [void.loop()])
+                            command=lambda : [Tests_after.loop()])
         button1.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
         button2 = tk.Button(my_settings_chamber_frame, text="Quit",
                             borderwidth=8, background=elcolor,

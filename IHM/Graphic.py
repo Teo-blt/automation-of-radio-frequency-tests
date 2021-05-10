@@ -18,11 +18,11 @@ import matplotlib.animation as animation
 from matplotlib import style
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 #from Climate_chamber_control import Climate_chamber_V2
-import coroutines_with_asyncio_V2
+from Coroutines_experiment import Coroutines_with_asyncio_V2
 from loguru import logger
 
 # =============================================================================
-VARIABLE = coroutines_with_asyncio_V2  # Climate_chamber, Climate_chamber_V2, coroutines_with_asyncio_V2
+VARIABLE = Coroutines_with_asyncio_V2  # Climate_chamber, Climate_chamber_V2, coroutines_with_asyncio_V2
 FRAME = (-50, 90)
 
 
@@ -135,7 +135,7 @@ def draw_5(self, elcolor):
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
                          command=lambda: [VARIABLE.Mythread(scale1.get(), scale2.get(),
                                                             scale4.get(), scale5.get(),
-                                                            scale3.get(), 0, my_auto_scale_frame,1).start()])
+                                                            scale3.get(), 0, my_auto_scale_frame, a.get()).start()])
     button16.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
     button18 = tk.Button(my_auto_scale_frame, text="Off",
                          borderwidth=8, background=elcolor,
@@ -246,12 +246,14 @@ def draw_5(self, elcolor):
     rb1.pack(padx=0, pady=0, expand=False, fill="none", side=BOTTOM)
     rb1.invoke()
     rb3 = tk.Radiobutton(my_rb_frame_2, text="Start_with_high_temp",
-                         variable=a, value=1, cursor="right_ptr",
-                         indicatoron=0, command=lambda: [], background=elcolor, activebackground="green", bd=4,selectcolor="green")
+                         variable=a, value=0, cursor="right_ptr",
+                         indicatoron=0, command=lambda: [], background=elcolor, activebackground="green",
+                         bd=4,selectcolor="green")
     rb3.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
     rb4 = tk.Radiobutton(my_rb_frame_2, text="Start_with_low_temp",
-                         variable=a, value=0, cursor="right_ptr",
-                         indicatoron=0, command=lambda: [], background=elcolor, activebackground="green", bd=4,selectcolor="green")
+                         variable=a, value=1, cursor="right_ptr",
+                         indicatoron=0, command=lambda: [], background=elcolor, activebackground="green",
+                         bd=4,selectcolor="green")
     rb4.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
     rb4.invoke()
 
