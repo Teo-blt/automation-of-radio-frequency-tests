@@ -30,8 +30,8 @@ except:
 
 class Mythread(threading.Thread):
 
-    def __init__(self, temp_min, temp_max, temp_min_duration_h,
-                 temp_max_duration_h, nb_cycle, oof, my_auto_scale_frame, up_down, stair, stair_temp):  # data = additional data
+    def __init__(self, temp_min, temp_max, temp_min_duration_h,temp_max_duration_h,
+                 nb_cycle, oof, my_auto_scale_frame, up_down, stair, stair_temp):
         threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
         self.temp_min = temp_min  # additional data added to the class
         self.temp_max = temp_max

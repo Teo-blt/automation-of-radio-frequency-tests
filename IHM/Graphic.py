@@ -17,7 +17,7 @@ from matplotlib import pyplot as plt
 import matplotlib.animation as animation
 from matplotlib import style
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-#from Climate_chamber_control import Climate_chamber_V2
+# from Climate_chamber_control import Climate_chamber_V2
 from Coroutines_experiment import Coroutines_with_asyncio_V2
 from loguru import logger
 
@@ -105,6 +105,7 @@ def draw_5(self, elcolor):
     first_time = 1
     a = IntVar()
     b = IntVar()
+    c = IntVar()
     root = tk.Toplevel(self)
     root.title('Draw window')
     root.config(background='#fafafa')
@@ -117,6 +118,9 @@ def draw_5(self, elcolor):
     my_auto_scale_frame = LabelFrame(my_settings_frame, bd=0)  # , text="my_auto_scale_frame"
     my_auto_scale_frame.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
     my_auto_scale_frame.config(background='#fafafa')
+    my_auto_stair_scale_frame = LabelFrame(my_settings_frame, bd=0)  # , text="my_auto_scale_frame"
+    my_auto_stair_scale_frame.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
+    my_auto_stair_scale_frame.config(background='#fafafa')
     my_button_frame = LabelFrame(root, bd=0)  # , text="Buttons"
     my_button_frame.grid(column=1, row=0)
     my_button_frame.config(background='#fafafa')
@@ -126,16 +130,23 @@ def draw_5(self, elcolor):
     my_rb_frame_2 = LabelFrame(my_auto_scale_frame, bd=0)  # , text="Choice"
     my_rb_frame_2.grid(column=3, row=1)
     my_rb_frame_2.config(background='#fafafa')
+    my_rb_frame_3 = LabelFrame(my_settings_frame, bd=0)  # , text="Choice"
+    my_rb_frame_3.pack(padx=0, pady=0, expand=True, fill="both", side=RIGHT)
+    my_rb_frame_3.config(background='#fafafa')
     display()
-    label = tk.Label(my_auto_scale_frame, text="Settings_chamber", bg="white", font="arial",
+    label = tk.Label(my_auto_scale_frame, text="Cyclic automating", bg="white", font="arial",
                      fg="black", relief="groove")
     label.grid(row=0, column=0, ipadx=20, ipady=20, padx=0, pady=0)
+    label3 = tk.Label(my_auto_stair_scale_frame, text="Automation by step", bg="white", font="arial",
+                     fg="black", relief="groove")
+    label3.grid(row=0, column=0, ipadx=20, ipady=20, padx=0, pady=0)
     button16 = tk.Button(my_auto_scale_frame, text="Start",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
                          command=lambda: [VARIABLE.Mythread(scale1.get(), scale2.get(),
                                                             scale4.get(), scale5.get(),
-                                                            scale3.get(), 0, my_auto_scale_frame, a.get(), 0, 0).start()])
+                                                            scale3.get(), 0, my_auto_scale_frame, a.get(), 0,
+                                                            0).start()])
     button16.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
     button18 = tk.Button(my_auto_scale_frame, text="Off",
                          borderwidth=8, background=elcolor,
@@ -184,7 +195,7 @@ def draw_5(self, elcolor):
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
                          command=lambda: [logger.info("The actual temperature is : {}".format
-                                               (VARIABLE.Mythread.read(self)[0])),
+                                                      (VARIABLE.Mythread.read(self)[0])),
                                           logger.info("The actual order is : {}".format
                                                       (VARIABLE.Mythread.read(self)[1]))])
 
@@ -234,7 +245,9 @@ def draw_5(self, elcolor):
                          indicatoron=1, command=lambda: [my_scale_frame.pack_forget(),
                                                          my_auto_scale_frame.pack(padx=0, pady=0,
                                                                                   expand=True, fill="both", side=LEFT),
-                                                         my_button_frame.pack_forget()])
+                                                         my_button_frame.pack_forget(),
+                                                         my_rb_frame_3.pack(padx=0, pady=0, expand=True,
+                                                                            fill="both", side=RIGHT),rb6.invoke()])
     rb2.pack(padx=0, pady=0, expand=False, fill="none", side=BOTTOM)
     rb1 = tk.Radiobutton(my_rb_frame, text="Manual",
                          variable=b, value=0, cursor="right_ptr",
@@ -242,20 +255,74 @@ def draw_5(self, elcolor):
                                                                              expand=True, fill="both", side=LEFT),
                                                          my_auto_scale_frame.pack_forget(),
                                                          my_button_frame.grid(column=1, row=0),
-                                                         scale_root_1.set(VARIABLE.Mythread.read(self)[1])])
+                                                         scale_root_1.set(VARIABLE.Mythread.read(self)[1]),
+                                                         my_rb_frame_3.pack_forget(),
+                                                         my_auto_stair_scale_frame.pack_forget()])
     rb1.pack(padx=0, pady=0, expand=False, fill="none", side=BOTTOM)
     rb1.invoke()
     rb3 = tk.Radiobutton(my_rb_frame_2, text="Start_with_high_temp",
                          variable=a, value=0, cursor="right_ptr",
                          indicatoron=0, command=lambda: [], background=elcolor, activebackground="green",
-                         bd=4,selectcolor="green")
+                         bd=4, selectcolor="green")
     rb3.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
     rb4 = tk.Radiobutton(my_rb_frame_2, text="Start_with_low_temp",
                          variable=a, value=1, cursor="right_ptr",
                          indicatoron=0, command=lambda: [], background=elcolor, activebackground="green",
-                         bd=4,selectcolor="green")
+                         bd=4, selectcolor="green")
     rb4.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
     rb4.invoke()
+    rb5 = tk.Radiobutton(my_rb_frame_3, text="Stair",
+                         variable=c, value=1, cursor="right_ptr",
+                         indicatoron=1, command=lambda: [my_auto_scale_frame.pack_forget(),
+                                                         my_auto_stair_scale_frame.pack(padx=0, pady=0,
+                                                                                  expand=True, fill="both", side=LEFT)])
+    rb5.pack(padx=0, pady=0, expand=False, fill="none", side=BOTTOM)
+    rb6 = tk.Radiobutton(my_rb_frame_3, text="Cycle",
+                         variable=c, value=0, cursor="right_ptr",
+                         indicatoron=1, command=lambda: [my_auto_scale_frame.pack(padx=0, pady=0,
+                                                                             expand=True, fill="both", side=LEFT),
+                                                         my_auto_stair_scale_frame.pack_forget()])
+    rb6.pack(padx=0, pady=0, expand=False, fill="none", side=BOTTOM)
+    button23 = tk.Button(my_auto_stair_scale_frame, text="Start",
+                         borderwidth=8, background=elcolor,
+                         activebackground="green", cursor="right_ptr", overrelief="sunken",
+                         command=lambda: [VARIABLE.Mythread(0, 0,
+                                                            0, 0,
+                                                            0, 0, my_auto_scale_frame, 0, 0,
+                                                            0).start()])
+    button23.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
+    button24 = tk.Button(my_auto_stair_scale_frame, text="Off",
+                         borderwidth=8, background=elcolor,
+                         activebackground="green", cursor="right_ptr", overrelief="sunken",
+                         command=lambda: [VARIABLE.Mythread.off(self)])
+    button24.grid(row=0, column=2, ipadx=40, ipady=20, padx=0, pady=0)
+    button25 = tk.Button(my_auto_stair_scale_frame, text="Simulation",
+                         borderwidth=8, background=elcolor,
+                         activebackground="green", cursor="right_ptr", overrelief="sunken",
+                         command=lambda: [draw_7()])
+    button25.grid(row=0, column=3, ipadx=40, ipady=20, padx=0, pady=0)
+    button26 = tk.Button(my_auto_stair_scale_frame, text="request",
+                         borderwidth=8, background=elcolor,
+                         activebackground="green", cursor="right_ptr", overrelief="sunken",
+                         command=lambda: [
+                             logger.info("The actual themperature is : {}".format(VARIABLE.Mythread.read(self)[0])),
+                             logger.info("The actual order is : {}".format(VARIABLE.Mythread.read(self)[1]))])
+    button26.grid(row=1, column=3, ipadx=40, ipady=20, padx=0, pady=0)
+    scale7 = Scale(my_auto_stair_scale_frame, orient='vertical', troughcolor=elcolor, from_=80, to=-40,
+                   resolution=1, tickinterval=20, length=100, command=0,
+                   label='temperature', state="active")
+    scale7.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+    scale7.set(1)
+    scale9 = Scale(my_auto_stair_scale_frame, orient='horizontal', troughcolor=elcolor, from_=0, to=20,
+                   resolution=1, tickinterval=20, length=100, command=0,
+                   label='temperature_duration_h', state="active")
+    scale9.grid(row=1, column=1, ipadx=30, ipady=0, padx=0, pady=0)
+    scale9.set(1)
+    scale10 = Scale(my_auto_stair_scale_frame, orient='horizontal', troughcolor=elcolor, from_=1, to=20,
+                   resolution=1, tickinterval=5, length=100, command=0,
+                   label='number_of_cycles', state="active", relief="flat")
+    scale10.grid(row=1, column=2, ipadx=30, ipady=0, padx=0, pady=0)
+    scale10.set(1)
 
 
     def eldraw2():
@@ -376,6 +443,8 @@ def draw_6(self, elcolor, temperature_min, temperature_max,
                      fg="black", relief="groove")
     label.pack()
 
+def draw_7():
+    print("a")
 
 """"
 def draw_2(self):
