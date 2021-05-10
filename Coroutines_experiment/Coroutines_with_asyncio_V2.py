@@ -15,6 +15,8 @@ import threading
 import time
 import serial
 from tkinter import *
+from IHM import Graphic
+
 # =============================================================================
 CLIMATIC_CHAMBER_STOP = b"$00E 0000.0 0000.0 0000.0 0000.0 0000.0 0000000000000000\n\r"
 ON = b"$00E %06.1f 0000.0 0000.0 0000.0 0000.0 0101000000000000\n\r"
@@ -27,6 +29,7 @@ try:
 except:
     logger.critical("Connection not possible")
     logger.critical("Please chek your connection port")
+
 
 class Mythread(threading.Thread):
 
@@ -50,18 +53,17 @@ class Mythread(threading.Thread):
         self.cycle = 0
         self.time_start_min = 0
         self.up_down = up_down
-        self.go = 0
+        self.timer = 1 / 60
 
     def run(self):
-
         if self.oof:
             self.off()
-        self.go = self.go +1
         if self.up_down:
             self.temperature = self.temp_min
+            self.timer = self.temp_min_duration_h
         else:
             self.temperature = self.temp_max
-
+            self.timer = self.temp_max_duration_h
         VT.write(ON % self.temperature)
         p = 0
         while p < 1:
@@ -78,11 +80,11 @@ class Mythread(threading.Thread):
         logger.info("################################################")
         logger.info("Start of Test")
         self.time_start = time.time()
+        self.timer = 1 / 60
         asyncio.run(self.several_methods_run_together())
 
-    async def wait_temperature_reach_consign(self):
-        stabilized: int = 0
-        while abs(self.temp - self.temperature) > 0.2 and self.VALUE_STABILISATION < 60:
+    async def wait_temperature_reach_consign(self, timer):
+        while abs(self.temp - self.temperature) > 0.2 or self.VALUE_STABILISATION <= 60:
             await asyncio.sleep(5)
             [self.temp, self.temp2] = self.read()
             logger.info("#################################")
@@ -94,16 +96,39 @@ class Mythread(threading.Thread):
                 self.VALUE_STABILISATION = self.VALUE_STABILISATION + 5
 
         logger.info("The climate chamber is stabilized with success")
-        return stabilized  # without a return, the while loop will run continuously.
+        self.time_start_min = time.time()
+        while time.time() < self.time_start_min + (timer * 3600):
+            await asyncio.sleep(5)
+            [self.temp, self.temp2] = self.read()
+            logger.info("#################################")
+            logger.info(f"The actual themperature is : {self.temp}")
+            logger.info("The actual order is : {}".format(self.temp2))
+            a = time.localtime(self.time_start_min)
+            b = time.localtime((self.time_start_min + (timer * 3600)) - time.time())
+            logger.info("The test started at {} hours {} minutes and {} secondes".format(a[3], a[4], a[5]))
+            logger.info("The test finish in {} hours {} minutes and {} secondes".format(b[3], b[4], b[5]))
+        return 1  # without a return, the while loop will run continuously.
 
     async def do_something_else(self):
-        if self.go == 2:
-            sys.exit()
+        pass
 
     async def several_methods_run_together(self):
-        statements = [self.wait_temperature_reach_consign(), self.do_something_else()]
-        await asyncio.gather(*statements)  # Gather is used to allow both funtions to run at the same time.
-        logger.info("finish several_methods_run_together()")
+        while self.nb_cycle != self.cycle:
+            statements = [self.wait_temperature_reach_consign(self.timer), self.do_something_else()]
+            await asyncio.gather(*statements)  # Gather is used to allow both funtions to run at the same time.*
+            self.cycle = self.cycle + 0.5
+
+            if self.temperature == self.temp_max:
+                VT.write(ON % self.temp_min)
+                self.temperature = self.temp_min
+            else:
+                VT.write(ON % self.temp_max)
+                self.temperature = self.temp_max
+
+            self.i = self.i + 1
+            a = time.localtime(time.time() - self.time_start)
+            logger.info(f'End of cycle {self.i}: {a}')
+        self.exit()
 
     def off(self):
         try:
@@ -117,7 +142,8 @@ class Mythread(threading.Thread):
         time_stop = time.time()
         logger.info("################################################")
         logger.info("End of Test")
-        logger.info(f'Test duration: {time_stop - self.time_start}')
+        b = time.localtime(time_stop - self.time_start)
+        logger.info(f'Test duration: {b}')
         sys.exit()
 
     def read(self):
@@ -142,4 +168,3 @@ class Mythread(threading.Thread):
             # print("The new order is : {}".format(value.get()))
         except:
             logger.error("too fast, please slow down")
-
