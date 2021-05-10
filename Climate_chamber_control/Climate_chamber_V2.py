@@ -88,7 +88,7 @@ class Mythread(threading.Thread):
     def loop(self, order, timer):
         [self.temp, self.temp2] = self.read()
         print("#################################")
-        print("The actual themperature is : {}".format(self.temp))
+        print(f"The actual themperature is : {self.temp}")
         print("The actual order is : {}".format(self.temp2))
         if self.temp != order:
             self.VALUE_STABILISATION = 0
