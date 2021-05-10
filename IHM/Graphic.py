@@ -18,6 +18,7 @@ import matplotlib.animation as animation
 from matplotlib import style
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from Climate_chamber_control import Climate_chamber_V2
+from loguru import logger
 
 # =============================================================================
 VARIABLE = Climate_chamber_V2  # Climate_chamber
@@ -63,7 +64,6 @@ def draw_4(self, elcolor):
 
     def enter(event):
         eldraw()
-        print("a")
 
     a = IntVar()
     f = IntVar()
@@ -134,7 +134,7 @@ def draw_5(self, elcolor):
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
                          command=lambda: [VARIABLE.Mythread(scale1.get(), scale2.get(),
                                                             scale4.get(), scale5.get(),
-                                                            scale3.get(), 0, my_auto_scale_frame).start()])
+                                                            scale3.get(), 0, my_auto_scale_frame,1).start()])
     button16.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
     button18 = tk.Button(my_auto_scale_frame, text="Off",
                          borderwidth=8, background=elcolor,
@@ -151,8 +151,8 @@ def draw_5(self, elcolor):
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
                          command=lambda: [
-                             print("The actual themperature is : {}".format(VARIABLE.Mythread.read(self)[0])),
-                             print("The actual order is : {}".format(VARIABLE.Mythread.read(self)[1])), print(a)])
+                             logger.info("The actual themperature is : {}".format(VARIABLE.Mythread.read(self)[0])),
+                             logger.info("The actual order is : {}".format(VARIABLE.Mythread.read(self)[1]))])
     button20.grid(row=2, column=3, ipadx=40, ipady=20, padx=0, pady=0)
     scale1 = Scale(my_auto_scale_frame, orient='vertical', troughcolor=elcolor, from_=80, to=-40,
                    resolution=1, tickinterval=20, length=100, command=0,
@@ -182,7 +182,7 @@ def draw_5(self, elcolor):
     button12 = tk.Button(my_scale_frame, text="Request",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [print("The actual temperature is : {}\nThe actual order is : {}".format
+                         command=lambda: [logger.info("The actual temperature is : {}\nThe actual order is : {}".format
                                                (VARIABLE.Mythread.read(self)[0], VARIABLE.Mythread.read(self)[1]))])
 
     button12.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)

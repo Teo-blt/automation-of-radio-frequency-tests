@@ -90,7 +90,6 @@ class Application(Tk):
 
     def interface(self, choice):
         if choice == -1:
-            print("error")
             showerror("Error", "You must select a valid instrument")
         elif choice == 0:
             self.clear("Climatic_chamber")

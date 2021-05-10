@@ -13,6 +13,7 @@ import time
 import threading
 from tkinter import *
 import sys
+from loguru import logger
 
 # =============================================================================
 
@@ -25,13 +26,14 @@ CONNECTION = 'COM11'
 try:
     VT = serial.Serial(CONNECTION, SERIAL_SPEED, timeout=SERIAL_TIMEOUT)
 except:
-    print("impossible connection")
+    logger.critical("Connection not possible")
+    logger.critical("Please chek your connection port")
 
 
 class Mythread(threading.Thread):
 
     def __init__(self, temp_min, temp_max, temp_min_duration_h,
-                 temp_max_duration_h, nb_cycle, oof, my_auto_scale_frame):  # data = additional data
+                 temp_max_duration_h, nb_cycle, oof, my_auto_scale_frame, up_down):  # data = additional data
         threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
         self.temp_min = temp_min  # additional data added to the class
         self.temp_max = temp_max
@@ -49,12 +51,13 @@ class Mythread(threading.Thread):
         self.temp2 = 0
         self.cycle = 0
         self.time_start_min = 0
+        self.up_down = up_down
 
     def run(self):
 
-        self.temps = 1/60
+        self.temps = 1 / 60
 
-        if nlanla:
+        if self.up_down:
             self.temperature = self.temp_min
         else:
             self.temperature = self.temp_max
@@ -63,59 +66,60 @@ class Mythread(threading.Thread):
 
         p = 0
         while p < 1:
-            print("start-up, please wait")
+            logger.debug("start-up, please wait")
             time.sleep(2)
-            print("start-up, please wait.")
+            logger.debug("start-up, please wait.")
             time.sleep(2)
-            print("start-up, please wait..")
+            logger.debug("start-up, please wait..")
             time.sleep(2)
-            print("start-up, please wait...")
+            logger.debug("start-up, please wait...")
             time.sleep(2)
             p = p + 1
 
         global time_start
         time_start = time.time()
 
-        print("\n################################################\n")
-        print("\nStart of Test\n")
+        logger.info("\n################################################\n")
+        logger.info("\nStart of Test\n")
 
         if self.oof:
             self.off()
 
         self.loop(self.temperature, self.temps)
-# ==============================================================================================
+
+    # ==============================================================================================
 
     def loop(self, order, timer):
         [self.temp, self.temp2] = self.read()
-        print("#################################")
-        print(f"The actual themperature is : {self.temp}")
-        print("The actual order is : {}".format(self.temp2))
+        logger.info("#################################")
+        logger.info(f"The actual themperature is : {self.temp}")
+        logger.info("The actual order is : {}".format(self.temp2))
         if self.temp != order:
             self.VALUE_STABILISATION = 0
             self.FIRST_TIME = False
             self.root.after(5000, lambda: self.loop(order, timer))  # => loop after 5 secondes
         elif abs(self.temp - order) < 0.2:
             if self.VALUE_STABILISATION < 60:
-                print("The climate chamber is stabilized since {} seconds of the "
-                      "60 request ".format(self.VALUE_STABILISATION))
+                logger.info("The climate chamber is stabilized since {} seconds of the "
+                            "60 request ".format(self.VALUE_STABILISATION))
                 self.VALUE_STABILISATION = self.VALUE_STABILISATION + 5
                 self.root.after(5000, lambda: self.loop(order, timer))
             else:
                 if not self.FIRST_TIME:
-                    print("The climate chamber is stabilized with success")
+                    logger.info("The climate chamber is stabilized with success")
                     self.time_start_min = time.time()
                     self.FIRST_TIME = True
                 a = time.localtime(self.time_start_min)
                 b = time.localtime(time.time())
                 c = time.localtime(self.time_start_min + (timer * 3600))
-                print("The actual time is {} hours and {} minutes".format(b[3], b[4]))
-                print("The test started at {} hours and {} minutes".format(a[3], a[4]))
-                print("The test finish in {} hours and {} minutes".format(c[3], c[4]))
+                logger.info("The actual time is {} hours and {} minutes".format(b[3], b[4]))
+                logger.info("The test started at {} hours and {} minutes".format(a[3], a[4]))
+                logger.info("The test finish in {} hours and {} minutes".format(c[3], c[4]))
                 if time.time() < self.time_start_min + (timer * 3600):
                     self.root.after(5000, lambda: self.loop(order, timer))  # => loop after 5 secondes
                 else:
                     global time_start
-                    print(f'End of cycle {self.i}: {time.time() - time_start}\n')
+                    logger.info(f'End of cycle {self.i}: {time.time() - time_start}\n')
                     self.i = self.i + 1
                     self.cycle = self.cycle + 0.5
                     if self.cycle == self.nb_cycle:
@@ -130,20 +134,19 @@ class Mythread(threading.Thread):
                             self.FIRST_TIME = False
                             self.loop(self.temp_max, self.temp_max_duration_h)
 
-
     def off(self):
         try:
             VT.write(CLIMATIC_CHAMBER_STOP)
         except:
-            print("Error, the climate chamber is already offline")
+            logger.error("Error, the climate chamber is already offline")
 
     def exit(self):
         # Stop climatic chamber
         self.off()
         time_stop = time.time()
-        print("\n################################################\n")
-        print("\nEnd of Test\n")
-        print(f'Test duration: {time_stop - time_start}\n')
+        logger.info("\n################################################\n")
+        logger.info("\nEnd of Test\n")
+        logger.info(f'Test duration: {time_stop - time_start}\n')
         sys.exit()
 
     def read(self):
@@ -159,7 +162,7 @@ class Mythread(threading.Thread):
             number3 = float(number2)
             return [number, number3]
         except:
-            print("too fast, please wait")
+            logger.error("too fast, please wait")
             return [0, 0]
 
     def order(self, value):
@@ -167,4 +170,4 @@ class Mythread(threading.Thread):
             VT.write(ON % value)
             # print("The new order is : {}".format(value.get()))
         except:
-            print("too fast, please slow down")
+            logger.error("too fast, please slow down")
