@@ -182,8 +182,10 @@ def draw_5(self, elcolor):
     button12 = tk.Button(my_scale_frame, text="Request",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [logger.info("The actual temperature is : {}\nThe actual order is : {}".format
-                                               (VARIABLE.Mythread.read(self)[0], VARIABLE.Mythread.read(self)[1]))])
+                         command=lambda: [logger.info("The actual temperature is : {}".format
+                                               (VARIABLE.Mythread.read(self)[0])),
+                                          logger.info("The actual order is : {}".format
+                                                      (VARIABLE.Mythread.read(self)[1]))])
 
     button12.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
     scale_root_1 = Scale(my_scale_frame, orient='vertical', troughcolor=elcolor, from_=80, to=-40,

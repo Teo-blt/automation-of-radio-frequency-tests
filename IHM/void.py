@@ -54,16 +54,13 @@ class Mythread(threading.Thread):
         logger.info("finish wait_temperature_reach_consign()")
         return inTemp  # without a return, the while loop will run continuously.
 
-    async def do_something_else(self, bound: int):
-        logger.info("start do_something_else()")
-        for i in range(0, bound):
+    async def do_something_else(self):
+        for i in range(0, 100):
             await asyncio.sleep(2)
             logger.info(f"do_something_else {i}")
 
-        logger.info("finish do_something_else()")
-
     async def several_methods_run_together(self):
-        statements = [self.wait_temperature_reach_consign(10), self.do_something_else(12)]
+        statements = [self.wait_temperature_reach_consign(10), self.do_something_else()]
         logger.info("start several_methods_run_together()")
         await asyncio.gather(*statements)  # Gather is used to allow both funtions to run at the same time.
         logger.info("finish several_methods_run_together()")
