@@ -13,6 +13,7 @@ from tkinter import *
 from tkinter import ttk
 from tkinter.messagebox import *
 from tkinter.colorchooser import askcolor
+from loguru import logger
 # import Data_management as da
 import Graphic
 import sys
@@ -110,20 +111,22 @@ class Application(Tk):
         self.geometry("1200x500")  # Size of the window
         my_oven_frame = LabelFrame(self, text="Settings of the oven")
         my_oven_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
-        label2 = Label(my_oven_frame, text="Connection port :")  # Function to collect the N° of the port of the
-        # measuring tool
+        label2 = Label(my_oven_frame, text="Connection port :")
         label2.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-        name = Entry(my_oven_frame)
+        name = Entry(my_oven_frame)  # Function to collect the N° of the port of the measuring tool
         name.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        name.insert(0, 'COM11')
         button4 = Button(my_oven_frame, text="Connect", borderwidth=8, background=the_color,
                          activebackground="green", disabledforeground="grey",
                          cursor="right_ptr",
-                         overrelief="sunken", command=lambda: print("you are " + name.get()))
+                         overrelief="sunken", command=lambda: logger.info(f"The port [{name.get()}]"
+                                                                          " was correctly selected"))
         button4.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         self.scale()
         # Function not used
         # self.data_management()
         # self.save()
+        return name.get()
 
     def scale(self):  # creation of two vey important buttons, Live draw example, a live draw (not used because
         # the user can easily break it), and Start the test, witch allow the user to enter in the management test area

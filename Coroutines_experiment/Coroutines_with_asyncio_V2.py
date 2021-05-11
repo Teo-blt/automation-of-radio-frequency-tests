@@ -27,6 +27,7 @@ CONNECTION = 'COM11'
 
 try:  # try to connect to the port com, 5 second of time out, this try allow me to use the program offline
     VT = serial.Serial(CONNECTION, SERIAL_SPEED, timeout=SERIAL_TIMEOUT)
+    logger.debug("The connection was correctly established")
 except:
     logger.critical("Connection impossible")
     logger.critical("Please chek your connection port")
