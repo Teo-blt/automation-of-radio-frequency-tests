@@ -15,6 +15,9 @@ import serial
 from tkinter import *
 
 # =============================================================================
+global test
+test = 0
+
 CLIMATIC_CHAMBER_STOP = b"$00E 0000.0 0000.0 0000.0 0000.0 0000.0 0000000000000000\n\r"
 ON = b"$00E %06.1f 0000.0 0000.0 0000.0 0000.0 0101000000000000\n\r"
 SERIAL_SPEED = 9600
@@ -56,33 +59,36 @@ class Mythread(threading.Thread):
         self.temperature_end = temperature_end
 
     def run(self):
-        if self.oof:
-            self.off()
-        if self.up_down:
-            self.temperature = self.temp_min
-            self.timer = self.temp_min_duration_h
-        else:
-            self.temperature = self.temp_max
-            self.timer = self.temp_max_duration_h
+        global test
+        if test == 0:
+            test = 1
+            if self.oof:
+                self.off()
+            if self.up_down:
+                self.temperature = self.temp_min
+                self.timer = self.temp_min_duration_h
+            else:
+                self.temperature = self.temp_max
+                self.timer = self.temp_max_duration_h
 
-        VT.write(ON % self.temperature)
-        p = 0
-        while p < 1:
-            logger.debug("start-up, please wait")
-            time.sleep(2)
-            logger.debug("start-up, please wait.")
-            time.sleep(2)
-            logger.debug("start-up, please wait..")
-            time.sleep(2)
-            logger.debug("start-up, please wait...")
-            time.sleep(2)
-            p = p + 1
-        [self.temp, self.temp2] = self.read()
-        logger.info("################################################")
-        logger.info("Start of Test")
-        self.time_start = time.time()
-        self.timer = 1 / 60
-        asyncio.run(self.several_methods_run_together())
+            VT.write(ON % self.temperature)
+            p = 0
+            while p < 1:
+                logger.debug("start-up, please wait")
+                time.sleep(2)
+                logger.debug("start-up, please wait.")
+                time.sleep(2)
+                logger.debug("start-up, please wait..")
+                time.sleep(2)
+                logger.debug("start-up, please wait...")
+                time.sleep(2)
+                p = p + 1
+            [self.temp, self.temp2] = self.read()
+            logger.info("################################################")
+            logger.info("Start of Test")
+            self.time_start = time.time()
+            self.timer = 1 / 60
+            asyncio.run(self.several_methods_run_together())
 
     async def wait_temperature_reach_consign(self, timer):
         while abs(self.temp - self.temperature) >= 0.2 or self.VALUE_STABILISATION <= 120:
@@ -108,7 +114,7 @@ class Mythread(threading.Thread):
             b = time.localtime(abs((self.time_start_min + (timer * 3600)) - time.time()))
             c = time.localtime(self.time_start_min + (timer * 3600))
             logger.info("The test will finish at {}H {}min and {} second(s)".format(c[3], c[4], c[5]))
-            logger.info("{} hour(s) {} minute(s) and {} seconds remain".format(b[3]-1, b[4], b[5]))
+            logger.info("{} hour(s) {} minute(s) and {} seconds remain".format(b[3] - 1, b[4], b[5]))
         return 1  # without a return, the while loop will run continuously.
 
     async def do_something_else(self):
@@ -143,7 +149,6 @@ class Mythread(threading.Thread):
                 logger.info(f'End of cycle {self.i}: {a[3]}H{a[4]} and {a[5]} second(s)')
 
             self.exit()
-
 
     def off(self):
         try:
