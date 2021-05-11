@@ -15,8 +15,8 @@ import serial
 from tkinter import *
 
 # =============================================================================
-global test
-test = 0
+global relaunch_safty
+relaunch_safty = 0
 
 CLIMATIC_CHAMBER_STOP = b"$00E 0000.0 0000.0 0000.0 0000.0 0000.0 0000000000000000\n\r"
 ON = b"$00E %06.1f 0000.0 0000.0 0000.0 0000.0 0101000000000000\n\r"
@@ -59,9 +59,9 @@ class Mythread(threading.Thread):
         self.temperature_end = temperature_end
 
     def run(self):
-        global test
-        if test == 0:
-            test = 1
+        global relaunch_safty
+        if relaunch_safty == 0:
+            relaunch_safty = 1
             if self.oof:
                 self.off()
             if self.up_down:
@@ -156,6 +156,8 @@ class Mythread(threading.Thread):
     def off(self):
         try:
             VT.write(CLIMATIC_CHAMBER_STOP)
+            global relaunch_safty
+            relaunch_safty = 0
         except:
             logger.error("Error, the climate chamber is already offline")
 
