@@ -300,7 +300,8 @@ def draw_5(self, elcolor):
     button25 = tk.Button(my_auto_stair_scale_frame, text="Simulation",
                          borderwidth=8, background=elcolor,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [draw_7()])
+                         command=lambda: [draw_7(self, elcolor, scale7.get(),
+                                                 scale8.get(), scale10.get(), scale9.get())])
     button25.grid(row=0, column=3, ipadx=40, ipady=20, padx=0, pady=0)
     button26 = tk.Button(my_auto_stair_scale_frame, text="request",
                          borderwidth=8, background=elcolor,
@@ -309,7 +310,7 @@ def draw_5(self, elcolor):
                              logger.info("The actual themperature is : {}".format(VARIABLE.Mythread.read(self)[0])),
                              logger.info("The actual order is : {}".format(VARIABLE.Mythread.read(self)[1]))])
     button26.grid(row=1, column=3, ipadx=40, ipady=20, padx=0, pady=0)
-    scale7 = Scale(my_auto_stair_scale_frame, orient='vertical', troughcolor=elcolor, from_=80, to=-40,
+    scale7 = Scale(my_auto_stair_scale_frame, orient='vertical', troughcolor=elcolor, from_=120, to=1,
                    resolution=1, tickinterval=20, length=100, command=0,
                    label='Step', state="active")
     scale7.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
@@ -446,8 +447,45 @@ def draw_6(self, elcolor, temperature_min, temperature_max,
                      fg="black", relief="groove")
     label.pack()
 
-def draw_7():
-    print("a")
+def draw_7(self, elcolor, step, temp_start, temp_end, temp_duration):
+    root = tk.Toplevel(self)
+    root.wm_title("simulation graph")
+    my_draw_7_frame_2 = LabelFrame(root)
+    my_draw_7_frame_2.pack()
+    my_draw_7_frame_1 = LabelFrame(root)
+    my_draw_7_frame_1.pack(side=BOTTOM)
+    data = {}
+    data[0] = 0
+    var = 0
+    temp_duration = temp_duration + 1
+    if temp_start >= step:
+        step = -step
+    while abs(temp_start - temp_end) != 0:
+        for i in range(var, temp_duration + var):
+            data[i] = temp_start
+        var = var + temp_duration
+        temp_start = temp_start + step
+    for i in range(var, temp_duration + var):
+        data[i] = temp_start
+    names = list(data.keys())
+    values = list(data.values())
+    fig = Figure(figsize=(5, 4), dpi=100)
+    fig.add_subplot().plot(names, values)
+    canvas = FigureCanvasTkAgg(fig, master=my_draw_7_frame_1)
+    toolbar = NavigationToolbar2Tk(canvas, my_draw_7_frame_1, pack_toolbar=False)
+    toolbar.update()
+    canvas.draw()
+    canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
+    toolbar.pack(side=BOTTOM, fill=X)
+    button1 = Button(master=my_draw_7_frame_2, text="Quit", background=elcolor,
+                     cursor="right_ptr", borderwidth=5, activebackground="green",
+                     overrelief="sunken", command=lambda: root.destroy())
+    button1.pack(side=RIGHT)
+    label = tk.Label(my_draw_7_frame_2, text="The value of the time duration of "
+                                             "the transition between two level of temperature "
+                                             "was arbitrarly fixed to one hour", bg="white", font="arial",
+                     fg="black", relief="groove")
+    label.pack()
 
 """"
 def draw_2(self):
