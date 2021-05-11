@@ -190,7 +190,8 @@ class Mythread(threading.Thread):
             # chamber don't have enough time to answer back
             self.vt.write(b"$00I\n\r")  # prepare the climatic chamber to receive information
             time.sleep(0.2)  # A pause that freeze the entire program TODO find a better way  await asyncio.sleep(5) ?
-            received_frame = self.vt.read_all().decode('utf-8')  # Decipher the frame that was send by the climatic chamber
+            received_frame = self.vt.read_all().decode('utf-8')  # Decipher the frame that was send by the climatic
+            # chamber
             word = received_frame.split(" ")  # Split the decipher the frame that was send by the climatic chamber
             strings = str(word[1])
             number = float(strings)  # Collect the actual temperature of the climatic chamber
