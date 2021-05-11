@@ -110,8 +110,8 @@ class Application(Tk):
         self.geometry("1200x500")  # Size of the window
         my_oven_frame = LabelFrame(self, text="Settings of the oven")
         my_oven_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
-        label2 = Label(my_oven_frame, text="Enter your name:")  # test of the Entry function, maybe used l
-        # after to replace scales
+        label2 = Label(my_oven_frame, text="Connection port :")  # Function to collect the N° of the port of the
+        # measuring tool
         label2.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         name = Entry(my_oven_frame)
         name.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
@@ -125,20 +125,20 @@ class Application(Tk):
         # self.data_management()
         # self.save()
 
-    def scale(self):  # creation of two vey important buttons, Draw, a live draw (not used because the user can
-        # easily break it), and Start the test, witch allow the user to enter in the management test area
+    def scale(self):  # creation of two vey important buttons, Live draw example, a live draw (not used because
+        # the user can easily break it), and Start the test, witch allow the user to enter in the management test area
         my_scale_frame = LabelFrame(self, text="Draw")
         my_scale_frame.grid(row=0, column=2, ipadx=0, ipady=0, padx=0, pady=0)
         button12 = tk.Button(my_scale_frame, text="Start the test",
                              borderwidth=8, background=the_color,
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
                              command=lambda: [Graphic.draw_5(self, the_color)])
-        button12.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=RIGHT)
-        button11 = tk.Button(my_scale_frame, text="Draw",
+        button12.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
+        button11 = tk.Button(my_scale_frame, text="Live draw example",
                              borderwidth=8, background=the_color,
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
                              command=lambda: Graphic.draw_4(self, the_color))
-        button11.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=RIGHT)
+        button11.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=BOTTOM)
 
     def lfg(self):  # The low frequency generator menu
         self.geometry("1200x500")
