@@ -3,7 +3,7 @@
 # =============================================================================
 # Created By  : Bulteau Téo
 # Created Date: April 23 16:00:00 2021
-# For Kerlik, all rights reserved
+# For Kerlink, all rights reserved
 # =============================================================================
 """The Module Has Been Build for the automation of radio frequency tests"""
 # =============================================================================
@@ -13,7 +13,7 @@ from tkinter import *
 from tkinter import ttk
 from tkinter.messagebox import *
 from tkinter.colorchooser import askcolor
-import Data_managment as DA
+# import Data_management as da
 import Graphic
 import sys
 
@@ -22,171 +22,176 @@ import sys
 
 class Application(Tk):
     def __init__(self):
-        Tk.__init__(self)
-        global elcolor
-        elcolor = "#E76145"
-        global size
-        size = "1200x500"
+        Tk.__init__(self)  # Initialisation of the first window
+        global the_color  # Creation of a global variable for the color of the buttons
+        the_color = "#E76145"
         self.create_widgets()
         self.title("Main menu")
         self.withdraw()
 
-    def climatic_chamber(self):
-        self.geometry(size)
+    def create_widgets(self):  # Creation of a lobby menu
+        new_window = tk.Toplevel(self)  # Setting of the new window
+        new_window.configure(bg="grey")
+        new_window.title("Start menu")
+        new_window.geometry('700x200')
+        label = tk.Label(new_window, text="Menu", )
+        label.pack(padx=10, pady=10, expand=True, fill="both", side=TOP)
+        button1 = tk.Button(new_window, text="Start",
+                            borderwidth=8, background=the_color,  # To start the program, creation of a new window
+                            activebackground="green", cursor="right_ptr", overrelief="sunken",
+                            command=lambda: [self.combo("--choose your instrument here--"),
+                                             self.deiconify(), new_window.withdraw()])
+        button1.pack(padx=30, pady=10, expand=True, fill="both", side=TOP)
+        button2 = tk.Button(new_window, text="Quit",
+                            borderwidth=8, background=the_color,  # To quit the program
+                            activebackground="green", cursor="right_ptr", overrelief="sunken",
+                            command=lambda: [sys.exit()])
+        button2.pack(padx=30, pady=10, expand=True, fill="both", side=TOP)
+        button_settings = tk.Button(new_window, text="color", overrelief="sunken", bitmap="info", cursor="right_ptr",
+                                    command=lambda: (self.color_change(new_window)))  # To change the color
+        # of all buttons
+        button_settings.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
+
+    def color_change(self, new_window):  # A very simple and mostly useless function to change the
+        # color of all the buttons
+        color = askcolor()  # wheel of color
+        global the_color
+        the_color = color[1]
+        new_window.destroy()
+        self.create_widgets()
+
+    def combo(self, value):  # creation of a combobox, this combobox allow he user to chose a measuring tool in a list
+        my_combo_frame = LabelFrame(self, text="Choice of instrument")
+        my_combo_frame.grid(row=0, column=0, ipadx=40, ipady=40, padx=0, pady=0)
+        label_example = tk.Label(my_combo_frame, text="Settings", font="arial", fg="black")
+        label_example.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        label_top = tk.Label(my_combo_frame, text="Choose your measuring tool")
+        label_top.pack(expand=False, fill="none", side=TOP)
+        combo_example = ttk.Combobox(my_combo_frame, values=[
+            "Climatic chamber",
+            "Low frequency generator",  # The list of measuring tool
+            "Signal generator",
+            "Oscilloscope"], state="readonly")
+        combo_example.set(value)
+        combo_example.pack(padx=50, pady=0, expand=False, fill="x", side=TOP)
+        button3 = tk.Button(my_combo_frame, text="validate",  # Button to validate a choice and launch the
+                            # interface function
+                            borderwidth=8, background=the_color,
+                            activebackground="green", disabledforeground="grey",
+                            cursor="right_ptr",
+                            overrelief="sunken",
+                            command=lambda: [self.interface(combo_example.current())])
+        button3.pack(padx=30, pady=10, expand=True, fill="both", side=TOP)
+
+    def interface(self, choice):  # This function open other functions after the choice of the user
+        if choice == -1:
+            showerror("Error", "You must select a valid instrument")
+        elif choice == 0:
+            self.clear("Climatic chamber")  # Call the clear function to clean all the window
+            self.climatic_chamber()  # Open Climatic chamber
+        elif choice == 1:
+            self.clear("Low frequency generator")  # Call the clear function to clean all the window
+            self.lfg()  # Open frequency generator
+        elif choice == 2:
+            self.clear("Signal generator")  # Call the clear function to clean all the window
+            self.sg()  # Open generator
+        else:
+            self.clear("Oscilloscope")  # Call the clear function to clean all the window
+            self.osl()  # Open Oscilloscope
+
+    def clear(self, get_title):  # Clear function, destroy all the window
+        # and create a new window after the choice of the user
+        self.destroy()
+        Tk.__init__(self)
+        self.title(get_title + " menu")
+        self.combo(get_title)
+
+    def climatic_chamber(self):  # The climatic chamber menu
+        self.geometry("1200x500")  # Size of the window
         my_oven_frame = LabelFrame(self, text="Settings of the oven")
         my_oven_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
-        label2 = Label(my_oven_frame, text="Enter your name:")
+        label2 = Label(my_oven_frame, text="Enter your name:")  # test of the Entry function, maybe used l
+        # after to replace scales
         label2.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         name = Entry(my_oven_frame)
         name.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-        button4 = Button(my_oven_frame, text="Connect", borderwidth=8, background=elcolor,
+        button4 = Button(my_oven_frame, text="Connect", borderwidth=8, background=the_color,
                          activebackground="green", disabledforeground="grey",
                          cursor="right_ptr",
                          overrelief="sunken", command=lambda: print("you are " + name.get()))
         button4.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         self.scale()
-        self.data_management()
-        self.save()
+        # Function not used
+        # self.data_management()
+        # self.save()
 
+    def scale(self):  # creation of two vey important buttons, Draw, a live draw (not used because the user can
+        # easily break it), and Start the test, witch allow the user to enter in the management test area
+        my_scale_frame = LabelFrame(self, text="Draw")
+        my_scale_frame.grid(row=0, column=2, ipadx=0, ipady=0, padx=0, pady=0)
+        button12 = tk.Button(my_scale_frame, text="Start the test",
+                             borderwidth=8, background=the_color,
+                             activebackground="green", cursor="right_ptr", overrelief="sunken",
+                             command=lambda: [Graphic.draw_5(self, the_color)])
+        button12.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=RIGHT)
+        button11 = tk.Button(my_scale_frame, text="Draw",
+                             borderwidth=8, background=the_color,
+                             activebackground="green", cursor="right_ptr", overrelief="sunken",
+                             command=lambda: Graphic.draw_4(self, the_color))
+        button11.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=RIGHT)
+
+    def lfg(self):  # The low frequency generator menu
+        self.geometry("1200x500")
+        my_lfg_frame = LabelFrame(self, text="Settings of the Low frequency generator")
+        my_lfg_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
+
+    def sg(self):  # The signal generator menu
+        self.geometry("1200x500")
+        my_sg_frame = LabelFrame(self, text="Settings of the Signal generator")
+        my_sg_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
+
+    def osl(self):  # The oscilloscope menu
+        self.geometry("1200x500")
+        my_osl_frame = LabelFrame(self, text="Settings of the Oscilloscope")
+        my_osl_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
+
+    """
     def data_management(self):
         my_data_management_frame = LabelFrame(self, text="Data_management")
         my_data_management_frame.grid(row=1, column=0, ipadx=40, ipady=5, padx=0, pady=0)
         label = tk.Label(my_data_management_frame, text="Data management Menu")
         label.pack()
         button6 = tk.Button(my_data_management_frame, text="Write what you want in the file",
-                            borderwidth=8, background=elcolor,
+                            borderwidth=8, background=the_color,
                             activebackground="green", disabledforeground="grey",
                             cursor="right_ptr",
                             overrelief="sunken",
-                            command=lambda: DA.write_file())
+                            command=lambda: da.write_file())
         button6.pack()
         button7 = tk.Button(my_data_management_frame, text="Read the file",
-                            borderwidth=8, background=elcolor,
+                            borderwidth=8, background=the_color,
                             activebackground="green", disabledforeground="grey",
                             cursor="right_ptr",
-                            overrelief="sunken", command=lambda: DA.read_file())
+                            overrelief="sunken", command=lambda: da.read_file())
         button7.pack()
         button5 = tk.Button(my_data_management_frame, text="Delete file",
-                            borderwidth=8, background=elcolor,
+                            borderwidth=8, background=the_color,
                             activebackground="green", disabledforeground="grey",
                             cursor="right_ptr",
-                            overrelief="sunken", command=lambda: DA.delete_file())
+                            overrelief="sunken", command=lambda: da.delete_file())
         button5.pack()
-
-    def lfg(self):
-        self.geometry(size)
-        my_lfg_frame = LabelFrame(self, text="Settings of the Low frequency generator")
-        my_lfg_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
-
-    def sg(self):
-        self.geometry(size)
-        my_sg_frame = LabelFrame(self, text="Settings of the Signal generator")
-        my_sg_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
-
-    def osl(self):
-        self.geometry(size)
-        my_osl_frame = LabelFrame(self, text="Settings of the Oscilloscope")
-        my_osl_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
-
-    def interface(self, choice):
-        if choice == -1:
-            showerror("Error", "You must select a valid instrument")
-        elif choice == 0:
-            self.clear("Climatic_chamber")
-            self.climatic_chamber()
-        elif choice == 1:
-            self.clear("Low frequency generator")
-            self.lfg()
-        elif choice == 2:
-            self.clear("Signal generator")
-            self.sg()
-        else:
-            self.clear("Oscilloscope")
-            self.osl()
-
-    def combo(self, value):  # creation of a combobox
-        my_combo_frame = LabelFrame(self, text="Choice of instrument")
-        my_combo_frame.grid(row=0, column=0, ipadx=40, ipady=40, padx=0, pady=0)
-        labelexample = tk.Label(my_combo_frame, text="Settings", font="arial", fg="black")
-        labelexample.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-        labeltop = tk.Label(my_combo_frame, text="Choose your measuring tool")
-        labeltop.pack(expand=False, fill="none", side=TOP)
-        comboexample = ttk.Combobox(my_combo_frame, values=[
-            "Climatic chamber",
-            "Low frequency generator",
-            "Signal generator",
-            "Oscilloscope"],
-                                    state="readonly")
-        comboexample.set(value)
-        comboexample.pack(padx=50, pady=0, expand=False, fill="x", side=TOP)
-        button3 = tk.Button(my_combo_frame, text="validate",
-                            borderwidth=8, background=elcolor,
-                            activebackground="green", disabledforeground="grey",
-                            cursor="right_ptr",
-                            overrelief="sunken",
-                            command=lambda: [self.interface(comboexample.current())])
-        button3.pack(padx=30, pady=10, expand=True, fill="both", side=TOP)
-
-    def create_widgets(self):  # creation of a lobby menu
-        newwindow = tk.Toplevel(self)
-        newwindow.configure(bg="grey")
-        newwindow.title("Start menu")
-        newwindow.geometry('700x200')
-        label = tk.Label(newwindow, text="Menu", )
-        label.pack(padx=10, pady=10, expand=True, fill="both", side=TOP)
-        button1 = tk.Button(newwindow, text="Start",
-                            borderwidth=8, background=elcolor,
-                            activebackground="green", cursor="right_ptr", overrelief="sunken",
-                            command=lambda: [self.combo("--choose your instrument here--"),
-                                             self.deiconify(), newwindow.withdraw()])
-        button1.pack(padx=30, pady=10, expand=True, fill="both", side=TOP)
-        button2 = tk.Button(newwindow, text="Quit",
-                            borderwidth=8, background=elcolor,
-                            activebackground="green", cursor="right_ptr", overrelief="sunken",
-                            command=lambda: [sys.exit()])  # newwindow.destroy(), newwindow.quit()
-        button2.pack(padx=30, pady=10, expand=True, fill="both", side=TOP)
-        button_settings = tk.Button(newwindow, text="color", overrelief="sunken", bitmap="info", cursor="right_ptr",
-                                    command=lambda: (self.dothewhat(newwindow)))
-        button_settings.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
-
-    def dothewhat(self, newwindow):
-        color = askcolor()
-        global elcolor
-        elcolor = color[1]
-        newwindow.destroy()
-        self.create_widgets()
-
-    def scale(self):
-        my_scale_frame = LabelFrame(self, text="Draw")
-        my_scale_frame.grid(row=0, column=2, ipadx=0, ipady=0, padx=0, pady=0)
-        button12 = tk.Button(my_scale_frame, text="Draw.2",
-                             borderwidth=8, background=elcolor,
-                             activebackground="green", cursor="right_ptr", overrelief="sunken",
-                             command=lambda : [Graphic.draw_5(self, elcolor)])
-        button12.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=RIGHT)
-        button11 = tk.Button(my_scale_frame, text="Draw",
-                             borderwidth=8, background=elcolor,
-                             activebackground="green", cursor="right_ptr", overrelief="sunken",
-                             command=lambda: Graphic.draw_4(self, elcolor))
-        button11.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=RIGHT)
-
-    def clear(self, get_tilte):
-        self.destroy()
-        Tk.__init__(self)
-        self.title(get_tilte + " menu")
-        self.combo(get_tilte)
 
     def save(self):
         my_save_frame = LabelFrame(self, text="Save menu")
         my_save_frame.grid(row=1, column=1, ipadx=40, ipady=40, padx=0, pady=0)
         button9 = tk.Button(my_save_frame, text="Save",
-                            borderwidth=8, background=elcolor,
+                            borderwidth=8, background=the_color,
                             activebackground="green", cursor="right_ptr", overrelief="sunken",
                             command=my_save_frame.quit)
         button9.pack(padx=30, pady=10, expand=True, fill="both", side=TOP)
 
         button8 = tk.Button(my_save_frame, text="Quit",
-                            borderwidth=8, background=elcolor,
+                            borderwidth=8, background=the_color,
                             activebackground="green", cursor="right_ptr", overrelief="sunken",
                             command=lambda: (self.leaving()))
         button8.pack(padx=30, pady=10, expand=True, fill="both", side=TOP)
@@ -195,6 +200,7 @@ class Application(Tk):
         if askyesno('Warning', 'Are you sure you want to do exit ?'):
             if askyesno('Warning', 'your data is not saved, are you sure you want to continue'):
                 self.quit()
+    """
 
 
 Application().mainloop()
