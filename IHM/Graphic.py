@@ -102,6 +102,7 @@ def draw_5(self, the_color, port):
     except:
         logger.critical("Connection impossible")
         logger.critical("Please chek your connection port")
+        logger.critical(f"Actual connection port: {port}")
 
     def display():
         style.use('ggplot')
