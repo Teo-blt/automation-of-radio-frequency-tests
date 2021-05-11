@@ -132,11 +132,11 @@ class Mythread(threading.Thread):
             self.exit()
         else:
             while abs(self.temperature - self.temperature_end) >= self.stair_temp:
-                self.temperature = self.temperature + self.stair_temp
                 if self.temperature > 80 or self.temperature < -40:
                     self.exit()
                 statements = [self.wait_temperature_reach_consign(self.timer), self.do_something_else()]
                 await asyncio.gather(*statements)  # Gather is used to allow both functions to run at the same time.*
+                self.temperature = self.temperature + self.stair_temp
                 self.cycle = self.cycle + 0.5
                 self.i = self.i + 1
                 a = time.localtime(time.time())
