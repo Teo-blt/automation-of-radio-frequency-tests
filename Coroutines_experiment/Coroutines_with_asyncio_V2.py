@@ -11,7 +11,6 @@ import asyncio
 from loguru import logger
 import threading
 import time
-import serial
 from tkinter import *
 
 # =============================================================================
@@ -21,25 +20,16 @@ relaunch_safety = 0
 
 CLIMATIC_CHAMBER_STOP = b"$00E 0000.0 0000.0 0000.0 0000.0 0000.0 0000000000000000\n\r"
 ON = b"$00E %06.1f 0000.0 0000.0 0000.0 0000.0 0101000000000000\n\r"
-SERIAL_SPEED = 9600
-SERIAL_TIMEOUT = 5
-CONNECTION = 'COM11'
-
-try:  # try to connect to the port com, 5 second of time out, this try allow me to use the program offline
-    VT = serial.Serial(CONNECTION, SERIAL_SPEED, timeout=SERIAL_TIMEOUT)
-    logger.debug("The connection was correctly established")
-except:
-    logger.critical("Connection impossible")
-    logger.critical("Please chek your connection port")
 
 
 class Mythread(threading.Thread):
 
-    def __init__(self, temp_min, temp_max, temp_min_duration_h, temp_max_duration_h,
+    def __init__(self, vt, temp_min, temp_max, temp_min_duration_h, temp_max_duration_h,
                  nb_cycle, oof, my_auto_scale_frame, up_down, stair, stair_temp, temperature_end):
         threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
         self.temp_min = temp_min  # additional data added to the class
         self.temp_max = temp_max
+        self.vt = vt
         self.time_start = 0
         self.temps = 0
         self.temperature = 0
@@ -73,7 +63,7 @@ class Mythread(threading.Thread):
                 self.temperature = self.temp_max
                 self.timer = self.temp_max_duration_h
 
-            VT.write(ON % self.temperature)  # Send the order to the climate chamber
+            self.vt.write(ON % self.temperature)  # Send the order to the climate chamber
             p = 0
             while p < 1:  # Loop for the initialisation of the program (not very useful)
                 logger.debug("start-up, please wait")
@@ -143,10 +133,10 @@ class Mythread(threading.Thread):
                 self.cycle = self.cycle + 0.5  # In mode cycle, reach the temperature and stabilize is half of a cycle
                 if self.temperature == self.temp_max:  # switch between high order and low order, if the order was
                     # temp_max, it become temp min and if the order was temp in it become temp_max
-                    VT.write(ON % self.temp_min)
+                    self.vt.write(ON % self.temp_min)
                     self.temperature = self.temp_min
                 else:
-                    VT.write(ON % self.temp_max)
+                    self.vt.write(ON % self.temp_max)
                     self.temperature = self.temp_max
                 self.i = self.i + 1  # A variable to cunt the number of cycle (we could use self.cycle, but anyway
                 a = time.localtime(time.time())  # collect the actual time
@@ -168,7 +158,7 @@ class Mythread(threading.Thread):
                 if self.temperature > 80 or self.temperature < -40:  # To prevent extreme temperature, the program
                     # will leave automatically
                     self.exit()  # We use the function exit to leave the program
-                VT.write(ON % self.temperature)  # Sending of the new order to the climatic chamber
+                self.vt.write(ON % self.temperature)  # Sending of the new order to the climatic chamber
                 self.i = self.i + 1  # A variable to cunt the number of cycle
                 a = time.localtime(time.time())
                 logger.info(f'End of cycle {self.i}: {a[3]}H{a[4]} and {a[5]} second(s)')  # some useful
@@ -180,7 +170,7 @@ class Mythread(threading.Thread):
         # that was use to control the multi launching of the program
         try:  # Protect the program of an error if the user want to turn off
             # an already offline climatic chamber
-            VT.write(CLIMATIC_CHAMBER_STOP)  # Stop the climatic chamber
+            self.vt.write(CLIMATIC_CHAMBER_STOP)  # Stop the climatic chamber
             global relaunch_safety  # relaunch_safety variable
             relaunch_safety = 0
         except:
@@ -198,9 +188,9 @@ class Mythread(threading.Thread):
     def read(self):  # The read function very useful and very powerful
         try:  # This try allow the program to survive in a rare case where the climatic
             # chamber don't have enough time to answer back
-            VT.write(b"$00I\n\r")  # prepare the climatic chamber to receive information
+            self.vt.write(b"$00I\n\r")  # prepare the climatic chamber to receive information
             time.sleep(0.2)  # A pause that freeze the entire program TODO find a better way  await asyncio.sleep(5) ?
-            received_frame = VT.read_all().decode('utf-8')  # Decipher the frame that was send by the climatic chamber
+            received_frame = self.vt.read_all().decode('utf-8')  # Decipher the frame that was send by the climatic chamber
             word = received_frame.split(" ")  # Split the decipher the frame that was send by the climatic chamber
             strings = str(word[1])
             number = float(strings)  # Collect the actual temperature of the climatic chamber
@@ -216,6 +206,6 @@ class Mythread(threading.Thread):
     def order(self, value):  # A very simple function use in the manual mode
         try:  # This try allow to save the program when, in rare case, spamming the Send button
             # of the manual mode produce an error
-            VT.write(ON % value)
+            self.vt.write(ON % value)
         except:
             logger.error("too fast, please slow down")

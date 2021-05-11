@@ -29,6 +29,7 @@ class Application(Tk):
         self.create_widgets()
         self.title("Main menu")
         self.withdraw()
+        self.port = 'COM11'
 
     def create_widgets(self):  # Creation of a lobby menu
         new_window = tk.Toplevel(self)  # Setting of the new window
@@ -115,18 +116,22 @@ class Application(Tk):
         label2.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         name = Entry(my_oven_frame)  # Function to collect the N° of the port of the measuring tool
         name.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-        name.insert(0, 'COM11')
+        name.insert(0, self.port)
         button4 = Button(my_oven_frame, text="Connect", borderwidth=8, background=the_color,
                          activebackground="green", disabledforeground="grey",
                          cursor="right_ptr",
-                         overrelief="sunken", command=lambda: logger.info(f"The port [{name.get()}]"
-                                                                          " was correctly selected"))
+                         overrelief="sunken", command=lambda: [logger.info(f"The port [{name.get()}]"
+                                                                           " was correctly selected"),
+                                                               self.change_value(name)])
         button4.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         self.scale()
         # Function not used
         # self.data_management()
         # self.save()
         return name.get()
+
+    def change_value(self, name):
+        self.port = name.get()
 
     def scale(self):  # creation of two vey important buttons, Live draw example, a live draw (not used because
         # the user can easily break it), and Start the test, witch allow the user to enter in the management test area
@@ -135,7 +140,7 @@ class Application(Tk):
         button12 = tk.Button(my_scale_frame, text="Start the test",
                              borderwidth=8, background=the_color,
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
-                             command=lambda: [Graphic.draw_5(self, the_color)])
+                             command=lambda: [Graphic.draw_5(self, the_color, self.climatic_chamber())])
         button12.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
         button11 = tk.Button(my_scale_frame, text="Live draw example",
                              borderwidth=8, background=the_color,

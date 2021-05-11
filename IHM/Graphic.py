@@ -20,6 +20,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 # from Climate_chamber_control import Climate_chamber_V2
 from Coroutines_experiment import Coroutines_with_asyncio_V2
 from loguru import logger
+import serial
 
 # =============================================================================
 VARIABLE = Coroutines_with_asyncio_V2  # Climate_chamber, Climate_chamber_V2, coroutines_with_asyncio_V2
@@ -90,7 +91,18 @@ def draw_4(self, the_color):
     button1.pack(side=LEFT)
 
 
-def draw_5(self, the_color):
+def draw_5(self, the_color, port):
+    SERIAL_SPEED = 9600
+    SERIAL_TIMEOUT = 5
+    CONNECTION = port  # 'COM11'
+
+    try:  # try to connect to the port com, 5 second of time out, this try allow me to use the program offline
+        vt = serial.Serial(CONNECTION, SERIAL_SPEED, timeout=SERIAL_TIMEOUT)
+        logger.debug("The connection was correctly established")
+    except:
+        logger.critical("Connection impossible")
+        logger.critical("Please chek your connection port")
+
     def display():
         style.use('ggplot')
         fig = plt.figure(figsize=(9, 4), dpi=100)
@@ -143,7 +155,7 @@ def draw_5(self, the_color):
     button16 = tk.Button(my_auto_scale_frame, text="Start",
                          borderwidth=8, background=the_color,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [VARIABLE.Mythread(scale1.get(), scale2.get(),
+                         command=lambda: [VARIABLE.Mythread(vt, scale1.get(), scale2.get(),
                                                             scale4.get(), scale5.get(),
                                                             scale3.get(), 0, my_auto_scale_frame, a.get(), 0,
                                                             0, 0).start()])
@@ -287,7 +299,7 @@ def draw_5(self, the_color):
     button23 = tk.Button(my_auto_stair_scale_frame, text="Start",
                          borderwidth=8, background=the_color,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [VARIABLE.Mythread(scale8.get(), scale8.get(),
+                         command=lambda: [VARIABLE.Mythread(vt, scale8.get(), scale8.get(),
                                                             scale9.get(), scale9.get(),
                                                             0, 0, my_auto_scale_frame, 0, c.get(),
                                                             scale7.get(), scale10.get()).start()])
