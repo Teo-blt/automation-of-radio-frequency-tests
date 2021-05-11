@@ -31,7 +31,7 @@ except:
 class Mythread(threading.Thread):
 
     def __init__(self, temp_min, temp_max, temp_min_duration_h, temp_max_duration_h,
-                 nb_cycle, oof, my_auto_scale_frame, up_down, stair, stair_temp):
+                 nb_cycle, oof, my_auto_scale_frame, up_down, stair, stair_temp, temperature_end):
         threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
         self.temp_min = temp_min  # additional data added to the class
         self.temp_max = temp_max
@@ -53,6 +53,7 @@ class Mythread(threading.Thread):
         self.timer = 1 / 60
         self.stair = stair
         self.stair_temp = stair_temp
+        self.temperature_end = temperature_end
 
     def run(self):
         if self.oof:
@@ -114,27 +115,35 @@ class Mythread(threading.Thread):
         pass
 
     async def several_methods_run_together(self):
-        while self.nb_cycle != self.cycle:
-            statements = [self.wait_temperature_reach_consign(self.timer), self.do_something_else()]
-            await asyncio.gather(*statements)  # Gather is used to allow both functions to run at the same time.*
-            self.cycle = self.cycle + 0.5
-
-            if self.stair == 0:
+        if self.stair == 0:
+            while self.nb_cycle != self.cycle:
+                statements = [self.wait_temperature_reach_consign(self.timer), self.do_something_else()]
+                await asyncio.gather(*statements)  # Gather is used to allow both functions to run at the same time.*
+                self.cycle = self.cycle + 0.5
                 if self.temperature == self.temp_max:
                     VT.write(ON % self.temp_min)
                     self.temperature = self.temp_min
                 else:
                     VT.write(ON % self.temp_max)
                     self.temperature = self.temp_max
-            else:
+                self.i = self.i + 1
+                a = time.localtime(time.time())
+                logger.info(f'End of cycle {self.i}: {a[3]}H{a[4]} and {a[5]} second(s)')
+            self.exit()
+        else:
+            while abs(self.temperature - self.temperature_end) >= self.stair_temp:
                 self.temperature = self.temperature + self.stair_temp
                 if self.temperature > 80 or self.temperature < -40:
                     self.exit()
+                statements = [self.wait_temperature_reach_consign(self.timer), self.do_something_else()]
+                await asyncio.gather(*statements)  # Gather is used to allow both functions to run at the same time.*
+                self.cycle = self.cycle + 0.5
+                self.i = self.i + 1
+                a = time.localtime(time.time())
+                logger.info(f'End of cycle {self.i}: {a[3]}H{a[4]} and {a[5]} second(s)')
 
-            self.i = self.i + 1
-            a = time.localtime(time.time())
-            logger.info(f'End of cycle {self.i}: {a[3]}H{a[4]} and {a[5]} second(s)')
-        self.exit()
+            self.exit()
+
 
     def off(self):
         try:

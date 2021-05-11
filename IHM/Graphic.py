@@ -106,6 +106,7 @@ def draw_5(self, elcolor):
     a = IntVar()
     b = IntVar()
     c = IntVar()
+    d = IntVar()
     root = tk.Toplevel(self)
     root.title('Draw window')
     root.config(background='#fafafa')
@@ -288,7 +289,7 @@ def draw_5(self, elcolor):
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
                          command=lambda: [VARIABLE.Mythread(scale8.get(),  scale8.get(),
                                                             scale9.get(), scale9.get(),
-                                                            scale10.get(), 0, my_auto_scale_frame, 0, c.get(),
+                                                            0, 0, my_auto_scale_frame, 0, c.get(),
                                                             scale7.get()).start()])
     button23.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
     button24 = tk.Button(my_auto_stair_scale_frame, text="Off",
@@ -310,24 +311,22 @@ def draw_5(self, elcolor):
     button26.grid(row=1, column=3, ipadx=40, ipady=20, padx=0, pady=0)
     scale7 = Scale(my_auto_stair_scale_frame, orient='vertical', troughcolor=elcolor, from_=80, to=-40,
                    resolution=1, tickinterval=20, length=100, command=0,
-                   label='temperature', state="active")
+                   label='Step', state="active")
     scale7.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
     scale7.set(1)
     scale8 = Scale(my_auto_stair_scale_frame, orient='vertical', troughcolor=elcolor, from_=80, to=-40,
                    resolution=1, tickinterval=20, length=100, command=0,
-                   label='Start temperature', state="active")
+                   label='Temperature_start', state="active")
     scale8.grid(row=2, column=0, ipadx=0, ipady=0, padx=0, pady=0)
-    scale8.set(1)
     scale9 = Scale(my_auto_stair_scale_frame, orient='horizontal', troughcolor=elcolor, from_=0, to=20,
                    resolution=1, tickinterval=20, length=100, command=0,
-                   label='temperature_duration_h', state="active")
+                   label='Temperature_duration_h', state="active")
     scale9.grid(row=1, column=1, ipadx=30, ipady=0, padx=0, pady=0)
     scale9.set(1)
-    scale10 = Scale(my_auto_stair_scale_frame, orient='horizontal', troughcolor=elcolor, from_=1, to=20,
+    scale10 = Scale(my_auto_stair_scale_frame, orient='vertical', troughcolor=elcolor, from_=80, to=-40,
                    resolution=1, tickinterval=5, length=100, command=0,
-                   label='number_of_cycles', state="active", relief="flat")
-    scale10.grid(row=1, column=2, ipadx=30, ipady=0, padx=0, pady=0)
-    scale10.set(1)
+                   label='Temperature_end', state="active", relief="flat")
+    scale10.grid(row=2, column=1, ipadx=30, ipady=0, padx=0, pady=0)
 
 
     def eldraw2():
@@ -427,7 +426,6 @@ def draw_6(self, elcolor, temperature_min, temperature_max,
             data[i] = temperature_min
         var = var + temperature_max_duration_h + temperature_min_duration_h
 
-    print(data)
     names = list(data.keys())
     values = list(data.values())
     fig = Figure(figsize=(5, 4), dpi=100)
