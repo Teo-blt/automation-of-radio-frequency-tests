@@ -3,7 +3,7 @@
 # =============================================================================
 # Created By  : Bulteau Téo
 # Created Date: May 10 11:22:00 2021
-# For Kerlik, all rights reserved
+# For Kerlink, all rights reserved
 # =============================================================================
 """The Module Has Been Build for the automation of radio frequency tests"""
 # =============================================================================
@@ -74,7 +74,7 @@ class Mythread(threading.Thread):
 
             VT.write(ON % self.temperature)  # Send the order to the climate chamber
             p = 0
-            while p < 1:  # Loop for the initialisation of the program (not very usefull)
+            while p < 1:  # Loop for the initialisation of the program (not very useful)
                 logger.debug("start-up, please wait")
                 time.sleep(2)
                 logger.debug("start-up, please wait.")
@@ -130,7 +130,7 @@ class Mythread(threading.Thread):
         return 1  # without a return, the while loop will run continuously.
 
     async def do_something_else(self):
-        pass  # The function is no more useful, but in case of...
+        pass  # The function is no more use, but in case of...
 
     async def several_methods_run_together(self):
         if self.stair == 0:  # A variable to direct the program in function of the chose of the user,
