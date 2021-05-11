@@ -319,7 +319,7 @@ def draw_5(self, elcolor):
                    resolution=1, tickinterval=20, length=100, command=0,
                    label='Temperature_start', state="active")
     scale8.grid(row=2, column=0, ipadx=0, ipady=0, padx=0, pady=0)
-    scale9 = Scale(my_auto_stair_scale_frame, orient='horizontal', troughcolor=elcolor, from_=0, to=20,
+    scale9 = Scale(my_auto_stair_scale_frame, orient='horizontal', troughcolor=elcolor, from_=1, to=20,
                    resolution=1, tickinterval=20, length=100, command=0,
                    label='Temperature_duration_h', state="active")
     scale9.grid(row=1, column=1, ipadx=30, ipady=0, padx=0, pady=0)

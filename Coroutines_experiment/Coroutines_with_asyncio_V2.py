@@ -137,12 +137,15 @@ class Mythread(threading.Thread):
                 logger.info(f'End of cycle {self.i}: {a[3]}H{a[4]} and {a[5]} second(s)')
             self.exit()
         else:
-            while abs(self.temperature - self.temperature_end) >= self.stair_temp:
-                if self.temperature > 80 or self.temperature < -40:
-                    self.exit()
+            if self.temperature >= self.stair_temp:
+                self.stair_temp = -self.stair_temp
+            while abs(self.temperature - self.temperature_end) >= abs(self.stair_temp):
                 statements = [self.wait_temperature_reach_consign(self.timer), self.do_something_else()]
                 await asyncio.gather(*statements)  # Gather is used to allow both functions to run at the same time.*
                 self.temperature = self.temperature + self.stair_temp
+                if self.temperature > 80 or self.temperature < -40:
+                    self.exit()
+                VT.write(ON % self.temperature)
                 self.cycle = self.cycle + 0.5
                 self.i = self.i + 1
                 a = time.localtime(time.time())
