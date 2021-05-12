@@ -135,13 +135,6 @@ class Application(Tk):
 
     def try_connect(self, name):
         self.port = name.get()
-        try:  # try to connect to the port com, 5 second of time out, this try allow me to use the program offline
-            vt = serial.Serial(self.port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT)
-            logger.debug("The connection was correctly established")
-        except:
-            logger.critical("Connection impossible")
-            logger.critical("Please chek your connection port")
-            logger.critical(f"Actual connection port: {self.port}")
 
     def scale(self):  # creation of two vey important buttons, Live draw example, a live draw (not used because
         # the user can easily break it), and Start the test, witch allow the user to enter in the management test area
