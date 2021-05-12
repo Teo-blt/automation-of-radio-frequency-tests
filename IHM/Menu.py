@@ -17,9 +17,12 @@ from loguru import logger
 # import Data_management as da
 import Graphic
 import sys
-
+import serial
 
 # ============================================================================
+SERIAL_SPEED = 9600
+SERIAL_TIMEOUT = 5
+
 
 class Application(Tk):
     def __init__(self):
@@ -122,7 +125,7 @@ class Application(Tk):
                          cursor="right_ptr",
                          overrelief="sunken", command=lambda: [logger.info(f"The port [{name.get()}]"
                                                                            " was correctly selected"),
-                                                               self.change_value(name)])
+                                                               self.try_connect(name)])
         button4.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         self.scale()
         # Function not used
@@ -130,8 +133,15 @@ class Application(Tk):
         # self.save()
         return name.get()
 
-    def change_value(self, name):
+    def try_connect(self, name):
         self.port = name.get()
+        try:  # try to connect to the port com, 5 second of time out, this try allow me to use the program offline
+            vt = serial.Serial(self.port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT)
+            logger.debug("The connection was correctly established")
+        except:
+            logger.critical("Connection impossible")
+            logger.critical("Please chek your connection port")
+            logger.critical(f"Actual connection port: {self.port}")
 
     def scale(self):  # creation of two vey important buttons, Live draw example, a live draw (not used because
         # the user can easily break it), and Start the test, witch allow the user to enter in the management test area
