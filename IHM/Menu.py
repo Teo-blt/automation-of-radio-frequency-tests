@@ -123,7 +123,7 @@ class Application(Tk):
         button5 = Button(my_scanner_port_com_frame, text="Scan", borderwidth=8, background=the_color,
                          activebackground="green", disabledforeground="grey",
                          cursor="right_ptr",
-                         overrelief="sunken", command=lambda: [self.scan()])
+                         overrelief="sunken", command=lambda: [self.scan(name)])
         button5.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         label3.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         name = Entry(my_port_com_frame)  # Function to collect the N° of the port of the measuring tool
@@ -143,9 +143,11 @@ class Application(Tk):
         # self.save()
         return name.get()
 
-    def scan(self):
+    def scan(self, name):
         for i in range(0, 100):
             test = ('COM' + str(i))
+            if test == name.get():
+                logger.info(f"The connection port {i} is already used")
             try:
                 serial.Serial(test, SERIAL_SPEED, timeout=SERIAL_TIMEOUT)
                 logger.info(f"The connection port {i} is available")
