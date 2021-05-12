@@ -113,25 +113,44 @@ class Application(Tk):
 
     def climatic_chamber(self):  # The climatic chamber menu
         self.geometry("1200x500")  # Size of the window
-        my_oven_frame = LabelFrame(self, text="Settings of the oven")
-        my_oven_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
-        label2 = Label(my_oven_frame, text="Connection port :")
+        my_port_com_frame = LabelFrame(self, text="Settings of the port com")
+        my_port_com_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
+        my_scanner_port_com_frame = LabelFrame(self, text="Detection of port com")
+        my_scanner_port_com_frame.grid(row=1, column=1, ipadx=40, ipady=40, padx=0, pady=0)
+        label2 = Label(my_port_com_frame, text="Connection port :")
         label2.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-        name = Entry(my_oven_frame)  # Function to collect the N° of the port of the measuring tool
+        label3 = Label(my_scanner_port_com_frame, text="Scanner for connection port")
+        button5 = Button(my_scanner_port_com_frame, text="Scan", borderwidth=8, background=the_color,
+                         activebackground="green", disabledforeground="grey",
+                         cursor="right_ptr",
+                         overrelief="sunken", command=lambda: [self.scan()])
+        button5.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        label3.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        name = Entry(my_port_com_frame)  # Function to collect the N° of the port of the measuring tool
         name.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         name.insert(0, self.port)
-        button4 = Button(my_oven_frame, text="Connect", borderwidth=8, background=the_color,
+        button4 = Button(my_port_com_frame, text="Connect", borderwidth=8, background=the_color,
                          activebackground="green", disabledforeground="grey",
                          cursor="right_ptr",
                          overrelief="sunken", command=lambda: [logger.info(f"The port [{name.get()}]"
                                                                            " was correctly selected"),
                                                                self.try_connect(name)])
         button4.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+
         self.scale()
         # Function not used
         # self.data_management()
         # self.save()
         return name.get()
+
+    def scan(self):
+        for i in range(0, 100):
+            test = ('COM' + str(i))
+            try:
+                serial.Serial(test, SERIAL_SPEED, timeout=SERIAL_TIMEOUT)
+                logger.info(f"The connection port {i} is available")
+            except:
+                logger.debug(f"The connection port {i} is unavailable")
 
     def try_connect(self, name):
         self.port = name.get()
