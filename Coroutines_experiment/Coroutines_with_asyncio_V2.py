@@ -76,7 +76,6 @@ class Mythread(threading.Thread):
             else:
                 self.temperature = self.temp_max
                 self.timer = self.temp_max_duration_h
-
             vt.write(ON % self.temperature)  # Send the order to the climate chamber
             p = 0
             while p < 1:  # Loop for the initialisation of the program (not very useful)
@@ -182,6 +181,7 @@ class Mythread(threading.Thread):
 
     def off(self):  # The function off, shut down the climatic chamber and reset the relaunch_safety variable
         # that was use to control the multi launching of the program
+        print(vt)
         try:  # Protect the program of an error if the user want to turn off
             # an already offline climatic chamber
             vt.write(CLIMATIC_CHAMBER_STOP)  # Stop the climatic chamber
@@ -203,6 +203,7 @@ class Mythread(threading.Thread):
         try:  # This try allow the program to survive in a rare case where the climatic
             # chamber don't have enough time to answer back
             vt.port = self.port
+            vt.open()
             vt.write(b"$00I\n\r")  # prepare the climatic chamber to receive information
             time.sleep(0.2)  # A pause that freeze the entire program TODO find a better way  await asyncio.sleep(5) ?
             received_frame = vt.read_all().decode('utf-8')  # Decipher the frame that was send by the climatic

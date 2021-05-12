@@ -151,7 +151,7 @@ class Application(Tk):
                 logger.info(f"The connection port {i} is available")
             except:
                 if test == name.get():
-                    logger.info(f"The connection port {i} is already used")
+                    logger.critical(f"You are actually trying to connect to the port {i} ")
                 else:
                     logger.debug(f"The connection port {i} is unavailable")
 
