@@ -146,13 +146,14 @@ class Application(Tk):
     def scan(self, name):
         for i in range(0, 100):
             test = ('COM' + str(i))
-            if test == name.get():
-                logger.info(f"The connection port {i} is already used")
             try:
                 serial.Serial(test, SERIAL_SPEED, timeout=SERIAL_TIMEOUT)
                 logger.info(f"The connection port {i} is available")
             except:
-                logger.debug(f"The connection port {i} is unavailable")
+                if test == name.get():
+                    logger.info(f"The connection port {i} is already used")
+                else:
+                    logger.debug(f"The connection port {i} is unavailable")
 
     def try_connect(self, name):
         self.port = name.get()
