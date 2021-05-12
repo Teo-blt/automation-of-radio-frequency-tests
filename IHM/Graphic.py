@@ -363,15 +363,15 @@ def draw_5(self, the_color, port):
             return line2,
 
         def animate(i):
-            value = VARIABLE.Mythread.read(self)[1]
-            yar.append(value)
+            global value
+            value = VARIABLE.Mythread.read(self)
+            yar.append(value[1])
             xar.append(i * (1 / 12))
             line.set_data(xar, yar)
             ax1.set_xlim(0, i * (1 / 12) + 1)
 
         def animate2(r):
-            global m, M
-            value = VARIABLE.Mythread.read(self)
+            global m, M, value
             yar2.append(value[0])
             xar2.append(r * (1 / 12))
             line2.set_data(xar2, yar2)
