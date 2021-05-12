@@ -63,7 +63,6 @@ class Mythread(threading.Thread):
         self.temperature_end = temperature_end
         self.port = port
 
-
     def run(self):
         global relaunch_safety
         if relaunch_safety == 0:  # To forbid the user to multi launch the program

@@ -8,7 +8,7 @@
 """The Module Has Been Build for the automation of radio frequency tests"""
 # =============================================================================
 # Imports
-from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk  # ("""FigureCanvasTkAgg,""")
+from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk
 from matplotlib.figure import Figure
 import numpy as np
 import tkinter as tk
@@ -22,11 +22,13 @@ from Coroutines_experiment import Coroutines_with_asyncio_V2
 from loguru import logger
 
 # =============================================================================
-VARIABLE = Coroutines_with_asyncio_V2  # Climate_chamber, Climate_chamber_V2, coroutines_with_asyncio_V2
+VARIABLE = Coroutines_with_asyncio_V2
 FRAME = (-50, 90)
 
 
-def draw_4(self, the_color):
+def draw_4(self, the_color):  # The function draw_4 crate a new window with a graph inside
+    # of it, the graph can be modify in real time, I did not use this idea for the simulation graph because the user
+    # can too easily break the program (by playing too fast with the cursor for example
     global my_scale_frame_1
     global first_time
     first_time = 1
