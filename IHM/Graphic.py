@@ -8,6 +8,7 @@
 """The Module Has Been Build for the automation of radio frequency tests"""
 # =============================================================================
 # Imports
+from matplotlib.animation import FuncAnimation
 from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk
 from matplotlib.figure import Figure
 import numpy as np
@@ -120,21 +121,27 @@ def draw_5(self, the_color, port):
     my_auto_scale_frame = LabelFrame(my_settings_frame, bd=0)  # , text="my_auto_scale_frame"
     my_auto_scale_frame.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
     my_auto_scale_frame.config(background='#fafafa')
+
     my_auto_stair_scale_frame = LabelFrame(my_settings_frame, bd=0)  # , text="my_auto_scale_frame"
     my_auto_stair_scale_frame.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
     my_auto_stair_scale_frame.config(background='#fafafa')
+
     my_button_frame = LabelFrame(root, bd=0)  # , text="Buttons"
     my_button_frame.grid(column=1, row=0)
     my_button_frame.config(background='#fafafa')
+
     my_rb_frame = LabelFrame(my_settings_frame, bd=0)  # , text="Choice"
     my_rb_frame.pack(padx=0, pady=0, expand=True, fill="both", side=RIGHT)
     my_rb_frame.config(background='#fafafa')
+
     my_rb_frame_2 = LabelFrame(my_auto_scale_frame, bd=0)  # , text="Choice"
     my_rb_frame_2.grid(column=3, row=1)
     my_rb_frame_2.config(background='#fafafa')
+
     my_rb_frame_3 = LabelFrame(my_settings_frame, bd=0)  # , text="Choice"
     my_rb_frame_3.pack(padx=0, pady=0, expand=True, fill="both", side=RIGHT)
     my_rb_frame_3.config(background='#fafafa')
+
     display()
     label = tk.Label(my_auto_scale_frame, text="Cyclic automating", bg="white", font="arial",
                      fg="black", relief="groove")
@@ -142,14 +149,20 @@ def draw_5(self, the_color, port):
     label3 = tk.Label(my_auto_stair_scale_frame, text="Automation by step", bg="white", font="arial",
                       fg="black", relief="groove")
     label3.grid(row=0, column=0, ipadx=20, ipady=20, padx=0, pady=0)
-    button16 = tk.Button(my_auto_scale_frame, text="Start",
-                         borderwidth=8, background=the_color,
-                         activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [VARIABLE.Mythread(port, scale1.get(), scale2.get(),
-                                                            scale4.get(), scale5.get(),
-                                                            scale3.get(), 0, my_auto_scale_frame, a.get(), 0,
-                                                            0, 0).start()])
-    button16.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
+    start_button = tk.Button(
+        my_auto_scale_frame,
+        text="Start",
+        borderwidth=8,
+        background=the_color,
+        activebackground="green",
+        cursor="right_ptr",
+        overrelief="sunken",
+        command=lambda: [VARIABLE.Mythread(port, scale1.get(), scale2.get(),
+                                           scale4.get(), scale5.get(),
+                                           scale3.get(), 0, my_auto_scale_frame, a.get(), 0,
+                                           0, 0).start()])
+    start_button.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
+
     button18 = tk.Button(my_auto_scale_frame, text="Off",
                          borderwidth=8, background=the_color,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
@@ -168,11 +181,13 @@ def draw_5(self, the_color, port):
                              logger.info("The actual temperature is : {}".format(VARIABLE.Mythread.read(self)[0])),
                              logger.info("The actual order is : {}".format(VARIABLE.Mythread.read(self)[1]))])
     button20.grid(row=2, column=3, ipadx=40, ipady=20, padx=0, pady=0)
+
     scale1 = Scale(my_auto_scale_frame, orient='vertical', troughcolor=the_color, from_=80, to=-40,
                    resolution=1, tickinterval=20, length=100, command=0,
                    label='temperature_min', state="active")
     scale1.grid(row=2, column=0, ipadx=0, ipady=0, padx=0, pady=0)
     scale1.set(-1)
+
     scale2 = Scale(my_auto_scale_frame, orient='vertical', troughcolor=the_color, from_=80, to=-40,
                    resolution=1, tickinterval=20, length=100, command=0,
                    label='temperature_max', state="active")
@@ -331,7 +346,7 @@ def draw_5(self, the_color, port):
                     label='Temperature_end', state="active", relief="flat")
     scale10.grid(row=2, column=1, ipadx=30, ipady=0, padx=0, pady=0)
 
-    def the_draw2():
+    def the_draw2() -> [FuncAnimation, FuncAnimation]:
         global ani
         global ani2
         global first_time
@@ -401,6 +416,7 @@ def draw_5(self, the_color, port):
 
         ani = animation.FuncAnimation(fig, animate, interval=5000, blit=False, init_func=init)
         ani2 = animation.FuncAnimation(fig, animate2, interval=5000, blit=False, init_func=init2)
+
         return [ani, ani2]
 
     root.mainloop()
@@ -414,8 +430,7 @@ def draw_6(self, the_color, temperature_min, temperature_max,
     my_draw_6_frame_2.pack()
     my_draw_6_frame_1 = LabelFrame(root)
     my_draw_6_frame_1.pack(side=BOTTOM)
-    data = {}
-    data[0] = 0
+    data = {0: 0}
     temperature_max_duration_h = temperature_max_duration_h + 1
     temperature_min_duration_h = temperature_min_duration_h + 1
     var = 1
@@ -456,8 +471,7 @@ def draw_7(self, the_color, step, temp_start, temp_end, temp_duration):
     my_draw_7_frame_2.pack()
     my_draw_7_frame_1 = LabelFrame(root)
     my_draw_7_frame_1.pack(side=BOTTOM)
-    data = {}
-    data[0] = 0
+    data = {0: 0}
     var = 0
     temp_duration = temp_duration + 1
     if temp_start >= step:

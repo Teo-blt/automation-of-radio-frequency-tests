@@ -14,12 +14,14 @@ from tkinter import ttk
 from tkinter.messagebox import *
 from tkinter.colorchooser import askcolor
 from loguru import logger
-# import Data_management as da
 import Graphic
 import sys
-import serial
 
 # ============================================================================
+from Coroutines_experiment.devices_helper import scan_all_ports
+
+LOBBY_WINDOW_SIZE = "700x200"
+WINDOW_SIZE = "1200x500"
 SERIAL_SPEED = 9600
 SERIAL_TIMEOUT = 5
 
@@ -27,114 +29,166 @@ SERIAL_TIMEOUT = 5
 class Application(Tk):
     def __init__(self):
         Tk.__init__(self)  # Initialisation of the first window
-        global the_color  # Creation of a global variable for the color of the buttons
+        global the_color  # the color of the buttons
         the_color = "#E76145"
-        self.create_widgets()
+        self.setting_up_lobby_widget()
         self.title("Main menu")
         self.withdraw()
-        self.port = 'COM11'
+        self._port = 'COM11'
 
-    def create_widgets(self):  # Creation of a lobby menu
-        new_window = tk.Toplevel(self)  # Setting of the new window
-        new_window.configure(bg="grey")
-        new_window.title("Start menu")
-        new_window.geometry('700x200')
-        label = tk.Label(new_window, text="Menu", )
+    def setting_up_lobby_widget(self):  # Creation of a lobby menu
+        lobby_window: Toplevel = self.setting_lobby_window()
+
+        label = tk.Label(lobby_window, text="Menu", )
         label.pack(padx=10, pady=10, expand=True, fill="both", side=TOP)
-        button1 = tk.Button(new_window, text="Start",
-                            borderwidth=8, background=the_color,  # To start the program, creation of a new window
-                            activebackground="green", cursor="right_ptr", overrelief="sunken",
-                            command=lambda: [self.combo("--choose your instrument here--"),
-                                             self.deiconify(), new_window.withdraw()])
-        button1.pack(padx=30, pady=10, expand=True, fill="both", side=TOP)
-        button2 = tk.Button(new_window, text="Quit",
-                            borderwidth=8, background=the_color,  # To quit the program
-                            activebackground="green", cursor="right_ptr", overrelief="sunken",
-                            command=lambda: [sys.exit()])
-        button2.pack(padx=30, pady=10, expand=True, fill="both", side=TOP)
-        button_settings = tk.Button(new_window, text="color", overrelief="sunken", bitmap="info", cursor="right_ptr",
-                                    command=lambda: (self.color_change(new_window)))  # To change the color
-        # of all buttons
+
+        self.setting_up_start_button(lobby_window)
+        self.setting_up_quit_button(lobby_window)
+        self.setting_up_setting_button(lobby_window)
+
+    def setting_up_setting_button(self, lobby_window: Toplevel):
+        button_settings = tk.Button(
+            lobby_window, text="color", overrelief="sunken", bitmap="info", cursor="right_ptr",
+            command=lambda: (self.color_change(lobby_window)))  # To change the color of all buttons
         button_settings.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
 
-    def color_change(self, new_window):  # A very simple and mostly useless function to change the
-        # color of all the buttons
+    def setting_up_quit_button(self, lobby_window: Toplevel):
+        quit_button = tk.Button(
+            lobby_window,
+            text="Quit",
+            borderwidth=8,
+            background=the_color,  # To quit the program
+            activebackground="green",
+            cursor="right_ptr",
+            overrelief="sunken",
+            command=lambda: [sys.exit()]
+        )
+        quit_button.pack(padx=30, pady=10, expand=True, fill="both", side=TOP)
+
+    def setting_up_start_button(self, lobby_window: Toplevel):
+        start_button = tk.Button(
+            lobby_window,
+            text="Start",
+            borderwidth=8,
+            background=the_color,  # To start the program, creation of a new window
+            activebackground="green",
+            cursor="right_ptr",
+            overrelief="sunken",
+            command=lambda: [
+                self.create_choose_measuring_tool_combobox("--choose your instrument here--"),
+                self.deiconify(), lobby_window.withdraw()])
+        start_button.pack(padx=30, pady=10, expand=True, fill="both", side=TOP)
+
+    def setting_lobby_window(self) -> Toplevel:
+        new_window = tk.Toplevel(self)
+        new_window.configure(bg="grey")
+        new_window.title("Start menu")
+        new_window.geometry(LOBBY_WINDOW_SIZE)
+
+        return new_window
+
+    def color_change(self, new_window):
+        """
+        A very simple and mostly useless function to change the color of all the buttons
+        :param new_window:
+        :return:
+        """
         color = askcolor()  # wheel of color
         global the_color
         the_color = color[1]
         new_window.destroy()
-        self.create_widgets()
+        self.setting_up_lobby_widget()
 
-    def combo(self, value):  # creation of a combobox, this combobox allow he user to chose a measuring tool in a list
-        my_combo_frame = LabelFrame(self, text="Choice of instrument")
-        my_combo_frame.grid(row=0, column=0, ipadx=40, ipady=40, padx=0, pady=0)
-        label_example = tk.Label(my_combo_frame, text="Settings", font="arial", fg="black")
-        label_example.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-        label_top = tk.Label(my_combo_frame, text="Choose your measuring tool")
+    def create_choose_measuring_tool_combobox(self, value: str):
+        """
+        creation of a combobox, this combobox allow user to choose a measuring tool in a list
+        :param value: value of the combobox
+        """
+        instrument_choose_combobox = LabelFrame(self, text="Choice of instrument")
+        instrument_choose_combobox.grid(row=0, column=0, ipadx=40, ipady=40, padx=0, pady=0)
+
+        settings_label = tk.Label(instrument_choose_combobox, text="Settings", font="arial", fg="black")
+        settings_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+
+        label_top = tk.Label(instrument_choose_combobox, text="Choose your measuring tool")
         label_top.pack(expand=False, fill="none", side=TOP)
-        combo_example = ttk.Combobox(my_combo_frame, values=[
+
+        choose_measuring_tool_combobox = ttk.Combobox(instrument_choose_combobox, values=[
             "Climatic chamber",
             "Low frequency generator",  # The list of measuring tool
             "Signal generator",
             "Oscilloscope"], state="readonly")
-        combo_example.set(value)
-        combo_example.pack(padx=50, pady=0, expand=False, fill="x", side=TOP)
-        button3 = tk.Button(my_combo_frame, text="validate",  # Button to validate a choice and launch the
-                            # interface function
-                            borderwidth=8, background=the_color,
-                            activebackground="green", disabledforeground="grey",
-                            cursor="right_ptr",
-                            overrelief="sunken",
-                            command=lambda: [self.interface(combo_example.current())])
-        button3.pack(padx=30, pady=10, expand=True, fill="both", side=TOP)
+        choose_measuring_tool_combobox.set(value)
+        choose_measuring_tool_combobox.pack(padx=50, pady=0, expand=False, fill="x", side=TOP)
+
+        # Button to validate a choice and launch the
+        validate_button = tk.Button(
+            instrument_choose_combobox,
+            text="validate",
+            borderwidth=8,
+            background=the_color,
+            activebackground="green",
+            disabledforeground="grey",
+            cursor="right_ptr",
+            overrelief="sunken",
+            command=lambda: [self.interface(choose_measuring_tool_combobox.current())])
+        validate_button.pack(padx=30, pady=10, expand=True, fill="both", side=TOP)
 
     def interface(self, choice):  # This function open other functions after the choice of the user
         if choice == -1:
             showerror("Error", "You must select a valid instrument")
         elif choice == 0:
-            self.clear("Climatic chamber")  # Call the clear function to clean all the window
-            self.climatic_chamber()  # Open Climatic chamber
+            self.create_new_window("Climatic chamber")  # Call the clear function to clean all the window
+            self.climatic_chamber_widget()  # Open Climatic chamber
         elif choice == 1:
-            self.clear("Low frequency generator")  # Call the clear function to clean all the window
-            self.lfg()  # Open frequency generator
+            self.create_new_window("Low frequency generator")  # Call the clear function to clean all the window
+            self.low_frequency_generator_widget()  # Open frequency generator
         elif choice == 2:
-            self.clear("Signal generator")  # Call the clear function to clean all the window
+            self.create_new_window("Signal generator")  # Call the clear function to clean all the window
             self.sg()  # Open generator
         else:
-            self.clear("Oscilloscope")  # Call the clear function to clean all the window
+            self.create_new_window("Oscilloscope")  # Call the clear function to clean all the window
             self.osl()  # Open Oscilloscope
 
-    def clear(self, get_title):  # Clear function, destroy all the window
-        # and create a new window after the choice of the user
+    def create_new_window(self, window_title: str):
+        """
+        Clear function, destroy all the windows and create a new window after the choice of the user
+        :param window_title:
+        """
         self.destroy()
         Tk.__init__(self)
-        self.title(get_title + " menu")
-        self.combo(get_title)
+        self.title(window_title + " menu")
+        self.create_choose_measuring_tool_combobox(window_title)
 
-    def climatic_chamber(self):  # The climatic chamber menu
-        self.geometry("1200x500")  # Size of the window
+    def climatic_chamber_widget(self):
+        self.geometry(WINDOW_SIZE)  # set window size
+
         my_port_com_frame = LabelFrame(self, text="Settings of the port com")
         my_port_com_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
+
         my_scanner_port_com_frame = LabelFrame(self, text="Detection of port com")
         my_scanner_port_com_frame.grid(row=1, column=1, ipadx=40, ipady=40, padx=0, pady=0)
+
         label2 = Label(my_port_com_frame, text="Connection port :")
         label2.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+
         label3 = Label(my_scanner_port_com_frame, text="Scanner for connection port")
+
         button5 = Button(my_scanner_port_com_frame, text="Scan", borderwidth=8, background=the_color,
                          activebackground="green", disabledforeground="grey",
                          cursor="right_ptr",
-                         overrelief="sunken", command=lambda: [self.scan(name)])
+                         overrelief="sunken", command=lambda: [scan_all_ports(name.get())])
         button5.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         label3.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         name = Entry(my_port_com_frame)  # Function to collect the N° of the port of the measuring tool
         name.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-        name.insert(0, self.port)
+        name.insert(0, self._port)
         button4 = Button(my_port_com_frame, text="Connect", borderwidth=8, background=the_color,
                          activebackground="green", disabledforeground="grey",
                          cursor="right_ptr",
                          overrelief="sunken", command=lambda: [logger.info(f"The port [{name.get()}]"
                                                                            " was correctly selected"),
-                                                               self.try_connect(name)])
+                                                               self.change_port(name)])
         button4.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
 
         self.scale()
@@ -143,48 +197,38 @@ class Application(Tk):
         # self.save()
         return name.get()
 
-    def scan(self, name):
-        for i in range(0, 100):
-            test = ('COM' + str(i))
-            try:
-                serial.Serial(test, SERIAL_SPEED, timeout=SERIAL_TIMEOUT)
-                logger.info(f"The connection port {i} is available")
-            except:
-                if test == name.get():
-                    logger.critical(f"You are actually trying to connect to the port {i} ")
-                else:
-                    logger.debug(f"The connection port {i} is unavailable")
-
-    def try_connect(self, name):
-        self.port = name.get()
+    def change_port(self, name):
+        self._port = name.get()
 
     def scale(self):  # creation of two vey important buttons, Live draw example, a live draw (not used because
         # the user can easily break it), and Start the test, witch allow the user to enter in the management test area
         my_scale_frame = LabelFrame(self, text="Draw")
         my_scale_frame.grid(row=0, column=2, ipadx=0, ipady=0, padx=0, pady=0)
-        button12 = tk.Button(my_scale_frame, text="Start the test",
-                             borderwidth=8, background=the_color,
-                             activebackground="green", cursor="right_ptr", overrelief="sunken",
-                             command=lambda: [Graphic.draw_5(self, the_color, self.climatic_chamber())])
-        button12.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
+
+        start_test_button = tk.Button(my_scale_frame, text="Start the test",
+                                      borderwidth=8, background=the_color,
+                                      activebackground="green", cursor="right_ptr", overrelief="sunken",
+                                      command=lambda: [Graphic.draw_5(self, the_color, self.climatic_chamber_widget())])
+        start_test_button.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
+
         button11 = tk.Button(my_scale_frame, text="Live draw example",
                              borderwidth=8, background=the_color,
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
                              command=lambda: Graphic.draw_4(self, the_color))
         button11.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=BOTTOM)
 
-    def lfg(self):  # The low frequency generator menu
-        self.geometry("1200x500")
+    def low_frequency_generator_widget(self):
+        self.geometry(WINDOW_SIZE)
         my_lfg_frame = LabelFrame(self, text="Settings of the Low frequency generator")
         my_lfg_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
 
     def sg(self):  # The signal generator menu
-        self.geometry("1200x500")
+        self.geometry(WINDOW_SIZE)
         my_sg_frame = LabelFrame(self, text="Settings of the Signal generator")
         my_sg_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
 
     def osl(self):  # The oscilloscope menu
-        self.geometry("1200x500")
+        self.geometry(WINDOW_SIZE)
         my_osl_frame = LabelFrame(self, text="Settings of the Oscilloscope")
         my_osl_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
 

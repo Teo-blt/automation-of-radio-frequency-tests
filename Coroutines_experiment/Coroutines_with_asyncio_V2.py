@@ -8,6 +8,7 @@
 """The Module Has Been Build for the automation of radio frequency tests"""
 # =============================================================================
 import asyncio
+
 from loguru import logger
 import threading
 import time
@@ -15,6 +16,8 @@ from tkinter import *
 import serial
 
 # =============================================================================
+from Coroutines_experiment.devices_helper import open_port
+
 global relaunch_safety
 # noinspection PyRedeclaration
 relaunch_safety = 0
@@ -40,7 +43,9 @@ class Mythread(threading.Thread):
     def __init__(self, port, temp_min, temp_max, temp_min_duration_h, temp_max_duration_h,
                  nb_cycle, oof, my_auto_scale_frame, up_down, stair, stair_temp, temperature_end):
         threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
-        self.temp_min = temp_min  # additional data added to the class
+
+        # additional data added to the class
+        self.temp_min = temp_min
         self.temp_max = temp_max
         self.time_start = 0
         self.temps = 0
@@ -61,7 +66,7 @@ class Mythread(threading.Thread):
         self.stair = stair
         self.stair_temp = stair_temp
         self.temperature_end = temperature_end
-        self.port = port
+        self._port = open_port(port)
 
     def run(self):
         global relaunch_safety
@@ -195,17 +200,14 @@ class Mythread(threading.Thread):
         logger.info("################################################")
         logger.info("End of Test")
         b = time.localtime(time_stop - self.time_start)  # Total time of the test
-        logger.info(f'Test duration: {b}')   # some useful information for the user
+        logger.info(f'Test duration: {b}')  # some useful information for the user
         sys.exit()  # TODO repair the sys.exit()
 
-    def read(self):  # The read function very useful and very powerful
+    def read(self):
         try:  # This try allow the program to survive in a rare case where the climatic
             # chamber don't have enough time to answer back
-            try:
-                vt.port = self.port
-                vt.open()
-            except:
-                pass
+            self._port = open_port(self._port)
+
             vt.write(b"$00I\n\r")  # prepare the climatic chamber to receive information
             time.sleep(0.11)  # A pause that freeze the entire program TODO find a better way to wait asyncio.sleep(5) ?
             received_frame = vt.read_all().decode('utf-8')  # Decipher the frame that was send by the climatic
