@@ -200,15 +200,17 @@ class Application(Tk):
         return name.get()
 
     def change_port(self, name):
-
-            self._port = name.get()
-            try:
+        self._port = name.get()
+        try:
+            if self._port == "COM11":
+                logger.critical("you're already trying to connect to this port")
+            else:
                 serial.Serial(self._port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT).write(b"$00I\n\r")
                 logger.debug("The connection was correctly established")
-            except ValueError:
-                logger.critical("This port is already open")
-            except serial.serialutil.SerialException:
-                logger.critical("This port does not exist")
+        except serial.serialutil.SerialException:
+            logger.critical("This port does not exist")
+        except:
+            logger.critical("Error unknown")
 
 
 
