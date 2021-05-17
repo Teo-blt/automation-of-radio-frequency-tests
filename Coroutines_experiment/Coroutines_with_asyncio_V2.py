@@ -208,7 +208,7 @@ class Mythread(threading.Thread):
             self._port = open_port(self._port)
 
             vt.write(b"$00I\n\r")  # prepare the climatic chamber to receive information
-            time.sleep(0.11)  # A pause that freeze the entire program TODO find a better way to wait asyncio.sleep(5) ?
+            time.sleep(0.2)  # A pause that freeze the entire program TODO find a better way to wait asyncio.sleep(5) ?
             received_frame = vt.read_all().decode('utf-8')  # Decipher the frame that was send by the climatic
             # chamber
             word = received_frame.split(" ")  # Split the decipher the frame that was send by the climatic chamber

@@ -16,6 +16,8 @@ from tkinter.colorchooser import askcolor
 from loguru import logger
 import Graphic
 import sys
+import serial
+from Coroutines_experiment.devices_helper import open_port
 
 # ============================================================================
 from Coroutines_experiment.devices_helper import scan_all_ports
@@ -198,7 +200,17 @@ class Application(Tk):
         return name.get()
 
     def change_port(self, name):
-        self._port = name.get()
+
+            self._port = name.get()
+            try:
+                serial.Serial(self._port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT).write(b"$00I\n\r")
+            except Exception:
+                logger.critical("This port is already open")
+            except serial.serialutil.SerialException:
+                logger.info("This port does not exist")
+
+
+
 
     def scale(self):  # creation of two vey important buttons, Live draw example, a live draw (not used because
         # the user can easily break it), and Start the test, witch allow the user to enter in the management test area
@@ -210,13 +222,13 @@ class Application(Tk):
                                       activebackground="green", cursor="right_ptr", overrelief="sunken",
                                       command=lambda: [Graphic.draw_5(self, the_color, self.climatic_chamber_widget())])
         start_test_button.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
-
+        """
         button11 = tk.Button(my_scale_frame, text="Live draw example",
                              borderwidth=8, background=the_color,
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
                              command=lambda: Graphic.draw_4(self, the_color))
         button11.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=BOTTOM)
-
+        """
     def low_frequency_generator_widget(self):
         self.geometry(WINDOW_SIZE)
         my_lfg_frame = LabelFrame(self, text="Settings of the Low frequency generator")
