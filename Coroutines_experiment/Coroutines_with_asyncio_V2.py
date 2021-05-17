@@ -205,8 +205,8 @@ class Mythread(threading.Thread):
     def read(self):
         try:  # This try allow the program to survive in a rare case where the climatic
             # chamber don't have enough time to answer back
-            self._port = open_port(self._port)
-
+            vt.port = self._port
+            vt.open()
             vt.write(b"$00I\n\r")  # prepare the climatic chamber to receive information
             time.sleep(0.2)  # A pause that freeze the entire program TODO find a better way to wait asyncio.sleep(5) ?
             received_frame = vt.read_all().decode('utf-8')  # Decipher the frame that was send by the climatic
@@ -224,8 +224,8 @@ class Mythread(threading.Thread):
             return [0, 0]  # In case of an error, this function will return [0,0], This will NOT affect the graph
 
     def order(self, value):  # A very simple function use in the manual mode
-        try:  # This try allow to save the program when, in rare case, spamming the Send button
+            # This try allow to save the program when, in rare case, spamming the Send button
             # of the manual mode produce an error
+            print(vt)
             vt.write(ON % value)
-        except:
-            logger.error("too fast, please slow down")
+

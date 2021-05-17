@@ -24,7 +24,7 @@ from Coroutines_experiment.devices_helper import scan_all_ports
 LOBBY_WINDOW_SIZE = "700x200"
 WINDOW_SIZE = "1200x500"
 SERIAL_SPEED = 9600
-SERIAL_TIMEOUT = 5
+SERIAL_TIMEOUT = 1
 
 
 class Application(Tk):
@@ -204,7 +204,7 @@ class Application(Tk):
             if self._port == "COM11":
                 logger.critical("you're already trying to connect to this port")
             else:
-                serial.Serial(self._port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT).write(b"$00I\n\r")
+                serial.Serial(self._port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT)
                 logger.debug("The connection was correctly established")
         except serial.serialutil.SerialException:
             logger.critical("This port does not exist")
