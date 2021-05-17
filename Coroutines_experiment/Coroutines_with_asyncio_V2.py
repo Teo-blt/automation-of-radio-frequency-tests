@@ -185,7 +185,6 @@ class Mythread(threading.Thread):
 
     def off(self):  # The function off, shut down the climatic chamber and reset the relaunch_safety variable
         # that was use to control the multi launching of the program
-        print(vt)
         try:  # Protect the program of an error if the user want to turn off
             # an already offline climatic chamber
             vt.write(CLIMATIC_CHAMBER_STOP)  # Stop the climatic chamber
