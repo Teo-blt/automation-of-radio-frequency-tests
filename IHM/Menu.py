@@ -204,10 +204,11 @@ class Application(Tk):
             self._port = name.get()
             try:
                 serial.Serial(self._port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT).write(b"$00I\n\r")
-            except Exception:
+                logger.debug("The connection was correctly established")
+            except ValueError:
                 logger.critical("This port is already open")
             except serial.serialutil.SerialException:
-                logger.info("This port does not exist")
+                logger.critical("This port does not exist")
 
 
 
