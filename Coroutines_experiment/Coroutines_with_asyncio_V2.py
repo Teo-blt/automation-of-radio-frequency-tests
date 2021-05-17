@@ -224,8 +224,8 @@ class Mythread(threading.Thread):
             return [0, 0]  # In case of an error, this function will return [0,0], This will NOT affect the graph
 
     def order(self, value):  # A very simple function use in the manual mode
-            # This try allow to save the program when, in rare case, spamming the Send button
+        try:  # This try allow to save the program when, in rare case, spamming the Send button
             # of the manual mode produce an error
-            print(vt)
             vt.write(ON % value)
-
+        except:
+            logger.error("too fast, please slow down")
