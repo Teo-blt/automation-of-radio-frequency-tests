@@ -17,7 +17,6 @@ from loguru import logger
 import Graphic
 import sys
 import serial
-from Coroutines_experiment.devices_helper import open_port
 
 # ============================================================================
 from Coroutines_experiment.devices_helper import scan_all_ports
