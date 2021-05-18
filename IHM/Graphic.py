@@ -107,11 +107,11 @@ def draw_5(self, the_color, port):
             logger.critical(f"Error temperature_min_scale : {temperature_min_scale.get()} "
                             f">=  temperature_max_scale : {temperature_max_scale.get()}")
         else:
-            VARIABLE.Mythread(port, temperature_min_scale.get(), temperature_max_scale.get(),
-                              temperature_min_duration_h_scale.get(),
-                              temperature_max_duration_h_scale.get(),
-                              number_of_cycles_scale.get(), 0, auto_scale_frame, a.get(), 0,
-                              0, 0).start()
+            VARIABLE.Thread(port, temperature_min_scale.get(), temperature_max_scale.get(),
+                            temperature_min_duration_h_scale.get(),
+                            temperature_max_duration_h_scale.get(),
+                            number_of_cycles_scale.get(), 0, auto_scale_frame, a.get(), 0,
+                            0, 0).start()
 
     global ani
     global ani2
@@ -173,7 +173,7 @@ def draw_5(self, the_color, port):
     off_auto_scale_frame_button = tk.Button(auto_scale_frame, text="Off",
                                             borderwidth=8, background=the_color,
                                             activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                            command=lambda: [VARIABLE.Mythread.off(self)])
+                                            command=lambda: [VARIABLE.off()])
     off_auto_scale_frame_button.grid(row=0, column=2, ipadx=40, ipady=20, padx=0, pady=0)
     simulation_auto_scale_frame_button = tk.Button(auto_scale_frame, text="Simulation",
                                                    borderwidth=8, background=the_color,
@@ -190,9 +190,9 @@ def draw_5(self, the_color, port):
                                                 activebackground="green", cursor="right_ptr", overrelief="sunken",
                                                 command=lambda: [
                                                     logger.info("The actual temperature is : {}".format(
-                                                        VARIABLE.Mythread.read(self)[0])),
+                                                        VARIABLE.Thread.read(self)[0])),
                                                     logger.info("The actual order is : {}".format(
-                                                        VARIABLE.Mythread.read(self)[1]))])
+                                                        VARIABLE.Thread.read(self)[1]))])
     request_auto_scale_frame_button.grid(row=0, column=3, ipadx=40, ipady=20, padx=0, pady=0)
 
     temperature_min_scale = Scale(auto_scale_frame, orient='vertical', troughcolor=the_color, from_=80, to=-40,
@@ -227,9 +227,9 @@ def draw_5(self, the_color, port):
                                            borderwidth=8, background=the_color,
                                            activebackground="green", cursor="right_ptr", overrelief="sunken",
                                            command=lambda: [logger.info("The actual temperature is : {}".format
-                                                                        (VARIABLE.Mythread.read(self)[0])),
+                                                                        (VARIABLE.Thread.read(self)[0])),
                                                             logger.info("The actual order is : {}".format
-                                                                        (VARIABLE.Mythread.read(self)[1]))])
+                                                                        (VARIABLE.Thread.read(self)[1]))])
 
     request_scale_frame_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
     order_scale = Scale(scale_frame, orient='vertical', troughcolor=the_color, from_=80, to=-40,
@@ -239,12 +239,12 @@ def draw_5(self, the_color, port):
     send_button = tk.Button(scale_frame, text="Send",
                             borderwidth=8, background=the_color,
                             activebackground="green", cursor="right_ptr", overrelief="sunken",
-                            command=lambda: [VARIABLE.Mythread.order(self, order_scale.get())])
+                            command=lambda: [VARIABLE.Thread.order(self, order_scale.get())])
     send_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
     off_scale_frame_button = tk.Button(scale_frame, text="Off",
                                        borderwidth=8, background=the_color,
                                        activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                       command=lambda: [VARIABLE.Mythread.off(self)])
+                                       command=lambda: [VARIABLE.off()])
     off_scale_frame_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
     graphic_settings_label = tk.Label(button_frame, text="Graphic settings", bg="white", font="arial",
                                       fg="black", relief="groove")
@@ -334,7 +334,7 @@ def draw_5(self, the_color, port):
     start_auto_stair_scale_frame_button = tk.Button(auto_stair_scale_frame, text="Start",
                                                     borderwidth=8, background=the_color,
                                                     activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                                    command=lambda: [VARIABLE.Mythread(
+                                                    command=lambda: [VARIABLE.Thread(
                                                         port,
                                                         temperature_start_auto_stair_scale_frame_scale.get(),
                                                         temperature_start_auto_stair_scale_frame_scale.get(),
@@ -348,7 +348,7 @@ def draw_5(self, the_color, port):
     off_auto_stair_scale_frame_button = tk.Button(auto_stair_scale_frame, text="Off",
                                                   borderwidth=8, background=the_color,
                                                   activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                                  command=lambda: [VARIABLE.Mythread.off(self)])
+                                                  command=lambda: [VARIABLE.off()])
     off_auto_stair_scale_frame_button.grid(row=0, column=2, ipadx=40, ipady=20, padx=20, pady=20)
     simulation_auto_stair_scale_frame_button = tk.Button(auto_stair_scale_frame, text="Simulation",
                                                          borderwidth=8, background=the_color,
@@ -368,9 +368,9 @@ def draw_5(self, the_color, port):
                                                       activebackground="green", cursor="right_ptr", overrelief="sunken",
                                                       command=lambda: [
                                                           logger.info("The actual temperature is : {}".format(
-                                                              VARIABLE.Mythread.read(self)[0])),
+                                                              VARIABLE.Thread.read(self)[0])),
                                                           logger.info("The actual order is : {}".format(
-                                                              VARIABLE.Mythread.read(self)[1]))])
+                                                              VARIABLE.Thread.read(self)[1]))])
     request_auto_stair_scale_frame_button.grid(row=0, column=3, ipadx=40, ipady=20, padx=0, pady=0)
     step_auto_stair_scale_frame_scale = Scale(auto_stair_scale_frame, orient='vertical', troughcolor=the_color,
                                               from_=120, to=1,
@@ -428,7 +428,7 @@ def draw_5(self, the_color, port):
 
         def animate(i):
             global value
-            value = VARIABLE.Mythread.read(self)
+            value = VARIABLE.Thread.read(self)
             yar.append(value[1])
             xar.append(i * (1 / 12))
             line.set_data(xar, yar)

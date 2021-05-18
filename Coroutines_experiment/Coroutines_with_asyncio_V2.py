@@ -8,6 +8,7 @@
 """The Module Has Been Build for the automation of radio frequency tests"""
 # =============================================================================
 import asyncio
+import sys
 
 from loguru import logger
 import threading
@@ -38,7 +39,7 @@ except:
     logger.critical(f"actual connection port {CONNECTION}")
 
 
-class Mythread(threading.Thread):
+class Thread(threading.Thread):
 
     def __init__(self, port, temp_min, temp_max, temp_min_duration_h, temp_max_duration_h,
                  nb_cycle, oof, my_auto_scale_frame, up_down, stair, stair_temp, temperature_end):
@@ -67,6 +68,7 @@ class Mythread(threading.Thread):
         self.stair_temp = stair_temp
         self.temperature_end = temperature_end
         self._port = open_port(port)
+        self.extinct = 0
 
     def run(self):
         global relaunch_safety
@@ -103,9 +105,10 @@ class Mythread(threading.Thread):
             asyncio.run(self.several_methods_run_together())
 
     async def wait_temperature_reach_consign(self, timer):
-        while abs(self.temp - self.temperature) >= 0.2 or self.VALUE_STABILISATION <= 120:  # The maximal difference
-            # between the actual temperature and the order must be less than 0.2 (if we use a maximal difference of 0
-            # it's take too much time to stabilize) AND the VALUE_STABILISATION must be bigger than 120
+        while (abs(self.temp - self.temperature) >= 0.2 or self.VALUE_STABILISATION <= 120):
+            # The maximal difference between the actual temperature and the order must be less than 0.2
+            # (if we use a maximal difference of 0 it's take too much time to stabilize) AND the VALUE_STABILISATION
+            # must be bigger than 120
             await asyncio.sleep(5)  # Like a wait but it will NOT freeze the program
             [self.temp, self.temp2] = self.read()  # Reed the value thanks to the reed function
             logger.info("#################################")  # show the values to the user
@@ -123,8 +126,8 @@ class Mythread(threading.Thread):
         logger.info("The climate chamber is stabilized with success")  # Said to the user When the
         # climate chamber is stabilized
         self.time_start_min = time.time()  # Collect the actual time named time_start_min for the waiting loop
-        while time.time() < self.time_start_min + (timer * 3600):  # While the actual time is smaller than the
-            # time_start_min WITH added with the timer, the while is looping
+        while time.time() < self.time_start_min + (timer * 3600):  # While the actual
+            # time is smaller than the time_start_min WITH added with the timer, the while is looping
             await asyncio.sleep(5)  # Like a wait but it will NOT freeze the program
             [self.temp, self.temp2] = self.read()  # Reed the value thanks to the reed function
             logger.info("#################################")  # show the values to the user
@@ -183,18 +186,8 @@ class Mythread(threading.Thread):
 
             self.exit()  # leave the program thanks to the function exit
 
-    def off(self):  # The function off, shut down the climatic chamber and reset the relaunch_safety variable
-        # that was use to control the multi launching of the program
-        try:  # Protect the program of an error if the user want to turn off
-            # an already offline climatic chamber
-            vt.write(CLIMATIC_CHAMBER_STOP)  # Stop the climatic chamber
-            global relaunch_safety  # relaunch_safety variable
-            relaunch_safety = 0
-        except:
-            logger.error("Error, the climate chamber is already offline")
-
     def exit(self):
-        self.off()  # Use the off function to stop the climatic chamber
+        off()  # Use the off function to stop the climatic chamber
         time_stop = time.time()
         logger.info("################################################")
         logger.info("End of Test")
@@ -232,3 +225,10 @@ class Mythread(threading.Thread):
             vt.write(ON % value)
         except:
             logger.error("too fast, please slow down")
+
+def off():  # The function off, shut down the climatic chamber and reset the relaunch_safety variable
+    # that was use to control the multi launching of the program
+    vt.write(CLIMATIC_CHAMBER_STOP)  # Stop the climatic chamber
+    global relaunch_safety  # relaunch_safety variable
+    relaunch_safety = 0
+    logger.debug("The climate chamber was correctly arrest")
