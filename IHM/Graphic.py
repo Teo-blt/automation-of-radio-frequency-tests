@@ -102,6 +102,17 @@ def draw_5(self, the_color, port):
         plot_canvas = FigureCanvasTkAgg(fig, root)
         plot_canvas.get_tk_widget().grid(column=0, row=0)
 
+    def verification_temp():
+        if temperature_min_scale.get() >= temperature_max_scale.get():
+            logger.critical(f"Error temperature_min_scale : {temperature_min_scale.get()} "
+                            f">=  temperature_max_scale : {temperature_max_scale.get()}")
+        else:
+            VARIABLE.Mythread(port, temperature_min_scale.get(), temperature_max_scale.get(),
+                              temperature_min_duration_h_scale.get(),
+                              temperature_max_duration_h_scale.get(),
+                              number_of_cycles_scale.get(), 0, auto_scale_frame, a.get(), 0,
+                              0, 0).start()
+
     global ani
     global ani2
     global first_time
@@ -156,11 +167,7 @@ def draw_5(self, the_color, port):
         activebackground="green",
         cursor="right_ptr",
         overrelief="sunken",
-        command=lambda: [VARIABLE.Mythread(port, temperature_min_scale.get(), temperature_max_scale.get(),
-                                           temperature_min_duration_h_scale.get(),
-                                           temperature_max_duration_h_scale.get(),
-                                           number_of_cycles_scale.get(), 0, auto_scale_frame, a.get(), 0,
-                                           0, 0).start()])
+        command=lambda: [verification_temp()])
     start_button.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
 
     off_auto_scale_frame_button = tk.Button(auto_scale_frame, text="Off",
@@ -175,7 +182,8 @@ def draw_5(self, the_color, port):
                                                                            temperature_max_scale.get(),
                                                                            number_of_cycles_scale.get(),
                                                                            temperature_min_duration_h_scale.get(),
-                                                                           temperature_max_duration_h_scale.get())])
+                                                                           temperature_max_duration_h_scale.get(),
+                                                                           a.get())])
     simulation_auto_scale_frame_button.grid(row=2, column=3, ipadx=40, ipady=20, padx=0, pady=0)
     request_auto_scale_frame_button = tk.Button(auto_scale_frame, text="request",
                                                 borderwidth=8, background=the_color,
@@ -464,45 +472,54 @@ def draw_5(self, the_color, port):
 
 
 def draw_6(self, the_color, temperature_min, temperature_max,
-           number_of_cycles, temperature_min_duration_h, temperature_max_duration_h):
-    root = tk.Toplevel(self)
-    root.wm_title("simulation graph")
-    my_draw_6_frame_2 = LabelFrame(root)
-    my_draw_6_frame_2.pack()
-    my_draw_6_frame_1 = LabelFrame(root)
-    my_draw_6_frame_1.pack(side=BOTTOM)
-    data = {0: 0}
-    temperature_max_duration_h = temperature_max_duration_h + 1
-    temperature_min_duration_h = temperature_min_duration_h + 1
-    var = 1
-    for p in range(0, number_of_cycles):
-        for i in range(var, temperature_max_duration_h + var):
-            data[i] = temperature_max
-        for i in range(temperature_max_duration_h + var,
-                       temperature_max_duration_h + temperature_min_duration_h +
-                       var):
-            data[i] = temperature_min
-        var = var + temperature_max_duration_h + temperature_min_duration_h
+           number_of_cycles, temperature_min_duration_h, temperature_max_duration_h, min_max):
 
-    names = list(data.keys())
-    values = list(data.values())
-    fig = Figure(figsize=(5, 4), dpi=100)
-    fig.add_subplot().plot(names, values)
-    canvas = FigureCanvasTkAgg(fig, master=my_draw_6_frame_1)
-    toolbar = NavigationToolbar2Tk(canvas, my_draw_6_frame_1, pack_toolbar=False)
-    toolbar.update()
-    canvas.draw()
-    canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
-    toolbar.pack(side=BOTTOM, fill=X)
-    button1 = Button(master=my_draw_6_frame_2, text="Quit", background=the_color,
-                     cursor="right_ptr", borderwidth=5, activebackground="green",
-                     overrelief="sunken", command=lambda: root.destroy())
-    button1.pack(side=RIGHT)
-    label = tk.Label(my_draw_6_frame_2, text="The value of the time duration of "
-                                             "the transition between two level of temperature "
-                                             "was arbitrarily fixed to one hour", bg="white", font="arial",
-                     fg="black", relief="groove")
-    label.pack()
+    if temperature_min >= temperature_max:
+        logger.critical(f"Error temperature_min_scale : {temperature_min} "
+                        f">=  temperature_max_scale : {temperature_max}")
+    else:
+        root = tk.Toplevel(self)
+        root.wm_title("simulation graph")
+        my_draw_6_frame_2 = LabelFrame(root)
+        my_draw_6_frame_2.pack()
+        my_draw_6_frame_1 = LabelFrame(root)
+        my_draw_6_frame_1.pack(side=BOTTOM)
+        data = {0: 0}
+        temperature_max_duration_h = temperature_max_duration_h + 1
+        temperature_min_duration_h = temperature_min_duration_h + 1
+        var = 1
+        if min_max:
+            var_storage = temperature_max
+            temperature_max = temperature_min
+            temperature_min = var_storage
+        for p in range(0, number_of_cycles):
+            for i in range(var, temperature_max_duration_h + var):
+                data[i] = temperature_max
+            for i in range(temperature_max_duration_h + var,
+                           temperature_max_duration_h + temperature_min_duration_h +
+                           var):
+                data[i] = temperature_min
+            var = var + temperature_max_duration_h + temperature_min_duration_h
+
+        names = list(data.keys())
+        values = list(data.values())
+        fig = Figure(figsize=(5, 4), dpi=100)
+        fig.add_subplot().plot(names, values)
+        canvas = FigureCanvasTkAgg(fig, master=my_draw_6_frame_1)
+        toolbar = NavigationToolbar2Tk(canvas, my_draw_6_frame_1, pack_toolbar=False)
+        toolbar.update()
+        canvas.draw()
+        canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
+        toolbar.pack(side=BOTTOM, fill=X)
+        button1 = Button(master=my_draw_6_frame_2, text="Quit", background=the_color,
+                         cursor="right_ptr", borderwidth=5, activebackground="green",
+                         overrelief="sunken", command=lambda: root.destroy())
+        button1.pack(side=RIGHT)
+        label = tk.Label(my_draw_6_frame_2, text="The value of the time duration of "
+                                                 "the transition between two level of temperature "
+                                                 "was arbitrarily fixed to one hour", bg="white", font="arial",
+                         fg="black", relief="groove")
+        label.pack()
 
 
 def draw_7(self, the_color, step, temp_start, temp_end, temp_duration):

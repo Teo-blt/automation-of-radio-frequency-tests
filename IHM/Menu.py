@@ -211,9 +211,6 @@ class Application(Tk):
         except:
             logger.critical("Error unknown")
 
-
-
-
     def scale(self):  # creation of two vey important buttons, Live draw example, a live draw (not used because
         # the user can easily break it), and Start the test, witch allow the user to enter in the management test area
         my_scale_frame = LabelFrame(self, text="Draw")
@@ -231,6 +228,7 @@ class Application(Tk):
                              command=lambda: Graphic.draw_4(self, the_color))
         button11.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=BOTTOM)
         """
+
     def low_frequency_generator_widget(self):
         self.geometry(WINDOW_SIZE)
         my_lfg_frame = LabelFrame(self, text="Settings of the Low frequency generator")
