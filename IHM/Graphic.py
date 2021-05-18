@@ -176,7 +176,7 @@ def draw_5(self, the_color, port):
                                                                            number_of_cycles_scale.get(),
                                                                            temperature_min_duration_h_scale.get(),
                                                                            temperature_max_duration_h_scale.get())])
-    simulation_auto_scale_frame_button.grid(row=0, column=3, ipadx=40, ipady=20, padx=0, pady=0)
+    simulation_auto_scale_frame_button.grid(row=2, column=3, ipadx=40, ipady=20, padx=0, pady=0)
     request_auto_scale_frame_button = tk.Button(auto_scale_frame, text="request",
                                                 borderwidth=8, background=the_color,
                                                 activebackground="green", cursor="right_ptr", overrelief="sunken",
@@ -185,7 +185,7 @@ def draw_5(self, the_color, port):
                                                         VARIABLE.Mythread.read(self)[0])),
                                                     logger.info("The actual order is : {}".format(
                                                         VARIABLE.Mythread.read(self)[1]))])
-    request_auto_scale_frame_button.grid(row=2, column=3, ipadx=40, ipady=20, padx=0, pady=0)
+    request_auto_scale_frame_button.grid(row=0, column=3, ipadx=40, ipady=20, padx=0, pady=0)
 
     temperature_min_scale = Scale(auto_scale_frame, orient='vertical', troughcolor=the_color, from_=80, to=-40,
                                   resolution=1, tickinterval=20, length=100, command=0,
@@ -291,8 +291,6 @@ def draw_5(self, the_color, port):
                                                                                          side=LEFT),
                                                                         auto_scale_frame.pack_forget(),
                                                                         button_frame.grid(column=1, row=0),
-                                                                        order_scale.set(
-                                                                            VARIABLE.Mythread.read(self)[1]),
                                                                         rb_frame_automatic_selection.pack_forget(),
                                                                         auto_stair_scale_frame.pack_forget()])
     radiobutton_manual.pack(padx=0, pady=0, expand=False, fill="none", side=BOTTOM)
@@ -343,7 +341,7 @@ def draw_5(self, the_color, port):
                                                   borderwidth=8, background=the_color,
                                                   activebackground="green", cursor="right_ptr", overrelief="sunken",
                                                   command=lambda: [VARIABLE.Mythread.off(self)])
-    off_auto_stair_scale_frame_button.grid(row=0, column=2, ipadx=40, ipady=20, padx=0, pady=0)
+    off_auto_stair_scale_frame_button.grid(row=0, column=2, ipadx=40, ipady=20, padx=20, pady=20)
     simulation_auto_stair_scale_frame_button = tk.Button(auto_stair_scale_frame, text="Simulation",
                                                          borderwidth=8, background=the_color,
                                                          activebackground="green", cursor="right_ptr",
@@ -356,7 +354,7 @@ def draw_5(self, the_color, port):
                                                              temperature_start_auto_stair_scale_frame_scale.get(),
                                                              temperature_end_auto_stair_scale_frame_scale.get(),
                                                              temperature_duration_h_auto_stair_scale_frame_scale.get())])
-    simulation_auto_stair_scale_frame_button.grid(row=0, column=3, ipadx=40, ipady=20, padx=0, pady=0)
+    simulation_auto_stair_scale_frame_button.grid(row=1, column=3, ipadx=40, ipady=20, padx=0, pady=0)
     request_auto_stair_scale_frame_button = tk.Button(auto_stair_scale_frame, text="Request",
                                                       borderwidth=8, background=the_color,
                                                       activebackground="green", cursor="right_ptr", overrelief="sunken",
@@ -365,7 +363,7 @@ def draw_5(self, the_color, port):
                                                               VARIABLE.Mythread.read(self)[0])),
                                                           logger.info("The actual order is : {}".format(
                                                               VARIABLE.Mythread.read(self)[1]))])
-    request_auto_stair_scale_frame_button.grid(row=1, column=3, ipadx=40, ipady=20, padx=0, pady=0)
+    request_auto_stair_scale_frame_button.grid(row=0, column=3, ipadx=40, ipady=20, padx=0, pady=0)
     step_auto_stair_scale_frame_scale = Scale(auto_stair_scale_frame, orient='vertical', troughcolor=the_color,
                                               from_=120, to=1,
                                               resolution=1, tickinterval=20, length=100, command=0,
@@ -385,7 +383,7 @@ def draw_5(self, the_color, port):
     temperature_duration_h_auto_stair_scale_frame_scale.set(1)
     temperature_end_auto_stair_scale_frame_scale = Scale(auto_stair_scale_frame, orient='vertical',
                                                          troughcolor=the_color, from_=80, to=-40,
-                                                         resolution=1, tickinterval=5, length=100, command=0,
+                                                         resolution=1, tickinterval=20, length=100, command=0,
                                                          label='Temperature end', state="active", relief="flat")
     temperature_end_auto_stair_scale_frame_scale.grid(row=2, column=1, ipadx=30, ipady=0, padx=0, pady=0)
 
