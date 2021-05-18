@@ -239,7 +239,7 @@ def draw_5(self, the_color, port):
     send_button = tk.Button(scale_frame, text="Send",
                             borderwidth=8, background=the_color,
                             activebackground="green", cursor="right_ptr", overrelief="sunken",
-                            command=lambda: [VARIABLE.Thread.order(self, order_scale.get())])
+                            command=lambda: [VARIABLE.order(order_scale.get())])
     send_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
     off_scale_frame_button = tk.Button(scale_frame, text="Off",
                                        borderwidth=8, background=the_color,

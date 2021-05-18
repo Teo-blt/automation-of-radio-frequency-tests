@@ -105,7 +105,7 @@ class Thread(threading.Thread):
             asyncio.run(self.several_methods_run_together())
 
     async def wait_temperature_reach_consign(self, timer):
-        while (abs(self.temp - self.temperature) >= 0.2 or self.VALUE_STABILISATION <= 120):
+        while abs(self.temp - self.temperature) >= 0.2 or self.VALUE_STABILISATION <= 120:
             # The maximal difference between the actual temperature and the order must be less than 0.2
             # (if we use a maximal difference of 0 it's take too much time to stabilize) AND the VALUE_STABILISATION
             # must be bigger than 120
@@ -219,12 +219,14 @@ class Thread(threading.Thread):
             logger.error("too fast, please wait")
             return [0, 0]  # In case of an error, this function will return [0,0], This will NOT affect the graph
 
-    def order(self, value):  # A very simple function use in the manual mode
-        try:  # This try allow to save the program when, in rare case, spamming the Send button
-            # of the manual mode produce an error
-            vt.write(ON % value)
-        except:
-            logger.error("too fast, please slow down")
+
+def order(value):  # A very simple function use in the manual mode
+    try:  # This try allow to save the program when, in rare case, spamming the Send button
+        # of the manual mode produce an error
+        vt.write(ON % value)
+    except:
+        logger.error("too fast, please slow down")
+
 
 def off():  # The function off, shut down the climatic chamber and reset the relaunch_safety variable
     # that was use to control the multi launching of the program
