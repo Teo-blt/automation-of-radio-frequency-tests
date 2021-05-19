@@ -159,7 +159,6 @@ def main_graphic_climatic_chamber(self, the_color, port):
     rb_frame_automatic_selection.pack(padx=0, pady=0, expand=True, fill="both", side=RIGHT)
     rb_frame_automatic_selection.config(background='#fafafa')
 
-
     cyclic_label = tk.Label(auto_scale_frame, text="Cyclic automating", bg="white", font="arial",
                             fg="black", relief="groove")
     cyclic_label.grid(row=0, column=0, ipadx=20, ipady=20, padx=0, pady=0)
@@ -186,7 +185,8 @@ def main_graphic_climatic_chamber(self, the_color, port):
                                                    borderwidth=8, background=the_color,
                                                    activebackground="green", cursor="right_ptr", overrelief="sunken",
                                                    command=lambda: [
-                                                       simulation_graphic_cycle(self, the_color, temperature_min_scale.get(),
+                                                       simulation_graphic_cycle(self, the_color,
+                                                                                temperature_min_scale.get(),
                                                                                 temperature_max_scale.get(),
                                                                                 number_of_cycles_scale.get(),
                                                                                 temperature_min_duration_h_scale.get(),
@@ -477,6 +477,7 @@ def main_graphic_climatic_chamber(self, the_color, port):
         ani2 = animation.FuncAnimation(fig, animate2, interval=5000, blit=False, init_func=init2)
 
         return [ani, ani2]
+
     root.mainloop()
 
 

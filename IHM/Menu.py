@@ -181,11 +181,11 @@ class Application(Tk):
         name.insert(0, self._port)
         self.setting_up_scanner_button(scanner_port_com_frame, name)
         port_com_frame_button = Button(port_com_frame, text="Connect", borderwidth=8, background=the_color,
-                         activebackground="green", disabledforeground="grey",
-                         cursor="right_ptr",
-                         overrelief="sunken", command=lambda: [logger.info(f"The port [{name.get()}]"
-                                                                           " was correctly selected"),
-                                                               self.change_port(name)])
+                                       activebackground="green", disabledforeground="grey",
+                                       cursor="right_ptr",
+                                       overrelief="sunken", command=lambda: [logger.info(f"The port [{name.get()}]"
+                                                                                         " was correctly selected"),
+                                                                             self.change_port(name)])
         port_com_frame_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
 
         self.scale()
@@ -207,7 +207,7 @@ class Application(Tk):
             if self._port == "COM11":
                 logger.critical("you're already trying to connect to this port")
             else:
-                serial.Serial(self._port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT)
+                serial.Serial(self._port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT).open()
                 logger.debug("The connection was correctly established")
         except serial.serialutil.SerialException:
             logger.critical("This port does not exist")
@@ -222,7 +222,9 @@ class Application(Tk):
         start_test_button = tk.Button(my_scale_frame, text="Start the test",
                                       borderwidth=8, background=the_color,
                                       activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                      command=lambda: [Graphic.main_graphic_climatic_chamber(self, the_color, self.climatic_chamber_widget())])
+                                      command=lambda:
+                                      [Graphic.main_graphic_climatic_chamber(self, the_color,
+                                                                             self.climatic_chamber_widget())])
         start_test_button.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
         """
         button11 = tk.Button(my_scale_frame, text="Live draw example",
