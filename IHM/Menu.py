@@ -207,16 +207,16 @@ class Application(Tk):
         data = {}
         for i in range(0, limit):
             data[i] = ("COM" + str(multi_port[i]))
-        print(data)
-        return data
+        values = list(data.values())
+        print(values)
+        return values
 
     def combobox_scan_validate(self, combobox_scan):
         if combobox_scan.current() == -1:
             showerror("Error", "You must select a valid port")
         else:
-            the_port = ("COM" + combobox_scan.get())
-            logger.info(f"The port[{the_port}] was correctly selected"),
-            self.change_port(the_port)
+            logger.info(f"The port [{combobox_scan.get()}] was correctly selected"),
+            self.change_port(combobox_scan.get())
 
     def change_port(self, name):
         self._port = name
