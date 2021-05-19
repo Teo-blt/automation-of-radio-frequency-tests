@@ -75,7 +75,7 @@ class Thread(threading.Thread):
         if relaunch_safety == 0:  # To forbid the user to multi launch the program
             relaunch_safety = 1
             if self.oof:
-                self.off()  # To shut down the climate chamber
+                off()  # To shut down the climate chamber
             if self.up_down:  # The user can chose if he want to start with the lowest or the hottest temperature
                 self.temperature = self.temp_min
                 self.timer = self.temp_min_duration_h
