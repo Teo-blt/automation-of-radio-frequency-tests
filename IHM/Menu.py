@@ -164,45 +164,62 @@ class Application(Tk):
 
     def climatic_chamber_widget(self):
         self.geometry(WINDOW_SIZE)  # set window size
-
-        port_com_frame = LabelFrame(self, text="Settings of the port com")
-        port_com_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
-
         scanner_port_com_frame = LabelFrame(self, text="Detection of port com")
-        scanner_port_com_frame.grid(row=1, column=1, ipadx=40, ipady=40, padx=0, pady=0)
-
-        port_com_frame_label = Label(port_com_frame, text="Connection port :")
-        port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-
+        scanner_port_com_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
         scanner_port_com_frame_label = Label(scanner_port_com_frame, text="Scanner for connection port")
         scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-        name = Entry(port_com_frame)  # Function to collect the N° of the port of the measuring tool
-        name.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-        name.insert(0, self._port)
-        self.setting_up_scanner_button(scanner_port_com_frame, name)
-        port_com_frame_button = Button(port_com_frame, text="Connect", borderwidth=8, background=the_color,
-                                       activebackground="green", disabledforeground="grey",
-                                       cursor="right_ptr",
-                                       overrelief="sunken", command=lambda: [logger.info(f"The port [{name.get()}]"
-                                                                                         " was correctly selected"),
-                                                                             self.change_port(name)])
-        port_com_frame_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-
+        self.setting_up_scanner_button(scanner_port_com_frame)
         self.scale()
         # Function not used
         # self.data_management()
         # self.save()
-        return name.get()
 
-    def setting_up_scanner_button(self, scanner_port_com_frame, name):
+    def setting_up_scanner_button(self, scanner_port_com_frame):
         scanner_port_com_frame_button = Button(scanner_port_com_frame, text="Scan", borderwidth=8, background=the_color,
                                                activebackground="green", disabledforeground="grey",
                                                cursor="right_ptr",
-                                               overrelief="sunken", command=lambda: [scan_all_ports(name.get())])
+                                               overrelief="sunken",
+                                               command=lambda: [self.combobox_scan()])
         scanner_port_com_frame_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        scanner_port_com_frame_label = Label(scanner_port_com_frame, text="The currently selected port :")
+        scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        port_com_frame_entry = Entry(scanner_port_com_frame)
+        port_com_frame_entry.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        port_com_frame_entry.insert(0, self._port)
+    def combobox_scan(self):
+        port_com_frame = LabelFrame(self, text="Settings of the port com")
+        port_com_frame.grid(row=1, column=1, ipadx=40, ipady=40, padx=0, pady=0)
+        port_com_frame_label = Label(port_com_frame, text="Connection port :")
+        port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        combobox_scan = ttk.Combobox(port_com_frame,
+                                     values=[self.write_combobox_scan()], state="readonly")
+        combobox_scan.set("--choose your port here--")
+        combobox_scan.pack(padx=50, pady=0, expand=False, fill="x", side=TOP)
+        port_com_frame_button = Button(port_com_frame, text="Connect", borderwidth=8, background=the_color,
+                                       activebackground="green", disabledforeground="grey",
+                                       cursor="right_ptr",
+                                       overrelief="sunken",
+                                       command=lambda: [self.combobox_scan_validate(combobox_scan)])
+        port_com_frame_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+
+    def write_combobox_scan(self):
+        [limit, multi_port] = scan_all_ports(self._port)
+        data = {}
+        for i in range(0, limit):
+            data[i] = ("COM" + str(multi_port[i]))
+        print(data)
+        return data
+
+    def combobox_scan_validate(self, combobox_scan):
+        if combobox_scan.current() == -1:
+            showerror("Error", "You must select a valid port")
+        else:
+            the_port = ("COM" + combobox_scan.get())
+            logger.info(f"The port[{the_port}] was correctly selected"),
+            self.change_port(the_port)
 
     def change_port(self, name):
-        self._port = name.get()
+        self._port = name
         try:
             if self._port == "COM11":
                 logger.critical("you're already trying to connect to this port")
