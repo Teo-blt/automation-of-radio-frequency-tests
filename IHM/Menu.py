@@ -121,8 +121,9 @@ class Application(Tk):
             "Oscilloscope"], state="readonly")
         choose_measuring_tool_combobox.set(value)
         choose_measuring_tool_combobox.pack(padx=50, pady=0, expand=False, fill="x", side=TOP)
+        self.setting_up_validate_button(instrument_choose_combobox, choose_measuring_tool_combobox)
 
-        # Button to validate a choice and launch the
+    def setting_up_validate_button(self, instrument_choose_combobox, choose_measuring_tool_combobox):
         validate_button = tk.Button(
             instrument_choose_combobox,
             text="validate",
@@ -164,39 +165,41 @@ class Application(Tk):
     def climatic_chamber_widget(self):
         self.geometry(WINDOW_SIZE)  # set window size
 
-        my_port_com_frame = LabelFrame(self, text="Settings of the port com")
-        my_port_com_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
+        port_com_frame = LabelFrame(self, text="Settings of the port com")
+        port_com_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
 
-        my_scanner_port_com_frame = LabelFrame(self, text="Detection of port com")
-        my_scanner_port_com_frame.grid(row=1, column=1, ipadx=40, ipady=40, padx=0, pady=0)
+        scanner_port_com_frame = LabelFrame(self, text="Detection of port com")
+        scanner_port_com_frame.grid(row=1, column=1, ipadx=40, ipady=40, padx=0, pady=0)
 
-        label2 = Label(my_port_com_frame, text="Connection port :")
-        label2.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        port_com_frame_label = Label(port_com_frame, text="Connection port :")
+        port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
 
-        label3 = Label(my_scanner_port_com_frame, text="Scanner for connection port")
-
-        button5 = Button(my_scanner_port_com_frame, text="Scan", borderwidth=8, background=the_color,
-                         activebackground="green", disabledforeground="grey",
-                         cursor="right_ptr",
-                         overrelief="sunken", command=lambda: [scan_all_ports(name.get())])
-        button5.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-        label3.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-        name = Entry(my_port_com_frame)  # Function to collect the N° of the port of the measuring tool
+        scanner_port_com_frame_label = Label(scanner_port_com_frame, text="Scanner for connection port")
+        scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        name = Entry(port_com_frame)  # Function to collect the N° of the port of the measuring tool
         name.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         name.insert(0, self._port)
-        button4 = Button(my_port_com_frame, text="Connect", borderwidth=8, background=the_color,
+        self.setting_up_scanner_button(scanner_port_com_frame, name)
+        port_com_frame_button = Button(port_com_frame, text="Connect", borderwidth=8, background=the_color,
                          activebackground="green", disabledforeground="grey",
                          cursor="right_ptr",
                          overrelief="sunken", command=lambda: [logger.info(f"The port [{name.get()}]"
                                                                            " was correctly selected"),
                                                                self.change_port(name)])
-        button4.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        port_com_frame_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
 
         self.scale()
         # Function not used
         # self.data_management()
         # self.save()
         return name.get()
+
+    def setting_up_scanner_button(self, scanner_port_com_frame, name):
+        scanner_port_com_frame_button = Button(scanner_port_com_frame, text="Scan", borderwidth=8, background=the_color,
+                                               activebackground="green", disabledforeground="grey",
+                                               cursor="right_ptr",
+                                               overrelief="sunken", command=lambda: [scan_all_ports(name.get())])
+        scanner_port_com_frame_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
 
     def change_port(self, name):
         self._port = name.get()
@@ -219,13 +222,13 @@ class Application(Tk):
         start_test_button = tk.Button(my_scale_frame, text="Start the test",
                                       borderwidth=8, background=the_color,
                                       activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                      command=lambda: [Graphic.draw_5(self, the_color, self.climatic_chamber_widget())])
+                                      command=lambda: [Graphic.main_graphic_climatic_chamber(self, the_color, self.climatic_chamber_widget())])
         start_test_button.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
         """
         button11 = tk.Button(my_scale_frame, text="Live draw example",
                              borderwidth=8, background=the_color,
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
-                             command=lambda: Graphic.draw_4(self, the_color))
+                             command=lambda: Graphic.live_graph(self, the_color))
         button11.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=BOTTOM)
         """
 
