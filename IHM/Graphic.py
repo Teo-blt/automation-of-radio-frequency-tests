@@ -18,9 +18,8 @@ from matplotlib import pyplot as plt
 import matplotlib.animation as animation
 from matplotlib import style
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-# from Climate_chamber_control import Climate_chamber_V2
-from Coroutines_experiment import Coroutines_with_asyncio_V2
 from loguru import logger
+from Coroutines_experiment import Coroutines_with_asyncio_V2
 
 # =============================================================================
 VARIABLE = Coroutines_with_asyncio_V2
