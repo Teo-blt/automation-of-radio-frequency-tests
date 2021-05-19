@@ -208,7 +208,6 @@ class Application(Tk):
         for i in range(0, limit):
             data[i] = ("COM" + str(multi_port[i]))
         values = list(data.values())
-        print(values)
         return values
 
     def combobox_scan_validate(self, combobox_scan):
