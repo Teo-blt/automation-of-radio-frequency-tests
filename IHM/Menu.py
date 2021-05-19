@@ -192,9 +192,10 @@ class Application(Tk):
         port_com_frame_label = Label(port_com_frame, text="Connection port :")
         port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         combobox_scan = ttk.Combobox(port_com_frame,
-                                     values=[self.write_combobox_scan()], state="readonly")
+                                     values=[0], state="readonly")
         combobox_scan.set("--choose your port here--")
         combobox_scan.pack(padx=50, pady=0, expand=False, fill="x", side=TOP)
+        self.write_combobox_scan(combobox_scan)
         port_com_frame_button = Button(port_com_frame, text="Connect", borderwidth=8, background=the_color,
                                        activebackground="green", disabledforeground="grey",
                                        cursor="right_ptr",
@@ -202,13 +203,13 @@ class Application(Tk):
                                        command=lambda: [self.combobox_scan_validate(combobox_scan)])
         port_com_frame_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
 
-    def write_combobox_scan(self):
+    def write_combobox_scan(self, combobox_scan):
         [limit, multi_port] = scan_all_ports(self._port)
         data = {}
         for i in range(0, limit):
             data[i] = ("COM" + str(multi_port[i]))
         values = list(data.values())
-        return values
+        combobox_scan["values"] = values
 
     def combobox_scan_validate(self, combobox_scan):
         if combobox_scan.current() == -1:
