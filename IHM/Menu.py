@@ -179,14 +179,14 @@ class Application(Tk):
                                                activebackground="green", disabledforeground="grey",
                                                cursor="right_ptr",
                                                overrelief="sunken",
-                                               command=lambda: [self.combobox_scan()])
+                                               command=lambda: [self.combobox_scan(port_com_frame_entry)])
         scanner_port_com_frame_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         scanner_port_com_frame_label = Label(scanner_port_com_frame, text="The currently selected port :")
         scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         port_com_frame_entry = Entry(scanner_port_com_frame)
         port_com_frame_entry.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         port_com_frame_entry.insert(0, self._port)
-    def combobox_scan(self):
+    def combobox_scan(self, port_com_frame_entry):
         port_com_frame = LabelFrame(self, text="Settings of the port com")
         port_com_frame.grid(row=1, column=1, ipadx=40, ipady=40, padx=0, pady=0)
         port_com_frame_label = Label(port_com_frame, text="Connection port :")
@@ -200,8 +200,13 @@ class Application(Tk):
                                        activebackground="green", disabledforeground="grey",
                                        cursor="right_ptr",
                                        overrelief="sunken",
-                                       command=lambda: [self.combobox_scan_validate(combobox_scan)])
+                                       command=lambda: [self.combobox_scan_validate(combobox_scan),
+                                                        self.change_combo_com(port_com_frame_entry)])
         port_com_frame_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+
+    def change_combo_com(self, port_com_frame_entry):
+        port_com_frame_entry.delete(0, 10)
+        port_com_frame_entry.insert(0, self._port)
 
     def write_combobox_scan(self, combobox_scan):
         [limit, multi_port] = scan_all_ports(self._port)
@@ -224,7 +229,7 @@ class Application(Tk):
             if self._port == "COM11":
                 logger.critical("you're already trying to connect to this port")
             else:
-                serial.Serial(self._port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT).open()
+                serial.Serial(self._port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT)
                 logger.debug("The connection was correctly established")
         except serial.serialutil.SerialException:
             logger.critical("This port does not exist")

@@ -81,6 +81,10 @@ class Thread(threading.Thread):
             else:
                 self.temperature = self.temp_max
                 self.timer = self.temp_max_duration_h
+            try:
+                vt.open()
+            except:
+                pass
             vt.write(ON % self.temperature)  # Send the order to the climate chamber
             p = 0
             while p < 1:  # Loop for the initialisation of the program (not very useful)
