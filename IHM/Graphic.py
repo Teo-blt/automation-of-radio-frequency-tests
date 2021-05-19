@@ -97,7 +97,7 @@ def live_graph(self, the_color):  # The function live_graph crate a new window w
 def main_graphic_climatic_chamber(self, the_color, port):
     def display():
         style.use('ggplot')
-        fig = plt.figure(figsize=(9, 2), dpi=100)
+        fig = plt.figure(figsize=(10, 5), dpi=100)
         ax1 = fig.add_subplot(1, 1, 1)
         ax1.set_ylim(-40, 120)
         plot_canvas = FigureCanvasTkAgg(fig, root)
@@ -121,11 +121,17 @@ def main_graphic_climatic_chamber(self, the_color, port):
     a = IntVar()
     b = IntVar()
     c = IntVar()
-    root = tk.Toplevel(self)
-    root.title('Draw window')
+
+    new_window_main_graphic = tk.Toplevel(self)
+    new_window_main_graphic.title("Graph settings")
+
+    root = Tk()
+    root.title('Graph window')
     root.config(background='#fafafa')
 
-    settings_frame = LabelFrame(root, text="Settings")
+    display()
+
+    settings_frame = LabelFrame(new_window_main_graphic, text="Settings")
     settings_frame.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
     settings_frame.config(background='#fafafa')
 
@@ -153,7 +159,7 @@ def main_graphic_climatic_chamber(self, the_color, port):
     rb_frame_automatic_selection.pack(padx=0, pady=0, expand=True, fill="both", side=RIGHT)
     rb_frame_automatic_selection.config(background='#fafafa')
 
-    display()
+
     cyclic_label = tk.Label(auto_scale_frame, text="Cyclic automating", bg="white", font="arial",
                             fg="black", relief="groove")
     cyclic_label.grid(row=0, column=0, ipadx=20, ipady=20, padx=0, pady=0)
@@ -385,6 +391,7 @@ def main_graphic_climatic_chamber(self, the_color, port):
                                                            resolution=1, tickinterval=20, length=100, command=0,
                                                            label='Temperature start', state="active")
     temperature_start_auto_stair_scale_frame_scale.grid(row=2, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+    temperature_start_auto_stair_scale_frame_scale.set(-1)
     temperature_duration_h_auto_stair_scale_frame_scale = Scale(auto_stair_scale_frame, orient='horizontal',
                                                                 troughcolor=the_color, from_=1, to=20,
                                                                 resolution=1, tickinterval=20, length=100, command=0,
@@ -396,6 +403,7 @@ def main_graphic_climatic_chamber(self, the_color, port):
                                                          resolution=1, tickinterval=20, length=100, command=0,
                                                          label='Temperature end', state="active", relief="flat")
     temperature_end_auto_stair_scale_frame_scale.grid(row=2, column=1, ipadx=30, ipady=0, padx=0, pady=0)
+    temperature_end_auto_stair_scale_frame_scale.set(1)
 
     def dot_animation() -> [FuncAnimation, FuncAnimation]:
         global ani
@@ -409,7 +417,7 @@ def main_graphic_climatic_chamber(self, the_color, port):
         yar2 = []
 
         style.use('ggplot')
-        fig = plt.figure(figsize=(9, 4), dpi=100)
+        fig = plt.figure(figsize=(10, 5), dpi=100)
 
         ax1 = fig.add_subplot(1, 1, 1)
         ax1.set_ylim(FRAME)
@@ -469,7 +477,6 @@ def main_graphic_climatic_chamber(self, the_color, port):
         ani2 = animation.FuncAnimation(fig, animate2, interval=5000, blit=False, init_func=init2)
 
         return [ani, ani2]
-
     root.mainloop()
 
 
@@ -535,13 +542,20 @@ def simulation_graphic_stair(self, the_color, step, temp_start, temp_end, temp_d
     temp_duration = temp_duration + 1
     if temp_start >= step:
         step = -step
-    while abs(temp_start - temp_end) != 0:
+    while abs(temp_start - temp_end) >= step:
         for i in range(var, temp_duration + var):
             data[i] = temp_start
         var = var + temp_duration
         temp_start = temp_start + step
     for i in range(var, temp_duration + var):
         data[i] = temp_start
+    if temp_start == temp_end:
+        pass
+    else:
+        var = var + temp_duration
+        for i in range(var, temp_duration + var):
+            data[i] = temp_end
+
     names = list(data.keys())
     values = list(data.values())
     fig = Figure(figsize=(5, 4), dpi=100)
