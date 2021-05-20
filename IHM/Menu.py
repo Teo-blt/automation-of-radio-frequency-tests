@@ -39,6 +39,7 @@ class Application(Tk):
         self.title("Main menu")
         self.withdraw()
         self._port = 'COM11'
+        self.status = 0
 
     def setting_up_lobby_widget(self):  # Creation of a lobby menu
         lobby_window: Toplevel = self.setting_lobby_window()
@@ -187,9 +188,8 @@ class Application(Tk):
         scanner_port_com_frame_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         scanner_port_com_frame_label = Label(scanner_port_com_frame, text="The currently selected port :")
         scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-        port_com_frame_entry = Entry(scanner_port_com_frame)
+        port_com_frame_entry = Label(scanner_port_com_frame, text=self._port)
         port_com_frame_entry.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-        port_com_frame_entry.insert(0, self._port)
         scanner_port_com_frame_label = Label(scanner_port_com_frame, text="Connection status :")
         scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         visual_color_button = Button(scanner_port_com_frame, state="disabled")
@@ -197,6 +197,7 @@ class Application(Tk):
         try:
             a = serial.Serial(self._port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT, writeTimeout=WRITE_TIMEOUT)
             a.write(CLIMATIC_CHAMBER_STOP)
+            self.status = 1
             self.visual_function(visual_color_button, 0)
         except:
             self.visual_function(visual_color_button, 1)
@@ -207,7 +208,7 @@ class Application(Tk):
             visual_color_button.config(bg="red")
         else:
             visual_color_button.config(text="The connection status is : online")
-            visual_color_button.config(bg="green")
+            visual_color_button.config(bg="light green")
 
     def combobox_scan(self, port_com_frame_entry, visual_color_button):
         port_com_frame = LabelFrame(self, text="Settings of the port com")
@@ -228,8 +229,7 @@ class Application(Tk):
         port_com_frame_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
 
     def change_combo_com(self, port_com_frame_entry):
-        port_com_frame_entry.delete(0, 10)
-        port_com_frame_entry.insert(0, self._port)
+        port_com_frame_entry.config(text=self._port)
 
     def write_combobox_scan(self, combobox_scan):
         [limit, multi_port] = scan_all_ports(self._port)
@@ -255,6 +255,7 @@ class Application(Tk):
                 a = serial.Serial(self._port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT, writeTimeout=WRITE_TIMEOUT)
                 a.write(CLIMATIC_CHAMBER_STOP)
                 self.visual_function(visual_color_button, 0)
+                self.status = 1
                 logger.debug("The connection was correctly established")
         except serial.serialutil.SerialException:
             logger.critical(f"The port [{self._port}] is not link to the climate chamber")
@@ -280,10 +281,13 @@ class Application(Tk):
         button11.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=BOTTOM)
         """
     def call_graph(self):
-        try:
+        if self.status == 0:
+            if askyesno("Warning", "The connection status is : offline\n Do you still want to continue ?"):
+                Graphic.main_graphic_climatic_chamber(self, the_color, self._port)
+            else:
+                pass
+        else:
             Graphic.main_graphic_climatic_chamber(self, the_color, self._port)
-        except:
-            showerror("Error", f"The port {self._port} is not valid")
 
     def low_frequency_generator_widget(self):
         self.geometry(WINDOW_SIZE)
