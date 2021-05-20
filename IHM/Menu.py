@@ -21,10 +21,13 @@ from SMIQ import test_SMIQ
 # ============================================================================
 from Coroutines_experiment.devices_helper import scan_all_ports
 
+ON = b"$00E %06.1f 0000.0 0000.0 0000.0 0000.0 0101000000000000\n\r"
+CLIMATIC_CHAMBER_STOP = b"$00E 0000.0 0000.0 0000.0 0000.0 0000.0 0000000000000000\n\r"
 LOBBY_WINDOW_SIZE = "700x200"
 WINDOW_SIZE = "1200x500"
 SERIAL_SPEED = 9600
-SERIAL_TIMEOUT = 1
+SERIAL_TIMEOUT = 5
+WRITE_TIMEOUT = 5
 
 
 class Application(Tk):
@@ -36,6 +39,7 @@ class Application(Tk):
         self.title("Main menu")
         self.withdraw()
         self._port = 'COM11'
+        self.status = 0
 
     def setting_up_lobby_widget(self):  # Creation of a lobby menu
         lobby_window: Toplevel = self.setting_lobby_window()
@@ -121,8 +125,9 @@ class Application(Tk):
             "Oscilloscope"], state="readonly")
         choose_measuring_tool_combobox.set(value)
         choose_measuring_tool_combobox.pack(padx=50, pady=0, expand=False, fill="x", side=TOP)
+        self.setting_up_validate_button(instrument_choose_combobox, choose_measuring_tool_combobox)
 
-        # Button to validate a choice and launch the
+    def setting_up_validate_button(self, instrument_choose_combobox, choose_measuring_tool_combobox):
         validate_button = tk.Button(
             instrument_choose_combobox,
             text="validate",
@@ -163,51 +168,97 @@ class Application(Tk):
 
     def climatic_chamber_widget(self):
         self.geometry(WINDOW_SIZE)  # set window size
-
-        my_port_com_frame = LabelFrame(self, text="Settings of the port com")
-        my_port_com_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
-
-        my_scanner_port_com_frame = LabelFrame(self, text="Detection of port com")
-        my_scanner_port_com_frame.grid(row=1, column=1, ipadx=40, ipady=40, padx=0, pady=0)
-
-        label2 = Label(my_port_com_frame, text="Connection port :")
-        label2.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-
-        label3 = Label(my_scanner_port_com_frame, text="Scanner for connection port")
-
-        button5 = Button(my_scanner_port_com_frame, text="Scan", borderwidth=8, background=the_color,
-                         activebackground="green", disabledforeground="grey",
-                         cursor="right_ptr",
-                         overrelief="sunken", command=lambda: [scan_all_ports(name.get())])
-        button5.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-        label3.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-        name = Entry(my_port_com_frame)  # Function to collect the N° of the port of the measuring tool
-        name.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-        name.insert(0, self._port)
-        button4 = Button(my_port_com_frame, text="Connect", borderwidth=8, background=the_color,
-                         activebackground="green", disabledforeground="grey",
-                         cursor="right_ptr",
-                         overrelief="sunken", command=lambda: [logger.info(f"The port [{name.get()}]"
-                                                                           " was correctly selected"),
-                                                               self.change_port(name)])
-        button4.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-
+        scanner_port_com_frame = LabelFrame(self, text="Detection of port com")
+        scanner_port_com_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
+        scanner_port_com_frame_label = Label(scanner_port_com_frame, text="Scanner for connection port")
+        scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        self.setting_up_scanner_button(scanner_port_com_frame)
         self.scale()
         # Function not used
         # self.data_management()
         # self.save()
-        return name.get()
 
-    def change_port(self, name):
-        self._port = name.get()
+    def setting_up_scanner_button(self, scanner_port_com_frame):
+        scanner_port_com_frame_button = Button(scanner_port_com_frame, text="Scan", borderwidth=8, background=the_color,
+                                               activebackground="green", disabledforeground="grey",
+                                               cursor="right_ptr",
+                                               overrelief="sunken",
+                                               command=lambda: [self.combobox_scan(port_com_frame_entry,
+                                                                                   visual_color_button)])
+        scanner_port_com_frame_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        scanner_port_com_frame_label = Label(scanner_port_com_frame, text="The currently selected port :")
+        scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        port_com_frame_entry = Label(scanner_port_com_frame, text=self._port)
+        port_com_frame_entry.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        scanner_port_com_frame_label = Label(scanner_port_com_frame, text="Connection status :")
+        scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        visual_color_button = Button(scanner_port_com_frame, state="disabled")
+        visual_color_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        try:
+            a = serial.Serial(self._port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT, writeTimeout=WRITE_TIMEOUT)
+            a.write(CLIMATIC_CHAMBER_STOP)
+            self.status = 1
+            self.visual_function(visual_color_button, 0)
+        except:
+            self.visual_function(visual_color_button, 1)
+
+    def visual_function(self, visual_color_button, status):
+        if status == 1:
+            visual_color_button.config(text="The connection status is : offline")
+            visual_color_button.config(bg="red")
+        else:
+            visual_color_button.config(text="The connection status is : online")
+            visual_color_button.config(bg="light green")
+
+    def combobox_scan(self, port_com_frame_entry, visual_color_button):
+        port_com_frame = LabelFrame(self, text="Settings of the port com")
+        port_com_frame.grid(row=1, column=1, ipadx=40, ipady=40, padx=0, pady=0)
+        port_com_frame_label = Label(port_com_frame, text="Connection port :")
+        port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        combobox_scan = ttk.Combobox(port_com_frame,
+                                     values=[0], state="readonly")
+        combobox_scan.set("--choose your port here--")
+        combobox_scan.pack(padx=50, pady=0, expand=False, fill="x", side=TOP)
+        self.write_combobox_scan(combobox_scan)
+        port_com_frame_button = Button(port_com_frame, text="Connect", borderwidth=8, background=the_color,
+                                       activebackground="green", disabledforeground="grey",
+                                       cursor="right_ptr",
+                                       overrelief="sunken",
+                                       command=lambda: [self.combobox_scan_validate(combobox_scan, visual_color_button),
+                                                        self.change_combo_com(port_com_frame_entry)])
+        port_com_frame_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+
+    def change_combo_com(self, port_com_frame_entry):
+        port_com_frame_entry.config(text=self._port)
+
+    def write_combobox_scan(self, combobox_scan):
+        [limit, multi_port] = scan_all_ports(self._port)
+        data = {}
+        for i in range(0, limit):
+            data[i] = ("COM" + str(multi_port[i]))
+        values = list(data.values())
+        combobox_scan["values"] = values
+
+    def combobox_scan_validate(self, combobox_scan, visual_color_button):
+        if combobox_scan.current() == -1:
+            showerror("Error", "You must select a valid port")
+        else:
+            logger.info(f"The port [{combobox_scan.get()}] was correctly selected"),
+            self.change_port(combobox_scan.get(), visual_color_button)
+
+    def change_port(self, name, visual_color_button):
+        self._port = name
         try:
             if self._port == "COM11":
                 logger.critical("you're already trying to connect to this port")
             else:
-                serial.Serial(self._port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT)
+                a = serial.Serial(self._port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT, writeTimeout=WRITE_TIMEOUT)
+                a.write(CLIMATIC_CHAMBER_STOP)
+                self.visual_function(visual_color_button, 0)
+                self.status = 1
                 logger.debug("The connection was correctly established")
         except serial.serialutil.SerialException:
-            logger.critical("This port does not exist")
+            logger.critical(f"The port [{self._port}] is not link to the climate chamber")
         except:
             logger.critical("Error unknown")
 
@@ -219,15 +270,24 @@ class Application(Tk):
         start_test_button = tk.Button(my_scale_frame, text="Start the test",
                                       borderwidth=8, background=the_color,
                                       activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                      command=lambda: [Graphic.draw_5(self, the_color, self.climatic_chamber_widget())])
+                                      command=lambda:
+                                      [self.call_graph()])
         start_test_button.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
         """
         button11 = tk.Button(my_scale_frame, text="Live draw example",
                              borderwidth=8, background=the_color,
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
-                             command=lambda: Graphic.draw_4(self, the_color))
+                             command=lambda: Graphic.live_graph(self, the_color))
         button11.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=BOTTOM)
         """
+    def call_graph(self):
+        if self.status == 0:
+            if askyesno("Warning", "The connection status is : offline\n Do you still want to continue ?"):
+                Graphic.main_graphic_climatic_chamber(self, the_color, self._port)
+            else:
+                pass
+        else:
+            Graphic.main_graphic_climatic_chamber(self, the_color, self._port)
 
     def low_frequency_generator_widget(self):
         self.geometry(WINDOW_SIZE)

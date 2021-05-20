@@ -16,7 +16,6 @@ from tkinter import *
 import serial
 
 # =============================================================================
-from Coroutines_experiment.devices_helper import open_port
 
 global relaunch_safety
 # noinspection PyRedeclaration
@@ -26,10 +25,11 @@ CLIMATIC_CHAMBER_STOP = b"$00E 0000.0 0000.0 0000.0 0000.0 0000.0 00000000000000
 ON = b"$00E %06.1f 0000.0 0000.0 0000.0 0000.0 0101000000000000\n\r"
 SERIAL_SPEED = 9600
 SERIAL_TIMEOUT = 5
+WRITE_TIMEOUT = 5
 CONNECTION = 'COM11'
 
 try:
-    vt = serial.Serial(CONNECTION, SERIAL_SPEED, timeout=SERIAL_TIMEOUT)
+    vt = serial.Serial(CONNECTION, SERIAL_SPEED, timeout=SERIAL_TIMEOUT, writeTimeout=WRITE_TIMEOUT)
     logger.debug("The connection was correctly established")
 except:
     vt = serial.Serial()
@@ -66,7 +66,7 @@ class Thread(threading.Thread):
         self.stair = stair
         self.stair_temp = stair_temp
         self.temperature_end = temperature_end
-        self._port = open_port(port)
+        self._port = port
         self.extinct = 0
 
     def run(self):
@@ -74,7 +74,7 @@ class Thread(threading.Thread):
         if relaunch_safety == 0:  # To forbid the user to multi launch the program
             relaunch_safety = 1
             if self.oof:
-                off()  # To shut down the climate chamber
+                self.off()  # To shut down the climate chamber
             if self.up_down:  # The user can chose if he want to start with the lowest or the hottest temperature
                 self.temperature = self.temp_min
                 self.timer = self.temp_min_duration_h
@@ -186,7 +186,7 @@ class Thread(threading.Thread):
             self.exit()  # leave the program thanks to the function exit
 
     def exit(self):
-        off()  # Use the off function to stop the climatic chamber
+        self.off()  # Use the off function to stop the climatic chamber
         time_stop = time.time()
         logger.info("################################################")
         logger.info("End of Test")
@@ -198,10 +198,6 @@ class Thread(threading.Thread):
         try:  # This try allow the program to survive in a rare case where the climatic
             # chamber don't have enough time to answer back
             vt.port = self._port
-            try:
-                vt.open()
-            except:
-                pass
             vt.write(b"$00I\n\r")  # prepare the climatic chamber to receive information
             time.sleep(0.2)  # A pause that freeze the entire program
             # TODO find a better way to wait maybe asyncio.sleep(5) ?
@@ -220,17 +216,31 @@ class Thread(threading.Thread):
             return [0, 0]  # In case of an error, this function will return [0,0], This will NOT affect the graph
 
 
-def order(value):  # A very simple function use in the manual mode
-    try:  # This try allow to save the program when, in rare case, spamming the Send button
-        # of the manual mode produce an error
-        vt.write(ON % value)
-    except:
-        logger.error("too fast, please slow down")
+    def order(self, value):  # A very simple function use in the manual mode
+        try:  # This try allow to save the program when, in rare case, spamming the Send button
+            # of the manual mode produce an error
+            vt.port = self._port
+            vt.timeout = 5
+            vt.writeTimeout = 1
+            try:
+                vt.open()
+            except:
+                pass
+            vt.write(ON % value)
+        except serial.serialutil.SerialTimeoutException:
+            logger.error(f"The port[{self._port}] is not link to the climate chamber")
+        except:
+            logger.error("too fast, please slow down")
 
 
-def off():  # The function off, shut down the climatic chamber and reset the relaunch_safety variable
-    # that was use to control the multi launching of the program
-    vt.write(CLIMATIC_CHAMBER_STOP)  # Stop the climatic chamber
-    global relaunch_safety  # relaunch_safety variable
-    relaunch_safety = 0
-    logger.debug("The climate chamber was correctly arrest")
+    def off(self):  # The function off, shut down the climatic chamber and reset the relaunch_safety variable
+        # that was use to control the multi launching of the program
+        vt.port = self._port
+        try:
+            vt.open()
+        except:
+            pass
+        vt.write(CLIMATIC_CHAMBER_STOP)  # Stop the climatic chamber
+        global relaunch_safety  # relaunch_safety variable
+        relaunch_safety = 0
+        logger.debug("The climate chamber was correctly arrest")

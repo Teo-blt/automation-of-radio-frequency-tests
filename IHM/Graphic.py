@@ -26,37 +26,38 @@ VARIABLE = Coroutines_with_asyncio_V2
 FRAME = (-50, 90)
 
 
-def draw_4(self, the_color):  # The function draw_4 crate a new window with a graph inside
+def live_graph(self, the_color):  # The function live_graph crate a new window with a graph inside
     # of it, the graph can be modify in real time, I did not use this idea for the simulation graph because the user
     # can too easily break the program (by playing too fast with the cursor for example
-    global my_scale_frame_1
+    global live_graph_fram
     global first_time
     first_time = 1
     root = tk.Toplevel(self)
     root.wm_title("Embedding in Tk")
-    my_scale_frame_2 = LabelFrame(root)
-    my_scale_frame_2.pack()
+    live_graph_scale_frame = LabelFrame(root)
+    live_graph_scale_frame.pack()
 
     def clean():
-        global my_scale_frame_1
-        my_scale_frame_1.destroy()
+        global live_graph_fram
+        live_graph_fram.destroy()
 
     def create():
-        global my_scale_frame_1
-        my_scale_frame_1 = LabelFrame(root)
-        my_scale_frame_1.pack(side=BOTTOM)
+        global live_graph_fram
+        live_graph_fram = LabelFrame(root)
+        live_graph_fram.pack(side=BOTTOM)
         t = np.arange(0, 3, .01)
         fig = Figure(figsize=(5, 4), dpi=100)
-        fig.add_subplot().plot(t, scale1.get() * np.sin(scale2.get() * np.pi * t))
-        canvas = FigureCanvasTkAgg(fig, master=my_scale_frame_1)
-        toolbar = NavigationToolbar2Tk(canvas, my_scale_frame_1, pack_toolbar=False)
+        fig.add_subplot().plot(t, amplitude_live_graph_scale_frame.get() *
+                               np.sin(frequency_live_graph_scale_frame.get() * np.pi * t))
+        canvas = FigureCanvasTkAgg(fig, master=live_graph_fram)
+        toolbar = NavigationToolbar2Tk(canvas, live_graph_fram, pack_toolbar=False)
         toolbar.update()
         canvas.draw()
         canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
         toolbar.pack(side=BOTTOM, fill=X)
 
     def the_draw():
-        global my_scale_frame_1
+        global live_graph_fram
         global first_time
         if first_time == 1:
             create()
@@ -72,30 +73,31 @@ def draw_4(self, the_color):  # The function draw_4 crate a new window with a gr
     f = IntVar()
     root.bind("<Return>", enter)
 
-    scale1 = Scale(my_scale_frame_2, orient='vertical', variable=a, from_=100, to=0,
-                   resolution=1, tickinterval=25, length=100, troughcolor=the_color,
-                   command=lambda x: the_draw(),
-                   label='amplitude', state="active")
-    scale1.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
-    scale1.set(1)
-    amplitude = Entry(my_scale_frame_2, validate="all", textvariable=a)
-    amplitude.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
-    scale2 = Scale(my_scale_frame_2, orient='vertical', variable=f, from_=10, to=0,
-                   resolution=1, tickinterval=1, length=100, troughcolor=the_color,
-                   command=lambda x: the_draw(),
-                   label='frequency', state="active")
-    scale2.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
-    scale2.set(1)
-    frequency = Entry(my_scale_frame_2, validate="all", textvariable=f)
-    frequency.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
-    button1 = Button(master=my_scale_frame_2, text="Quit", background=the_color, command=lambda: root.destroy())
-    button1.pack(side=LEFT)
+    amplitude_live_graph_scale_frame = Scale(live_graph_scale_frame, orient='vertical', variable=a, from_=100, to=0,
+                                             resolution=1, tickinterval=25, length=100, troughcolor=the_color,
+                                             command=lambda x: the_draw(),
+                                             label='Amplitude', state="active")
+    amplitude_live_graph_scale_frame.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
+    amplitude_live_graph_scale_frame.set(1)
+    amplitude_entry = Entry(live_graph_scale_frame, validate="all", textvariable=a)
+    amplitude_entry.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
+    frequency_live_graph_scale_frame = Scale(live_graph_scale_frame, orient='vertical', variable=f, from_=10, to=0,
+                                             resolution=1, tickinterval=1, length=100, troughcolor=the_color,
+                                             command=lambda x: the_draw(),
+                                             label='Frequency', state="active")
+    frequency_live_graph_scale_frame.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
+    frequency_live_graph_scale_frame.set(1)
+    frequency_entry = Entry(live_graph_scale_frame, validate="all", textvariable=f)
+    frequency_entry.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
+    quit_live_graph_scale_frame_button = Button(master=live_graph_scale_frame, text="Quit", background=the_color,
+                                                command=lambda: root.destroy())
+    quit_live_graph_scale_frame_button.pack(side=LEFT)
 
 
-def draw_5(self, the_color, port):
+def main_graphic_climatic_chamber(self, the_color, port):
     def display():
         style.use('ggplot')
-        fig = plt.figure(figsize=(9, 4), dpi=100)
+        fig = plt.figure(figsize=(10, 5), dpi=100)
         ax1 = fig.add_subplot(1, 1, 1)
         ax1.set_ylim(-40, 120)
         plot_canvas = FigureCanvasTkAgg(fig, root)
@@ -119,11 +121,17 @@ def draw_5(self, the_color, port):
     a = IntVar()
     b = IntVar()
     c = IntVar()
-    root = tk.Toplevel(self)
-    root.title('Draw window')
+
+    new_window_main_graphic = tk.Toplevel(self)
+    new_window_main_graphic.title("Graph settings")
+
+    root = Tk()
+    root.title('Graph window')
     root.config(background='#fafafa')
 
-    settings_frame = LabelFrame(root, text="Settings")
+    display()
+
+    settings_frame = LabelFrame(new_window_main_graphic, text="Settings")
     settings_frame.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
     settings_frame.config(background='#fafafa')
 
@@ -151,7 +159,6 @@ def draw_5(self, the_color, port):
     rb_frame_automatic_selection.pack(padx=0, pady=0, expand=True, fill="both", side=RIGHT)
     rb_frame_automatic_selection.config(background='#fafafa')
 
-    display()
     cyclic_label = tk.Label(auto_scale_frame, text="Cyclic automating", bg="white", font="arial",
                             fg="black", relief="groove")
     cyclic_label.grid(row=0, column=0, ipadx=20, ipady=20, padx=0, pady=0)
@@ -172,17 +179,19 @@ def draw_5(self, the_color, port):
     off_auto_scale_frame_button = tk.Button(auto_scale_frame, text="Off",
                                             borderwidth=8, background=the_color,
                                             activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                            command=lambda: [VARIABLE.off()])
+                                            command=lambda: [VARIABLE.Thread.off(self)])
     off_auto_scale_frame_button.grid(row=0, column=2, ipadx=40, ipady=20, padx=0, pady=0)
     simulation_auto_scale_frame_button = tk.Button(auto_scale_frame, text="Simulation",
                                                    borderwidth=8, background=the_color,
                                                    activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                                   command=lambda: [draw_6(self, the_color, temperature_min_scale.get(),
-                                                                           temperature_max_scale.get(),
-                                                                           number_of_cycles_scale.get(),
-                                                                           temperature_min_duration_h_scale.get(),
-                                                                           temperature_max_duration_h_scale.get(),
-                                                                           a.get())])
+                                                   command=lambda: [
+                                                       simulation_graphic_cycle(self, the_color,
+                                                                                temperature_min_scale.get(),
+                                                                                temperature_max_scale.get(),
+                                                                                number_of_cycles_scale.get(),
+                                                                                temperature_min_duration_h_scale.get(),
+                                                                                temperature_max_duration_h_scale.get(),
+                                                                                a.get())])
     simulation_auto_scale_frame_button.grid(row=2, column=3, ipadx=40, ipady=20, padx=0, pady=0)
     request_auto_scale_frame_button = tk.Button(auto_scale_frame, text="request",
                                                 borderwidth=8, background=the_color,
@@ -238,12 +247,12 @@ def draw_5(self, the_color, port):
     send_button = tk.Button(scale_frame, text="Send",
                             borderwidth=8, background=the_color,
                             activebackground="green", cursor="right_ptr", overrelief="sunken",
-                            command=lambda: [VARIABLE.order(order_scale.get())])
+                            command=lambda: [VARIABLE.Thread.order(self, order_scale.get())])
     send_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
     off_scale_frame_button = tk.Button(scale_frame, text="Off",
                                        borderwidth=8, background=the_color,
                                        activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                       command=lambda: [VARIABLE.off()])
+                                       command=lambda: [VARIABLE.Thread.off(self)])
     off_scale_frame_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
     graphic_settings_label = tk.Label(button_frame, text="Graphic settings", bg="white", font="arial",
                                       fg="black", relief="groove")
@@ -251,7 +260,7 @@ def draw_5(self, the_color, port):
     start_button_frame_button = tk.Button(button_frame, text="Start",
                                           borderwidth=8, background=the_color,
                                           activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                          command=lambda: [the_draw2()[0].resume(), the_draw2()[1].resume(),
+                                          command=lambda: [dot_animation()[0].resume(), dot_animation()[1].resume(),
                                                            stop_button_frame_button.pack(padx=1, pady=1, expand=True,
                                                                                          fill="both",
                                                                                          side=TOP),
@@ -347,21 +356,21 @@ def draw_5(self, the_color, port):
     off_auto_stair_scale_frame_button = tk.Button(auto_stair_scale_frame, text="Off",
                                                   borderwidth=8, background=the_color,
                                                   activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                                  command=lambda: [VARIABLE.off()])
+                                                  command=lambda: [VARIABLE.Thread.off(self)])
     off_auto_stair_scale_frame_button.grid(row=0, column=2, ipadx=40, ipady=20, padx=20, pady=20)
-    simulation_auto_stair_scale_frame_button = tk.Button(auto_stair_scale_frame, text="Simulation",
-                                                         borderwidth=8, background=the_color,
-                                                         activebackground="green", cursor="right_ptr",
-                                                         overrelief="sunken",
-                                                         command=lambda:
-                                                         [draw_7(
-                                                             self,
-                                                             the_color,
-                                                             step_auto_stair_scale_frame_scale.get(),
-                                                             temperature_start_auto_stair_scale_frame_scale.get(),
-                                                             temperature_end_auto_stair_scale_frame_scale.get(),
-                                                             temperature_duration_h_auto_stair_scale_frame_scale.get())])
-    simulation_auto_stair_scale_frame_button.grid(row=1, column=3, ipadx=40, ipady=20, padx=0, pady=0)
+    simulation_auto_stair_scale_frame = tk.Button(auto_stair_scale_frame, text="Simulation",
+                                                  borderwidth=8, background=the_color,
+                                                  activebackground="green", cursor="right_ptr",
+                                                  overrelief="sunken",
+                                                  command=lambda:
+                                                  [simulation_graphic_stair(
+                                                      self,
+                                                      the_color,
+                                                      step_auto_stair_scale_frame_scale.get(),
+                                                      temperature_start_auto_stair_scale_frame_scale.get(),
+                                                      temperature_end_auto_stair_scale_frame_scale.get(),
+                                                      temperature_duration_h_auto_stair_scale_frame_scale.get())])
+    simulation_auto_stair_scale_frame.grid(row=1, column=3, ipadx=40, ipady=20, padx=0, pady=0)
     request_auto_stair_scale_frame_button = tk.Button(auto_stair_scale_frame, text="Request",
                                                       borderwidth=8, background=the_color,
                                                       activebackground="green", cursor="right_ptr", overrelief="sunken",
@@ -382,6 +391,7 @@ def draw_5(self, the_color, port):
                                                            resolution=1, tickinterval=20, length=100, command=0,
                                                            label='Temperature start', state="active")
     temperature_start_auto_stair_scale_frame_scale.grid(row=2, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+    temperature_start_auto_stair_scale_frame_scale.set(-1)
     temperature_duration_h_auto_stair_scale_frame_scale = Scale(auto_stair_scale_frame, orient='horizontal',
                                                                 troughcolor=the_color, from_=1, to=20,
                                                                 resolution=1, tickinterval=20, length=100, command=0,
@@ -393,8 +403,9 @@ def draw_5(self, the_color, port):
                                                          resolution=1, tickinterval=20, length=100, command=0,
                                                          label='Temperature end', state="active", relief="flat")
     temperature_end_auto_stair_scale_frame_scale.grid(row=2, column=1, ipadx=30, ipady=0, padx=0, pady=0)
+    temperature_end_auto_stair_scale_frame_scale.set(1)
 
-    def the_draw2() -> [FuncAnimation, FuncAnimation]:
+    def dot_animation() -> [FuncAnimation, FuncAnimation]:
         global ani
         global ani2
         global first_time
@@ -406,7 +417,7 @@ def draw_5(self, the_color, port):
         yar2 = []
 
         style.use('ggplot')
-        fig = plt.figure(figsize=(9, 4), dpi=100)
+        fig = plt.figure(figsize=(10, 5), dpi=100)
 
         ax1 = fig.add_subplot(1, 1, 1)
         ax1.set_ylim(FRAME)
@@ -470,9 +481,8 @@ def draw_5(self, the_color, port):
     root.mainloop()
 
 
-def draw_6(self, the_color, temperature_min, temperature_max,
-           number_of_cycles, temperature_min_duration_h, temperature_max_duration_h, min_max):
-
+def simulation_graphic_cycle(self, the_color, temperature_min, temperature_max,
+                             number_of_cycles, temperature_min_duration_h, temperature_max_duration_h, min_max):
     if temperature_min >= temperature_max:
         logger.critical(f"Error temperature_min_scale : {temperature_min} "
                         f">=  temperature_max_scale : {temperature_max}")
@@ -521,7 +531,7 @@ def draw_6(self, the_color, temperature_min, temperature_max,
         label.pack()
 
 
-def draw_7(self, the_color, step, temp_start, temp_end, temp_duration):
+def simulation_graphic_stair(self, the_color, step, temp_start, temp_end, temp_duration):
     root = tk.Toplevel(self)
     root.wm_title("simulation graph")
     my_draw_7_frame_2 = LabelFrame(root)
@@ -533,13 +543,20 @@ def draw_7(self, the_color, step, temp_start, temp_end, temp_duration):
     temp_duration = temp_duration + 1
     if temp_start >= step:
         step = -step
-    while abs(temp_start - temp_end) != 0:
+    while abs(temp_start - temp_end) >= step:
         for i in range(var, temp_duration + var):
             data[i] = temp_start
         var = var + temp_duration
         temp_start = temp_start + step
     for i in range(var, temp_duration + var):
         data[i] = temp_start
+    if temp_start == temp_end:
+        pass
+    else:
+        var = var + temp_duration
+        for i in range(var, temp_duration + var):
+            data[i] = temp_end
+
     names = list(data.keys())
     values = list(data.values())
     fig = Figure(figsize=(5, 4), dpi=100)
