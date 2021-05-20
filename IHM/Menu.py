@@ -24,7 +24,8 @@ from Coroutines_experiment.devices_helper import scan_all_ports
 LOBBY_WINDOW_SIZE = "700x200"
 WINDOW_SIZE = "1200x500"
 SERIAL_SPEED = 9600
-SERIAL_TIMEOUT = 1
+SERIAL_TIMEOUT = 5
+WRITE_TIMEOUT = 5
 
 
 class Application(Tk):
@@ -186,6 +187,7 @@ class Application(Tk):
         port_com_frame_entry = Entry(scanner_port_com_frame)
         port_com_frame_entry.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         port_com_frame_entry.insert(0, self._port)
+
     def combobox_scan(self, port_com_frame_entry):
         port_com_frame = LabelFrame(self, text="Settings of the port com")
         port_com_frame.grid(row=1, column=1, ipadx=40, ipady=40, padx=0, pady=0)
@@ -229,7 +231,7 @@ class Application(Tk):
             if self._port == "COM11":
                 logger.critical("you're already trying to connect to this port")
             else:
-                serial.Serial(self._port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT)
+                serial.Serial(self._port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT, writeTimeout=WRITE_TIMEOUT)
                 logger.debug("The connection was correctly established")
         except serial.serialutil.SerialException:
             logger.critical("This port does not exist")

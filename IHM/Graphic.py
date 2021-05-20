@@ -179,7 +179,7 @@ def main_graphic_climatic_chamber(self, the_color, port):
     off_auto_scale_frame_button = tk.Button(auto_scale_frame, text="Off",
                                             borderwidth=8, background=the_color,
                                             activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                            command=lambda: [VARIABLE.off()])
+                                            command=lambda: [VARIABLE.Thread.off(self)])
     off_auto_scale_frame_button.grid(row=0, column=2, ipadx=40, ipady=20, padx=0, pady=0)
     simulation_auto_scale_frame_button = tk.Button(auto_scale_frame, text="Simulation",
                                                    borderwidth=8, background=the_color,
@@ -247,12 +247,12 @@ def main_graphic_climatic_chamber(self, the_color, port):
     send_button = tk.Button(scale_frame, text="Send",
                             borderwidth=8, background=the_color,
                             activebackground="green", cursor="right_ptr", overrelief="sunken",
-                            command=lambda: [VARIABLE.order(order_scale.get())])
+                            command=lambda: [VARIABLE.Thread.order(self, order_scale.get())])
     send_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
     off_scale_frame_button = tk.Button(scale_frame, text="Off",
                                        borderwidth=8, background=the_color,
                                        activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                       command=lambda: [VARIABLE.off()])
+                                       command=lambda: [VARIABLE.Thread.off(self)])
     off_scale_frame_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
     graphic_settings_label = tk.Label(button_frame, text="Graphic settings", bg="white", font="arial",
                                       fg="black", relief="groove")
@@ -356,7 +356,7 @@ def main_graphic_climatic_chamber(self, the_color, port):
     off_auto_stair_scale_frame_button = tk.Button(auto_stair_scale_frame, text="Off",
                                                   borderwidth=8, background=the_color,
                                                   activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                                  command=lambda: [VARIABLE.off()])
+                                                  command=lambda: [VARIABLE.Thread.off(self)])
     off_auto_stair_scale_frame_button.grid(row=0, column=2, ipadx=40, ipady=20, padx=20, pady=20)
     simulation_auto_stair_scale_frame = tk.Button(auto_stair_scale_frame, text="Simulation",
                                                   borderwidth=8, background=the_color,
