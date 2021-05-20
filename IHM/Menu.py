@@ -17,7 +17,7 @@ from loguru import logger
 import Graphic
 import sys
 import serial
-
+from SMIQ import test_SMIQ
 # ============================================================================
 from Coroutines_experiment.devices_helper import scan_all_ports
 
@@ -234,16 +234,23 @@ class Application(Tk):
         my_lfg_frame = LabelFrame(self, text="Settings of the Low frequency generator")
         my_lfg_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
 
+
     def sg(self):  # The signal generator menu
         self.geometry(WINDOW_SIZE)
         my_sg_frame = LabelFrame(self, text="Settings of the Signal generator")
         my_sg_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
-
+        self.sg_menu(my_sg_frame)
     def osl(self):  # The oscilloscope menu
         self.geometry(WINDOW_SIZE)
         my_osl_frame = LabelFrame(self, text="Settings of the Oscilloscope")
         my_osl_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
 
+    def sg_menu(self, my_sg_frame):
+        start_test_button = tk.Button(my_sg_frame, text="Begin transmission",
+                                      borderwidth=8, background=the_color,
+                                      activebackground="green", cursor="right_ptr", overrelief="sunken",
+                                      command=lambda: [test_SMIQ.Thread_smiq().start()])
+        start_test_button.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
     """
     def data_management(self):
         my_data_management_frame = LabelFrame(self, text="Data_management")

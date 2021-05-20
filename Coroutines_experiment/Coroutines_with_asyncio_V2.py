@@ -9,7 +9,6 @@
 # =============================================================================
 import asyncio
 import sys
-
 from loguru import logger
 import threading
 import time
@@ -192,7 +191,7 @@ class Thread(threading.Thread):
         logger.info("################################################")
         logger.info("End of Test")
         b = time.localtime(time_stop - self.time_start)  # Total time of the test
-        logger.info(f'Test duration: {b}')  # some useful information for the user
+        logger.info(f'Test duration: {b[3]}H{b[4]} and {b[5]} second(s)')  # some useful information for the user
         sys.exit()  # TODO repair the sys.exit()
 
     def read(self):
@@ -204,7 +203,8 @@ class Thread(threading.Thread):
             except:
                 pass
             vt.write(b"$00I\n\r")  # prepare the climatic chamber to receive information
-            time.sleep(0.2)  # A pause that freeze the entire program TODO find a better way to wait asyncio.sleep(5) ?
+            time.sleep(0.2)  # A pause that freeze the entire program
+            # TODO find a better way to wait maybe asyncio.sleep(5) ?
             received_frame = vt.read_all().decode('utf-8')  # Decipher the frame that was send by the climatic
             # chamber
             word = received_frame.split(" ")  # Split the decipher the frame that was send by the climatic chamber

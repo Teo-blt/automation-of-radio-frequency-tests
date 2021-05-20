@@ -7,10 +7,7 @@
 # =============================================================================
 """The Module Has Been Build for the automation of radio frequency tests in python language"""
 # =============================================================================
-# Imports
-# Personal Imports
 import Menu as me
 # =============================================================================
-#test
 me.Application().mainloop()
 
