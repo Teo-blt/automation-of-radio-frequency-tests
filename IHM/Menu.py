@@ -21,6 +21,7 @@ import serial
 # ============================================================================
 from Coroutines_experiment.devices_helper import scan_all_ports
 
+ON = b"$00E %06.1f 0000.0 0000.0 0000.0 0000.0 0101000000000000\n\r"
 LOBBY_WINDOW_SIZE = "700x200"
 WINDOW_SIZE = "1200x500"
 SERIAL_SPEED = 9600
@@ -231,10 +232,11 @@ class Application(Tk):
             if self._port == "COM11":
                 logger.critical("you're already trying to connect to this port")
             else:
-                serial.Serial(self._port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT, writeTimeout=WRITE_TIMEOUT)
+                a = serial.Serial(self._port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT, writeTimeout=WRITE_TIMEOUT)
+                a.write(ON % 0)
                 logger.debug("The connection was correctly established")
         except serial.serialutil.SerialException:
-            logger.critical("This port does not exist")
+            logger.critical(f"The port[{self._port}] is not link to the climate chamber")
         except:
             logger.critical("Error unknown")
 
@@ -258,7 +260,7 @@ class Application(Tk):
         """
     def call_graph(self):
         try:
-            Graphic.main_graphic_climatic_chamber(self, the_color, serial.Serial(self._port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT, writeTimeout=WRITE_TIMEOUT))
+            Graphic.main_graphic_climatic_chamber(self, the_color, self._port)
         except:
             showerror("Error", f"The port {self._port} is not valid")
 

@@ -27,7 +27,7 @@ def scan_all_ports(already_connected_port: str):
     for i in range(0, 100):
         test = ('COM' + str(i))
         try:
-            serial.Serial(test, SERIAL_SPEED, timeout=SERIAL_TIMEOUT)
+            serial.Serial(test, SERIAL_SPEED, timeout=1, writeTimeout=1)
             logger.info(f"The connection port {i} is available")
             data[a] = i
             a = a + 1
