@@ -182,15 +182,34 @@ class Application(Tk):
                                                activebackground="green", disabledforeground="grey",
                                                cursor="right_ptr",
                                                overrelief="sunken",
-                                               command=lambda: [self.combobox_scan(port_com_frame_entry)])
+                                               command=lambda: [self.combobox_scan(port_com_frame_entry,
+                                                                                   visual_color_button)])
         scanner_port_com_frame_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         scanner_port_com_frame_label = Label(scanner_port_com_frame, text="The currently selected port :")
         scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         port_com_frame_entry = Entry(scanner_port_com_frame)
         port_com_frame_entry.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         port_com_frame_entry.insert(0, self._port)
+        scanner_port_com_frame_label = Label(scanner_port_com_frame, text="Connection status :")
+        scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        visual_color_button = Button(scanner_port_com_frame, state="disabled")
+        visual_color_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        try:
+            a = serial.Serial(self._port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT, writeTimeout=WRITE_TIMEOUT)
+            a.write(CLIMATIC_CHAMBER_STOP)
+            self.visual_function(visual_color_button, 0)
+        except:
+            self.visual_function(visual_color_button, 1)
 
-    def combobox_scan(self, port_com_frame_entry):
+    def visual_function(self, visual_color_button, status):
+        if status == 1:
+            visual_color_button.config(text="The connection status is : offline")
+            visual_color_button.config(bg="red")
+        else:
+            visual_color_button.config(text="The connection status is : online")
+            visual_color_button.config(bg="green")
+
+    def combobox_scan(self, port_com_frame_entry, visual_color_button):
         port_com_frame = LabelFrame(self, text="Settings of the port com")
         port_com_frame.grid(row=1, column=1, ipadx=40, ipady=40, padx=0, pady=0)
         port_com_frame_label = Label(port_com_frame, text="Connection port :")
@@ -204,7 +223,7 @@ class Application(Tk):
                                        activebackground="green", disabledforeground="grey",
                                        cursor="right_ptr",
                                        overrelief="sunken",
-                                       command=lambda: [self.combobox_scan_validate(combobox_scan),
+                                       command=lambda: [self.combobox_scan_validate(combobox_scan, visual_color_button),
                                                         self.change_combo_com(port_com_frame_entry)])
         port_com_frame_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
 
@@ -220,14 +239,14 @@ class Application(Tk):
         values = list(data.values())
         combobox_scan["values"] = values
 
-    def combobox_scan_validate(self, combobox_scan):
+    def combobox_scan_validate(self, combobox_scan, visual_color_button):
         if combobox_scan.current() == -1:
             showerror("Error", "You must select a valid port")
         else:
             logger.info(f"The port [{combobox_scan.get()}] was correctly selected"),
-            self.change_port(combobox_scan.get())
+            self.change_port(combobox_scan.get(), visual_color_button)
 
-    def change_port(self, name):
+    def change_port(self, name, visual_color_button):
         self._port = name
         try:
             if self._port == "COM11":
@@ -235,6 +254,7 @@ class Application(Tk):
             else:
                 a = serial.Serial(self._port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT, writeTimeout=WRITE_TIMEOUT)
                 a.write(CLIMATIC_CHAMBER_STOP)
+                self.visual_function(visual_color_button, 0)
                 logger.debug("The connection was correctly established")
         except serial.serialutil.SerialException:
             logger.critical(f"The port [{self._port}] is not link to the climate chamber")
