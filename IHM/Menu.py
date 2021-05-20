@@ -22,6 +22,7 @@ import serial
 from Coroutines_experiment.devices_helper import scan_all_ports
 
 ON = b"$00E %06.1f 0000.0 0000.0 0000.0 0000.0 0101000000000000\n\r"
+CLIMATIC_CHAMBER_STOP = b"$00E 0000.0 0000.0 0000.0 0000.0 0000.0 0000000000000000\n\r"
 LOBBY_WINDOW_SIZE = "700x200"
 WINDOW_SIZE = "1200x500"
 SERIAL_SPEED = 9600
@@ -233,10 +234,10 @@ class Application(Tk):
                 logger.critical("you're already trying to connect to this port")
             else:
                 a = serial.Serial(self._port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT, writeTimeout=WRITE_TIMEOUT)
-                a.write(ON % 0)
+                a.write(CLIMATIC_CHAMBER_STOP)
                 logger.debug("The connection was correctly established")
         except serial.serialutil.SerialException:
-            logger.critical(f"The port[{self._port}] is not link to the climate chamber")
+            logger.critical(f"The port [{self._port}] is not link to the climate chamber")
         except:
             logger.critical("Error unknown")
 

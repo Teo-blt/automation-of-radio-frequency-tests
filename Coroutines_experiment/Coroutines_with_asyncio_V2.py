@@ -221,8 +221,10 @@ class Thread(threading.Thread):
             vt.port = self._port
             vt.timeout = 5
             vt.writeTimeout = 1
-            vt.open()
-            print(vt)
+            try:
+                vt.open()
+            except:
+                pass
             vt.write(ON % value)
         except serial.serialutil.SerialTimeoutException:
             logger.error(f"The port[{self._port}] is not link to the climate chamber")
@@ -233,7 +235,10 @@ class Thread(threading.Thread):
     def off(self):  # The function off, shut down the climatic chamber and reset the relaunch_safety variable
         # that was use to control the multi launching of the program
         vt.port = self._port
-        vt.open()
+        try:
+            vt.open()
+        except:
+            pass
         vt.write(CLIMATIC_CHAMBER_STOP)  # Stop the climatic chamber
         global relaunch_safety  # relaunch_safety variable
         relaunch_safety = 0
