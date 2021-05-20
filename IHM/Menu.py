@@ -247,8 +247,7 @@ class Application(Tk):
                                       borderwidth=8, background=the_color,
                                       activebackground="green", cursor="right_ptr", overrelief="sunken",
                                       command=lambda:
-                                      [Graphic.main_graphic_climatic_chamber(self, the_color,
-                                                                             self.climatic_chamber_widget())])
+                                      [self.call_graph()])
         start_test_button.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
         """
         button11 = tk.Button(my_scale_frame, text="Live draw example",
@@ -257,6 +256,11 @@ class Application(Tk):
                              command=lambda: Graphic.live_graph(self, the_color))
         button11.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=BOTTOM)
         """
+    def call_graph(self):
+        try:
+            Graphic.main_graphic_climatic_chamber(self, the_color, serial.Serial(self._port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT, writeTimeout=WRITE_TIMEOUT))
+        except:
+            showerror("Error", f"The port {self._port} is not valid")
 
     def low_frequency_generator_widget(self):
         self.geometry(WINDOW_SIZE)
