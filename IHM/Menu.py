@@ -249,9 +249,6 @@ class Application(Tk):
     def change_port(self, name, visual_color_button):
         self._port = name
         try:
-            if self._port == "COM11":
-                logger.critical("you're already trying to connect to this port")
-            else:
                 a = serial.Serial(self._port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT, writeTimeout=WRITE_TIMEOUT)
                 a.write(CLIMATIC_CHAMBER_STOP)
                 self.visual_function(visual_color_button, 0)

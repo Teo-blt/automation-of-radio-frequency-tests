@@ -36,7 +36,7 @@ class Thread_smiq(threading.Thread):
         SMIQ_SEND.write('SOUR:DM:FILT:TYPE RECT')
         # SCOSine | COSine | GAUSs | LGAuss | BESS1 | BESS2 | IS95 | EIS95 | APCO | TETRa | WCDMa | RECTangle | SPHase | USER
 
-        nb_frame = 5  # Number of sent frames
+        nb_frame = 1  # Number of sent frames
         wait_measure = 1  # Delay between measurement (s)
         coupler_atten_send_to_EUT = 0
 
