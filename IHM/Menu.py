@@ -308,7 +308,7 @@ class Application(Tk):
         start_test_button = tk.Button(GPIB_scale_frame, text="Begin transmission",
                                       borderwidth=8, background=the_color,
                                       activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                      command=lambda: [test_SMIQ.Thread_smiq().start()])
+                                      command=lambda: [test_SMIQ.lunch_smiq(the_color)])
         start_test_button.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
         self.scanner_button_sg(scanner_GPIB_frame)
 
