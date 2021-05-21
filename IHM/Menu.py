@@ -18,6 +18,7 @@ import Graphic
 import sys
 import serial
 from SMIQ import test_SMIQ
+import pyvisa as visa
 # ============================================================================
 from Coroutines_experiment.devices_helper import scan_all_ports
 
@@ -39,6 +40,7 @@ class Application(Tk):
         self.title("Main menu")
         self.withdraw()
         self._port = 'COM11'
+        self._gpib_port = "28"
         self.status = 0
 
     def setting_up_lobby_widget(self):  # Creation of a lobby menu
@@ -172,27 +174,27 @@ class Application(Tk):
         scanner_port_com_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
         scanner_port_com_frame_label = Label(scanner_port_com_frame, text="Scanner for connection port")
         scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-        self.setting_up_scanner_button(scanner_port_com_frame)
-        self.scale()
+        self.scanner_button_climatic_chamber(scanner_port_com_frame)
+        self.scale_climatic_chamber()
         # Function not used
         # self.data_management()
         # self.save()
 
-    def setting_up_scanner_button(self, scanner_port_com_frame):
-        scanner_port_com_frame_button = Button(scanner_port_com_frame, text="Scan", borderwidth=8, background=the_color,
+    def scanner_button_climatic_chamber(self, place):
+        scanner_port_com_frame_button = Button(place, text="Scan", borderwidth=8, background=the_color,
                                                activebackground="green", disabledforeground="grey",
                                                cursor="right_ptr",
                                                overrelief="sunken",
                                                command=lambda: [self.combobox_scan(port_com_frame_entry,
                                                                                    visual_color_button)])
         scanner_port_com_frame_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-        scanner_port_com_frame_label = Label(scanner_port_com_frame, text="The currently selected port :")
+        scanner_port_com_frame_label = Label(place, text="The currently selected port :")
         scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-        port_com_frame_entry = Label(scanner_port_com_frame, text=self._port)
+        port_com_frame_entry = Label(place, text=self._port)
         port_com_frame_entry.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-        scanner_port_com_frame_label = Label(scanner_port_com_frame, text="Connection status :")
+        scanner_port_com_frame_label = Label(place, text="Connection status :")
         scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-        visual_color_button = Button(scanner_port_com_frame, state="disabled")
+        visual_color_button = Button(place, state="disabled")
         visual_color_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         try:
             a = serial.Serial(self._port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT, writeTimeout=WRITE_TIMEOUT)
@@ -249,29 +251,30 @@ class Application(Tk):
     def change_port(self, name, visual_color_button):
         self._port = name
         try:
-                a = serial.Serial(self._port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT, writeTimeout=WRITE_TIMEOUT)
-                a.write(CLIMATIC_CHAMBER_STOP)
-                self.visual_function(visual_color_button, 0)
-                self.status = 1
-                logger.debug("The connection was correctly established")
+            a = serial.Serial(self._port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT, writeTimeout=WRITE_TIMEOUT)
+            a.write(CLIMATIC_CHAMBER_STOP)
+            self.visual_function(visual_color_button, 0)
+            self.status = 1
+            logger.debug("The connection was correctly established")
         except serial.serialutil.SerialException:
             logger.critical(f"The port [{self._port}] is not link to the climate chamber")
         except:
             logger.critical("Error unknown")
 
-    def scale(self):  # creation of two vey important buttons, Live draw example, a live draw (not used because
-        # the user can easily break it), and Start the test, witch allow the user to enter in the management test area
-        my_scale_frame = LabelFrame(self, text="Draw")
-        my_scale_frame.grid(row=0, column=2, ipadx=0, ipady=0, padx=0, pady=0)
+    def scale_climatic_chamber(self):  # creation of two vey important buttons, Live draw example,
+        # a live draw (not used because the user can easily break it),
+        # and Start the test, witch allow the user to enter in the management test area
+        climatic_chamber_scale_frame = LabelFrame(self, text="Draw")
+        climatic_chamber_scale_frame.grid(row=0, column=2, ipadx=0, ipady=0, padx=0, pady=0)
 
-        start_test_button = tk.Button(my_scale_frame, text="Start the test",
+        start_test_button = tk.Button(climatic_chamber_scale_frame, text="Start the test",
                                       borderwidth=8, background=the_color,
                                       activebackground="green", cursor="right_ptr", overrelief="sunken",
                                       command=lambda:
                                       [self.call_graph()])
         start_test_button.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
         """
-        button11 = tk.Button(my_scale_frame, text="Live draw example",
+        button11 = tk.Button(climatic_chamber_scale_frame, text="Live draw example",
                              borderwidth=8, background=the_color,
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
                              command=lambda: Graphic.live_graph(self, the_color))
@@ -286,74 +289,52 @@ class Application(Tk):
         else:
             Graphic.main_graphic_climatic_chamber(self, the_color, self._port)
 
-    def low_frequency_generator_widget(self):
+    def low_frequency_generator_widget(self):  # The low frequency generator menu
         self.geometry(WINDOW_SIZE)
-        my_lfg_frame = LabelFrame(self, text="Settings of the Low frequency generator")
-        my_lfg_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
-
 
     def sg(self):  # The signal generator menu
         self.geometry(WINDOW_SIZE)
-        my_sg_frame = LabelFrame(self, text="Settings of the Signal generator")
-        my_sg_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
-        self.sg_menu(my_sg_frame)
+        self.sg_menu()
+
     def osl(self):  # The oscilloscope menu
         self.geometry(WINDOW_SIZE)
-        my_osl_frame = LabelFrame(self, text="Settings of the Oscilloscope")
-        my_osl_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
 
-    def sg_menu(self, my_sg_frame):
-        start_test_button = tk.Button(my_sg_frame, text="Begin transmission",
+
+    def sg_menu(self):
+        scanner_GPIB_frame = LabelFrame(self, text="Detection of GPIB")
+        scanner_GPIB_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
+        GPIB_scale_frame = LabelFrame(self, text="Draw")
+        GPIB_scale_frame.grid(row=0, column=2, ipadx=0, ipady=0, padx=0, pady=0)
+        start_test_button = tk.Button(GPIB_scale_frame, text="Begin transmission",
                                       borderwidth=8, background=the_color,
                                       activebackground="green", cursor="right_ptr", overrelief="sunken",
                                       command=lambda: [test_SMIQ.Thread_smiq().start()])
         start_test_button.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
-    """
-    def data_management(self):
-        my_data_management_frame = LabelFrame(self, text="Data_management")
-        my_data_management_frame.grid(row=1, column=0, ipadx=40, ipady=5, padx=0, pady=0)
-        label = tk.Label(my_data_management_frame, text="Data management Menu")
-        label.pack()
-        button6 = tk.Button(my_data_management_frame, text="Write what you want in the file",
-                            borderwidth=8, background=the_color,
-                            activebackground="green", disabledforeground="grey",
-                            cursor="right_ptr",
-                            overrelief="sunken",
-                            command=lambda: da.write_file())
-        button6.pack()
-        button7 = tk.Button(my_data_management_frame, text="Read the file",
-                            borderwidth=8, background=the_color,
-                            activebackground="green", disabledforeground="grey",
-                            cursor="right_ptr",
-                            overrelief="sunken", command=lambda: da.read_file())
-        button7.pack()
-        button5 = tk.Button(my_data_management_frame, text="Delete file",
-                            borderwidth=8, background=the_color,
-                            activebackground="green", disabledforeground="grey",
-                            cursor="right_ptr",
-                            overrelief="sunken", command=lambda: da.delete_file())
-        button5.pack()
+        self.scanner_button_sg(scanner_GPIB_frame)
 
-    def save(self):
-        my_save_frame = LabelFrame(self, text="Save menu")
-        my_save_frame.grid(row=1, column=1, ipadx=40, ipady=40, padx=0, pady=0)
-        button9 = tk.Button(my_save_frame, text="Save",
-                            borderwidth=8, background=the_color,
-                            activebackground="green", cursor="right_ptr", overrelief="sunken",
-                            command=my_save_frame.quit)
-        button9.pack(padx=30, pady=10, expand=True, fill="both", side=TOP)
-
-        button8 = tk.Button(my_save_frame, text="Quit",
-                            borderwidth=8, background=the_color,
-                            activebackground="green", cursor="right_ptr", overrelief="sunken",
-                            command=lambda: (self.leaving()))
-        button8.pack(padx=30, pady=10, expand=True, fill="both", side=TOP)
-
-    def leaving(self):
-        if askyesno('Warning', 'Are you sure you want to do exit ?'):
-            if askyesno('Warning', 'your data is not saved, are you sure you want to continue'):
-                self.quit()
-    """
-
+    def scanner_button_sg(self, place):
+        scanner_port_com_frame_button = Button(place, text="Scan", borderwidth=8, background=the_color,
+                                               activebackground="green", disabledforeground="grey",
+                                               cursor="right_ptr",
+                                               overrelief="sunken",
+                                               command=lambda: [self.combobox_scan(port_com_frame_entry,
+                                                                                   visual_color_button)])
+        scanner_port_com_frame_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        scanner_port_com_frame_label = Label(place, text="The currently selected port :")
+        scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        port_com_frame_entry = Label(place, text=self._gpib_port)
+        port_com_frame_entry.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        scanner_port_com_frame_label = Label(place, text="Connection status :")
+        scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        visual_color_button = Button(place, state="disabled")
+        visual_color_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        try:
+            rm = visa.ResourceManager()
+            SMIQ_SEND = rm.open_resource('GPIB0::28::INSTR')
+            SMIQ_SEND.write('*RST')
+            self.status = 1
+            self.visual_function(visual_color_button, 0)
+        except:
+            self.visual_function(visual_color_button, 1)
 
 Application().mainloop()

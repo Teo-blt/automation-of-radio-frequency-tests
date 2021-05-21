@@ -27,15 +27,7 @@ SERIAL_SPEED = 9600
 SERIAL_TIMEOUT = 5
 WRITE_TIMEOUT = 5
 CONNECTION = '[None]'
-
-try:
-    vt = serial.Serial(CONNECTION, SERIAL_SPEED, timeout=SERIAL_TIMEOUT, writeTimeout=WRITE_TIMEOUT)
-    logger.debug("The connection was correctly established")
-except:
-    vt = serial.Serial()
-    logger.critical("connection impossible")
-    logger.critical("please chek your connection port")
-    logger.critical(f"actual connection port {CONNECTION}")
+vt = serial.Serial()
 
 
 class Thread(threading.Thread):
