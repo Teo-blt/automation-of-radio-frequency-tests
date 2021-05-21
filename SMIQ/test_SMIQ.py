@@ -32,23 +32,37 @@ def lunch_smiq(the_color):
     scale_frame.config(background='#fafafa')
 
     delay_scale = Scale(scale_frame, orient='vertical', troughcolor=the_color, from_=1, to=10,
-                        resolution=1, tickinterval=1, length=100,
+                        resolution=1, tickinterval=2, length=100,
                         label='Delay between measurement (s)', state="active")
     delay_scale.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
 
     frames_nb_scale = Scale(scale_frame, orient='vertical', troughcolor=the_color, from_=1, to=10,
-                            resolution=1, tickinterval=1, length=100,
+                            resolution=1, tickinterval=2, length=100,
                             label='Number of sent frames', state="active")
     frames_nb_scale.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
 
-    measurement_channel = Entry(scale_frame)
-    measurement_channel.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
+    entry_frame = LabelFrame(scale_frame, text="Entry settings")
+    entry_frame.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
+
+    Entry_label = Label(entry_frame, text="List of Measurement channel (Hz) :")
+    Entry_label.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
+
+    measurement_channel = Entry(entry_frame, cursor="right_ptr")
+    measurement_channel.pack(padx=0, pady=0, side=LEFT)
+    measurement_channel.insert(0, 868950000)
+
+    reset_button = tk.Button(entry_frame, text="Reset",
+                             borderwidth=8, background=the_color,
+                             activebackground="green", cursor="right_ptr", overrelief="sunken",
+                             command=lambda: [measurement_channel.delete(0, 20), measurement_channel.insert(0, 868950000)])
+    reset_button.pack(expand=False, fill="none", side=RIGHT)
 
     start_button = tk.Button(scale_frame, text="Start",
                              borderwidth=8, background=the_color,
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
                              command=lambda: [
-                                 Thread_smiq(delay_scale.get(), frames_nb_scale.get(), [868950000]).start()])
+                                 Thread_smiq(delay_scale.get(), frames_nb_scale.get(),
+                                             [measurement_channel.get()]).start()])
     start_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
     off_scale_frame_button = tk.Button(scale_frame, text="Off",
                                        borderwidth=8, background=the_color,
@@ -64,7 +78,7 @@ class Thread_smiq(threading.Thread):
         # additional data added to the class
         self.nb_frame = nb_frame  # Number of sent frames
         self.wait_measure = wait_measure  # Delay between measurement (s)
-        self.channel_list = channel_list  # List of Measurement channel (Hz), channel number
+        self.channel_list = channel_list  # List of Measurement channel (Hz)
         self.coupler_attent_send_to_EUT = 0
 
     def run(self):
