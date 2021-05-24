@@ -317,7 +317,6 @@ def main_graphic_climatic_chamber(self, port):
                                                      activebackground="green",
                                                      bd=8, selectcolor="green", overrelief="sunken")
     radiobutton_start_with_low_temp.grid(row=1, column=3, ipadx=10, ipady=10, padx=0, pady=0)
-    radiobutton_start_with_low_temp.invoke()
     radiobutton_stair = tk.Radiobutton(rb_frame_automatic_selection, text="Stair",
                                        variable=c, value=1, cursor="right_ptr",
                                        indicatoron=1, command=lambda: [auto_scale_frame.pack_forget(),
@@ -432,8 +431,14 @@ def main_graphic_climatic_chamber(self, port):
 
         ax1 = fig.add_subplot(1, 1, 1)
         ax1.set_ylim(FRAME)
-        line, = ax1.plot(xar, yar, 'r', marker='o')
-        line2, = ax1.plot(xar2, yar2, 'b', marker='o')
+
+        line, = ax1.plot(xar, yar, 'r', marker='o', label="order C°/min")
+        line2, = ax1.plot(xar2, yar2, 'b', marker='o', label="actual temperature C°/min")
+        first_legend = ax1.legend(handles=[line], loc='upper right')
+        ax1.add_artist(first_legend)
+        first_legend = ax1.legend(handles=[line2], loc='lower right')
+        ax1.add_artist(first_legend)
+
 
         def clean():
             global toolbar
@@ -454,6 +459,7 @@ def main_graphic_climatic_chamber(self, port):
             xar.append(i * (1 / 12))
             line.set_data(xar, yar)
             ax1.set_xlim(0, i * (1 / 12) + 1)
+
 
         def animate2(r):
             global m, M, value
@@ -506,7 +512,7 @@ def simulation_graphic_cycle(temperature_min, temperature_max,
         my_draw_6_frame_1.pack(side=BOTTOM)
         temperature_max_duration_h = temperature_max_duration_h + 1
         temperature_min_duration_h = temperature_min_duration_h + 1
-        var = 1
+        var = 0
         if min_max:
             var_storage = temperature_max
             temperature_max = temperature_min
@@ -523,7 +529,7 @@ def simulation_graphic_cycle(temperature_min, temperature_max,
         names = list(data.keys())
         values = list(data.values())
         fig = Figure(figsize=(5, 4), dpi=100)
-        fig.add_subplot().plot(names, values, label='Inline label')
+        fig.add_subplot().plot(names, values)
         canvas = FigureCanvasTkAgg(fig, master=my_draw_6_frame_1)
         canvas.draw()
         canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
