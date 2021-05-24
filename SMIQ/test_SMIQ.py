@@ -16,10 +16,11 @@ import threading
 from tkinter import *
 import tkinter as tk
 
-
 # =============================================================================
+THE_COLOR = "#E76145"
 
-def lunch_smiq(the_color):
+
+def lunch_smiq():
     new_window_main_graphic = tk.Toplevel()
     new_window_main_graphic.title("Graph settings")
 
@@ -31,12 +32,12 @@ def lunch_smiq(the_color):
     scale_frame.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
     scale_frame.config(background='#fafafa')
 
-    delay_scale = Scale(scale_frame, orient='vertical', troughcolor=the_color, from_=1, to=10,
+    delay_scale = Scale(scale_frame, orient='vertical', troughcolor=THE_COLOR, from_=1, to=10,
                         resolution=1, tickinterval=2, length=100,
                         label='Delay between measurement (s)', state="active")
     delay_scale.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
 
-    frames_nb_scale = Scale(scale_frame, orient='vertical', troughcolor=the_color, from_=1, to=10,
+    frames_nb_scale = Scale(scale_frame, orient='vertical', troughcolor=THE_COLOR, from_=1, to=10,
                             resolution=1, tickinterval=2, length=100,
                             label='Number of sent frames', state="active")
     frames_nb_scale.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
@@ -52,20 +53,21 @@ def lunch_smiq(the_color):
     measurement_channel.insert(0, 868950000)
 
     reset_button = tk.Button(entry_frame, text="Reset",
-                             borderwidth=8, background=the_color,
+                             borderwidth=8, background=THE_COLOR,
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
-                             command=lambda: [measurement_channel.delete(0, 20), measurement_channel.insert(0, 868950000)])
+                             command=lambda: [measurement_channel.delete(0, 20),
+                                              measurement_channel.insert(0, 868950000)])
     reset_button.pack(expand=False, fill="none", side=RIGHT)
 
     start_button = tk.Button(scale_frame, text="Start",
-                             borderwidth=8, background=the_color,
+                             borderwidth=8, background=THE_COLOR,
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
                              command=lambda: [
                                  Thread_smiq(delay_scale.get(), frames_nb_scale.get(),
                                              [measurement_channel.get()]).start()])
     start_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
     off_scale_frame_button = tk.Button(scale_frame, text="Off",
-                                       borderwidth=8, background=the_color,
+                                       borderwidth=8, background=THE_COLOR,
                                        activebackground="green", cursor="right_ptr", overrelief="sunken",
                                        command=lambda: [])
     off_scale_frame_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)

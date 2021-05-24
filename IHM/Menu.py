@@ -12,10 +12,8 @@ import tkinter as tk
 from tkinter import *
 from tkinter import ttk
 from tkinter.messagebox import *
-from tkinter.colorchooser import askcolor
 from loguru import logger
 import Graphic
-import sys
 import serial
 from SMIQ import test_SMIQ
 import pyvisa as visa
@@ -29,62 +27,16 @@ WINDOW_SIZE = "1200x500"
 SERIAL_SPEED = 9600
 SERIAL_TIMEOUT = 5
 WRITE_TIMEOUT = 5
+THE_COLOR = "#E76145"
 
 
 class Application(Tk):
     def __init__(self):
         Tk.__init__(self)  # Initialisation of the first window
-        global the_color  # the color of the buttons
-        the_color = "#E76145"
-        self.setting_up_lobby_widget()
-        self.title("Main menu")
-        self.withdraw()
         self._port = 'COM11'
         self._gpib_port = "28"
         self.status = 0
-
-    def setting_up_lobby_widget(self):  # Creation of a lobby menu
-        lobby_window: Toplevel = self.setting_lobby_window()
-
-        label = tk.Label(lobby_window, text="Menu", )
-        label.pack(padx=10, pady=10, expand=True, fill="both", side=TOP)
-
-        self.setting_up_start_button(lobby_window)
-        self.setting_up_quit_button(lobby_window)
-        self.setting_up_setting_button(lobby_window)
-
-    def setting_up_setting_button(self, lobby_window: Toplevel):
-        button_settings = tk.Button(
-            lobby_window, text="color", overrelief="sunken", bitmap="info", cursor="right_ptr",
-            command=lambda: (self.color_change(lobby_window)))  # To change the color of all buttons
-        button_settings.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
-
-    def setting_up_quit_button(self, lobby_window: Toplevel):
-        quit_button = tk.Button(
-            lobby_window,
-            text="Quit",
-            borderwidth=8,
-            background=the_color,  # To quit the program
-            activebackground="green",
-            cursor="right_ptr",
-            overrelief="sunken",
-            command=lambda: [sys.exit()]
-        )
-        quit_button.pack(padx=30, pady=10, expand=True, fill="both", side=TOP)
-
-    def setting_up_start_button(self, lobby_window: Toplevel):
-        start_button = tk.Button(
-            lobby_window,
-            text="Start",
-            borderwidth=8,
-            background=the_color,  # To start the program, creation of a new window
-            activebackground="green",
-            cursor="right_ptr",
-            overrelief="sunken",
-            command=lambda: [
-                self.create_choose_measuring_tool_combobox("--choose your instrument here--"),
-                self.deiconify(), lobby_window.withdraw()])
-        start_button.pack(padx=30, pady=10, expand=True, fill="both", side=TOP)
+        self.interface(0)
 
     def setting_lobby_window(self) -> Toplevel:
         new_window = tk.Toplevel(self)
@@ -93,18 +45,6 @@ class Application(Tk):
         new_window.geometry(LOBBY_WINDOW_SIZE)
 
         return new_window
-
-    def color_change(self, new_window):
-        """
-        A very simple and mostly useless function to change the color of all the buttons
-        :param new_window:
-        :return:
-        """
-        color = askcolor()  # wheel of color
-        global the_color
-        the_color = color[1]
-        new_window.destroy()
-        self.setting_up_lobby_widget()
 
     def create_choose_measuring_tool_combobox(self, value: str):
         """
@@ -134,7 +74,7 @@ class Application(Tk):
             instrument_choose_combobox,
             text="validate",
             borderwidth=8,
-            background=the_color,
+            background=THE_COLOR,
             activebackground="green",
             disabledforeground="grey",
             cursor="right_ptr",
@@ -181,7 +121,7 @@ class Application(Tk):
         # self.save()
 
     def scanner_button_climatic_chamber(self, place):
-        scanner_port_com_frame_button = Button(place, text="Scan", borderwidth=8, background=the_color,
+        scanner_port_com_frame_button = Button(place, text="Scan", borderwidth=8, background=THE_COLOR,
                                                activebackground="green", disabledforeground="grey",
                                                cursor="right_ptr",
                                                overrelief="sunken",
@@ -222,7 +162,7 @@ class Application(Tk):
         combobox_scan.set("--choose your port here--")
         combobox_scan.pack(padx=50, pady=0, expand=False, fill="x", side=TOP)
         self.write_combobox_scan(combobox_scan)
-        port_com_frame_button = Button(port_com_frame, text="Connect", borderwidth=8, background=the_color,
+        port_com_frame_button = Button(port_com_frame, text="Connect", borderwidth=8, background=THE_COLOR,
                                        activebackground="green", disabledforeground="grey",
                                        cursor="right_ptr",
                                        overrelief="sunken",
@@ -268,26 +208,27 @@ class Application(Tk):
         climatic_chamber_scale_frame.grid(row=0, column=2, ipadx=0, ipady=0, padx=0, pady=0)
 
         start_test_button = tk.Button(climatic_chamber_scale_frame, text="Start the test",
-                                      borderwidth=8, background=the_color,
+                                      borderwidth=8, background=THE_COLOR,
                                       activebackground="green", cursor="right_ptr", overrelief="sunken",
                                       command=lambda:
                                       [self.call_graph()])
         start_test_button.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
         """
         button11 = tk.Button(climatic_chamber_scale_frame, text="Live draw example",
-                             borderwidth=8, background=the_color,
+                             borderwidth=8, background=THE_COLOR,
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
-                             command=lambda: Graphic.live_graph(self, the_color))
+                             command=lambda: Graphic.live_graph(self, THE_COLOR))
         button11.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=BOTTOM)
         """
+
     def call_graph(self):
         if self.status == 0:
             if askyesno("Warning", "The connection status is : offline\n Do you still want to continue ?"):
-                Graphic.main_graphic_climatic_chamber(self, the_color, self._port)
+                Graphic.main_graphic_climatic_chamber(self, self._port)
             else:
                 pass
         else:
-            Graphic.main_graphic_climatic_chamber(self, the_color, self._port)
+            Graphic.main_graphic_climatic_chamber(self, self._port)
 
     def low_frequency_generator_widget(self):  # The low frequency generator menu
         self.geometry(WINDOW_SIZE)
@@ -299,21 +240,20 @@ class Application(Tk):
     def osl(self):  # The oscilloscope menu
         self.geometry(WINDOW_SIZE)
 
-
     def sg_menu(self):
         scanner_GPIB_frame = LabelFrame(self, text="Detection of GPIB")
         scanner_GPIB_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
         GPIB_scale_frame = LabelFrame(self, text="Draw")
         GPIB_scale_frame.grid(row=0, column=2, ipadx=0, ipady=0, padx=0, pady=0)
         start_test_button = tk.Button(GPIB_scale_frame, text="Begin transmission",
-                                      borderwidth=8, background=the_color,
+                                      borderwidth=8, background=THE_COLOR,
                                       activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                      command=lambda: [test_SMIQ.lunch_smiq(the_color)])
+                                      command=lambda: [test_SMIQ.lunch_smiq()])
         start_test_button.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
         self.scanner_button_sg(scanner_GPIB_frame)
 
     def scanner_button_sg(self, place):
-        scanner_port_com_frame_button = Button(place, text="Scan", borderwidth=8, background=the_color,
+        scanner_port_com_frame_button = Button(place, text="Scan", borderwidth=8, background=THE_COLOR,
                                                activebackground="green", disabledforeground="grey",
                                                cursor="right_ptr",
                                                overrelief="sunken",
@@ -336,5 +276,6 @@ class Application(Tk):
             self.visual_function(visual_color_button, 0)
         except:
             self.visual_function(visual_color_button, 1)
+
 
 Application().mainloop()

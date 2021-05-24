@@ -186,10 +186,15 @@ class Thread(threading.Thread):
         logger.info(f'Test duration: {b[3]}H{b[4]} and {b[5]} second(s)')  # some useful information for the user
         sys.exit()  # TODO repair the sys.exit()
 
-    def read(self):
+    def read(self, the_port):
         try:  # This try allow the program to survive in a rare case where the climatic
             # chamber don't have enough time to answer back
+            self._port = the_port
             vt.port = self._port
+            try:
+                vt.open()
+            except:
+                pass
             vt.write(b"$00I\n\r")  # prepare the climatic chamber to receive information
             time.sleep(0.2)  # A pause that freeze the entire program
             # TODO find a better way to wait maybe asyncio.sleep(5) ?
@@ -205,7 +210,7 @@ class Thread(threading.Thread):
             # allow the program to call read only once every 5 seconds, it's time saving (because of the time sleep)
         except:
             logger.error("too fast, please wait")
-            return [0, 0]  # In case of an error, this function will return [0,0], This will NOT affect the graph
+            return [0, "None"]  # In case of an error, this function will return [0,0], This will NOT affect the graph
 
 
     def order(self, value):  # A very simple function use in the manual mode
