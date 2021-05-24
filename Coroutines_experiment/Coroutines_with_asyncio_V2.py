@@ -54,7 +54,7 @@ class Thread(threading.Thread):
         self.cycle = 0
         self.time_start_min = 0
         self.up_down = up_down
-        self.timer = 1 / 60
+        self.timer = 0
         self.stair = stair
         self.stair_temp = stair_temp
         self.temperature_end = temperature_end
@@ -74,25 +74,13 @@ class Thread(threading.Thread):
                 self.temperature = self.temp_max
                 self.timer = self.temp_max_duration_h
             vt.write(ON % self.temperature)  # Send the order to the climate chamber
-            p = 0
-            while p < 1:  # Loop for the initialisation of the program (not very useful)
-                logger.debug("start-up, please wait")
-                time.sleep(2)
-                logger.debug("start-up, please wait.")
-                time.sleep(2)
-                logger.debug("start-up, please wait..")
-                time.sleep(2)
-                logger.debug("start-up, please wait...")
-                time.sleep(2)
-                p = p + 1
-
             [self.temp, self.temp2] = self.read(self._port)  # Use the function reed to get temp et temp2,
             # respectively actual temperature and order, the function reed ask directly to
             # the climate chamber the values, it's take time, but the value are much safer
             logger.info("################################################")
             logger.info("Start of Test")
             self.time_start = time.time()  # Collect the time of the beginning of the test
-            self.timer = 1 / 60  # For the test, it reduce the time of waiting to 1 min
+            #self.timer = 1 / 60  # For the test, it reduce the time of waiting to 1 min
             asyncio.run(self.several_methods_run_together())
 
     async def wait_temperature_reach_consign(self, timer):

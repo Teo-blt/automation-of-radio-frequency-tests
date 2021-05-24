@@ -529,7 +529,7 @@ def simulation_graphic_cycle(temperature_min, temperature_max,
         names = list(data.keys())
         values = list(data.values())
         fig = Figure(figsize=(5, 4), dpi=100)
-        fig.add_subplot().plot(names, values)
+        fig.add_subplot().plot(names, values, label='test')
         canvas = FigureCanvasTkAgg(fig, master=my_draw_6_frame_1)
         canvas.draw()
         canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)

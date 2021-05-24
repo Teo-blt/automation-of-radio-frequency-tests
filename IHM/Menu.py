@@ -8,6 +8,7 @@
 """The Module Has Been Build for the automation of radio frequency tests"""
 # =============================================================================
 # Imports
+import time
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
@@ -126,7 +127,8 @@ class Application(Tk):
                                                cursor="right_ptr",
                                                overrelief="sunken",
                                                command=lambda: [self.combobox_scan(port_com_frame_entry,
-                                                                                   visual_color_button)])
+                                                                                   visual_color_button),
+                                                                self.try_climate_chamber(visual_color_button)])
         scanner_port_com_frame_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         scanner_port_com_frame_label = Label(place, text="The currently selected port :")
         scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
@@ -136,9 +138,18 @@ class Application(Tk):
         scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         visual_color_button = Button(place, state="disabled")
         visual_color_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        self.try_climate_chamber(visual_color_button)
+
+    def try_climate_chamber(self, visual_color_button):
         try:
             a = serial.Serial(self._port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT, writeTimeout=WRITE_TIMEOUT)
-            a.write(CLIMATIC_CHAMBER_STOP)
+            a.write(b"$00I\n\r")
+            time.sleep(0.2)
+            received_frame = a.read_all().decode('utf-8')  # Decipher the frame that was send by the climatic chamber
+            word = received_frame.split(" ")  # Split the decipher the frame that was send by the climatic chamber
+            strings = str(word[1])
+            number = float(strings)
+            logger.info(f"The actual temperature of the climatic chamber is : {number}")
             self.status = 1
             self.visual_function(visual_color_button, 0)
         except:
@@ -147,10 +158,10 @@ class Application(Tk):
     def visual_function(self, visual_color_button, status):
         if status == 1:
             visual_color_button.config(text="The connection status is : offline")
-            visual_color_button.config(bg="red")
+            visual_color_button.config(bg="red", disabledforeground="black")
         else:
             visual_color_button.config(text="The connection status is : online")
-            visual_color_button.config(bg="light green")
+            visual_color_button.config(bg="light green", disabledforeground="black")
 
     def combobox_scan(self, port_com_frame_entry, visual_color_button):
         port_com_frame = LabelFrame(self, text="Settings of the port com")
