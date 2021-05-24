@@ -115,7 +115,7 @@ class Thread(threading.Thread):
             b = time.localtime(abs((self.time_start_min + (timer * 3600)) - time.time()))  # Show useful values
             # of time for the user
             c = time.localtime(self.time_start_min + (timer * 3600))
-            logger.info("The test will finish at {}H {}min and {} second(s)".format(c[3], c[4], c[5]))
+            logger.info("This half cycle will finish at {}H {}min and {} second(s)".format(c[3], c[4], c[5]))
             logger.info("{} hour(s) {} minute(s) and {} seconds remain".format(b[3] - 1, b[4], b[5]))
         return 1  # without a return, the while loop will run continuously.
 
