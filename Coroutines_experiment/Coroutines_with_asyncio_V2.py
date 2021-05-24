@@ -197,7 +197,8 @@ class Thread(threading.Thread):
             return [number, number3]  # Return the actual temperature and the actual order at the same time to
             # allow the program to call read only once every 5 seconds, it's time saving (because of the time sleep)
         except:
-            logger.error("too fast, please wait")
+            logger.error("too fast, please wait")  # protect the application if the user
+            # make a request the same time than the programme
             return [0, "None"]  # In case of an error, this function will return [0,0], This will NOT affect the graph
 
     def order(self, value):  # A very simple function use in the manual mode
