@@ -8,7 +8,6 @@
 """The Module Has Been Build for the automation of radio frequency tests"""
 # =============================================================================
 # Imports
-import time
 from matplotlib.animation import FuncAnimation
 from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk
 from matplotlib.figure import Figure
@@ -528,7 +527,7 @@ def simulation_graphic_cycle(temperature_min, temperature_max,
             var = var + temperature_max_duration_h + temperature_min_duration_h
         names = list(data.keys())
         values = list(data.values())
-        fig = Figure(figsize=(5, 4), dpi=100)
+        fig = Figure(figsize=(5, 3), dpi=100)
         fig.add_subplot().plot(names, values, label='test')
         canvas = FigureCanvasTkAgg(fig, master=my_draw_6_frame_1)
         canvas.draw()
@@ -567,7 +566,7 @@ def simulation_graphic_stair(step, temp_start, temp_end, temp_duration, window):
 
     names = list(data.keys())
     values = list(data.values())
-    fig = Figure(figsize=(5, 4), dpi=100)
+    fig = Figure(figsize=(5, 3), dpi=100)
     fig.add_subplot().plot(names, values)
     canvas = FigureCanvasTkAgg(fig, master=my_draw_7_frame_1)
     canvas.draw()
