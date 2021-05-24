@@ -13,3 +13,4 @@ pyserial~=3.5
 loguru~=0.5.3
 future~=0.18.2
 PyVISA~=1.11.3
+RsInstrument==1.11.0.57
