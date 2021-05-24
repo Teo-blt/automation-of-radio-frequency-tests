@@ -86,7 +86,7 @@ class Thread(threading.Thread):
                 time.sleep(2)
                 p = p + 1
 
-            [self.temp, self.temp2] = self.read()  # Use the function reed to get temp et temp2,
+            [self.temp, self.temp2] = self.read(self._port)  # Use the function reed to get temp et temp2,
             # respectively actual temperature and order, the function reed ask directly to
             # the climate chamber the values, it's take time, but the value are much safer
             logger.info("################################################")
@@ -101,7 +101,7 @@ class Thread(threading.Thread):
             # (if we use a maximal difference of 0 it's take too much time to stabilize) AND the VALUE_STABILISATION
             # must be bigger than 120
             await asyncio.sleep(5)  # Like a wait but it will NOT freeze the program
-            [self.temp, self.temp2] = self.read()  # Reed the value thanks to the reed function
+            [self.temp, self.temp2] = self.read(self._port)  # Reed the value thanks to the reed function
             logger.info("#################################")  # show the values to the user
             logger.info(f"The actual temperature is : {self.temp}")
             logger.info("The actual order is : {}".format(self.temp2))
@@ -120,7 +120,7 @@ class Thread(threading.Thread):
         while time.time() < self.time_start_min + (timer * 3600):  # While the actual
             # time is smaller than the time_start_min WITH added with the timer, the while is looping
             await asyncio.sleep(5)  # Like a wait but it will NOT freeze the program
-            [self.temp, self.temp2] = self.read()  # Reed the value thanks to the reed function
+            [self.temp, self.temp2] = self.read(self._port)  # Reed the value thanks to the reed function
             logger.info("#################################")  # show the values to the user
             logger.info(f"The actual temperature is : {self.temp}")
             logger.info("The actual order is : {}".format(self.temp2))
@@ -212,7 +212,6 @@ class Thread(threading.Thread):
             logger.error("too fast, please wait")
             return [0, "None"]  # In case of an error, this function will return [0,0], This will NOT affect the graph
 
-
     def order(self, value):  # A very simple function use in the manual mode
         try:  # This try allow to save the program when, in rare case, spamming the Send button
             # of the manual mode produce an error
@@ -228,7 +227,6 @@ class Thread(threading.Thread):
             logger.error(f"The port[{self._port}] is not link to the climate chamber")
         except:
             logger.error("too fast, please slow down")
-
 
     def off(self):  # The function off, shut down the climatic chamber and reset the relaunch_safety variable
         # that was use to control the multi launching of the program

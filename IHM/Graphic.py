@@ -8,6 +8,7 @@
 """The Module Has Been Build for the automation of radio frequency tests"""
 # =============================================================================
 # Imports
+import time
 from matplotlib.animation import FuncAnimation
 from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk
 from matplotlib.figure import Figure
@@ -549,21 +550,25 @@ def simulation_graphic_stair(self, step, temp_start, temp_end, temp_duration, wi
     data = {0: 0}
     var = 0
     temp_duration = temp_duration + 1
-    if temp_start >= step:
-        step = -step
-    while abs(temp_start - temp_end) >= step:
+    if temp_start == temp_end:
+        for i in range(0, temp_duration):
+            data[i] = temp_start
+    else:
+        if temp_start >= step or temp_end < temp_start:
+            step = -step
+        while abs(temp_start - temp_end) >= abs(step):
+            for i in range(var, temp_duration + var):
+                data[i] = temp_start
+            var = var + temp_duration
+            temp_start = temp_start + step
         for i in range(var, temp_duration + var):
             data[i] = temp_start
-        var = var + temp_duration
-        temp_start = temp_start + step
-    for i in range(var, temp_duration + var):
-        data[i] = temp_start
-    if temp_start == temp_end:
-        pass
-    else:
-        var = var + temp_duration
-        for i in range(var, temp_duration + var):
-            data[i] = temp_end
+        if temp_start == temp_end:
+            pass
+        else:
+            var = var + temp_duration
+            for i in range(var, temp_duration + var):
+                data[i] = temp_end
 
     names = list(data.keys())
     values = list(data.values())
