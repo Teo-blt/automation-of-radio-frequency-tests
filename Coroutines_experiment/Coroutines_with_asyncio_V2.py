@@ -166,13 +166,13 @@ class Thread(threading.Thread):
             self.exit()  # leave the program thanks to the function exit
 
     def exit(self):
-        self.off()  # Use the off function to stop the climatic chamber
+        self.off()  # Use the off function to stop the climatic chamber # TODO repair the sys.exit() #a réparer
         time_stop = time.time()
         logger.info("################################################")
         logger.info("End of Test")
         b = time.localtime(time_stop - self.time_start)  # Total time of the test
         logger.info(f'Test duration: {b[3]}H{b[4]} and {b[5]} second(s)')  # some useful information for the user
-        sys.exit()  # TODO repair the sys.exit()
+        sys.exit()  # TODO repair the sys.exit() #a réparer
 
     def read(self, the_port):
         try:  # This try allow the program to survive in a rare case where the climatic
