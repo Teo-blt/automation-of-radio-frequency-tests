@@ -1,7 +1,7 @@
 import serial
 from loguru import logger
 from Climate_chamber_control.Climate_chamber import SERIAL_SPEED, SERIAL_TIMEOUT
-
+import pyvisa as visa
 
 def open_port(new_port):
     """
@@ -17,10 +17,9 @@ def open_port(new_port):
     return new_port
 
 
-def scan_all_ports(already_connected_port: str):
+def scan_all_ports():
     """
     Scan all ports
-    :param already_connected_port: already connected port
     """
     data = {}
     a = 0
@@ -32,10 +31,29 @@ def scan_all_ports(already_connected_port: str):
             data[a] = i
             a = a + 1
         except:
-            if test == already_connected_port:
-                logger.critical(f"You are actually trying to connect to the port {i} ")
-            else:
-                logger.debug(f"The connection port {i} is unavailable")
+            logger.debug(f"The connection port {i} is unavailable")
     values = list(data.values())
     logger.info(f"The available ports are : {values} ")
+    return [a, values]
+
+
+def scan_all_gpib():
+    """
+    Scan all gpib
+    """
+    data = {}
+    a = 0
+    for i in range(0, 100):
+        test = str(i)
+        try:
+            rm = visa.ResourceManager()
+            SMIQ_SEND = rm.open_resource('GPIB0::' + test + '::INSTR')
+            SMIQ_SEND.write('*RST')
+            logger.info(f"The GPIB {i} is available")
+            data[a] = i
+            a = a + 1
+        except:
+            logger.debug(f"The GPIB {i} is unavailable")
+    values = list(data.values())
+    logger.info(f"The available GPIB are : {values} ")
     return [a, values]

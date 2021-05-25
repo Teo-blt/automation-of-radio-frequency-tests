@@ -86,7 +86,7 @@ class Thread_smiq(threading.Thread):
     def run(self):
         sys.path.append('P:\\e2b\\hardware\\Scripts_auto\\Python\\lib')
         rm = visa.ResourceManager()
-        SMIQ_SEND = rm.open_resource('GPIB0::28::INSTR')
+        SMIQ_SEND = rm.open_resource('GPIB0::25::INSTR')
         SMIQ_SEND.write('*RST')
         print(SMIQ_SEND.query('*IDN?'))
         SMIQ_SEND.write('OUTP:STAT OFF')  # RF Output OFF

@@ -20,6 +20,7 @@ from SMIQ import test_SMIQ
 import pyvisa as visa
 # ============================================================================
 from Coroutines_experiment.devices_helper import scan_all_ports
+from Coroutines_experiment.devices_helper import scan_all_gpib
 
 ON = b"$00E %06.1f 0000.0 0000.0 0000.0 0000.0 0101000000000000\n\r"
 CLIMATIC_CHAMBER_STOP = b"$00E 0000.0 0000.0 0000.0 0000.0 0000.0 0000000000000000\n\r"
@@ -35,7 +36,7 @@ class Application(Tk):
     def __init__(self):
         Tk.__init__(self)  # Initialisation of the first window
         self._port = 'COM11'
-        self._gpib_port = "28"
+        self._gpib_port = "25"
         self.status = 0
         self.interface(0)
 
@@ -172,27 +173,27 @@ class Application(Tk):
                                      values=[0], state="readonly")
         combobox_scan.set("--choose your port here--")
         combobox_scan.pack(padx=50, pady=0, expand=False, fill="x", side=TOP)
-        self.write_combobox_scan(combobox_scan)
+        self.write_climate_chamber_scan(combobox_scan)
         port_com_frame_button = Button(port_com_frame, text="Connect", borderwidth=8, background=THE_COLOR,
                                        activebackground="green", disabledforeground="grey",
                                        cursor="right_ptr",
                                        overrelief="sunken",
-                                       command=lambda: [self.combobox_scan_validate(combobox_scan, visual_color_button),
+                                       command=lambda: [self.climate_chamber_scan_validate(combobox_scan, visual_color_button),
                                                         self.change_combo_com(port_com_frame_entry)])
         port_com_frame_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
 
     def change_combo_com(self, port_com_frame_entry):
         port_com_frame_entry.config(text=self._port)
 
-    def write_combobox_scan(self, combobox_scan):
-        [limit, multi_port] = scan_all_ports(self._port)
+    def write_climate_chamber_scan(self, combobox_scan):
+        [limit, multi_port] = scan_all_ports()
         data = {}
         for i in range(0, limit):
             data[i] = ("COM" + str(multi_port[i]))
         values = list(data.values())
         combobox_scan["values"] = values
 
-    def combobox_scan_validate(self, combobox_scan, visual_color_button):
+    def climate_chamber_scan_validate(self, combobox_scan, visual_color_button):
         if combobox_scan.current() == -1:
             showerror("Error", "You must select a valid port")
         else:
@@ -224,13 +225,6 @@ class Application(Tk):
                                       command=lambda:
                                       [self.call_graph()])
         start_test_button.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
-        """
-        button11 = tk.Button(climatic_chamber_scale_frame, text="Live draw example",
-                             borderwidth=8, background=THE_COLOR,
-                             activebackground="green", cursor="right_ptr", overrelief="sunken",
-                             command=lambda: Graphic.live_graph(self, THE_COLOR))
-        button11.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=BOTTOM)
-        """
 
     def call_graph(self):
         if self.status == 0:
@@ -268,10 +262,10 @@ class Application(Tk):
                                                activebackground="green", disabledforeground="grey",
                                                cursor="right_ptr",
                                                overrelief="sunken",
-                                               command=lambda: [self.combobox_scan(port_com_frame_entry,
-                                                                                   visual_color_button)])
+                                               command=lambda: [self.gpib_scan(port_com_frame_entry,
+                                                                               visual_color_button)])
         scanner_port_com_frame_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-        scanner_port_com_frame_label = Label(place, text="The currently selected port :")
+        scanner_port_com_frame_label = Label(place, text="The currently selected GPIB :")
         scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         port_com_frame_entry = Label(place, text=self._gpib_port)
         port_com_frame_entry.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
@@ -281,12 +275,62 @@ class Application(Tk):
         visual_color_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         try:
             rm = visa.ResourceManager()
-            SMIQ_SEND = rm.open_resource('GPIB0::28::INSTR')
+            SMIQ_SEND = rm.open_resource('GPIB0::' + self._gpib_port + '::INSTR')
             SMIQ_SEND.write('*RST')
             self.status = 1
             self.visual_function(visual_color_button, 0)
         except:
             self.visual_function(visual_color_button, 1)
+
+    def gpib_scan(self, port_com_frame_entry, visual_color_button):
+        port_com_frame = LabelFrame(self, text="Settings of the GPIB")
+        port_com_frame.grid(row=1, column=1, ipadx=40, ipady=40, padx=0, pady=0)
+        port_com_frame_label = Label(port_com_frame, text="Connection port :")
+        port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        combobox_scan = ttk.Combobox(port_com_frame,
+                                     values=[0], state="readonly")
+        combobox_scan.set("--choose your port here--")
+        combobox_scan.pack(padx=50, pady=0, expand=False, fill="x", side=TOP)
+        self.write_gpib_scan(combobox_scan)
+        port_com_frame_button = Button(port_com_frame, text="Connect", borderwidth=8, background=THE_COLOR,
+                                       activebackground="green", disabledforeground="grey",
+                                       cursor="right_ptr",
+                                       overrelief="sunken",
+                                       command=lambda: [self.gpib_scan_validate(combobox_scan, visual_color_button),
+                                                        self.change_combo_gpib(port_com_frame_entry)])
+        port_com_frame_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+
+    def write_gpib_scan(self, combobox_scan):
+        [limit, multi_port] = scan_all_gpib()
+        data = {}
+        for i in range(0, limit):
+            data[i] = str(multi_port[i])
+        values = list(data.values())
+        combobox_scan["values"] = values
+
+    def gpib_scan_validate(self, combobox_scan, visual_color_button):
+        if combobox_scan.current() == -1:
+            showerror("Error", "You must select a valid port")
+        else:
+            logger.info(f"The GPIB [{combobox_scan.get()}] was correctly selected"),
+            self.change_gpib(combobox_scan.get(), visual_color_button)
+
+    def change_combo_gpib(self, port_com_frame_entry):
+        port_com_frame_entry.config(text=self._gpib_port)
+
+    def change_gpib(self, name, visual_color_button):
+        self._gpib_port = name
+        try:
+            rm = visa.ResourceManager()
+            SMIQ_SEND = rm.open_resource('GPIB0::' + self._gpib_port + '::INSTR')
+            SMIQ_SEND.write('*RST')
+            self.visual_function(visual_color_button, 0)
+            self.status = 1
+            logger.debug("The connection was correctly established")
+        except serial.serialutil.SerialException:
+            logger.critical(f"The port [{self._gpib_port}] is not link to the climate chamber")
+        except:
+            logger.critical("Error unknown")
 
 
 Application().mainloop()
