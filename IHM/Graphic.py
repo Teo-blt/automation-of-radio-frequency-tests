@@ -351,15 +351,6 @@ def main_graphic_climatic_chamber(self, port):
                                                   activebackground="green", cursor="right_ptr", overrelief="sunken",
                                                   command=lambda: [VARIABLE.Thread.off(self)])
     off_auto_stair_scale_frame_button.grid(row=0, column=2, ipadx=40, ipady=20, padx=20, pady=20)
-    """"
-    simulation_auto_stair_scale_frame = tk.Button(auto_stair_scale_frame, text="Simulation",
-                                                  borderwidth=8, background=THE_COLOR,
-                                                  activebackground="green", cursor="right_ptr",
-                                                  overrelief="sunken",
-                                                  command=lambda:
-                                                  [create_stair()])
-    simulation_auto_stair_scale_frame.grid(row=1, column=3, ipadx=40, ipady=20, padx=0, pady=0)
-    """
     request_auto_stair_scale_frame_button = tk.Button(auto_stair_scale_frame, text="Request",
                                                       borderwidth=8, background=THE_COLOR,
                                                       activebackground="green", cursor="right_ptr", overrelief="sunken",
@@ -571,13 +562,3 @@ def simulation_graphic_stair(step, temp_start, temp_end, temp_duration, window):
     canvas = FigureCanvasTkAgg(fig, master=my_draw_7_frame_1)
     canvas.draw()
     canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
-
-    """
-    toolbar = NavigationToolbar2Tk(canvas, my_draw_7_frame_1, pack_toolbar=False)
-    toolbar.update()
-    toolbar.pack(side=BOTTOM, fill=X)
-    button1 = Button(master=my_draw_7_frame_2, text="Quit", background=THE_COLOR,
-                     cursor="right_ptr", borderwidth=5, activebackground="green",
-                     overrelief="sunken", command=lambda: root.destroy())
-    button1.pack(side=RIGHT)
-    """
