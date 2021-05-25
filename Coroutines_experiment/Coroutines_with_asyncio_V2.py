@@ -188,7 +188,7 @@ class Thread(threading.Thread):
         logger.info("################################################")
         logger.info("End of Test")
         b = time.localtime(time_stop - self.time_start)  # Total time of the test
-        logger.info(f'Test duration: {b[3]}H{b[4]} and {b[5]} second(s)')  # some useful information for the user
+        logger.info(f'Test duration: {b[3]-1}H{b[4]} and {b[5]} second(s)')  # some useful information for the user
         self.csv_result.write("################################################")
         self.csv_result.write("End of Test")
         self.csv_result.write(f'Test duration: {b[3]}H{b[4]} and {b[5]} second(s)')

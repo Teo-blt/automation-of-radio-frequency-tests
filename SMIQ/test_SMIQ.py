@@ -15,6 +15,7 @@ import sys
 import threading
 from tkinter import *
 import tkinter as tk
+from loguru import logger
 
 # =============================================================================
 THE_COLOR = "#E76145"
@@ -41,30 +42,26 @@ def lunch_smiq():
                             resolution=1, tickinterval=2, length=100,
                             label='Number of sent frames', state="active")
     frames_nb_scale.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
-
+    """
     entry_frame = LabelFrame(scale_frame, text="Entry settings")
     entry_frame.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
-
     Entry_label = Label(entry_frame, text="List of Measurement channel (Hz) :")
     Entry_label.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
-
     measurement_channel = Entry(entry_frame, cursor="right_ptr")
     measurement_channel.pack(padx=0, pady=0, side=LEFT)
     measurement_channel.insert(0, 868950000)
-
     reset_button = tk.Button(entry_frame, text="Reset",
                              borderwidth=8, background=THE_COLOR,
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
                              command=lambda: [measurement_channel.delete(0, 20),
                                               measurement_channel.insert(0, 868950000)])
     reset_button.pack(expand=False, fill="none", side=RIGHT)
-
+    """
     start_button = tk.Button(scale_frame, text="Start",
                              borderwidth=8, background=THE_COLOR,
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
                              command=lambda: [
-                                 Thread_smiq(delay_scale.get(), frames_nb_scale.get(),
-                                             [measurement_channel.get()]).start()])
+                                 Thread_smiq(delay_scale.get(), frames_nb_scale.get()).start()])
     start_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
     off_scale_frame_button = tk.Button(scale_frame, text="Off",
                                        borderwidth=8, background=THE_COLOR,
@@ -75,12 +72,12 @@ def lunch_smiq():
 
 class Thread_smiq(threading.Thread):
 
-    def __init__(self, nb_frame, wait_measure, channel_list):
+    def __init__(self, nb_frame, wait_measure):
         threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
         # additional data added to the class
         self.nb_frame = nb_frame  # Number of sent frames
         self.wait_measure = wait_measure  # Delay between measurement (s)
-        self.channel_list = channel_list  # List of Measurement channel (Hz)
+        self.channel_list = [868950000]  # List of Measurement channel (Hz)
         self.coupler_attent_send_to_EUT = 0
 
     def run(self):
@@ -88,7 +85,7 @@ class Thread_smiq(threading.Thread):
         rm = visa.ResourceManager()
         SMIQ_SEND = rm.open_resource('GPIB0::25::INSTR')
         SMIQ_SEND.write('*RST')
-        print(SMIQ_SEND.query('*IDN?'))
+        logger.info(SMIQ_SEND.query('*IDN?'))
         SMIQ_SEND.write('OUTP:STAT OFF')  # RF Output OFF
         SMIQ_SEND.write('SOUR:DM:STAT ON')  # Digital Modulation ON
         SMIQ_SEND.write('SOUR:DM:SOUR DLIST')  # Source selection
@@ -123,21 +120,19 @@ class Thread_smiq(threading.Thread):
         ################################################################################################
         # MEASUREMENT Loop
         ################################################################################################
-
-        print("################################################")
-        print("Start of Test")
+        logger.info("################################################")
+        logger.info("Start of Test")
         time_start = time.time()
         for mod in mod_list:
+
             modulation = mod[0].encode('utf-8')
             freq_dev = mod[1]
             bitrate = mod[2]
             OCW = mod[3]
             sensitivity_level = mod[4]
-
             seq_time = time.localtime()
-            filename = "test_smiq"
 
-            csv_result = open(filename, 'w+')
+            csv_result = open("test_smiq", 'w+')
             csv_result.write("Sensitivity measurement\n")
             csv_result.write("EN300 220-1 v3.1.1\n")
             csv_result.write("Time; Channel frequency; Signal Level; Nb frame sent; PER\n\n")
@@ -146,8 +141,8 @@ class Thread_smiq(threading.Thread):
 
                 # Configure sending device modulation
                 SMIQ_SEND.write('SOUR:DM:FORM FSK2')  # FSK2 / GFSK
-                SMIQ_SEND.write(
-                    'SOUR:DM:SRATe %d Hz' % bitrate)  # symbol rate 1kHz to 7 MHz / Set rate BEFORE deviation
+                SMIQ_SEND.write('SOUR:DM:SRATe %d Hz' % bitrate)  # symbol rate 1kHz to 7 MHz /
+                # Set rate BEFORE deviation
                 SMIQ_SEND.write('SOUR:DM:FSK:DEV %d' % freq_dev)  # frequency deviation 100 Hz to 2.5 MHz
                 SMIQ_SEND.write('SOUR:FREQ:MODE CW')  # Set mode to fixed frequency
                 SMIQ_SEND.write('SOUR:FREQ:CW %d' % freq)  # Set channel frequency
@@ -164,7 +159,7 @@ class Thread_smiq(threading.Thread):
                 sensitivity_steps = sensitivity_steps + list(range(sensitivity_level + 11, sensitivity_level + 21, 2))
                 sensitivity_steps = sensitivity_steps + list(
                     range(round((sensitivity_level + 26) / 10) * 10, 0, 10))  # Round to the upper decade
-                print(f'\nPower levels steps calculated: {sensitivity_steps}')
+                logger.info(f'Power levels steps calculated: {sensitivity_steps}')
 
                 for signal_level in sensitivity_steps:
 
@@ -179,10 +174,11 @@ class Thread_smiq(threading.Thread):
 
                     nb_frame_sent = 0
                     nb_frame_received = 0
-                    print(f'Sending {self.nb_frame} frames at {signal_level}dBm...')
+                    logger.info(f'Sending {self.nb_frame} frames at {signal_level}dBm...')
                     for i in range(0, self.nb_frame):
                         # Send 1 frame
-                        print(f'\n==========\nSending frame {i + 1}/{self.nb_frame}...')
+                        logger.info('===========')
+                        logger.info(f' Sending frame {i + 1}/{self.nb_frame}...')
                         SMIQ_SEND.write('TRIG:DM:IMM')  # Send 1 trigger event
                         nb_frame_sent = nb_frame_sent + 1
                         time.sleep(1)
@@ -201,18 +197,18 @@ class Thread_smiq(threading.Thread):
                         rssi_average = sum(rssi) / len(rssi)
                     """
                     time.sleep(1)
-                    print("DUT read")
+                    logger.info("DUT read")
                     # print(DUT.read_all().decode('utf-8'))
 
                     PER = (nb_frame_sent - nb_frame_received) / nb_frame_sent
-                    print(f'\nFrame sent = {nb_frame_sent}')
-                    print(f'PER = {PER}')
+                    logger.info(f'Frame sent = {nb_frame_sent}')
+                    logger.info(f'PER = {PER}')
 
                     # Time; Channel frequency; Signal Level; Nb frame sent; PER ; RSSI
                     res_str = f'Date : {time.asctime()}\nFrequency : {freq}Hz;\nSignal level : {signal_level}dBm;' \
                               f'\nNumber of frames sent : {nb_frame_sent};\nPercentage of loose {PER * 100}%;' \
                               f'\nRssi average : {rssi_average}\n\n'
-                    print(res_str)
+                    logger.info(res_str)
                     csv_result.write(res_str)
 
                     time.sleep(self.wait_measure)
@@ -220,8 +216,8 @@ class Thread_smiq(threading.Thread):
             csv_result.close()
 
         time_stop = time.time()
-        print("################################################")
-        print("End of Test")
+        logger.info("################################################")
+        logger.info("End of Test")
         a = time.localtime(time_stop - time_start)
-        print(f'Test duration : {a[3]}H{a[4]} and {a[5]} second(s)')
+        logger.info(f'Test duration : {a[3]-1}H{a[4]} and {a[5]} second(s)')
         # DUT.close()
