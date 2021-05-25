@@ -60,6 +60,7 @@ class Thread(threading.Thread):
         self.temperature_end = temperature_end
         self._port = port
         self.extinct = 0
+        self.csv_result = 0
 
     def run(self):
         global relaunch_safety
@@ -73,14 +74,23 @@ class Thread(threading.Thread):
             else:
                 self.temperature = self.temp_max
                 self.timer = self.temp_max_duration_h
+            vt.port = self._port
+            try:
+                vt.open()
+            except:
+                pass
             vt.write(ON % self.temperature)  # Send the order to the climate chamber
             [self.temp, self.temp2] = self.read(self._port)  # Use the function reed to get temp et temp2,
             # respectively actual temperature and order, the function reed ask directly to
             # the climate chamber the values, it's take time, but the value are much safer
+            with open("truc_test", 'w+') as self.csv_result:
+                self.csv_result.write("################################################\n")
+                self.csv_result.write("Start of Test\n")
             logger.info("################################################")
             logger.info("Start of Test")
             self.time_start = time.time()  # Collect the time of the beginning of the test
-            #self.timer = 1 / 60  # For the test, it reduce the time of waiting to 1 min
+            # self.timer = 1 / 60  # For the test, it reduce the time of waiting to 1 min
+            self.timer = 1/60
             asyncio.run(self.several_methods_run_together())
 
     async def wait_temperature_reach_consign(self, timer):
@@ -115,7 +125,7 @@ class Thread(threading.Thread):
             b = time.localtime(abs((self.time_start_min + (timer * 3600)) - time.time()))  # Show useful values
             # of time for the user
             c = time.localtime(self.time_start_min + (timer * 3600))
-            logger.info("This half cycle will finish at {}H {}min and {} second(s)".format(c[3], c[4], c[5]))
+            logger.info("This cycle will finish at {}H {}min and {} second(s)".format(c[3], c[4], c[5]))
             logger.info("{} hour(s) {} minute(s) and {} seconds remain".format(b[3] - 1, b[4], b[5]))
         return 1  # without a return, the while loop will run continuously.
 
@@ -141,6 +151,8 @@ class Thread(threading.Thread):
                 a = time.localtime(time.time())  # collect the actual time
                 # (not very useful because logger.info write time too)
                 logger.info(f'End of cycle {self.i}: {a[3]}H{a[4]} and {a[5]} second(s)')  # some useful
+                with open("truc_test", 'w') as self.csv_result:
+                    self.csv_result.write(f'End of cycle {self.i}: {a[3]}H{a[4]} and {a[5]} second(s)')
                 # information for the user
             self.exit()  # leave the program thanks to the function exit
         else:  # A variable to direct the program in function of the chose of the user, here it's the loop for stair
@@ -162,17 +174,32 @@ class Thread(threading.Thread):
                 a = time.localtime(time.time())
                 logger.info(f'End of cycle {self.i}: {a[3]}H{a[4]} and {a[5]} second(s)')  # some useful
                 # information for the user
-
+                with open("truc_test", 'w') as self.csv_result:
+                    self.csv_result.write(f'End of cycle {self.i}: {a[3]}H{a[4]} and {a[5]} second(s)')
+            statements = [self.wait_temperature_reach_consign(self.timer), self.do_something_else()]
+            await asyncio.gather(*statements)
+            self.i = self.i + 1  # A variable to cunt the number of cycle
+            a = time.localtime(time.time())
+            logger.info(f'End of cycle {self.i}: {a[3]}H{a[4]} and {a[5]} second(s)')  # some useful
+            # information for the user
+            with open("truc_test", 'w') as self.csv_result:
+                self.csv_result.write(f'End of cycle {self.i}: {a[3]}H{a[4]} and {a[5]} second(s)')
             self.exit()  # leave the program thanks to the function exit
 
     def exit(self):
-        self.off()  # Use the off function to stop the climatic chamber # TODO repair the sys.exit() #a réparer
+        # Use the off function to stop the climatic chamber
         time_stop = time.time()
         logger.info("################################################")
         logger.info("End of Test")
         b = time.localtime(time_stop - self.time_start)  # Total time of the test
         logger.info(f'Test duration: {b[3]}H{b[4]} and {b[5]} second(s)')  # some useful information for the user
-        sys.exit()  # TODO repair the sys.exit() #a réparer
+        with open("truc_test", 'w') as self.csv_result:
+            self.csv_result.write("################################################")
+            self.csv_result.write("End of Test")
+            self.csv_result.write(f'Test duration: {b[3]}H{b[4]} and {b[5]} second(s)')
+        self.off()
+        vt.write(CLIMATIC_CHAMBER_STOP)
+        exit() # TODO repair the sys.exit() #a réparer
 
     def read(self, the_port):
         try:  # This try allow the program to survive in a rare case where the climatic
@@ -199,7 +226,7 @@ class Thread(threading.Thread):
         except:
             logger.error("too fast, please wait")  # protect the application if the user
             # make a request the same time than the programme
-            return [0, "None"]  # In case of an error, this function will return [0,0], This will NOT affect the graph
+            return [0, 0]  # In case of an error, this function will return [0,0], This will NOT affect the graph
 
     def order(self, value):  # A very simple function use in the manual mode
         try:  # This try allow to save the program when, in rare case, spamming the Send button
