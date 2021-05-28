@@ -429,7 +429,6 @@ def main_graphic_climatic_chamber(self, port):
         first_legend = ax1.legend(handles=[line2], loc='lower right')
         ax1.add_artist(first_legend)
 
-
         def clean():
             global toolbar
             toolbar.pack_forget()
@@ -449,7 +448,6 @@ def main_graphic_climatic_chamber(self, port):
             xar.append(i * (1 / 12))
             line.set_data(xar, yar)
             ax1.set_xlim(0, i * (1 / 12) + 1)
-
 
         def animate2(r):
             global m, M, value
