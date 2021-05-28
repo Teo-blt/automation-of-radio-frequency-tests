@@ -23,7 +23,7 @@ SERIAL_SPEED = 9600
 SERIAL_TIMEOUT = 5
 WRITE_TIMEOUT = 5
 
-def lunch_smiq(gpib_port):
+def lunch_smiq(gpib_port, type_gpib):
     new_window_main_graphic = tk.Toplevel()
     new_window_main_graphic.title("Graph settings")
 
@@ -63,7 +63,7 @@ def lunch_smiq(gpib_port):
                              borderwidth=8, background=THE_COLOR,
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
                              command=lambda: [
-                                 Thread_smiq(delay_scale.get(), frames_nb_scale.get(), gpib_port).start()])
+                                 Thread_smiq(delay_scale.get(), frames_nb_scale.get(), gpib_port, type_gpib).start()])
     start_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
     off_scale_frame_button = tk.Button(scale_frame, text="Off",
                                        borderwidth=8, background=THE_COLOR,
@@ -74,7 +74,7 @@ def lunch_smiq(gpib_port):
 
 class Thread_smiq(threading.Thread):
 
-    def __init__(self, nb_frame, wait_measure, gpib_port):
+    def __init__(self, nb_frame, wait_measure, gpib_port, type_gpib):
         threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
         # additional data added to the class
         self.nb_frame = nb_frame  # Number of sent frames
@@ -82,11 +82,12 @@ class Thread_smiq(threading.Thread):
         self.channel_list = [868950000]  # List of Measurement channel (Hz)
         self.coupler_attent_send_to_EUT = 0
         self.gpib_port = gpib_port
+        self.type_gpib = type_gpib
 
     def run(self):
         sys.path.append('P:\\e2b\\hardware\\Scripts_auto\\Python\\lib')
         rm = visa.ResourceManager()
-        SMIQ_SEND = rm.open_resource('GPIB0::' + self.gpib_port + '::INSTR')
+        SMIQ_SEND = rm.open_resource(self.type_gpib + '::' + self.gpib_port + '::INSTR')
         SMIQ_SEND.write('*RST')
         logger.info(SMIQ_SEND.query('*IDN?'))
         SMIQ_SEND.write('OUTP:STAT OFF')  # RF Output OFF
@@ -211,7 +212,12 @@ class Thread_smiq(threading.Thread):
                     res_str = f'Date : {time.asctime()}\nFrequency : {freq}Hz;\nSignal level : {signal_level}dBm;' \
                               f'\nNumber of frames sent : {nb_frame_sent};\nPercentage of loose {PER * 100}%;' \
                               f'\nRssi average : {rssi_average}\n\n'
-                    logger.info(res_str)
+                    logger.info(f'Date : {time.asctime()}')
+                    logger.info(f'Frequency : {freq}Hz')
+                    logger.info(f'Signal level : {signal_level}dBm')
+                    logger.info(f'Number of frames sent : {nb_frame_sent}')
+                    logger.info(f'Percentage of loose {PER * 100}%')
+                    logger.info(f'Rssi average : {rssi_average}')
                     csv_result.write(res_str)
 
                     time.sleep(self.wait_measure)

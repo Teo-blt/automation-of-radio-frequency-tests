@@ -39,6 +39,7 @@ class Application(Tk):
         self._gpib_port = "25"
         self.status = 0
         self.interface(0)
+        self.type_gpib = "GPIB1"
 
     def setting_lobby_window(self) -> Toplevel:
         new_window = tk.Toplevel(self)
@@ -253,7 +254,7 @@ class Application(Tk):
         start_test_button = tk.Button(gpib_scale_frame, text="Begin transmission",
                                       borderwidth=8, background=THE_COLOR,
                                       activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                      command=lambda: [test_SMIQ.lunch_smiq(self._gpib_port)])
+                                      command=lambda: [test_SMIQ.lunch_smiq(self._gpib_port, self.type_gpib)])
         start_test_button.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
         self.scanner_button_sg(scanner_gpib_frame)
 
@@ -275,7 +276,7 @@ class Application(Tk):
         visual_color_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         try:
             rm = visa.ResourceManager()
-            SMIQ_SEND = rm.open_resource('GPIB0::' + self._gpib_port + '::INSTR')
+            SMIQ_SEND = rm.open_resource(self.type_gpib + '::' + self._gpib_port + '::INSTR')
             SMIQ_SEND.write('*RST')
             self.status = 1
             self.visual_function(visual_color_button, 0)
@@ -301,7 +302,7 @@ class Application(Tk):
         port_com_frame_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
 
     def write_gpib_scan(self, combobox_scan):
-        [limit, multi_port] = scan_all_gpib()
+        [limit, multi_port] = scan_all_gpib(self.type_gpib)
         data = {}
         for i in range(0, limit):
             data[i] = str(multi_port[i])
@@ -322,7 +323,7 @@ class Application(Tk):
         self._gpib_port = name
         try:
             rm = visa.ResourceManager()
-            SMIQ_SEND = rm.open_resource('GPIB0::' + self._gpib_port + '::INSTR')
+            SMIQ_SEND = rm.open_resource(self.type_gpib + '::' + self._gpib_port + '::INSTR')
             SMIQ_SEND.write('*RST')
             self.visual_function(visual_color_button, 0)
             self.status = 1
