@@ -216,8 +216,8 @@ class Application(Tk):
     def scale_climatic_chamber(self):  # creation of two vey important buttons, Live draw example,
         # a live draw (not used because the user can easily break it),
         # and Start the test, witch allow the user to enter in the management test area
-        climatic_chamber_scale_frame = LabelFrame(self, text="Draw")
-        climatic_chamber_scale_frame.grid(row=0, column=2, ipadx=0, ipady=0, padx=0, pady=0)
+        climatic_chamber_scale_frame = LabelFrame(self)
+        climatic_chamber_scale_frame.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
 
         start_test_button = tk.Button(climatic_chamber_scale_frame, text="Start the test",
                                       borderwidth=8, background=THE_COLOR,
@@ -248,12 +248,12 @@ class Application(Tk):
     def sg_menu(self):
         scanner_gpib_frame = LabelFrame(self, text="Detection of GPIB")
         scanner_gpib_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
-        gpib_scale_frame = LabelFrame(self, text="Draw")
-        gpib_scale_frame.grid(row=0, column=2, ipadx=0, ipady=0, padx=0, pady=0)
+        gpib_scale_frame = LabelFrame(self)
+        gpib_scale_frame.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
         start_test_button = tk.Button(gpib_scale_frame, text="Begin transmission",
                                       borderwidth=8, background=THE_COLOR,
                                       activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                      command=lambda: [test_SMIQ.lunch_smiq()])
+                                      command=lambda: [test_SMIQ.lunch_smiq(self._gpib_port)])
         start_test_button.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
         self.scanner_button_sg(scanner_gpib_frame)
 
