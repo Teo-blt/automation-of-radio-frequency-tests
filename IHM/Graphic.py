@@ -14,6 +14,7 @@ from matplotlib.figure import Figure
 import numpy as np
 import tkinter as tk
 from tkinter import *
+from tkinter.messagebox import *
 from matplotlib import pyplot as plt
 import matplotlib.animation as animation
 from matplotlib import style
@@ -108,6 +109,8 @@ def main_graphic_climatic_chamber(self, port):
         if temperature_min_scale.get() >= temperature_max_scale.get():
             logger.critical(f"Error temperature_min_scale : {temperature_min_scale.get()} "
                             f">=  temperature_max_scale : {temperature_max_scale.get()}")
+            showerror("Value Error", f"Error temperature_min_scale : {temperature_min_scale.get()} "
+                            f">=  temperature_max_scale : {temperature_max_scale.get()}")
         else:
             VARIABLE.Thread(port, temperature_min_scale.get(), temperature_max_scale.get(),
                             temperature_min_duration_h_scale.get(),
@@ -166,15 +169,10 @@ def main_graphic_climatic_chamber(self, port):
     step_label = tk.Label(auto_stair_scale_frame, text="Automation by step", bg="white", font="arial",
                           fg="black", relief="groove")
     step_label.grid(row=0, column=0, ipadx=20, ipady=20, padx=0, pady=0)
-    start_button = tk.Button(
-        auto_scale_frame,
-        text="Start",
-        borderwidth=8,
-        background=THE_COLOR,
-        activebackground="green",
-        cursor="right_ptr",
-        overrelief="sunken",
-        command=lambda: [verification_temp()])
+
+    start_button = tk.Button(auto_scale_frame, text="Start", borderwidth=8, background=THE_COLOR,
+                             activebackground="green", cursor="right_ptr", overrelief="sunken",
+                             command=lambda: [verification_temp()])
     start_button.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
 
     off_auto_scale_frame_button = tk.Button(auto_scale_frame, text="Off",
@@ -182,42 +180,33 @@ def main_graphic_climatic_chamber(self, port):
                                             activebackground="green", cursor="right_ptr", overrelief="sunken",
                                             command=lambda: [VARIABLE.Thread.off(self)])
     off_auto_scale_frame_button.grid(row=0, column=2, ipadx=40, ipady=20, padx=0, pady=0)
-    request_auto_scale_frame_button = tk.Button(auto_scale_frame, text="request",
-                                                borderwidth=8, background=THE_COLOR,
-                                                activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                                command=lambda: [
-                                                    logger.info("The actual temperature is : {}".format(
-                                                        VARIABLE.Thread.read(self, port)[0])),
-                                                    logger.info("The actual order is : {}".format(
-                                                        VARIABLE.Thread.read(self, port)[1]))])
-    request_auto_scale_frame_button.grid(row=0, column=3, ipadx=40, ipady=20, padx=0, pady=0)
 
     temperature_min_scale = Scale(auto_scale_frame, orient='vertical', troughcolor=THE_COLOR, from_=80, to=-40,
                                   resolution=1, tickinterval=20, length=100, command=lambda x: [create_cycle()],
-                                  label='Temperature min', state="active")
+                                  label='Temperature min (°C)', state="active")
     temperature_min_scale.grid(row=2, column=0, ipadx=0, ipady=0, padx=0, pady=0)
     temperature_min_scale.set(-1)
 
     temperature_max_scale = Scale(auto_scale_frame, orient='vertical', troughcolor=THE_COLOR, from_=80, to=-40,
                                   resolution=1, tickinterval=20, length=100, command=lambda x: [create_cycle()],
-                                  label='Temperature max', state="active")
+                                  label='Temperature max (°C)', state="active")
     temperature_max_scale.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
     temperature_max_scale.set(1)
-    temperature_min_duration_h_scale = Scale(auto_scale_frame, orient='horizontal', troughcolor=THE_COLOR, from_=0,
+    temperature_min_duration_h_scale = Scale(auto_scale_frame, orient='horizontal', troughcolor=THE_COLOR, from_=1,
                                              to=20,
-                                             resolution=1, tickinterval=20, length=100,
+                                             resolution=1, tickinterval=4, length=100,
                                              command=lambda x: [create_cycle()],
-                                             label='Temperature min duration h', state="active")
-    temperature_min_duration_h_scale.grid(row=2, column=1, ipadx=30, ipady=0, padx=0, pady=0)
+                                             label='Temperature min duration (H)', state="active")
+    temperature_min_duration_h_scale.grid(row=2, column=1, ipadx=35, ipady=0, padx=0, pady=0)
     temperature_min_duration_h_scale.set(1)
-    temperature_max_duration_h_scale = Scale(auto_scale_frame, orient='horizontal', troughcolor=THE_COLOR, from_=0,
+    temperature_max_duration_h_scale = Scale(auto_scale_frame, orient='horizontal', troughcolor=THE_COLOR, from_=1,
                                              to=20,
-                                             resolution=1, tickinterval=20, length=100,
+                                             resolution=1, tickinterval=4, length=100,
                                              command=lambda x: [create_cycle()],
-                                             label='Temperature max duration h', state="active")
-    temperature_max_duration_h_scale.grid(row=1, column=1, ipadx=30, ipady=0, padx=0, pady=0)
+                                             label='Temperature max duration (H)', state="active")
+    temperature_max_duration_h_scale.grid(row=1, column=1, ipadx=35, ipady=0, padx=0, pady=0)
     temperature_max_duration_h_scale.set(1)
-    number_of_cycles_scale = Scale(auto_scale_frame, orient='horizontal', troughcolor=THE_COLOR, from_=1, to=20,
+    number_of_cycles_scale = Scale(auto_scale_frame, orient='horizontal', troughcolor=THE_COLOR, from_=1, to=21,
                                    resolution=1, tickinterval=5, length=100, command=lambda x: [create_cycle()],
                                    label='Number of cycles', state="active", relief="flat")
     number_of_cycles_scale.grid(row=2, column=2, ipadx=30, ipady=0, padx=0, pady=0)
@@ -233,7 +222,7 @@ def main_graphic_climatic_chamber(self, port):
     request_scale_frame_button.pack(padx=0, pady=0, ipadx=10, ipady=10, expand=False, fill="none", side=RIGHT)
     order_scale = Scale(scale_frame, orient='vertical', troughcolor=THE_COLOR, from_=80, to=-40,
                         resolution=1, tickinterval=20, length=100,
-                        label='Order', command=lambda x: [], state="active")
+                        label='Order (°C)', command=lambda x: [], state="active")
     order_scale.pack(padx=10, pady=10, ipadx=0, ipady=0, expand=True, fill="both", side=LEFT)
     send_button = tk.Button(scale_frame, text="Send",
                             borderwidth=8, background=THE_COLOR,
@@ -351,19 +340,10 @@ def main_graphic_climatic_chamber(self, port):
                                                   activebackground="green", cursor="right_ptr", overrelief="sunken",
                                                   command=lambda: [VARIABLE.Thread.off(self)])
     off_auto_stair_scale_frame_button.grid(row=0, column=2, ipadx=40, ipady=20, padx=20, pady=20)
-    request_auto_stair_scale_frame_button = tk.Button(auto_stair_scale_frame, text="Request",
-                                                      borderwidth=8, background=THE_COLOR,
-                                                      activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                                      command=lambda: [
-                                                          logger.info("The actual temperature is : {}".format(
-                                                              VARIABLE.Thread.read(self, port)[0])),
-                                                          logger.info("The actual order is : {}".format(
-                                                              VARIABLE.Thread.read(self, port)[1]))])
-    request_auto_stair_scale_frame_button.grid(row=0, column=3, ipadx=40, ipady=20, padx=0, pady=0)
     step_auto_stair_scale_frame_scale = Scale(auto_stair_scale_frame, orient='vertical', troughcolor=THE_COLOR,
                                               from_=120, to=1,
                                               resolution=1, tickinterval=20, length=100,
-                                              label='Step', state="active",
+                                              label='Step (°C)', state="active",
                                               command=lambda x: [create_stair()])
     step_auto_stair_scale_frame_scale.grid(row=1, column=0, ipadx=10, ipady=10, padx=30, pady=0)
     step_auto_stair_scale_frame_scale.set(1)
@@ -371,21 +351,21 @@ def main_graphic_climatic_chamber(self, port):
                                                            troughcolor=THE_COLOR, from_=80, to=-40,
                                                            resolution=1, tickinterval=20, length=100,
                                                            command=lambda x: [create_stair()],
-                                                           label='Temperature start', state="active")
-    temperature_start_auto_stair_scale_frame_scale.grid(row=1, column=2, ipadx=10, ipady=10, padx=30, pady=0)
+                                                           label='Temperature start (°c)', state="active")
+    temperature_start_auto_stair_scale_frame_scale.grid(row=1, column=1, ipadx=10, ipady=10, padx=30, pady=0)
     temperature_start_auto_stair_scale_frame_scale.set(-1)
     temperature_duration_h_auto_stair_scale_frame_scale = Scale(auto_stair_scale_frame, orient='horizontal',
                                                                 troughcolor=THE_COLOR, from_=1, to=20,
                                                                 resolution=1, tickinterval=20, length=100,
                                                                 command=lambda x: [create_stair()],
-                                                                label='Temperature duration h', state="active")
-    temperature_duration_h_auto_stair_scale_frame_scale.grid(row=1, column=1, ipadx=10, ipady=10, padx=30, pady=0)
+                                                                label='Temperature duration (H)', state="active")
+    temperature_duration_h_auto_stair_scale_frame_scale.grid(row=1, column=2, ipadx=10, ipady=10, padx=30, pady=0)
     temperature_duration_h_auto_stair_scale_frame_scale.set(1)
     temperature_end_auto_stair_scale_frame_scale = Scale(auto_stair_scale_frame, orient='vertical',
                                                          troughcolor=THE_COLOR, from_=80, to=-40,
                                                          resolution=1, tickinterval=20, length=100,
                                                          command=lambda x: [create_stair()],
-                                                         label='Temperature end', state="active", relief="flat")
+                                                         label='Temperature end (°C)', state="active", relief="flat")
     temperature_end_auto_stair_scale_frame_scale.grid(row=1, column=3, ipadx=10, ipady=10, padx=30, pady=0)
     temperature_end_auto_stair_scale_frame_scale.set(1)
 
@@ -518,6 +498,7 @@ def simulation_graphic_cycle(temperature_min, temperature_max,
         values = list(data.values())
         fig = Figure(figsize=(5, 3), dpi=100)
         fig.add_subplot().plot(names, values, label='test')
+        fig.legend(["°C/hour"])
         canvas = FigureCanvasTkAgg(fig, master=my_draw_6_frame_1)
         canvas.draw()
         canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
@@ -557,6 +538,7 @@ def simulation_graphic_stair(step, temp_start, temp_end, temp_duration, window):
     values = list(data.values())
     fig = Figure(figsize=(5, 3), dpi=100)
     fig.add_subplot().plot(names, values)
+    fig.legend(["°C/hour"])
     canvas = FigureCanvasTkAgg(fig, master=my_draw_7_frame_1)
     canvas.draw()
     canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
