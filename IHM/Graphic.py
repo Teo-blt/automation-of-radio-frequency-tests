@@ -110,7 +110,7 @@ def main_graphic_climatic_chamber(self, port):
             logger.critical(f"Error temperature_min_scale : {temperature_min_scale.get()} "
                             f">=  temperature_max_scale : {temperature_max_scale.get()}")
             showerror("Value Error", f"Error temperature_min_scale : {temperature_min_scale.get()} "
-                            f">=  temperature_max_scale : {temperature_max_scale.get()}")
+                                     f">=  temperature_max_scale : {temperature_max_scale.get()}")
         else:
             VARIABLE.Thread(port, temperature_min_scale.get(), temperature_max_scale.get(),
                             temperature_min_duration_h_scale.get(),
@@ -207,7 +207,8 @@ def main_graphic_climatic_chamber(self, port):
     temperature_max_duration_h_scale.grid(row=1, column=1, ipadx=35, ipady=0, padx=0, pady=0)
     temperature_max_duration_h_scale.set(1)
     number_of_cycles_scale = Scale(auto_scale_frame, orient='horizontal', troughcolor=THE_COLOR, from_=1, to=21,
-                                   resolution=1, tickinterval=5, length=100, command=lambda x: [create_cycle()],
+                                   resolution=1, tickinterval=5, length=100,
+                                   command=lambda x: [create_cycle(), inf_mode(number_of_cycles_scale)],
                                    label='Number of cycles', state="active", relief="flat")
     number_of_cycles_scale.grid(row=2, column=2, ipadx=30, ipady=0, padx=0, pady=0)
     number_of_cycles_scale.set(1)
@@ -542,3 +543,8 @@ def simulation_graphic_stair(step, temp_start, temp_end, temp_duration, window):
     canvas = FigureCanvasTkAgg(fig, master=my_draw_7_frame_1)
     canvas.draw()
     canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
+
+
+def inf_mode(number_of_cycles_scale):
+    if number_of_cycles_scale.get() == 21:
+        number_of_cycles_scale.set("∞")
