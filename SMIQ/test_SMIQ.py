@@ -26,7 +26,7 @@ WRITE_TIMEOUT = 5
 
 def lunch_smiq(gpib_port, type_gpib):
     new_window_main_graphic = tk.Toplevel()
-    new_window_main_graphic.title("Graph settings")
+    new_window_main_graphic.title("Signal generator settings")
 
     settings_frame = LabelFrame(new_window_main_graphic, text="Settings")
     settings_frame.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
