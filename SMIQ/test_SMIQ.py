@@ -23,6 +23,7 @@ SERIAL_SPEED = 9600
 SERIAL_TIMEOUT = 5
 WRITE_TIMEOUT = 5
 
+
 def lunch_smiq(gpib_port, type_gpib):
     new_window_main_graphic = tk.Toplevel()
     new_window_main_graphic.title("Graph settings")
@@ -63,7 +64,7 @@ def lunch_smiq(gpib_port, type_gpib):
                              borderwidth=8, background=THE_COLOR,
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
                              command=lambda: [
-                                 Thread_smiq(delay_scale.get(), frames_nb_scale.get(), gpib_port, type_gpib).start()])
+                                 Threadsmiq(delay_scale.get(), frames_nb_scale.get(), gpib_port, type_gpib).start()])
     start_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
     off_scale_frame_button = tk.Button(scale_frame, text="Off",
                                        borderwidth=8, background=THE_COLOR,
@@ -72,7 +73,7 @@ def lunch_smiq(gpib_port, type_gpib):
     off_scale_frame_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
 
 
-class Thread_smiq(threading.Thread):
+class Threadsmiq(threading.Thread):
 
     def __init__(self, nb_frame, wait_measure, gpib_port, type_gpib):
         threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
@@ -87,16 +88,16 @@ class Thread_smiq(threading.Thread):
     def run(self):
         sys.path.append('P:\\e2b\\hardware\\Scripts_auto\\Python\\lib')
         rm = visa.ResourceManager()
-        SMIQ_SEND = rm.open_resource(self.type_gpib + '::' + self.gpib_port + '::INSTR')
-        SMIQ_SEND.write('*RST')
-        logger.info(SMIQ_SEND.query('*IDN?'))
-        SMIQ_SEND.write('OUTP:STAT OFF')  # RF Output OFF
-        SMIQ_SEND.write('SOUR:DM:STAT ON')  # Digital Modulation ON
-        SMIQ_SEND.write('SOUR:DM:SOUR DLIST')  # Source selection
-        SMIQ_SEND.write("SOUR:DM:DLIST:SEL 'T1_TEST'")  # 169_N2
-        SMIQ_SEND.write('SOUR:DM:SEQ SINGLE')  # AUTO | RETRigger | AAUTo | ARETrigger | SINGle
+        smiq_send = rm.open_resource(self.type_gpib + '::' + self.gpib_port + '::INSTR')
+        smiq_send.write('*RST')
+        logger.info(smiq_send.query('*IDN?'))
+        smiq_send.write('OUTP:STAT OFF')  # RF Output OFF
+        smiq_send.write('SOUR:DM:STAT ON')  # Digital Modulation ON
+        smiq_send.write('SOUR:DM:SOUR DLIST')  # Source selection
+        smiq_send.write("SOUR:DM:DLIST:SEL 'T1_TEST'")  # 169_N2
+        smiq_send.write('SOUR:DM:SEQ SINGLE')  # AUTO | RETRigger | AAUTo | ARETrigger | SINGle
         # Rectangle filter mandatory for WM4800 !
-        SMIQ_SEND.write('SOUR:DM:FILT:TYPE RECT')
+        smiq_send.write('SOUR:DM:FILT:TYPE RECT')
         # SCOSine | COSine | GAUSs | LGAuss | BESS1 | BESS2 | IS95 | EIS95 | APCO |
         # TETRa | WCDMa | RECTangle | SPHase | USER
 
@@ -104,10 +105,6 @@ class Thread_smiq(threading.Thread):
             ['G', 45000, 100000, 250000, -110],  # Real sensitivity = -121 / Theoretical sensitivity = -109 (7kHz RxBW)
             # ['L',7.8,341,12500, -137] #Real sensitivity = -137 / Theoretical sensitivity = -108 (7.8kHz RxBW)
         ]
-
-        str_received_address_check = "CEN-785634120107"
-        str_received_payload_check = "PAYLOAD (19) = \n\rb4 f0 e1 d2 c3 b4 a5 96 87 78 69 5a 4b 3c 2d 1e \n\r0f 55 ff"
-        rssi = []
         rssi_average = -999
 
         # Result folder
@@ -129,12 +126,9 @@ class Thread_smiq(threading.Thread):
         time_start = time.time()
         for mod in mod_list:
 
-            modulation = mod[0].encode('utf-8')
             freq_dev = mod[1]
             bitrate = mod[2]
-            OCW = mod[3]
             sensitivity_level = mod[4]
-            seq_time = time.localtime()
 
             csv_result = open("test_smiq", 'w+')
             csv_result.write("Sensitivity measurement\n")
@@ -144,20 +138,20 @@ class Thread_smiq(threading.Thread):
             for freq in self.channel_list:
 
                 # Configure sending device modulation
-                SMIQ_SEND.write('SOUR:DM:FORM FSK2')  # FSK2 / GFSK
-                SMIQ_SEND.write('SOUR:DM:SRATe %d Hz' % bitrate)  # symbol rate 1kHz to 7 MHz /
+                smiq_send.write('SOUR:DM:FORM FSK2')  # FSK2 / GFSK
+                smiq_send.write('SOUR:DM:SRATe %d Hz' % bitrate)  # symbol rate 1kHz to 7 MHz /
                 # Set rate BEFORE deviation
-                SMIQ_SEND.write('SOUR:DM:FSK:DEV %d' % freq_dev)  # frequency deviation 100 Hz to 2.5 MHz
-                SMIQ_SEND.write('SOUR:FREQ:MODE CW')  # Set mode to fixed frequency
-                SMIQ_SEND.write('SOUR:FREQ:CW %d' % freq)  # Set channel frequency
-                # SMIQ_SEND.write('SOUR:DM:FILT:TYPE RECTangle')
+                smiq_send.write('SOUR:DM:FSK:DEV %d' % freq_dev)  # frequency deviation 100 Hz to 2.5 MHz
+                smiq_send.write('SOUR:FREQ:MODE CW')  # Set mode to fixed frequency
+                smiq_send.write('SOUR:FREQ:CW %d' % freq)  # Set channel frequency
+                # smiq_send.write('SOUR:DM:FILT:TYPE RECTangle')
                 # SCOSine | COSine | GAUSs | LGAuss | BESS1 | BESS2 | IS95 |
                 # EIS95 | APCO | TETRa | WCDMa | RECTangle | SPHase | USER
 
-                SMIQ_SEND.write('SOUR:FREQ:MODE CW')  # Set mode to fixed frequency
-                SMIQ_SEND.write('OUTP:STAT ON')  # RF Output ON
+                smiq_send.write('SOUR:FREQ:MODE CW')  # Set mode to fixed frequency
+                smiq_send.write('OUTP:STAT ON')  # RF Output ON
 
-                SMIQ_SEND.write('SOUR:POW:MODE FIX')  # Set power to "Fixed" mode
+                smiq_send.write('SOUR:POW:MODE FIX')  # Set power to "Fixed" mode
 
                 sensitivity_steps = list(range(sensitivity_level - 4, sensitivity_level + 11, 1))
                 sensitivity_steps = sensitivity_steps + list(range(sensitivity_level + 11, sensitivity_level + 21, 2))
@@ -167,7 +161,7 @@ class Thread_smiq(threading.Thread):
 
                 for signal_level in sensitivity_steps:
 
-                    SMIQ_SEND.write('POW %d' % (
+                    smiq_send.write('POW %d' % (
                             signal_level + self.coupler_attent_send_to_EUT))
                     # Set output power level at Theoretical sensitivity + 3dB
 
@@ -183,7 +177,7 @@ class Thread_smiq(threading.Thread):
                         # Send 1 frame
                         logger.info('===========')
                         logger.info(f' Sending frame {i + 1}/{self.nb_frame}...')
-                        SMIQ_SEND.write('TRIG:DM:IMM')  # Send 1 trigger event
+                        smiq_send.write('TRIG:DM:IMM')  # Send 1 trigger event
                         nb_frame_sent = nb_frame_sent + 1
                         time.sleep(1)
                         # Check frame reception
@@ -204,19 +198,19 @@ class Thread_smiq(threading.Thread):
                     logger.info("DUT read")
                     # print(DUT.read_all().decode('utf-8'))
 
-                    PER = (nb_frame_sent - nb_frame_received) / nb_frame_sent
+                    per = (nb_frame_sent - nb_frame_received) / nb_frame_sent
                     logger.info(f'Frame sent = {nb_frame_sent}')
-                    logger.info(f'PER = {PER}')
+                    logger.info(f'PER = {per}')
 
                     # Time; Channel frequency; Signal Level; Nb frame sent; PER ; RSSI
                     res_str = f'Date : {time.asctime()}\nFrequency : {freq}Hz;\nSignal level : {signal_level}dBm;' \
-                              f'\nNumber of frames sent : {nb_frame_sent};\nPercentage of loose {PER * 100}%;' \
+                              f'\nNumber of frames sent : {nb_frame_sent};\nPercentage of loose {per * 100}%;' \
                               f'\nRssi average : {rssi_average}\n\n'
                     logger.info(f'Date : {time.asctime()}')
                     logger.info(f'Frequency : {freq}Hz')
                     logger.info(f'Signal level : {signal_level}dBm')
                     logger.info(f'Number of frames sent : {nb_frame_sent}')
-                    logger.info(f'Percentage of loose {PER * 100}%')
+                    logger.info(f'Percentage of loose {per * 100}%')
                     logger.info(f'Rssi average : {rssi_average}')
                     csv_result.write(res_str)
 
@@ -228,5 +222,5 @@ class Thread_smiq(threading.Thread):
         logger.info("################################################")
         logger.info("End of Test")
         a = time.localtime(time_stop - time_start)
-        logger.info(f'Test duration : {a[3]-1}H{a[4]} and {a[5]} second(s)')
+        logger.info(f'Test duration : {a[3] - 1}H{a[4]} and {a[5]} second(s)')
         # DUT.close()
