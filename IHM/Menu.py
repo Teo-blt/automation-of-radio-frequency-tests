@@ -82,10 +82,8 @@ class Application(Tk):
         label_top.pack(expand=False, fill="none", side=TOP)
 
         choose_measuring_tool_combobox = ttk.Combobox(instrument_choose_combobox, values=[
-            "Climatic chamber",
-            "Low frequency generator",  # The list of measuring tool
-            "Signal generator",
-            "Oscilloscope"], state="readonly")
+            "Climatic chamber",  # The list of measuring tool
+            "Signal generator"], state="readonly")
         choose_measuring_tool_combobox.set(value)
         choose_measuring_tool_combobox.pack(padx=50, pady=0, expand=False, fill="x", side=TOP)
         self.setting_up_validate_button(instrument_choose_combobox, choose_measuring_tool_combobox)
@@ -110,14 +108,8 @@ class Application(Tk):
             self.create_new_window("Climatic chamber")  # Call the clear function to clean all the window
             self.climatic_chamber_widget()  # Open Climatic chamber
         elif choice == 1:
-            self.create_new_window("Low frequency generator")  # Call the clear function to clean all the window
-            self.low_frequency_generator_widget()  # Open frequency generator
-        elif choice == 2:
             self.create_new_window("Signal generator")  # Call the clear function to clean all the window
             self.sg()  # Open generator
-        else:
-            self.create_new_window("Oscilloscope")  # Call the clear function to clean all the window
-            self.osl()  # Open Oscilloscope
 
     def create_new_window(self, window_title: str):
         """
@@ -240,15 +232,9 @@ class Application(Tk):
         else:
             Graphic.main_graphic_climatic_chamber(self, self._port)
 
-    def low_frequency_generator_widget(self):  # The low frequency generator menu
-        self.geometry(WINDOW_SIZE)
-
     def sg(self):  # The signal generator menu
         self.geometry(WINDOW_SIZE)
         self.sg_menu()
-
-    def osl(self):  # The oscilloscope menu
-        self.geometry(WINDOW_SIZE)
 
     def sg_menu(self):
         scanner_gpib_frame = LabelFrame(self, text="Detection of GPIB")

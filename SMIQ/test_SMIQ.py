@@ -36,66 +36,72 @@ def lunch_smiq(gpib_port, type_gpib):
     scale_frame.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
     scale_frame.config(background='#fafafa')
 
-    frames_nb_scale = Scale(scale_frame, orient='vertical', troughcolor=THE_COLOR, from_=1, to=10,
-                            resolution=1, tickinterval=2, length=100,
-                            label='Number of sent frames', state="active")
-    frames_nb_scale.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
     entry_frame = LabelFrame(scale_frame, text="Entry settings")
     entry_frame.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
 
+    number_frames_label = Label(entry_frame, text="Number of sent frames :")
+    number_frames_label.grid(row=0, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+    number_frames = Entry(entry_frame, cursor="right_ptr")
+    number_frames.grid(row=0, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+    number_frames.insert(0, 1)
+
     measurement_channel_label = Label(entry_frame, text="List of Measurement channel (Hz) :")
-    measurement_channel_label.grid(row=0, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+    measurement_channel_label.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
     measurement_channel = Entry(entry_frame, cursor="right_ptr")
-    measurement_channel.grid(row=0, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+    measurement_channel.grid(row=1, column=1, ipadx=0, ipady=0, padx=0, pady=0)
     measurement_channel.insert(0, 868950000)
 
     sensitivity_level_label = Label(entry_frame, text="Power of the signal (dBm) :")
-    sensitivity_level_label.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+    sensitivity_level_label.grid(row=2, column=0, ipadx=0, ipady=0, padx=0, pady=0)
     sensitivity_level = Entry(entry_frame, cursor="right_ptr")
-    sensitivity_level.grid(row=1, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+    sensitivity_level.grid(row=2, column=1, ipadx=0, ipady=0, padx=0, pady=0)
     sensitivity_level.insert(0, -110)
 
     freq_dev_label = Label(entry_frame, text="Frequency deviation 100 Hz to 2.5 MHz :")
-    freq_dev_label.grid(row=2, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+    freq_dev_label.grid(row=3, column=0, ipadx=0, ipady=0, padx=0, pady=0)
     freq_dev = Entry(entry_frame, cursor="right_ptr")
-    freq_dev.grid(row=2, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+    freq_dev.grid(row=3, column=1, ipadx=0, ipady=0, padx=0, pady=0)
     freq_dev.insert(0, 45000)
 
     bit_rate_label = Label(entry_frame, text="Symbol rate 1 KBit to 7 MBit :")
-    bit_rate_label.grid(row=3, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+    bit_rate_label.grid(row=4, column=0, ipadx=0, ipady=0, padx=0, pady=0)
     bit_rate = Entry(entry_frame, cursor="right_ptr")
-    bit_rate.grid(row=3, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+    bit_rate.grid(row=4, column=1, ipadx=0, ipady=0, padx=0, pady=0)
     bit_rate.insert(0, 100000)
 
     reset_button = tk.Button(entry_frame, text="Reset",
                              borderwidth=8, background=THE_COLOR,
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
-                             command=lambda: [reset_all(measurement_channel, sensitivity_level, freq_dev, bit_rate)])
-    reset_button.grid(row=4, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+                             command=lambda: [reset_all(number_frames,
+                                                        measurement_channel, sensitivity_level, freq_dev, bit_rate)])
+    reset_button.grid(row=5, column=0, ipadx=0, ipady=0, padx=0, pady=0)
 
     start_button = tk.Button(scale_frame, text="Start",
                              borderwidth=8, background=THE_COLOR,
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
                              command=lambda: [
-                                 Threadsmiq(frames_nb_scale.get(),
+                                 Threadsmiq(number_frames.get(),
                                             measurement_channel.get(), gpib_port, type_gpib, sensitivity_level.get(),
                                             freq_dev.get(), bit_rate.get()).start()])
     start_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
+
     off_scale_frame_button = tk.Button(scale_frame, text="Off",
                                        borderwidth=8, background=THE_COLOR,
                                        activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                       command=lambda: [])
+                                       command=lambda: [off()])
     off_scale_frame_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
 
 
-def reset_all(measurement_channel, sensitivity_level, freq_dev, bit_rate):
-    measurement_channel.delete(0, 20),
+def reset_all(number_frames, measurement_channel, sensitivity_level, freq_dev, bit_rate):
+    number_frames.delete(0, 20)
+    number_frames.insert(0, 1)
+    measurement_channel.delete(0, 20)
     measurement_channel.insert(0, 868950000)
-    sensitivity_level.delete(0, 20),
+    sensitivity_level.delete(0, 20)
     sensitivity_level.insert(0, -110)
-    freq_dev.delete(0, 20),
+    freq_dev.delete(0, 20)
     freq_dev.insert(0, 45000)
-    bit_rate.delete(0, 20),
+    bit_rate.delete(0, 20)
     bit_rate.insert(0, 100000)
 
 
@@ -104,7 +110,7 @@ class Threadsmiq(threading.Thread):
     def __init__(self, nb_frame, measurement_channel, gpib_port, type_gpib, sensitivity_level, freq_dev, bit_rate):
         threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
         # additional data added to the class
-        self.nb_frame = nb_frame  # Number of sent frames
+        self.nb_frame = int(nb_frame)  # Number of sent frames
         self.wait_measure = 1  # Delay between measurement (s)
         self.channel_list = [measurement_channel]  # List of Measurement channel (Hz)
         self.gpib_port = gpib_port
@@ -112,6 +118,9 @@ class Threadsmiq(threading.Thread):
         self.sensitivity_level = int(sensitivity_level)  # Set channel frequency
         self.freq_dev = int(freq_dev)  # frequency deviation 100 Hz to 2.5 MHz
         self.bit_rate = int(bit_rate)  # symbol rate 1kHz to 7 MHz
+
+    def stop(self):
+        self._stop.set()
 
     def run(self):
         sys.path.append('P:\\e2b\\hardware\\Scripts_auto\\Python\\lib')
@@ -237,11 +246,11 @@ class Threadsmiq(threading.Thread):
                     logger.info(f'Date : {time.asctime()}')
                     logger.info(f'Frequency : {freq}Hz')
                     logger.info(f'Signal level : {signal_level}dBm')
+                    Threadsmiq.stop(self)
                     logger.info(f'Number of frames sent : {nb_frame_sent}')
                     logger.info(f'Percentage of loose {per * 100}%')
                     logger.info(f'Rssi average : {rssi_average}\n')
                     csv_result.write(res_str)
-
                     time.sleep(self.wait_measure)
 
             csv_result.close()
@@ -252,3 +261,4 @@ class Threadsmiq(threading.Thread):
         a = time.localtime(time_stop - time_start)
         logger.info(f'Test duration : {a[3] - 1}H{a[4]} and {a[5]} second(s)')
         # DUT.close()
+

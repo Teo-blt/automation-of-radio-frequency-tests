@@ -195,7 +195,7 @@ class Thread(threading.Thread):
         self.off()
         self.csv_result.close()
         vt.write(CLIMATIC_CHAMBER_STOP)
-        exit() # TODO repair the sys.exit() #a réparer
+        exit()
 
     def read(self, the_port):
         try:  # This try allow the program to survive in a rare case where the climatic
