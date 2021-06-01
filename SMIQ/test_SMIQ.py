@@ -16,7 +16,7 @@ import threading
 from tkinter import *
 import tkinter as tk
 from loguru import logger
-
+from tkinter import filedialog
 
 # =============================================================================
 THE_COLOR = "#E76145"
@@ -91,7 +91,15 @@ def lunch_smiq(gpib_port, type_gpib):
                                        activebackground="green", cursor="right_ptr", overrelief="sunken",
                                        command=lambda: [])
     off_scale_frame_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
+    import_file_button = tk.Button(scale_frame, text="Import file",
+                                       borderwidth=8, background=THE_COLOR,
+                                       activebackground="green", cursor="right_ptr", overrelief="sunken",
+                                       command=lambda: [UploadAction()])
+    import_file_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
 
+def UploadAction():
+    filename = filedialog.askopenfilename()
+    logger.info('Selected file :', filename)
 
 def reset_all(number_frames, measurement_channel, sensitivity_level, freq_dev, bit_rate):
     number_frames.delete(0, 20)
