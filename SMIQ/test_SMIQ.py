@@ -26,6 +26,7 @@ WRITE_TIMEOUT = 5
 
 
 def lunch_smiq(gpib_port, type_gpib):
+    self = "gné"
     new_window_main_graphic = tk.Toplevel()
     new_window_main_graphic.title("Signal generator settings")
 
@@ -89,17 +90,19 @@ def lunch_smiq(gpib_port, type_gpib):
     off_scale_frame_button = tk.Button(scale_frame, text="Off",
                                        borderwidth=8, background=THE_COLOR,
                                        activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                       command=lambda: [])
+                                       command=lambda: [Threadsmiq.off(self)])
     off_scale_frame_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
     import_file_button = tk.Button(scale_frame, text="Import file",
-                                       borderwidth=8, background=THE_COLOR,
-                                       activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                       command=lambda: [UploadAction()])
+                                   borderwidth=8, background=THE_COLOR,
+                                   activebackground="green", cursor="right_ptr", overrelief="sunken",
+                                   command=lambda: [uploadaction()])
     import_file_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
 
-def UploadAction():
+
+def uploadaction():
     filename = filedialog.askopenfilename()
     logger.info('Selected file :', filename)
+
 
 def reset_all(number_frames, measurement_channel, sensitivity_level, freq_dev, bit_rate):
     number_frames.delete(0, 20)
@@ -270,3 +273,8 @@ class Threadsmiq(threading.Thread):
         a = time.localtime(time_stop - time_start)
         logger.info(f'Test duration : {a[3] - 1}H{a[4]} and {a[5]} second(s)')
         # DUT.close()
+
+    def off(self):
+        rm = visa.ResourceManager()
+        smiq_send = rm.open_resource(self.type_gpib + '::' + self.gpib_port + '::INSTR')
+        smiq_send.write('SOUR:DM:STAT ON')
