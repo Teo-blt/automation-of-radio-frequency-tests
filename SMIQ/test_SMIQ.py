@@ -25,8 +25,7 @@ SERIAL_TIMEOUT = 5
 WRITE_TIMEOUT = 5
 
 
-def lunch_smiq(gpib_port, type_gpib):
-    self = "gné"
+def lunch_smiq(self, gpib_port, type_gpib):
     new_window_main_graphic = tk.Toplevel()
     new_window_main_graphic.title("Signal generator settings")
 
@@ -274,7 +273,3 @@ class Threadsmiq(threading.Thread):
         logger.info(f'Test duration : {a[3] - 1}H{a[4]} and {a[5]} second(s)')
         # DUT.close()
 
-    def off(self):
-        rm = visa.ResourceManager()
-        smiq_send = rm.open_resource(self.type_gpib + '::' + self.gpib_port + '::INSTR')
-        smiq_send.write('SOUR:DM:STAT ON')

@@ -251,11 +251,11 @@ class Application(Tk):
     def call_graph_smiq(self):
         if self.status == 0:
             if askyesno("Warning", "The connection status is : offline\n Do you still want to continue ?"):
-                test_SMIQ.lunch_smiq(self._gpib_port, self.type_gpib)
+                test_SMIQ.lunch_smiq(self, self._gpib_port, self.type_gpib)
             else:
                 pass
         else:
-            test_SMIQ.lunch_smiq(self._gpib_port, self.type_gpib)
+            test_SMIQ.lunch_smiq(self, self._gpib_port, self.type_gpib)
 
     def scanner_button_sg(self, place):
         a = IntVar()
