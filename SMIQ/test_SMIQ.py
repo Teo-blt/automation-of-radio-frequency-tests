@@ -17,6 +17,7 @@ from tkinter import *
 import tkinter as tk
 from loguru import logger
 
+
 # =============================================================================
 THE_COLOR = "#E76145"
 SERIAL_SPEED = 9600
@@ -88,7 +89,7 @@ def lunch_smiq(gpib_port, type_gpib):
     off_scale_frame_button = tk.Button(scale_frame, text="Off",
                                        borderwidth=8, background=THE_COLOR,
                                        activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                       command=lambda: [off()])
+                                       command=lambda: [])
     off_scale_frame_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
 
 
@@ -246,7 +247,7 @@ class Threadsmiq(threading.Thread):
                     logger.info(f'Date : {time.asctime()}')
                     logger.info(f'Frequency : {freq}Hz')
                     logger.info(f'Signal level : {signal_level}dBm')
-                    Threadsmiq.stop(self)
+
                     logger.info(f'Number of frames sent : {nb_frame_sent}')
                     logger.info(f'Percentage of loose {per * 100}%')
                     logger.info(f'Rssi average : {rssi_average}\n')
@@ -261,4 +262,3 @@ class Threadsmiq(threading.Thread):
         a = time.localtime(time_stop - time_start)
         logger.info(f'Test duration : {a[3] - 1}H{a[4]} and {a[5]} second(s)')
         # DUT.close()
-
