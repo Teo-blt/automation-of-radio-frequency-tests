@@ -556,4 +556,3 @@ def simulation_graphic_stair(step, temp_start, temp_end, temp_duration, window):
     canvas = FigureCanvasTkAgg(fig, master=my_draw_7_frame_1)
     canvas.draw()
     canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
-
