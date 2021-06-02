@@ -510,7 +510,7 @@ def simulation_graphic_cycle(temperature_min, temperature_max,
         fig = Figure(figsize=(5, 3), dpi=100)
         fig.add_subplot().plot(names, values, label='test')
         if number_of_cycles == 21:
-            fig.legend(["Infinite Mode"])
+            fig.legend(["∞ Infinite Mode ∞"])
         else:
             fig.legend(["°C/hour"])
         canvas = FigureCanvasTkAgg(fig, master=my_draw_6_frame_1)
