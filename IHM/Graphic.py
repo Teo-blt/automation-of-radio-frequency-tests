@@ -208,7 +208,7 @@ def main_graphic_climatic_chamber(self, port):
     temperature_max_duration_h_scale.set(1)
     number_of_cycles_scale = Scale(auto_scale_frame, orient='horizontal', troughcolor=THE_COLOR, from_=1, to=21,
                                    resolution=1, tickinterval=5, length=100,
-                                   command=lambda x: [create_cycle(), inf_mode(number_of_cycles_scale)],
+                                   command=lambda x: [create_cycle()],
                                    label='Number of cycles', state="active", relief="flat")
     number_of_cycles_scale.grid(row=2, column=2, ipadx=30, ipady=0, padx=0, pady=0)
     number_of_cycles_scale.set(1)
@@ -487,19 +487,32 @@ def simulation_graphic_cycle(temperature_min, temperature_max,
             temperature_max = temperature_min
             temperature_min = var_storage
         data = {0: temperature_max}
-        for p in range(0, number_of_cycles):
-            for i in range(var, temperature_max_duration_h + var):
-                data[i] = temperature_max
-            for i in range(temperature_max_duration_h + var,
-                           temperature_max_duration_h + temperature_min_duration_h +
-                           var):
-                data[i] = temperature_min
-            var = var + temperature_max_duration_h + temperature_min_duration_h
+        if number_of_cycles != 21:
+            for p in range(0, number_of_cycles):
+                for i in range(var, temperature_max_duration_h + var):
+                    data[i] = temperature_max
+                for i in range(temperature_max_duration_h + var,
+                               temperature_max_duration_h + temperature_min_duration_h +
+                               var):
+                    data[i] = temperature_min
+                var = var + temperature_max_duration_h + temperature_min_duration_h
+        else:
+            for p in range(0, 100000):
+                for i in range(var, temperature_max_duration_h + var):
+                    data[i] = temperature_max
+                for i in range(temperature_max_duration_h + var,
+                               temperature_max_duration_h + temperature_min_duration_h +
+                               var):
+                    data[i] = temperature_min
+                var = var + temperature_max_duration_h + temperature_min_duration_h
         names = list(data.keys())
         values = list(data.values())
         fig = Figure(figsize=(5, 3), dpi=100)
         fig.add_subplot().plot(names, values, label='test')
-        fig.legend(["°C/hour"])
+        if number_of_cycles == 21:
+            fig.legend(["Infinite Mode"])
+        else:
+            fig.legend(["°C/hour"])
         canvas = FigureCanvasTkAgg(fig, master=my_draw_6_frame_1)
         canvas.draw()
         canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
@@ -544,7 +557,3 @@ def simulation_graphic_stair(step, temp_start, temp_end, temp_duration, window):
     canvas.draw()
     canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
 
-
-def inf_mode(number_of_cycles_scale):
-    if number_of_cycles_scale.get() == 21:
-        number_of_cycles_scale.set("∞")
