@@ -8,10 +8,7 @@
 """The Module Has Been Build for the automation of radio frequency tests in python language"""
 # =============================================================================
 import pyvisa as visa
-import serial
-import os
 import time
-import sys
 import threading
 from tkinter import *
 import tkinter as tk
@@ -19,13 +16,16 @@ from loguru import logger
 from tkinter import filedialog
 
 # =============================================================================
+global is_killed
+is_killed = 0
+
 THE_COLOR = "#E76145"
 SERIAL_SPEED = 9600
 SERIAL_TIMEOUT = 5
 WRITE_TIMEOUT = 5
 
 
-def lunch_smiq(self, gpib_port, type_gpib):
+def lunch_smiq(gpib_port, type_gpib):
     new_window_main_graphic = tk.Toplevel()
     new_window_main_graphic.title("Signal generator settings")
 
@@ -80,22 +80,28 @@ def lunch_smiq(self, gpib_port, type_gpib):
     start_button = tk.Button(scale_frame, text="Start",
                              borderwidth=8, background=THE_COLOR,
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
-                             command=lambda: [
-                                 Threadsmiq(number_frames.get(),
-                                            measurement_channel.get(), gpib_port, type_gpib, sensitivity_level.get(),
-                                            freq_dev.get(), bit_rate.get()).start()])
+                             command=lambda: [lunch_safety()])
     start_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
 
     off_scale_frame_button = tk.Button(scale_frame, text="Off",
                                        borderwidth=8, background=THE_COLOR,
                                        activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                       command=lambda: [Threadsmiq.off(self)])
+                                       command=lambda: [off()])
     off_scale_frame_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
     import_file_button = tk.Button(scale_frame, text="Import file",
                                    borderwidth=8, background=THE_COLOR,
                                    activebackground="green", cursor="right_ptr", overrelief="sunken",
                                    command=lambda: [uploadaction()])
     import_file_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
+
+    def lunch_safety():
+        global is_killed
+        if is_killed == 0:
+            is_killed = 1
+            Threadsmiq(number_frames.get(), measurement_channel.get(), gpib_port, type_gpib, sensitivity_level.get(),
+                   freq_dev.get(), bit_rate.get()).start()
+        else:
+            logger.info("The smiq program is already running")
 
 
 def uploadaction():
@@ -116,6 +122,13 @@ def reset_all(number_frames, measurement_channel, sensitivity_level, freq_dev, b
     bit_rate.insert(0, 100000)
 
 
+def off():
+    global is_killed
+    is_killed = 0
+    time.sleep(2)
+    logger.info("The smiq program was correctly stopped")
+
+
 class Threadsmiq(threading.Thread):
 
     def __init__(self, nb_frame, measurement_channel, gpib_port, type_gpib, sensitivity_level, freq_dev, bit_rate):
@@ -129,8 +142,10 @@ class Threadsmiq(threading.Thread):
         self.sensitivity_level = int(sensitivity_level)  # Set channel frequency
         self.freq_dev = int(freq_dev)  # frequency deviation 100 Hz to 2.5 MHz
         self.bit_rate = int(bit_rate)  # symbol rate 1kHz to 7 MHz
+        self._kill = 0  # to kill the thread
 
     def run(self):
+        global is_killed
         sys.path.append('P:\\e2b\\hardware\\Scripts_auto\\Python\\lib')
         rm = visa.ResourceManager()
         smiq_send = rm.open_resource(self.type_gpib + '::' + self.gpib_port + '::INSTR')
@@ -254,11 +269,12 @@ class Threadsmiq(threading.Thread):
                     logger.info(f'Date : {time.asctime()}')
                     logger.info(f'Frequency : {freq}Hz')
                     logger.info(f'Signal level : {signal_level}dBm')
-
                     logger.info(f'Number of frames sent : {nb_frame_sent}')
                     logger.info(f'Percentage of loose {per * 100}%')
                     logger.info(f'Rssi average : {rssi_average}\n')
                     csv_result.write(res_str)
+                    if not(is_killed):
+                        break
                     time.sleep(self.wait_measure)
 
             csv_result.close()
@@ -269,7 +285,3 @@ class Threadsmiq(threading.Thread):
         a = time.localtime(time_stop - time_start)
         logger.info(f'Test duration : {a[3] - 1}H{a[4]} and {a[5]} second(s)')
         # DUT.close()
-
-    def off(self):
-        exit()
-

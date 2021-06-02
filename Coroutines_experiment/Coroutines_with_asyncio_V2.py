@@ -8,7 +8,6 @@
 """The Module Has Been Build for the automation of radio frequency tests"""
 # =============================================================================
 import asyncio
-import sys
 from loguru import logger
 import threading
 import time
