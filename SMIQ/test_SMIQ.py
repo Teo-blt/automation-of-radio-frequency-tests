@@ -14,7 +14,7 @@ from tkinter import *
 import tkinter as tk
 from loguru import logger
 from tkinter import filedialog
-
+from tkinter.messagebox import *
 # =============================================================================
 global is_killed
 is_killed = 0
@@ -46,13 +46,13 @@ def lunch_smiq(gpib_port, type_gpib):
     number_frames.grid(row=0, column=1, ipadx=0, ipady=0, padx=0, pady=0)
     number_frames.insert(0, 1)
 
-    measurement_channel_label = Label(entry_frame, text="List of Measurement channel (Hz) :")
+    measurement_channel_label = Label(entry_frame, text="List of Measurement channel 300 kHz to 2.2 GHz :")
     measurement_channel_label.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
     measurement_channel = Entry(entry_frame, cursor="right_ptr")
     measurement_channel.grid(row=1, column=1, ipadx=0, ipady=0, padx=0, pady=0)
     measurement_channel.insert(0, 868950000)
 
-    sensitivity_level_label = Label(entry_frame, text="Power of the signal (dBm) :")
+    sensitivity_level_label = Label(entry_frame, text="Power of the signal -144 dBm to +13 dBm:")
     sensitivity_level_label.grid(row=2, column=0, ipadx=0, ipady=0, padx=0, pady=0)
     sensitivity_level = Entry(entry_frame, cursor="right_ptr")
     sensitivity_level.grid(row=2, column=1, ipadx=0, ipady=0, padx=0, pady=0)
@@ -80,7 +80,9 @@ def lunch_smiq(gpib_port, type_gpib):
     start_button = tk.Button(scale_frame, text="Start",
                              borderwidth=8, background=THE_COLOR,
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
-                             command=lambda: [lunch_safety()])
+                             command=lambda: [lunch_safety(number_frames, measurement_channel, gpib_port, type_gpib,
+                                                           sensitivity_level,
+                                                           freq_dev, bit_rate)])
     start_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
 
     off_scale_frame_button = tk.Button(scale_frame, text="Off",
@@ -94,14 +96,27 @@ def lunch_smiq(gpib_port, type_gpib):
                                    command=lambda: [uploadaction()])
     import_file_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
 
-    def lunch_safety():
-        global is_killed
-        if is_killed == 0:
-            is_killed = 1
-            Threadsmiq(number_frames.get(), measurement_channel.get(), gpib_port, type_gpib, sensitivity_level.get(),
-                       freq_dev.get(), bit_rate.get()).start()
+
+def lunch_safety(number_frames, measurement_channel, gpib_port, type_gpib, sensitivity_level, freq_dev, bit_rate):
+    global is_killed
+    try:
+        number_frames = int(number_frames.get())
+        sensitivity_level = int(sensitivity_level.get())
+        freq_dev = int(freq_dev.get())
+        bit_rate = int(bit_rate.get())
+        measurement_channel = int(measurement_channel.get())
+        if freq_dev < 100 or freq_dev > 2500000 or bit_rate < 1000 or bit_rate > 7000000 or measurement_channel < 300000 or measurement_channel > 3300000000 or sensitivity_level < -144 or sensitivity_level > 13:
+            logger.critical("Error, one or more of the values are not correct")
         else:
-            logger.info("The smiq program is already running")
+            if is_killed == 0:
+                is_killed = 1
+                Threadsmiq(number_frames, measurement_channel, gpib_port, type_gpib, sensitivity_level,
+                           freq_dev, bit_rate).start()
+            else:
+                logger.info("The smiq program is already running")
+    except:
+        logger.critical("Error, one or more of the values are not correct")
+        showerror("Error", "one or more of the values are not correct")
 
 
 def uploadaction():
@@ -134,14 +149,14 @@ class Threadsmiq(threading.Thread):
     def __init__(self, nb_frame, measurement_channel, gpib_port, type_gpib, sensitivity_level, freq_dev, bit_rate):
         threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
         # additional data added to the class
-        self.nb_frame = int(nb_frame)  # Number of sent frames
+        self.nb_frame = nb_frame  # Number of sent frames
         self.wait_measure = 1  # Delay between measurement (s)
         self.channel_list = [measurement_channel]  # List of Measurement channel (Hz)
         self.gpib_port = gpib_port
         self.type_gpib = type_gpib
-        self.sensitivity_level = int(sensitivity_level)  # Set channel frequency
-        self.freq_dev = int(freq_dev)  # frequency deviation 100 Hz to 2.5 MHz
-        self.bit_rate = int(bit_rate)  # symbol rate 1kHz to 7 MHz
+        self.sensitivity_level = -110  # Set channel frequency
+        self.freq_dev = freq_dev  # frequency deviation 100 Hz to 2.5 MHz
+        self.bit_rate = bit_rate  # symbol rate 1kHz to 7 MHz
         self._kill = 0  # to kill the thread
 
     def run(self):
