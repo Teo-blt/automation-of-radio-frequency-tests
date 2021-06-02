@@ -130,9 +130,6 @@ class Threadsmiq(threading.Thread):
         self.freq_dev = int(freq_dev)  # frequency deviation 100 Hz to 2.5 MHz
         self.bit_rate = int(bit_rate)  # symbol rate 1kHz to 7 MHz
 
-    def stop(self):
-        self._stop.set()
-
     def run(self):
         sys.path.append('P:\\e2b\\hardware\\Scripts_auto\\Python\\lib')
         rm = visa.ResourceManager()
@@ -272,4 +269,7 @@ class Threadsmiq(threading.Thread):
         a = time.localtime(time_stop - time_start)
         logger.info(f'Test duration : {a[3] - 1}H{a[4]} and {a[5]} second(s)')
         # DUT.close()
+
+    def off(self):
+        exit()
 
