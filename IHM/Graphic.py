@@ -3,7 +3,7 @@
 # =============================================================================
 # Created By  : Bulteau Téo
 # Created Date: April 23 16:15:00 2021
-# For Kerlik, all rights reserved
+# For Kerlink, all rights reserved
 # =============================================================================
 """The Module Has Been Build for the automation of radio frequency tests"""
 # =============================================================================
@@ -31,7 +31,7 @@ THE_COLOR = "#E76145"
 def live_graph(self):  # The function live_graph crate a new window with a graph inside
     # of it, the graph can be modify in real time, I did not use this idea for the simulation graph because the user
     # can too easily break the program (by playing too fast with the cursor for example
-    global live_graph_fram
+    global live_graph_frame
     global first_time
     first_time = 1
     root = tk.Toplevel(self)
@@ -40,26 +40,26 @@ def live_graph(self):  # The function live_graph crate a new window with a graph
     live_graph_scale_frame.pack()
 
     def clean():
-        global live_graph_fram
-        live_graph_fram.destroy()
+        global live_graph_frame
+        live_graph_frame.destroy()
 
     def create():
-        global live_graph_fram
-        live_graph_fram = LabelFrame(root)
-        live_graph_fram.pack(side=BOTTOM)
+        global live_graph_frame
+        live_graph_frame = LabelFrame(root)
+        live_graph_frame.pack(side=BOTTOM)
         t = np.arange(0, 3, .01)
         fig = Figure(figsize=(5, 4), dpi=100)
         fig.add_subplot().plot(t, amplitude_live_graph_scale_frame.get() *
                                np.sin(frequency_live_graph_scale_frame.get() * np.pi * t))
-        canvas = FigureCanvasTkAgg(fig, master=live_graph_fram)
-        toolbar = NavigationToolbar2Tk(canvas, live_graph_fram, pack_toolbar=False)
+        canvas = FigureCanvasTkAgg(fig, master=live_graph_frame)
+        toolbar = NavigationToolbar2Tk(canvas, live_graph_frame, pack_toolbar=False)
         toolbar.update()
         canvas.draw()
         canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
         toolbar.pack(side=BOTTOM, fill=X)
 
     def the_draw():
-        global live_graph_fram
+        global live_graph_frame
         global first_time
         if first_time == 1:
             create()
@@ -556,4 +556,3 @@ def simulation_graphic_stair(step, temp_start, temp_end, temp_duration, window):
     canvas = FigureCanvasTkAgg(fig, master=my_draw_7_frame_1)
     canvas.draw()
     canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
-

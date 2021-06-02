@@ -3,7 +3,7 @@
 # =============================================================================
 # Created By  : Bulteau Téo
 # Created Date: May 25 16:04:00 2021
-# For Kerlik, all rights reserved
+# For Kerlink, all rights reserved
 # =============================================================================
 """The Module Has Been Build for the automation of radio frequency tests in python language"""
 # =============================================================================
@@ -99,7 +99,7 @@ def lunch_smiq(gpib_port, type_gpib):
         if is_killed == 0:
             is_killed = 1
             Threadsmiq(number_frames.get(), measurement_channel.get(), gpib_port, type_gpib, sensitivity_level.get(),
-                   freq_dev.get(), bit_rate.get()).start()
+                       freq_dev.get(), bit_rate.get()).start()
         else:
             logger.info("The smiq program is already running")
 
@@ -273,7 +273,7 @@ class Threadsmiq(threading.Thread):
                     logger.info(f'Percentage of loose {per * 100}%')
                     logger.info(f'Rssi average : {rssi_average}\n')
                     csv_result.write(res_str)
-                    if not(is_killed):
+                    if not is_killed:
                         break
                     time.sleep(self.wait_measure)
 

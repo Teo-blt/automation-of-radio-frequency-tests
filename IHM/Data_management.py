@@ -3,13 +3,15 @@
 # =============================================================================
 # Created By  : Bulteau Téo
 # Created Date: April 23 16:15:00 2021
-# For Kerlik, all rights reserved
+# For Kerlink, all rights reserved
 # =============================================================================
 """The Module Has Been Build for the automation of radio frequency tests"""
 # =============================================================================
 # Imports
 import os
 from tkinter.messagebox import *
+
+
 # =============================================================================
 
 
@@ -29,7 +31,7 @@ def file():
 
 
 def delete_file():
-    try :
+    try:
         os.remove("Data.txt")
         print("File successfully deleted")
         showinfo("info", "File successfully deleted")
@@ -53,4 +55,4 @@ def read_file():
         showerror("Error", "The file does not exist")
     finally:
         print("The program has been correctly ended")
-        showinfo("info","The program has been correctly ended")
+        showinfo("info", "The program has been correctly ended")

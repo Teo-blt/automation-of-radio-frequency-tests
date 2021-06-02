@@ -1,7 +1,8 @@
 import serial
 from loguru import logger
-from Climate_chamber_control.Climate_chamber import SERIAL_SPEED, SERIAL_TIMEOUT
+from Climate_chamber_control.Climate_chamber import SERIAL_SPEED
 import pyvisa as visa
+
 
 def open_port(new_port):
     """
@@ -47,8 +48,8 @@ def scan_all_gpib(type_gpib):
         test = str(i)
         try:
             rm = visa.ResourceManager()
-            SMIQ_SEND = rm.open_resource(type_gpib + '::' + test + '::INSTR')
-            SMIQ_SEND.write('*RST')
+            smiq_send = rm.open_resource(type_gpib + '::' + test + '::INSTR')
+            smiq_send.write('*RST')
             logger.info(f"The GPIB {i} is available")
             data[a] = i
             a = a + 1

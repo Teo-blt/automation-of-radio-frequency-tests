@@ -16,6 +16,7 @@ from tkinter.messagebox import *
 from loguru import logger
 import Graphic
 import serial
+import Sequencer
 from SMIQ import test_SMIQ
 import pyvisa as visa
 # ============================================================================
@@ -120,7 +121,7 @@ class Application(Tk):
         Tk.__init__(self)
         self.title(window_title + " menu")
         self.create_choose_measuring_tool_combobox(window_title)
-        self.sequencer()
+        Sequencer.sequencer(self)
 
     def climatic_chamber_widget(self):
         self.geometry(WINDOW_SIZE)  # set window size
@@ -354,15 +355,6 @@ class Application(Tk):
             logger.critical(f"The port [{self._gpib_port}] is not link to the climate chamber")
         except:
             logger.critical("Error unknown")
-
-    def sequencer(self):
-        sequencer_frame = LabelFrame(self)
-        sequencer_frame.grid(row=0, column=2, ipadx=40, ipady=40, padx=0, pady=0, rowspan=4)
-        sequencer_label = tk.Label(sequencer_frame, text="Sequencer frame", bg="white", font="arial",
-                                   fg="black", relief="groove")
-        sequencer_label.pack(padx=1, pady=1, expand=True, fill="both", side=TOP)
-        sequencer_label_2 = tk.Label(sequencer_frame, text="in progress...")
-        sequencer_label_2.pack(padx=1, pady=1, expand=True, fill="both", side=TOP)
 
 
 Application().mainloop()

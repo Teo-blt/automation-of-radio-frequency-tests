@@ -59,7 +59,7 @@ class Thread(threading.Thread):
         self.temperature_end = temperature_end
         self._port = port
         self.extinct = 0
-        self.csv_result = open("truc_test.txt", 'w+')
+        self.csv_result = open("test.txt", 'w+')
 
     def run(self):
         global relaunch_safety
