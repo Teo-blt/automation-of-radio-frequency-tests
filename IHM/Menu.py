@@ -65,7 +65,6 @@ class Application(Tk):
         new_window.configure(bg="grey")
         new_window.title("Start menu")
         new_window.geometry(LOBBY_WINDOW_SIZE)
-
         return new_window
 
     def create_choose_measuring_tool_combobox(self, value: str):
