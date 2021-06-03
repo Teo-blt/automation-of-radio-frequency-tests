@@ -405,9 +405,9 @@ def main_graphic_climatic_chamber(self, port):
 
         line, = ax1.plot(xar, yar, 'r', marker='o', label="order C°/min")
         line2, = ax1.plot(xar2, yar2, 'b', marker='o', label="actual temperature C°/min")
-        first_legend = ax1.legend(handles=[line], loc='upper right')
+        first_legend = ax1.legend(handles=[line], loc='upper left')
         ax1.add_artist(first_legend)
-        first_legend = ax1.legend(handles=[line2], loc='lower right')
+        first_legend = ax1.legend(handles=[line2], loc='lower left')
         ax1.add_artist(first_legend)
 
         def clean():
