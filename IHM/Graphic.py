@@ -179,7 +179,7 @@ def main_graphic_climatic_chamber(self, port):
     off_auto_scale_frame_button = tk.Button(auto_scale_frame, text="Off",
                                             borderwidth=8, background=THE_COLOR,
                                             activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                            command=lambda: [VARIABLE.Thread.off(self)])
+                                            command=lambda: [ani.pause(), ani2.pause(), VARIABLE.Thread.off(self)])
     off_auto_scale_frame_button.grid(row=0, column=2, ipadx=40, ipady=20, padx=0, pady=0)
 
     temperature_min_scale = Scale(auto_scale_frame, orient='vertical', troughcolor=THE_COLOR, from_=80, to=-40,
@@ -229,12 +229,12 @@ def main_graphic_climatic_chamber(self, port):
     send_button = tk.Button(scale_frame, text="Send",
                             borderwidth=8, background=THE_COLOR,
                             activebackground="green", cursor="right_ptr", overrelief="sunken",
-                            command=lambda: [VARIABLE.Thread.order(self, order_scale.get())])
+                            command=lambda: [start_button_frame_button.invoke(), VARIABLE.Thread.order(self, order_scale.get())])
     send_button.pack(padx=10, pady=10, ipadx=10, ipady=10, expand=False, fill="none", side=RIGHT)
     off_scale_frame_button = tk.Button(scale_frame, text="Off",
                                        borderwidth=8, background=THE_COLOR,
                                        activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                       command=lambda: [VARIABLE.Thread.off(self)])
+                                       command=lambda: [ani.pause(), ani2.pause(), VARIABLE.Thread.off(self)])
     off_scale_frame_button.pack(padx=0, pady=0, ipadx=10, ipady=10, expand=False, fill="none", side=RIGHT)
     graphic_settings_label = tk.Label(button_frame, text="Graphic settings", bg="white", font="arial",
                                       fg="black", relief="groove")
@@ -339,7 +339,7 @@ def main_graphic_climatic_chamber(self, port):
     off_auto_stair_scale_frame_button = tk.Button(auto_stair_scale_frame, text="Off",
                                                   borderwidth=8, background=THE_COLOR,
                                                   activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                                  command=lambda: [VARIABLE.Thread.off(self)])
+                                                  command=lambda: [ani.pause(), ani2.pause(), VARIABLE.Thread.off(self)])
     off_auto_stair_scale_frame_button.grid(row=0, column=2, ipadx=40, ipady=20, padx=20, pady=20)
     step_auto_stair_scale_frame_scale = Scale(auto_stair_scale_frame, orient='vertical', troughcolor=THE_COLOR,
                                               from_=120, to=1,
