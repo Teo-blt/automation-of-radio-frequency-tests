@@ -32,7 +32,7 @@ vt = serial.Serial()
 class Thread(threading.Thread):
 
     def __init__(self, port, temp_min, temp_max, temp_min_duration_h, temp_max_duration_h,
-                 nb_cycle, oof, my_auto_scale_frame, up_down, stair, stair_temp, temperature_end):
+                 nb_cycle, oof, my_auto_scale_frame, up_down, stair, stair_temp, temperature_end, ani, ani2):
         threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
 
         # additional data added to the class
@@ -60,6 +60,8 @@ class Thread(threading.Thread):
         self._port = port
         self.extinct = 0
         self.csv_result = open("test.txt", 'w+')
+        self.ani = ani
+        self.ani2 = ani2
 
     def run(self):
         global relaunch_safety
@@ -194,6 +196,8 @@ class Thread(threading.Thread):
         self.csv_result.write(f'\nTest duration: {b[3]}H{b[4]} and {b[5]} second(s)')
         self.off()
         self.csv_result.close()
+        self.ani.pause()
+        self.ani2.pause()
         vt.write(CLIMATIC_CHAMBER_STOP)
         vt.write(CLIMATIC_CHAMBER_STOP)
         vt.write(CLIMATIC_CHAMBER_STOP)
