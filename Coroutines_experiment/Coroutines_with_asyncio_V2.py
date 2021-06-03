@@ -64,6 +64,7 @@ class Thread(threading.Thread):
         self.ani2 = ani2
 
     def run(self):
+        time.sleep(1)
         global relaunch_safety
         if relaunch_safety == 0:  # To forbid the user to multi launch the program
             relaunch_safety = 1
@@ -112,8 +113,9 @@ class Thread(threading.Thread):
                 # reset the VALUE_STABILISATION
                 self.VALUE_STABILISATION = 0
         a = time.localtime(time.time())
-        logger.info(f"The climate chamber is stabilized with success {a[3]}H{a[4]} and {a[5]} second(s)")  # Said to the user When the
-        self.csv_result.write(f"The climate chamber is stabilized with success {a[3]}H{a[4]} and {a[5]} second(s)")
+        logger.info(f"The climate chamber is stabilized with success at {a[3]}H{a[4]} and {a[5]} second(s)")  # Said
+        # to the user When the
+        self.csv_result.write(f"The climate chamber is stabilized with success at {a[3]}H{a[4]} and {a[5]} second(s)")
         # climate chamber is stabilized
         self.time_start_min = time.time()  # Collect the actual time named time_start_min for the waiting loop
         while time.time() < self.time_start_min + (timer * 3600):  # While the actual
@@ -156,7 +158,8 @@ class Thread(threading.Thread):
                 # information for the user
             self.exit()  # leave the program thanks to the function exit
         else:  # A variable to direct the program in function of the chose of the user, here it's the loop for stair
-            if self.temperature >= self.stair_temp:  # simple condition to know if the order need to climb or go down
+            if self.temperature >= self.temperature_end:  # simple condition to know if the order need
+                # to climb or go down
                 self.stair_temp = -self.stair_temp
             while abs(self.temperature - self.temperature_end) >= abs(self.stair_temp):  # The maximal
                 # difference between the actual order and the goal temperature must be less than the absolute value
@@ -190,7 +193,7 @@ class Thread(threading.Thread):
         logger.info("################################################")
         logger.info("End of Test")
         b = time.localtime(time_stop - self.time_start)  # Total time of the test
-        logger.info(f'Test duration: {b[3]-1}H{b[4]} and {b[5]} second(s)')  # some useful information for the user
+        logger.info(f'Test duration: {b[3] - 1}H{b[4]}min and {b[5]} second(s)')  # some useful information for the user
         self.csv_result.write("\n################################################")
         self.csv_result.write("\nEnd of Test")
         self.csv_result.write(f'\nTest duration: {b[3]}H{b[4]} and {b[5]} second(s)')
@@ -204,31 +207,31 @@ class Thread(threading.Thread):
         exit()
 
     def read(self, the_port):
-        try:  # This try allow the program to survive in a rare case where the climatic
-            # chamber don't have enough time to answer back
-            self._port = the_port
-            vt.port = self._port
-            try:
-                vt.open()
-            except:
-                pass
-            vt.write(b"$00I\n\r")  # prepare the climatic chamber to receive information
-            time.sleep(0.2)  # A pause that freeze the entire program
-            # TODO find a better way to wait maybe asyncio.sleep(5) ?
-            received_frame = vt.read_all().decode('utf-8')  # Decipher the frame that was send by the climatic
-            # chamber
-            word = received_frame.split(" ")  # Split the decipher the frame that was send by the climatic chamber
-            strings = str(word[1])
-            number = float(strings)  # Collect the actual temperature of the climatic chamber
-            strings2 = str(word[0])
-            number2 = strings2[-6:]
-            number3 = float(number2)  # Collect the actual order of the climatic chamber
-            return [number, number3]  # Return the actual temperature and the actual order at the same time to
-            # allow the program to call read only once every 5 seconds, it's time saving (because of the time sleep)
+    # try:  # This try allow the program to survive in a rare case where the climatic
+    # chamber don't have enough time to answer back
+        self._port = the_port
+        vt.port = self._port
+        try:
+            vt.open()
         except:
-            logger.error("too fast, please wait")  # protect the application if the user
-            # make a request the same time than the programme
-            return [0, 0]  # In case of an error, this function will return [0,0], This will NOT affect the graph
+            pass
+        vt.write(b"$00I\n\r")  # prepare the climatic chamber to receive information
+        time.sleep(0.2)  # A pause that freeze the entire program
+        # TODO find a better way to wait maybe asyncio.sleep(5) ?
+        received_frame = vt.read_all().decode('utf-8')  # Decipher the frame that was send by the climatic
+        # chamber
+        word = received_frame.split(" ")  # Split the decipher the frame that was send by the climatic chamber
+        strings = str(word[1])
+        number = float(strings)  # Collect the actual temperature of the climatic chamber
+        strings2 = str(word[0])
+        number2 = strings2[-6:]
+        number3 = float(number2)  # Collect the actual order of the climatic chamber
+        return [number, number3]  # Return the actual temperature and the actual order at the same time to
+        # allow the program to call read only once every 5 seconds, it's time saving (because of the time sleep)
+    # except:
+    #  logger.error("too fast, please wait")  # protect the application if the user
+    # make a request the same time than the programme
+    #  return [0, 0]  # In case of an error, this function will return [0,0], This will NOT affect the graph
 
     def order(self, value):  # A very simple function use in the manual mode
         try:  # This try allow to save the program when, in rare case, spamming the Send button

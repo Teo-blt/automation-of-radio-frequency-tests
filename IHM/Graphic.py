@@ -112,6 +112,7 @@ def main_graphic_climatic_chamber(self, port):
             showerror("Value Error", f"Error temperature_min_scale : {temperature_min_scale.get()} "
                                      f">  temperature_max_scale : {temperature_max_scale.get()}")
         else:
+            start_button_frame_button.invoke()
             VARIABLE.Thread(port, temperature_min_scale.get(), temperature_max_scale.get(),
                             temperature_min_duration_h_scale.get(),
                             temperature_max_duration_h_scale.get(),
@@ -237,19 +238,20 @@ def main_graphic_climatic_chamber(self, port):
     off_scale_frame_button.pack(padx=0, pady=0, ipadx=10, ipady=10, expand=False, fill="none", side=RIGHT)
     graphic_settings_label = tk.Label(button_frame, text="Graphic settings", bg="white", font="arial",
                                       fg="black", relief="groove")
-    graphic_settings_label.pack(padx=1, pady=1, expand=True, fill="both", side=TOP)
+    graphic_settings_label.pack_forget()
     start_button_frame_button = tk.Button(button_frame, text="Start",
                                           borderwidth=8, background=THE_COLOR,
                                           activebackground="green", cursor="right_ptr", overrelief="sunken",
                                           command=lambda: [dot_animation()[0].resume(), dot_animation()[1].resume(),
+                                                           graphic_settings_label.pack(padx=1, pady=1, expand=True,
+                                                                                       fill="both", side=TOP),
                                                            stop_button_frame_button.pack(padx=1, pady=1, expand=True,
                                                                                          fill="both",
                                                                                          side=TOP),
                                                            resume_button_frame_button.pack(padx=1, pady=1, expand=True,
                                                                                            fill="both",
-                                                                                           side=TOP),
+                                                                                           side=TOP)
                                                            ])
-    start_button_frame_button.pack(padx=1, pady=1, expand=True, fill="both", side=TOP)
     stop_button_frame_button = tk.Button(button_frame, text="Stop",
                                          borderwidth=8, background=THE_COLOR,
                                          activebackground="green", cursor="right_ptr", overrelief="sunken",
@@ -260,11 +262,6 @@ def main_graphic_climatic_chamber(self, port):
                                            activebackground="green", cursor="right_ptr", overrelief="sunken",
                                            command=lambda: [ani.resume(), ani2.resume()])
     resume_button_frame_button.pack_forget()
-    quit_button_frame_button = tk.Button(button_frame, text="Quit",
-                                         borderwidth=8, background=THE_COLOR,
-                                         activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                         command=lambda: [root.destroy(), root.quit()])
-    quit_button_frame_button.pack(padx=1, pady=1, expand=True, fill="both", side=TOP)
     radiobutton_automatic = tk.Radiobutton(rb_frame_mode_selection, text="Automatic",
                                            variable=b, value=1, cursor="right_ptr",
                                            indicatoron=1,
@@ -325,17 +322,19 @@ def main_graphic_climatic_chamber(self, port):
     start_auto_stair_scale_frame_button = tk.Button(auto_stair_scale_frame, text="Start",
                                                     borderwidth=8, background=THE_COLOR,
                                                     activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                                    command=lambda: [VARIABLE.Thread(
-                                                        port,
-                                                        temperature_start_auto_stair_scale_frame_scale.get(),
-                                                        temperature_start_auto_stair_scale_frame_scale.get(),
-                                                        temperature_duration_h_auto_stair_scale_frame_scale.get(),
-                                                        temperature_duration_h_auto_stair_scale_frame_scale.get(),
-                                                        0, 0, auto_scale_frame, 0,
-                                                        c.get(),
-                                                        step_auto_stair_scale_frame_scale.get(),
-                                                        temperature_end_auto_stair_scale_frame_scale.get(),
-                                                        ani, ani2).start()])
+                                                    command=lambda: [start_button_frame_button.invoke(),
+                                                                     VARIABLE.Thread(
+                                                                         port,
+                                                                         temperature_start_stair_scale.get(),
+                                                                         temperature_start_stair_scale.get(),
+                                                                         temperature_duration_h_stair__scale.get(),
+                                                                         temperature_duration_h_stair__scale.get(),
+                                                                         0, 0, auto_scale_frame, 0,
+                                                                         c.get(),
+                                                                         step_auto_stair_scale_frame_scale.get(),
+                                                                         temperature_end_auto_stair_scale_frame_scale.get(),
+                                                                         ani,
+                                                                         ani2).start()])
     start_auto_stair_scale_frame_button.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
     off_auto_stair_scale_frame_button = tk.Button(auto_stair_scale_frame, text="Off",
                                                   borderwidth=8, background=THE_COLOR,
@@ -349,20 +348,20 @@ def main_graphic_climatic_chamber(self, port):
                                               command=lambda x: [create_stair()])
     step_auto_stair_scale_frame_scale.grid(row=1, column=0, ipadx=10, ipady=10, padx=30, pady=0)
     step_auto_stair_scale_frame_scale.set(1)
-    temperature_start_auto_stair_scale_frame_scale = Scale(auto_stair_scale_frame, orient='vertical',
+    temperature_start_stair_scale = Scale(auto_stair_scale_frame, orient='vertical',
                                                            troughcolor=THE_COLOR, from_=80, to=-40,
                                                            resolution=1, tickinterval=20, length=100,
                                                            command=lambda x: [create_stair()],
                                                            label='Temperature start (°c)', state="active")
-    temperature_start_auto_stair_scale_frame_scale.grid(row=1, column=1, ipadx=10, ipady=10, padx=30, pady=0)
-    temperature_start_auto_stair_scale_frame_scale.set(-1)
-    temperature_duration_h_auto_stair_scale_frame_scale = Scale(auto_stair_scale_frame, orient='horizontal',
+    temperature_start_stair_scale.grid(row=1, column=1, ipadx=10, ipady=10, padx=30, pady=0)
+    temperature_start_stair_scale.set(-1)
+    temperature_duration_h_stair__scale = Scale(auto_stair_scale_frame, orient='horizontal',
                                                                 troughcolor=THE_COLOR, from_=1, to=20,
                                                                 resolution=1, tickinterval=4, length=100,
                                                                 command=lambda x: [create_stair()],
                                                                 label='Temperature duration (H)', state="active")
-    temperature_duration_h_auto_stair_scale_frame_scale.grid(row=1, column=2, ipadx=30, ipady=10, padx=30, pady=0)
-    temperature_duration_h_auto_stair_scale_frame_scale.set(1)
+    temperature_duration_h_stair__scale.grid(row=1, column=2, ipadx=30, ipady=10, padx=30, pady=0)
+    temperature_duration_h_stair__scale.set(1)
     temperature_end_auto_stair_scale_frame_scale = Scale(auto_stair_scale_frame, orient='vertical',
                                                          troughcolor=THE_COLOR, from_=80, to=-40,
                                                          resolution=1, tickinterval=20, length=100,
@@ -374,9 +373,9 @@ def main_graphic_climatic_chamber(self, port):
     def create_stair():
         simulation_graphic_stair(
             step_auto_stair_scale_frame_scale.get(),
-            temperature_start_auto_stair_scale_frame_scale.get(),
+            temperature_start_stair_scale.get(),
             temperature_end_auto_stair_scale_frame_scale.get(),
-            temperature_duration_h_auto_stair_scale_frame_scale.get(),
+            temperature_duration_h_stair__scale.get(),
             auto_stair_scale_frame)
 
     def create_cycle():
