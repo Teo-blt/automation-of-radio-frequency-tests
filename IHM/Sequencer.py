@@ -34,7 +34,7 @@ def sequencer(self):
                                fg="black", relief="groove")
     sequencer_label.pack(padx=1, pady=1, expand=True, fill="both", side=TOP)
     sequencer_add_label = tk.Label(sequencer_frame, text="Add", bg=THE_COLOR, font="arial",
-                               fg="black", relief="groove", cursor="right_ptr")
+                                   fg="black", relief="groove", cursor="right_ptr")
     sequencer_add_label.pack(padx=1, pady=1, expand=True, fill="both", side=TOP)
 
     menu_base = tkinter.Menu(self, tearoff=0)
