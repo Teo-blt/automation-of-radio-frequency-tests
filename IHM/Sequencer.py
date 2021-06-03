@@ -28,7 +28,7 @@ def sequencer(self):
     def show_menu(e):
         menu.post(e.x_root, e.y_root)
 
-    sequencer_frame = LabelFrame(self)
+    sequencer_frame = LabelFrame(self, text="Sequencer frame")
     sequencer_frame.grid(row=0, column=2, ipadx=40, ipady=40, padx=0, pady=0, rowspan=4)
     sequencer_label = tk.Label(sequencer_frame, text="Sequencer frame", bg="white", font="arial",
                                fg="black", relief="groove")

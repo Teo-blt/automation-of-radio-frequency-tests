@@ -46,7 +46,7 @@ def lunch_smiq(gpib_port, type_gpib):
     number_frames.grid(row=0, column=1, ipadx=0, ipady=0, padx=0, pady=0)
     number_frames.insert(0, 1)
 
-    measurement_channel_label = Label(entry_frame, text="List of Measurement channel 300 kHz to 2.2 GHz :")
+    measurement_channel_label = Label(entry_frame, text="Measurement channel 300 kHz to 2.2 GHz :")
     measurement_channel_label.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
     measurement_channel = Entry(entry_frame, cursor="right_ptr")
     measurement_channel.grid(row=1, column=1, ipadx=0, ipady=0, padx=0, pady=0)
@@ -99,14 +99,25 @@ def lunch_smiq(gpib_port, type_gpib):
 
 def lunch_safety(number_frames, measurement_channel, gpib_port, type_gpib, sensitivity_level, freq_dev, bit_rate):
     global is_killed
-    try:
+    try:  # to chek if the values are integer
         number_frames = int(number_frames.get())
         sensitivity_level = int(sensitivity_level.get())
         freq_dev = int(freq_dev.get())
         bit_rate = int(bit_rate.get())
         measurement_channel = int(measurement_channel.get())
-        if freq_dev < 100 or freq_dev > 2500000 or bit_rate < 1000 or bit_rate > 7000000 or measurement_channel < 300000 or measurement_channel > 3300000000 or sensitivity_level < -144 or sensitivity_level > 13:
-            logger.critical("Error, one or more of the values are not correct")
+        #  to chek if the values are conform
+        if measurement_channel < 300000 or measurement_channel > 3300000000:
+            logger.critical("Error, The measurement channel value is not conform")
+            showerror("Error", "The measurement channel value is not conform")
+        elif sensitivity_level < -144 or sensitivity_level > 13:
+            logger.critical("Error, The power of the signal value is not conform")
+            showerror("Error", "The power of the signal value is not conform")
+        elif freq_dev < 100 or freq_dev > 2500000:
+            logger.critical("Error, The frequency derivation value is not conform")
+            showerror("Error", "The frequency derivation value is not conform")
+        elif bit_rate < 1000 or bit_rate > 7000000:
+            logger.critical("Error, The symbol rate value is not conform")
+            showerror("Error", "The symbol rate value is not conform")
         else:
             if is_killed == 0:
                 is_killed = 1
@@ -115,8 +126,8 @@ def lunch_safety(number_frames, measurement_channel, gpib_port, type_gpib, sensi
             else:
                 logger.info("The smiq program is already running")
     except:
-        logger.critical("Error, one or more of the values are not correct")
-        showerror("Error", "one or more of the values are not correct")
+        logger.critical("Error, One or more of the values are not a number")
+        showerror("Error", "One or more of the values are not a number")
 
 
 def uploadaction():

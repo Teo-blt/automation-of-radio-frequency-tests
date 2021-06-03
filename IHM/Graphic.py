@@ -357,10 +357,10 @@ def main_graphic_climatic_chamber(self, port):
     temperature_start_auto_stair_scale_frame_scale.set(-1)
     temperature_duration_h_auto_stair_scale_frame_scale = Scale(auto_stair_scale_frame, orient='horizontal',
                                                                 troughcolor=THE_COLOR, from_=1, to=20,
-                                                                resolution=1, tickinterval=20, length=100,
+                                                                resolution=1, tickinterval=4, length=100,
                                                                 command=lambda x: [create_stair()],
                                                                 label='Temperature duration (H)', state="active")
-    temperature_duration_h_auto_stair_scale_frame_scale.grid(row=1, column=2, ipadx=10, ipady=10, padx=30, pady=0)
+    temperature_duration_h_auto_stair_scale_frame_scale.grid(row=1, column=2, ipadx=30, ipady=10, padx=30, pady=0)
     temperature_duration_h_auto_stair_scale_frame_scale.set(1)
     temperature_end_auto_stair_scale_frame_scale = Scale(auto_stair_scale_frame, orient='vertical',
                                                          troughcolor=THE_COLOR, from_=80, to=-40,
