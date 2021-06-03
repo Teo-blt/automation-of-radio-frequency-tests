@@ -24,6 +24,7 @@ def scan_all_ports():
     """
     data = {}
     a = 0
+    logger.info("scan in progress")
     for i in range(0, 100):
         test = ('COM' + str(i))
         try:
@@ -44,6 +45,7 @@ def scan_all_gpib(type_gpib):
     """
     data = {}
     a = 0
+    logger.info("scan in progress")
     for i in range(0, 100):
         test = str(i)
         try:

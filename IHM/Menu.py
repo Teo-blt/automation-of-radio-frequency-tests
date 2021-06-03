@@ -213,7 +213,7 @@ class Application(Tk):
     def scale_climatic_chamber(self):  # creation of two vey important buttons, Live draw example,
         # a live draw (not used because the user can easily break it),
         # and Start the test, witch allow the user to enter in the management test area
-        climatic_chamber_scale_frame = LabelFrame(self, text="Start of the test")
+        climatic_chamber_scale_frame = LabelFrame(self, text="Start the test")
         climatic_chamber_scale_frame.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
 
         start_test_button = tk.Button(climatic_chamber_scale_frame, text="Start",
@@ -239,7 +239,7 @@ class Application(Tk):
     def sg_menu(self):
         scanner_gpib_frame = LabelFrame(self, text="Detection of GPIB")
         scanner_gpib_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
-        gpib_scale_frame = LabelFrame(self, text="Start of the test")
+        gpib_scale_frame = LabelFrame(self, text="Start the test")
         gpib_scale_frame.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
         start_test_button = tk.Button(gpib_scale_frame, text="Begin transmission",
                                       borderwidth=8, background=THE_COLOR,
