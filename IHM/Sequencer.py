@@ -26,7 +26,7 @@ def sequencer(self):
         tkinter.messagebox.showinfo("Information", msg)
 
     def show_menu(e):
-        menu.post(e.x_root, e.y_root)
+        menu_base.post(e.x_root, e.y_root)
 
     sequencer_frame = LabelFrame(self, text="Sequencer frame")
     sequencer_frame.grid(row=0, column=2, ipadx=40, ipady=40, padx=0, pady=0, rowspan=4)
@@ -37,15 +37,18 @@ def sequencer(self):
                                fg="black", relief="groove", cursor="right_ptr")
     sequencer_add_label.pack(padx=1, pady=1, expand=True, fill="both", side=TOP)
 
-    menu = tkinter.Menu(self, tearoff=0)
-    menu.add_command(label="Show day", command=show_day)
-    menu.add_command(label="Exit", command=self.quit)
+    menu_base = tkinter.Menu(self, tearoff=0)
+    menu_base.add_command(label="Show day", command=show_day)
 
-    submenu = Menu(menu)
-    submenu.add_command(label="New feed")
-    submenu.add_command(label="Bookmarks")
-    submenu.add_command(label="Mail")
-    menu.add_cascade(label='Import', menu=submenu, underline=0)
+    submenu_1 = Menu(menu_base)
+    submenu_1.add_command(label="Climatic chamber")
+    submenu_1.add_command(label="SMIQ")
+    menu_base.add_cascade(label='Add', menu=submenu_1, underline=0)
+
+    submenu_2 = Menu(menu_base)
+    submenu_2.add_command(label="Climatic chamber")
+    submenu_2.add_command(label="SMIQ")
+    menu_base.add_cascade(label='Remove', menu=submenu_2, underline=0)
 
     sequencer_add_label.bind("<Button-1>", show_menu)
     sequencer_label.bind("<Button-2>", EA.Button_jump.play)
