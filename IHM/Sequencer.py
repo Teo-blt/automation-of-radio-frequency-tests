@@ -33,12 +33,6 @@ def sequencer(self):
     sequencer_label = tk.Label(sequencer_frame, text="Sequencer frame", bg="white", font="arial",
                                fg="black", relief="groove")
     sequencer_label.pack(padx=1, pady=1, expand=True, fill="both", side=TOP)
-    """
-    sequencer_add_button = Button(sequencer_frame, text="Add", borderwidth=0, background=THE_COLOR,
-                                  activebackground=THE_COLOR,
-                                  cursor="right_ptr", overrelief="sunken", command=lambda: [])
-    sequencer_add_button.pack(padx=1, pady=1, expand=True, fill="both", side=TOP)
-    """
     sequencer_add_label = tk.Label(sequencer_frame, text="Add", bg=THE_COLOR, font="arial",
                                fg="black", relief="groove", cursor="right_ptr")
     sequencer_add_label.pack(padx=1, pady=1, expand=True, fill="both", side=TOP)
@@ -46,5 +40,12 @@ def sequencer(self):
     menu = tkinter.Menu(self, tearoff=0)
     menu.add_command(label="Show day", command=show_day)
     menu.add_command(label="Exit", command=self.quit)
+
+    submenu = Menu(menu)
+    submenu.add_command(label="New feed")
+    submenu.add_command(label="Bookmarks")
+    submenu.add_command(label="Mail")
+    menu.add_cascade(label='Import', menu=submenu, underline=0)
+
     sequencer_add_label.bind("<Button-1>", show_menu)
     sequencer_label.bind("<Button-2>", EA.Button_jump.play)

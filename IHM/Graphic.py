@@ -106,11 +106,11 @@ def main_graphic_climatic_chamber(self, port):
         plot_canvas.get_tk_widget().grid(column=0, row=0)
 
     def verification_temp():
-        if temperature_min_scale.get() >= temperature_max_scale.get():
+        if temperature_min_scale.get() > temperature_max_scale.get():
             logger.critical(f"Error temperature_min_scale : {temperature_min_scale.get()} "
-                            f">=  temperature_max_scale : {temperature_max_scale.get()}")
+                            f">  temperature_max_scale : {temperature_max_scale.get()}")
             showerror("Value Error", f"Error temperature_min_scale : {temperature_min_scale.get()} "
-                                     f">=  temperature_max_scale : {temperature_max_scale.get()}")
+                                     f">  temperature_max_scale : {temperature_max_scale.get()}")
         else:
             VARIABLE.Thread(port, temperature_min_scale.get(), temperature_max_scale.get(),
                             temperature_min_duration_h_scale.get(),
@@ -469,7 +469,7 @@ def main_graphic_climatic_chamber(self, port):
 
 def simulation_graphic_cycle(temperature_min, temperature_max,
                              number_of_cycles, temperature_min_duration_h, temperature_max_duration_h, min_max, window):
-    if temperature_min >= temperature_max:
+    if temperature_min > temperature_max:
         logger.critical(f"Error temperature_min_scale : {temperature_min} "
                         f">=  temperature_max_scale : {temperature_max}")
     else:
@@ -482,10 +482,13 @@ def simulation_graphic_cycle(temperature_min, temperature_max,
         temperature_max_duration_h = temperature_max_duration_h + 1
         temperature_min_duration_h = temperature_min_duration_h + 1
         var = 0
-        if min_max:
-            var_storage = temperature_max
+        if min_max:  # We swap the min/max
+            var_storage_temp = temperature_max
             temperature_max = temperature_min
-            temperature_min = var_storage
+            temperature_min = var_storage_temp
+            var_storage_time = temperature_max_duration_h
+            temperature_max_duration_h = temperature_min_duration_h
+            temperature_min_duration_h = var_storage_time
         data = {0: temperature_max}
         if number_of_cycles != 21:
             for p in range(0, number_of_cycles):
