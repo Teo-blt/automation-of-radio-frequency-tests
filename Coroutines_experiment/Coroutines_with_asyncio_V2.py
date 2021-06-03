@@ -83,12 +83,11 @@ class Thread(threading.Thread):
             # respectively actual temperature and order, the function reed ask directly to
             # the climate chamber the values, it's take time, but the value are much safer
             self.csv_result.write("################################################\n")
-            self.csv_result.write("Start of Test\n")
+            self.csv_result.write("Start of Test")
             logger.info("################################################")
             logger.info("Start of Test")
             self.time_start = time.time()  # Collect the time of the beginning of the test
-            # self.timer = 1 / 60  # For the test, it reduce the time of waiting to 1 min
-            self.timer = 1/60
+            self.timer = 1 / 60  # For the test, it reduce the time of waiting to 1 min
             asyncio.run(self.several_methods_run_together())
 
     async def wait_temperature_reach_consign(self, timer):
@@ -110,7 +109,9 @@ class Thread(threading.Thread):
             else:  # If the maximal difference between the actual temperature and the order is 0.2 or more we
                 # reset the VALUE_STABILISATION
                 self.VALUE_STABILISATION = 0
-        logger.info("The climate chamber is stabilized with success")  # Said to the user When the
+        a = time.localtime(time.time())
+        logger.info(f"The climate chamber is stabilized with success {a[3]}H{a[4]} and {a[5]} second(s)")  # Said to the user When the
+        self.csv_result.write(f"The climate chamber is stabilized with success {a[3]}H{a[4]} and {a[5]} second(s)")
         # climate chamber is stabilized
         self.time_start_min = time.time()  # Collect the actual time named time_start_min for the waiting loop
         while time.time() < self.time_start_min + (timer * 3600):  # While the actual
@@ -149,7 +150,7 @@ class Thread(threading.Thread):
                 a = time.localtime(time.time())  # collect the actual time
                 # (not very useful because logger.info write time too)
                 logger.info(f'End of cycle {self.i}: {a[3]}H{a[4]} and {a[5]} second(s)')  # some useful
-                self.csv_result.write(f'End of cycle {self.i}: {a[3]}H{a[4]} and {a[5]} second(s)')
+                self.csv_result.write(f'\nEnd of cycle {self.i}: {a[3]}H{a[4]} and {a[5]} second(s)')
                 # information for the user
             self.exit()  # leave the program thanks to the function exit
         else:  # A variable to direct the program in function of the chose of the user, here it's the loop for stair
@@ -171,14 +172,14 @@ class Thread(threading.Thread):
                 a = time.localtime(time.time())
                 logger.info(f'End of cycle {self.i}: {a[3]}H{a[4]} and {a[5]} second(s)')  # some useful
                 # information for the user
-                self.csv_result.write(f'End of cycle {self.i}: {a[3]}H{a[4]} and {a[5]} second(s)')
+                self.csv_result.write(f'\nEnd of cycle {self.i}: {a[3]}H{a[4]} and {a[5]} second(s)')
             statements = [self.wait_temperature_reach_consign(self.timer), self.do_something_else()]
             await asyncio.gather(*statements)
             self.i = self.i + 1  # A variable to cunt the number of cycle
             a = time.localtime(time.time())
             logger.info(f'End of cycle {self.i}: {a[3]}H{a[4]} and {a[5]} second(s)')  # some useful
             # information for the user
-            self.csv_result.write(f'End of cycle {self.i}: {a[3]}H{a[4]} and {a[5]} second(s)')
+            self.csv_result.write(f'\nEnd of cycle {self.i}: {a[3]}H{a[4]} and {a[5]} second(s)')
             self.exit()  # leave the program thanks to the function exit
 
     def exit(self):
@@ -188,11 +189,13 @@ class Thread(threading.Thread):
         logger.info("End of Test")
         b = time.localtime(time_stop - self.time_start)  # Total time of the test
         logger.info(f'Test duration: {b[3]-1}H{b[4]} and {b[5]} second(s)')  # some useful information for the user
-        self.csv_result.write("################################################")
-        self.csv_result.write("End of Test")
-        self.csv_result.write(f'Test duration: {b[3]}H{b[4]} and {b[5]} second(s)')
+        self.csv_result.write("\n################################################")
+        self.csv_result.write("\nEnd of Test")
+        self.csv_result.write(f'\nTest duration: {b[3]}H{b[4]} and {b[5]} second(s)')
         self.off()
         self.csv_result.close()
+        vt.write(CLIMATIC_CHAMBER_STOP)
+        vt.write(CLIMATIC_CHAMBER_STOP)
         vt.write(CLIMATIC_CHAMBER_STOP)
         exit()
 
