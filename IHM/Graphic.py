@@ -105,6 +105,28 @@ def main_graphic_climatic_chamber(self, port):
         plot_canvas = FigureCanvasTkAgg(fig, root)
         plot_canvas.get_tk_widget().grid(column=0, row=0)
 
+    def send_verification(x):
+        global graph_lunch
+        if x:
+            graph_lunch = 0
+        else:
+            graph_lunch = graph_lunch + 1
+            if graph_lunch == 1:
+                start_button_frame_button.invoke()
+            else:
+                pass
+
+    def quit_graph():
+        global ani
+        global ani2
+        try:
+            ani.pause()
+            ani2.pause()
+        except:
+            start_button_frame_button.invoke()
+            ani.pause()
+            ani2.pause()
+
     def verification_temp():
         if temperature_min_scale.get() > temperature_max_scale.get():
             logger.critical(f"Error temperature_min_scale : {temperature_min_scale.get()} "
@@ -122,6 +144,8 @@ def main_graphic_climatic_chamber(self, port):
     global ani
     global ani2
     global first_time
+    global graph_lunch
+    graph_lunch = 0
     first_time = 1
     a = IntVar()
     b = IntVar()
@@ -179,7 +203,7 @@ def main_graphic_climatic_chamber(self, port):
     off_auto_scale_frame_button = tk.Button(auto_scale_frame, text="Off",
                                             borderwidth=8, background=THE_COLOR,
                                             activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                            command=lambda: [dot_animation()[0].pause(), dot_animation()[1].pause(),
+                                            command=lambda: [quit_graph(),
                                                              VARIABLE.Thread.off(self)])
     off_auto_scale_frame_button.grid(row=0, column=2, ipadx=40, ipady=20, padx=0, pady=0)
 
@@ -230,13 +254,13 @@ def main_graphic_climatic_chamber(self, port):
     send_button = tk.Button(scale_frame, text="Send",
                             borderwidth=8, background=THE_COLOR,
                             activebackground="green", cursor="right_ptr", overrelief="sunken",
-                            command=lambda: [start_button_frame_button.invoke(),
+                            command=lambda: [send_verification(0),
                                              VARIABLE.Thread.order(self, order_scale.get())])
     send_button.pack(padx=10, pady=10, ipadx=10, ipady=10, expand=False, fill="none", side=RIGHT)
     off_scale_frame_button = tk.Button(scale_frame, text="Off",
                                        borderwidth=8, background=THE_COLOR,
                                        activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                       command=lambda: [dot_animation()[0].pause(), dot_animation()[1].pause(),
+                                       command=lambda: [quit_graph(), send_verification(1),
                                                         VARIABLE.Thread.off(self)])
     off_scale_frame_button.pack(padx=0, pady=0, ipadx=10, ipady=10, expand=False, fill="none", side=RIGHT)
     graphic_settings_label = tk.Label(button_frame, text="Graphic settings", bg="white", font="arial",
@@ -258,12 +282,12 @@ def main_graphic_climatic_chamber(self, port):
     stop_button_frame_button = tk.Button(button_frame, text="Stop",
                                          borderwidth=8, background=THE_COLOR,
                                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                         command=lambda: [dot_animation()[0].pause(), dot_animation()[1].pause()])
+                                         command=lambda: [ani.pause(), ani2.pause()])
     stop_button_frame_button.pack_forget()
     resume_button_frame_button = tk.Button(button_frame, text="Resume",
                                            borderwidth=8, background=THE_COLOR,
                                            activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                           command=lambda: [dot_animation()[0].resume(), dot_animation()[1].resume()])
+                                           command=lambda: [ani.resume(), ani2.resume()])
     resume_button_frame_button.pack_forget()
     radiobutton_automatic = tk.Radiobutton(rb_frame_mode_selection, text="Automatic",
                                            variable=b, value=1, cursor="right_ptr",
@@ -342,9 +366,7 @@ def main_graphic_climatic_chamber(self, port):
     off_auto_stair_scale_frame_button = tk.Button(auto_stair_scale_frame, text="Off",
                                                   borderwidth=8, background=THE_COLOR,
                                                   activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                                  command=lambda: [dot_animation()[0].pause(),
-                                                                   dot_animation()[1].pause(),
-                                                                   VARIABLE.Thread.off(self)])
+                                                  command=lambda: [quit_graph(), VARIABLE.Thread.off(self)])
     off_auto_stair_scale_frame_button.grid(row=0, column=2, ipadx=40, ipady=20, padx=20, pady=20)
     step_auto_stair_scale_frame_scale = Scale(auto_stair_scale_frame, orient='vertical', troughcolor=THE_COLOR,
                                               from_=120, to=1,
