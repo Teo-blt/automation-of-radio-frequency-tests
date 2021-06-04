@@ -404,8 +404,8 @@ def main_graphic_climatic_chamber(self, port):
         ax1 = fig.add_subplot(1, 1, 1)
         ax1.set_ylim(FRAME)
 
-        line, = ax1.plot(xar, yar, 'r', marker='o', label="order C°/min")
-        line2, = ax1.plot(xar2, yar2, 'b', marker='o', label="actual temperature C°/min")
+        line, = ax1.plot(xar, yar, 'r', marker=",", label="order C°/min")
+        line2, = ax1.plot(xar2, yar2, 'b', marker=",", label="actual temperature C°/min")
         first_legend = ax1.legend(handles=[line], loc='upper left')
         ax1.add_artist(first_legend)
         first_legend = ax1.legend(handles=[line2], loc='lower left')
