@@ -179,7 +179,8 @@ def main_graphic_climatic_chamber(self, port):
     off_auto_scale_frame_button = tk.Button(auto_scale_frame, text="Off",
                                             borderwidth=8, background=THE_COLOR,
                                             activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                            command=lambda: [dot_animation()[0].pause(), dot_animation()[1].pause(), VARIABLE.Thread.off(self)])
+                                            command=lambda: [dot_animation()[0].pause(), dot_animation()[1].pause(),
+                                                             VARIABLE.Thread.off(self)])
     off_auto_scale_frame_button.grid(row=0, column=2, ipadx=40, ipady=20, padx=0, pady=0)
 
     temperature_min_scale = Scale(auto_scale_frame, orient='vertical', troughcolor=THE_COLOR, from_=80, to=-40,
@@ -229,7 +230,8 @@ def main_graphic_climatic_chamber(self, port):
     send_button = tk.Button(scale_frame, text="Send",
                             borderwidth=8, background=THE_COLOR,
                             activebackground="green", cursor="right_ptr", overrelief="sunken",
-                            command=lambda: [start_button_frame_button.invoke(), VARIABLE.Thread.order(self, order_scale.get())])
+                            command=lambda: [start_button_frame_button.invoke(),
+                                             VARIABLE.Thread.order(self, order_scale.get())])
     send_button.pack(padx=10, pady=10, ipadx=10, ipady=10, expand=False, fill="none", side=RIGHT)
     off_scale_frame_button = tk.Button(scale_frame, text="Off",
                                        borderwidth=8, background=THE_COLOR,
@@ -340,7 +342,9 @@ def main_graphic_climatic_chamber(self, port):
     off_auto_stair_scale_frame_button = tk.Button(auto_stair_scale_frame, text="Off",
                                                   borderwidth=8, background=THE_COLOR,
                                                   activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                                  command=lambda: [dot_animation()[0].pause(), dot_animation()[1].pause(), VARIABLE.Thread.off(self)])
+                                                  command=lambda: [dot_animation()[0].pause(),
+                                                                   dot_animation()[1].pause(),
+                                                                   VARIABLE.Thread.off(self)])
     off_auto_stair_scale_frame_button.grid(row=0, column=2, ipadx=40, ipady=20, padx=20, pady=20)
     step_auto_stair_scale_frame_scale = Scale(auto_stair_scale_frame, orient='vertical', troughcolor=THE_COLOR,
                                               from_=120, to=1,
@@ -350,17 +354,17 @@ def main_graphic_climatic_chamber(self, port):
     step_auto_stair_scale_frame_scale.grid(row=1, column=0, ipadx=10, ipady=10, padx=30, pady=0)
     step_auto_stair_scale_frame_scale.set(1)
     temperature_start_stair_scale = Scale(auto_stair_scale_frame, orient='vertical',
-                                                           troughcolor=THE_COLOR, from_=80, to=-40,
-                                                           resolution=1, tickinterval=20, length=100,
-                                                           command=lambda x: [create_stair()],
-                                                           label='Temperature start (°c)', state="active")
+                                          troughcolor=THE_COLOR, from_=80, to=-40,
+                                          resolution=1, tickinterval=20, length=100,
+                                          command=lambda x: [create_stair()],
+                                          label='Temperature start (°c)', state="active")
     temperature_start_stair_scale.grid(row=1, column=1, ipadx=10, ipady=10, padx=30, pady=0)
     temperature_start_stair_scale.set(-1)
     temperature_duration_h_stair__scale = Scale(auto_stair_scale_frame, orient='horizontal',
-                                                                troughcolor=THE_COLOR, from_=1, to=20,
-                                                                resolution=1, tickinterval=4, length=100,
-                                                                command=lambda x: [create_stair()],
-                                                                label='Temperature duration (H)', state="active")
+                                                troughcolor=THE_COLOR, from_=1, to=20,
+                                                resolution=1, tickinterval=4, length=100,
+                                                command=lambda x: [create_stair()],
+                                                label='Temperature duration (H)', state="active")
     temperature_duration_h_stair__scale.grid(row=1, column=2, ipadx=30, ipady=10, padx=30, pady=0)
     temperature_duration_h_stair__scale.set(1)
     temperature_end_auto_stair_scale_frame_scale = Scale(auto_stair_scale_frame, orient='vertical',
