@@ -138,6 +138,8 @@ class Thread(threading.Thread):
     async def several_methods_run_together(self):
         if self.stair == 0:  # A variable to direct the program in function of the chose of the user,
             # here it's the loop for cycle
+            if self.cycle == 21:  # Infinite mode
+                self.cycle = 10000
             while self.nb_cycle != self.cycle:  # While the number of cycle is not reach
                 statements = [self.wait_temperature_reach_consign(self.timer), self.do_something_else()]  # The two
                 # functions that need to run at the same time
