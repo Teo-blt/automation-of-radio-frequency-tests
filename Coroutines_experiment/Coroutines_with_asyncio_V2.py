@@ -207,31 +207,31 @@ class Thread(threading.Thread):
         exit()
 
     def read(self, the_port):
-    # try:  # This try allow the program to survive in a rare case where the climatic
-    # chamber don't have enough time to answer back
-        self._port = the_port
-        vt.port = self._port
-        try:
-            vt.open()
+        try:  # This try allow the program to survive in a rare case where the climatic
+            # chamber don't have enough time to answer back
+            self._port = the_port
+            vt.port = self._port
+            try:
+                vt.open()
+            except:
+                pass
+            vt.write(b"$00I\n\r")  # prepare the climatic chamber to receive information
+            time.sleep(0.2)  # A pause that freeze the entire program
+            # TODO find a better way to wait maybe asyncio.sleep(5) ?
+            received_frame = vt.read_all().decode('utf-8')  # Decipher the frame that was send by the climatic
+            # chamber
+            word = received_frame.split(" ")  # Split the decipher the frame that was send by the climatic chamber
+            strings = str(word[1])
+            number = float(strings)  # Collect the actual temperature of the climatic chamber
+            strings2 = str(word[0])
+            number2 = strings2[-6:]
+            number3 = float(number2)  # Collect the actual order of the climatic chamber
+            return [number, number3]  # Return the actual temperature and the actual order at the same time to
+            # allow the program to call read only once every 5 seconds, it's time saving (because of the time sleep)
         except:
-            pass
-        vt.write(b"$00I\n\r")  # prepare the climatic chamber to receive information
-        time.sleep(0.2)  # A pause that freeze the entire program
-        # TODO find a better way to wait maybe asyncio.sleep(5) ?
-        received_frame = vt.read_all().decode('utf-8')  # Decipher the frame that was send by the climatic
-        # chamber
-        word = received_frame.split(" ")  # Split the decipher the frame that was send by the climatic chamber
-        strings = str(word[1])
-        number = float(strings)  # Collect the actual temperature of the climatic chamber
-        strings2 = str(word[0])
-        number2 = strings2[-6:]
-        number3 = float(number2)  # Collect the actual order of the climatic chamber
-        return [number, number3]  # Return the actual temperature and the actual order at the same time to
-        # allow the program to call read only once every 5 seconds, it's time saving (because of the time sleep)
-    # except:
-    #  logger.error("too fast, please wait")  # protect the application if the user
-    # make a request the same time than the programme
-    #  return [0, 0]  # In case of an error, this function will return [0,0], This will NOT affect the graph
+            logger.error("too fast, please wait")  # protect the application if the user
+            # make a request the same time than the programme
+            return [0, 0]  # In case of an error, this function will return [0,0], This will NOT affect the graph
 
     def order(self, value):  # A very simple function use in the manual mode
         try:  # This try allow to save the program when, in rare case, spamming the Send button
