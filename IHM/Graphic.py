@@ -180,13 +180,13 @@ def main_graphic_climatic_chamber(self, port):
     button_frame.grid(column=1, row=0)
     button_frame.config(background='#fafafa')
 
-    rb_frame_mode_selection = LabelFrame(settings_frame, bd=0)  # , text="Choice"
-    rb_frame_mode_selection.pack(padx=0, pady=0, expand=True, fill="both", side=RIGHT)
-    rb_frame_mode_selection.config(background='#fafafa')
-
     rb_frame_automatic_selection = LabelFrame(settings_frame, bd=0)  # , text="Choice"
     rb_frame_automatic_selection.pack(padx=0, pady=0, expand=True, fill="both", side=RIGHT)
     rb_frame_automatic_selection.config(background='#fafafa')
+
+    rb_frame_mode_selection = LabelFrame(settings_frame, bd=0)  # , text="Choice"
+    rb_frame_mode_selection.pack(padx=0, pady=0, expand=True, fill="both", side=RIGHT)
+    rb_frame_mode_selection.config(background='#fafafa')
 
     cyclic_label = tk.Label(auto_scale_frame, text="Cyclic automating", bg="white", font="arial",
                             fg="black", relief="groove")
@@ -291,7 +291,7 @@ def main_graphic_climatic_chamber(self, port):
     resume_button_frame_button.pack_forget()
     radiobutton_automatic = tk.Radiobutton(rb_frame_mode_selection, text="Automatic",
                                            variable=b, value=1, cursor="right_ptr",
-                                           indicatoron=1,
+                                           indicatoron=1, font=('Helvetica', '16'),
                                            command=lambda: [scale_frame.pack_forget(),
                                                             auto_scale_frame.pack(padx=0, pady=0,
                                                                                   expand=True,
@@ -306,7 +306,7 @@ def main_graphic_climatic_chamber(self, port):
                                                             radiobutton_cycle.invoke()])
     radiobutton_automatic.pack(padx=0, pady=0, expand=False, fill="none", side=BOTTOM)
     radiobutton_manual = tk.Radiobutton(rb_frame_mode_selection, text="Manual",
-                                        variable=b, value=0, cursor="right_ptr",
+                                        variable=b, value=0, cursor="right_ptr", font=('Helvetica', '16'),
                                         indicatoron=1, command=lambda: [scale_frame.pack(padx=0, pady=0,
                                                                                          expand=True, fill="both",
                                                                                          side=LEFT),
@@ -330,7 +330,7 @@ def main_graphic_climatic_chamber(self, port):
                                                      activebackground="green",
                                                      bd=8, selectcolor="green", overrelief="sunken")
     radiobutton_start_with_low_temp.grid(row=1, column=3, ipadx=10, ipady=10, padx=0, pady=0)
-    radiobutton_stair = tk.Radiobutton(rb_frame_automatic_selection, text="Stair",
+    radiobutton_stair = tk.Radiobutton(rb_frame_automatic_selection, text="Stair", font=('Helvetica', '16'),
                                        variable=c, value=1, cursor="right_ptr",
                                        indicatoron=1, command=lambda: [auto_scale_frame.pack_forget(),
                                                                        auto_stair_scale_frame.pack(padx=0, pady=0,
@@ -340,7 +340,7 @@ def main_graphic_climatic_chamber(self, port):
                                                                        create_stair()])
     radiobutton_stair.pack(padx=0, pady=0, expand=False, fill="none", side=BOTTOM)
     radiobutton_cycle = tk.Radiobutton(rb_frame_automatic_selection, text="Cycle",
-                                       variable=c, value=0, cursor="right_ptr",
+                                       variable=c, value=0, cursor="right_ptr", font=('Helvetica', '16'),
                                        indicatoron=1, command=lambda: [auto_scale_frame.pack(padx=0, pady=0,
                                                                                              expand=True, fill="both",
                                                                                              side=LEFT),

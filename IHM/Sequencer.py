@@ -29,7 +29,10 @@ def sequencer(self):
         menu_base.post(e.x_root, e.y_root)
 
     sequencer_frame = LabelFrame(self, text="Sequencer frame")
-    sequencer_frame.grid(row=0, column=2, ipadx=40, ipady=40, padx=0, pady=0, rowspan=4)
+    sequencer_frame.grid(row=0, column=2, ipadx=40, ipady=40, padx=0, pady=0, rowspan=1)
+    board_frame = LabelFrame(self, text="Board")
+    board_frame.grid(row=0, column=3, ipadx=40, ipady=40, padx=0, pady=0, rowspan=4)
+    board_frame.grid_forget()
     sequencer_label = tk.Label(sequencer_frame, text="Sequencer frame", bg="white", font="arial",
                                fg="black", relief="groove")
     sequencer_label.pack(padx=1, pady=1, expand=True, fill="both", side=TOP)
@@ -41,8 +44,8 @@ def sequencer(self):
     menu_base.add_command(label="Show day", command=show_day)
 
     submenu_1 = Menu(menu_base)
-    submenu_1.add_command(label="Climatic chamber")
-    submenu_1.add_command(label="SMIQ")
+    submenu_1.add_command(label="Climatic chamber", command=lambda: [board_add(board_frame, "Climatic chamber")])
+    submenu_1.add_command(label="SMIQ", command=lambda: [board_add(board_frame, "SMIQ")])
     menu_base.add_cascade(label='Add', menu=submenu_1, underline=0)
 
     submenu_2 = Menu(menu_base)
@@ -52,3 +55,23 @@ def sequencer(self):
 
     sequencer_add_label.bind("<Button-1>", show_menu)
     sequencer_label.bind("<Button-2>", EA.Button_jump.play)
+
+
+def board_add(board_frame, name):
+    number_box = int()
+    if not (board_frame.winfo_manager() == "grid"):
+        board_frame.grid(row=0, column=3, ipadx=40, ipady=40, padx=0, pady=0, rowspan=2)
+        number_box = 0
+    else:
+        number_box = number_box + 1
+    create_box(board_frame, number_box, name)
+
+
+def board_remove():
+    print("a")
+
+
+def create_box(board_frame, number_box, name):
+    box = tk.Label(board_frame, text=str(number_box) + " :" + name, bg="white", font="arial",
+                               fg="black", relief="groove")
+    box.pack(padx=1, pady=1, expand=True, fill="both", side=TOP)

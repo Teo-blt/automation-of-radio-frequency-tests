@@ -176,7 +176,7 @@ class Application(Tk):
         combobox_scan = ttk.Combobox(port_com_frame,
                                      values=[0], state="readonly")
         combobox_scan.set("--choose your port here--")
-        combobox_scan.pack(padx=50, pady=0, expand=False, fill="x", side=TOP)
+        combobox_scan.pack(ipadx=0, ipady=0, padx=20, pady=10, expand=False, fill="x", side=TOP)
         write_climate_chamber_scan(combobox_scan)
         port_com_frame_button = Button(port_com_frame, text="Connect", borderwidth=8, background=THE_COLOR,
                                        activebackground="green", disabledforeground="grey",
@@ -214,14 +214,14 @@ class Application(Tk):
         # a live draw (not used because the user can easily break it),
         # and Start the test, witch allow the user to enter in the management test area
         climatic_chamber_scale_frame = LabelFrame(self, text="Start the test")
-        climatic_chamber_scale_frame.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+        climatic_chamber_scale_frame.grid(row=1, column=0, ipadx=70, ipady=70, padx=0, pady=0)
 
         start_test_button = tk.Button(climatic_chamber_scale_frame, text="Start",
                                       borderwidth=8, background=THE_COLOR,
                                       activebackground="green", cursor="right_ptr", overrelief="sunken",
                                       command=lambda:
                                       [self.call_graph_climatic_chamber()])
-        start_test_button.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
+        start_test_button.pack(padx=0, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
 
     def call_graph_climatic_chamber(self):
         if self.status == 0:
@@ -245,7 +245,7 @@ class Application(Tk):
                                       borderwidth=8, background=THE_COLOR,
                                       activebackground="green", cursor="right_ptr", overrelief="sunken",
                                       command=lambda: [self.call_graph_smiq()])
-        start_test_button.pack(padx=10, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
+        start_test_button.pack(padx=0, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
         self.scanner_button_sg(scanner_gpib_frame)
 
     def call_graph_smiq(self):
