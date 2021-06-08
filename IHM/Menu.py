@@ -133,8 +133,8 @@ class Application(Tk):
                                                cursor="right_ptr",
                                                overrelief="sunken",
                                                command=lambda: [self.combobox_scan(port_com_frame_entry,
-                                                                                   visual_color_button),
-                                                                self.try_climate_chamber(visual_color_button)])
+                                                                                   ),
+                                                                self.try_climate_chamber()])
         scanner_port_com_frame_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         scanner_port_com_frame_label = Label(place, text="The currently selected port :")
         scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
@@ -142,11 +142,11 @@ class Application(Tk):
         port_com_frame_entry.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         scanner_port_com_frame_label = Label(place, text="Connection status :")
         scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-        visual_color_button = Button(place, state="disabled")
-        visual_color_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-        self.try_climate_chamber(visual_color_button)
+        self.visual_color_button = Button(place, state="disabled")
+        self.visual_color_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        self.try_climate_chamber()
 
-    def try_climate_chamber(self, visual_color_button):
+    def try_climate_chamber(self, ):
         try:
             a = serial.Serial(self._port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT, writeTimeout=WRITE_TIMEOUT)
             a.write(b"$00I\n\r")
@@ -157,11 +157,11 @@ class Application(Tk):
             number = float(strings)
             logger.info(f"The actual temperature of the climatic chamber is : {number}")
             self.status = 1
-            visual_function(visual_color_button, 0)
+            visual_function(self.visual_color_button, 0)
         except:
-            visual_function(visual_color_button, 1)
+            visual_function(self.visual_color_button, 1)
 
-    def combobox_scan(self, port_com_frame_entry, visual_color_button):
+    def combobox_scan(self, port_com_frame_entry, ):
         port_com_frame = LabelFrame(self, text="Settings of the port com")
         port_com_frame.grid(row=1, column=1, ipadx=40, ipady=40, padx=0, pady=0)
         port_com_frame_label = Label(port_com_frame, text="Connection port :")
@@ -175,33 +175,33 @@ class Application(Tk):
                                        cursor="right_ptr",
                                        overrelief="sunken",
                                        command=lambda: [
-                                           self.climate_chamber_scan_validate(combobox_scan, visual_color_button),
+                                           self.climate_chamber_scan_validate(combobox_scan),
                                            self.change_combo_com(port_com_frame_entry)])
         port_com_frame_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
 
     def change_combo_com(self, port_com_frame_entry):
         port_com_frame_entry.config(text=self._port)
 
-    def climate_chamber_scan_validate(self, combobox_scan, visual_color_button):
+    def climate_chamber_scan_validate(self, combobox_scan):
         if combobox_scan.current() == -1:
             showerror("Error", "You must select a valid port")
         else:
             logger.info(f"The port [{combobox_scan.get()}] was correctly selected"),
-            self.change_port(combobox_scan.get(), visual_color_button)
+            self.change_port(combobox_scan.get())
 
-    def change_port(self, name, visual_color_button):
+    def change_port(self, name):
         self._port = name
         try:
-            self.connection_test(visual_color_button)
+            self.connection_test()
         except serial.serialutil.SerialException:
             logger.critical(f"The port [{self._port}] is not link to the climate chamber")
         except:
             logger.critical("Error unknown")
 
-    def connection_test(self, visual_color_button):
+    def connection_test(self):
         a = serial.Serial(self._port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT, writeTimeout=WRITE_TIMEOUT)
         a.write(CLIMATIC_CHAMBER_STOP)
-        visual_function(visual_color_button, 0)
+        visual_function(self.visual_color_button, 0)
         self.status = 1
         logger.debug("The connection was correctly established")
 
@@ -277,8 +277,7 @@ class Application(Tk):
                                                activebackground="green", disabledforeground="grey",
                                                cursor="right_ptr",
                                                overrelief="sunken",
-                                               command=lambda: [self.gpib_scan(port_com_frame_entry,
-                                                                               visual_color_button)])
+                                               command=lambda: [self.gpib_scan(port_com_frame_entry)])
         scanner_port_com_frame_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         scanner_port_com_frame_label = Label(place, text="The currently selected GPIB :")
         scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
@@ -286,21 +285,21 @@ class Application(Tk):
         port_com_frame_entry.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         scanner_port_com_frame_label = Label(place, text="Connection status :")
         scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-        visual_color_button = Button(place, state="disabled")
-        visual_color_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        self.visual_color_button_sg = Button(place, state="disabled")
+        self.visual_color_button_sg.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         try:
             rm = visa.ResourceManager()
             smiq_send = rm.open_resource(self.type_gpib + '::' + self._gpib_port + '::INSTR')
             smiq_send.write('*RST')
             self.status = 1
-            visual_function(visual_color_button, 0)
+            visual_function(self.visual_color_button_sg, 0)
         except:
-            visual_function(visual_color_button, 1)
+            visual_function(self.visual_color_button_sg, 1)
 
     def change_type(self, type):
         self.type_gpib = "GPIB" + type
 
-    def gpib_scan(self, port_com_frame_entry, visual_color_button):
+    def gpib_scan(self, port_com_frame_entry):
         port_com_frame = LabelFrame(self, text="Settings of the GPIB")
         port_com_frame.grid(row=1, column=1, ipadx=40, ipady=40, padx=0, pady=0)
         port_com_frame_label = Label(port_com_frame, text="Connection port :")
@@ -314,7 +313,7 @@ class Application(Tk):
                                        activebackground="green", disabledforeground="grey",
                                        cursor="right_ptr",
                                        overrelief="sunken",
-                                       command=lambda: [self.gpib_scan_validate(combobox_scan, visual_color_button),
+                                       command=lambda: [self.gpib_scan_validate(combobox_scan),
                                                         self.change_combo_gpib(port_com_frame_entry)])
         port_com_frame_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
 
@@ -326,23 +325,23 @@ class Application(Tk):
         values = list(data.values())
         combobox_scan["values"] = values
 
-    def gpib_scan_validate(self, combobox_scan, visual_color_button):
+    def gpib_scan_validate(self, combobox_scan):
         if combobox_scan.current() == -1:
             showerror("Error", "You must select a valid port")
         else:
             logger.info(f"The GPIB [{combobox_scan.get()}] was correctly selected"),
-            self.change_gpib(combobox_scan.get(), visual_color_button)
+            self.change_gpib(combobox_scan.get())
 
     def change_combo_gpib(self, port_com_frame_entry):
         port_com_frame_entry.config(text=self._gpib_port)
 
-    def change_gpib(self, name, visual_color_button):
+    def change_gpib(self, name):
         self._gpib_port = name
         try:
             rm = visa.ResourceManager()
             smiq_send = rm.open_resource(self.type_gpib + '::' + self._gpib_port + '::INSTR')
             smiq_send.write('*RST')
-            visual_function(visual_color_button, 0)
+            visual_function(self.visual_color_button_sg, 0)
             self.status = 1
             logger.debug("The connection was correctly established")
         except serial.serialutil.SerialException:
