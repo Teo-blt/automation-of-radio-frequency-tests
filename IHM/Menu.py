@@ -165,35 +165,37 @@ class Application(Tk):
         port_com_frame.grid(row=1, column=1, ipadx=40, ipady=40, padx=0, pady=0)
         port_com_frame_label = Label(port_com_frame, text="Connection port :")
         port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-        combobox_scan = ttk.Combobox(port_com_frame, values=[0], state="readonly")
-        combobox_scan.set("--choose your port here--")
-        combobox_scan.pack(ipadx=0, ipady=0, padx=20, pady=10, expand=False, fill="x", side=TOP)
-        write_climate_chamber_scan(combobox_scan)
+        self.combobox_scanner = ttk.Combobox(port_com_frame, values=[0], state="readonly")
+        self.combobox_scanner.set("--choose your port here--")
+        self.combobox_scanner.pack(ipadx=0, ipady=0, padx=20, pady=10, expand=False, fill="x", side=TOP)
+        write_climate_chamber_scan(self.combobox_scanner)
         port_com_frame_button = Button(port_com_frame, text="Connect", borderwidth=8, background=THE_COLOR,
                                        activebackground="green", disabledforeground="grey",
                                        cursor="right_ptr",
                                        overrelief="sunken",
                                        command=lambda: [
-                                           self.climate_chamber_scan_validate(combobox_scan),
+                                           self.climate_chamber_scan_validate(),
                                            self.change_combo_com(port_com_frame_entry)])
         port_com_frame_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
 
     def change_combo_com(self, port_com_frame_entry):
         port_com_frame_entry.config(text=self._port)
 
-    def climate_chamber_scan_validate(self, combobox_scan):
-        if combobox_scan.current() == -1:
+    def climate_chamber_scan_validate(self):
+        if self.combobox_scanner.current() == -1:
             showerror("Error", "You must select a valid port")
         else:
-            logger.info(f"The port [{combobox_scan.get()}] was correctly selected"),
-            self.change_port(combobox_scan.get())
+            logger.info(f"The port [{self.combobox_scanner.get()}] was correctly selected"),
+            self.change_port()
 
-    def change_port(self, name):
-        self._port = name
+    def change_port(self):
+        self._port = self.combobox_scanner.get()
         try:
             self.connection_test()
         except serial.serialutil.SerialException:
             logger.critical(f"The port [{self._port}] is not link to the climate chamber")
+            self.status = 0
+            visual_function(self.visual_color_button, 1)
         except:
             logger.critical("Error unknown")
 
@@ -218,6 +220,7 @@ class Application(Tk):
         start_test_button.pack(padx=0, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
 
     def call_graph_climatic_chamber(self):
+        self.change_port()
         if self.status == 0:
             if askyesno("Warning", "The connection status is : offline\n Do you still want to continue ?"):
                 Graphic.main_graphic_climatic_chamber(self, self._port)
