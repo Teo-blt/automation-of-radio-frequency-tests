@@ -132,8 +132,7 @@ class Application(Tk):
                                                activebackground="green", disabledforeground="grey",
                                                cursor="right_ptr",
                                                overrelief="sunken",
-                                               command=lambda: [self.combobox_scan(port_com_frame_entry,
-                                                                                   ),
+                                               command=lambda: [self.combobox_scan(port_com_frame_entry),
                                                                 self.try_climate_chamber()])
         scanner_port_com_frame_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         scanner_port_com_frame_label = Label(place, text="The currently selected port :")
@@ -161,7 +160,7 @@ class Application(Tk):
         except:
             visual_function(self.visual_color_button, 1)
 
-    def combobox_scan(self, port_com_frame_entry, ):
+    def combobox_scan(self, port_com_frame_entry):
         port_com_frame = LabelFrame(self, text="Settings of the port com")
         port_com_frame.grid(row=1, column=1, ipadx=40, ipady=40, padx=0, pady=0)
         port_com_frame_label = Label(port_com_frame, text="Connection port :")
