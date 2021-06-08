@@ -70,9 +70,9 @@ def sequencer(self):
     sequencer_label.bind("<Button-2>", EA.Button_jump.play)
 
     menu_box = tkinter.Menu(self, tearoff=0)
-    menu_box.add_command(label="Delete 🚮", command=lambda: [delete_box(box)])
-    menu_box.add_command(label="Move up ▲", command=lambda: [move_up_box(box)])
-    menu_box.add_command(label="Move down ▼ ", command=lambda: [move_down_box(box)])
+    menu_box.add_command(label="Delete ", command=lambda: [delete_box(box)])
+    menu_box.add_command(label="Move up ", command=lambda: [move_up_box(box)])
+    menu_box.add_command(label="Move down  ", command=lambda: [move_down_box(box)])
 
     def board_add(board_frame, name):
         global number_box
