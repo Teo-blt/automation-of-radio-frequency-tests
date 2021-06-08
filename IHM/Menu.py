@@ -189,8 +189,8 @@ class Application(Tk):
             self.change_port()
 
     def change_port(self):
-        self._port = self.combobox_scanner.get()
         try:
+            self._port = self.combobox_scanner.get()
             self.connection_test()
         except serial.serialutil.SerialException:
             logger.critical(f"The port [{self._port}] is not link to the climate chamber")

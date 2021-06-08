@@ -97,6 +97,19 @@ def live_graph(self):  # The function live_graph crate a new window with a graph
 
 
 def main_graphic_climatic_chamber(self, port):
+    global color_button
+
+    def state_graph(state):
+        global color_button
+        if state == 1:
+            color_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+            color_button.config(text="The animation in paused")
+            color_button.config(bg="red", disabledforeground="black")
+        else:
+            color_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+            color_button.config(text="The animation in active")
+            color_button.config(bg="light green", disabledforeground="black")
+
     def display():
         style.use('ggplot')
         fig = plt.figure(figsize=(10, 5), dpi=100)
@@ -116,16 +129,19 @@ def main_graphic_climatic_chamber(self, port):
             else:
                 pass
 
+
     def quit_graph():
         global ani
         global ani2
         try:
             ani.pause()
             ani2.pause()
+            state_graph(1)
         except:
             start_button_frame_button.invoke()
             ani.pause()
             ani2.pause()
+            state_graph(1)
 
     def verification_temp():
         if temperature_min_scale.get() > temperature_max_scale.get():
@@ -140,6 +156,7 @@ def main_graphic_climatic_chamber(self, port):
                             temperature_max_duration_h_scale.get(),
                             number_of_cycles_scale.get(), 0, auto_scale_frame, a.get(), 0,
                             0, 0, ani, ani2).start()
+            state_graph(0)
 
     global ani
     global ani2
@@ -282,13 +299,17 @@ def main_graphic_climatic_chamber(self, port):
     stop_button_frame_button = tk.Button(button_frame, text="Stop",
                                          borderwidth=8, background=THE_COLOR,
                                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                         command=lambda: [ani.pause(), ani2.pause()])
+                                         command=lambda: [ani.pause(), ani2.pause(), state_graph(1)])
     stop_button_frame_button.pack_forget()
     resume_button_frame_button = tk.Button(button_frame, text="Resume",
                                            borderwidth=8, background=THE_COLOR,
                                            activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                           command=lambda: [ani.resume(), ani2.resume()])
+                                           command=lambda: [ani.resume(), ani2.resume(), state_graph(0)])
     resume_button_frame_button.pack_forget()
+    color_button = Button(button_frame, state="disabled")
+    color_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+    color_button.pack_forget()
+
     radiobutton_automatic = tk.Radiobutton(rb_frame_mode_selection, text="Automatic",
                                            variable=b, value=1, cursor="right_ptr",
                                            indicatoron=1, font=('Helvetica', '16'),
@@ -361,7 +382,7 @@ def main_graphic_climatic_chamber(self, port):
                                                                          step_auto_stair_scale_frame_scale.get(),
                                                                          temperature_end_auto_stair_scale_frame_scale.get(),
                                                                          ani,
-                                                                         ani2).start()])
+                                                                         ani2).start(), state_graph(0)])
     start_auto_stair_scale_frame_button.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
     off_auto_stair_scale_frame_button = tk.Button(auto_stair_scale_frame, text="Off",
                                                   borderwidth=8, background=THE_COLOR,
@@ -430,12 +451,8 @@ def main_graphic_climatic_chamber(self, port):
         ax1 = fig.add_subplot(1, 1, 1)
         ax1.set_ylim(FRAME)
 
-        line, = ax1.plot(xar, yar, 'r', marker=",", label="order C°/min")
-        line2, = ax1.plot(xar2, yar2, 'b', marker=",", label="actual temperature C°/min")
-        first_legend = ax1.legend(handles=[line], loc='upper left')
-        ax1.add_artist(first_legend)
-        first_legend = ax1.legend(handles=[line2], loc='lower left')
-        ax1.add_artist(first_legend)
+        line, = ax1.plot(xar, yar, 'r', marker=",")
+        line2, = ax1.plot(xar2, yar2, 'b', marker=",")
 
         def clean():
             global toolbar
@@ -486,6 +503,8 @@ def main_graphic_climatic_chamber(self, port):
             clean()
             first_time = first_time + 1
 
+        fig.legend(["order C°/min", "actual temperature C°/min"])
+        state_graph(0)
         ani = animation.FuncAnimation(fig, animate, interval=5000, blit=False, init_func=init)
         ani2 = animation.FuncAnimation(fig, animate2, interval=5000, blit=False, init_func=init2)
 
