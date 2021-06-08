@@ -16,7 +16,6 @@ from tkinter.messagebox import *
 from loguru import logger
 import Graphic
 import serial
-import Sequencer
 from SMIQ import test_SMIQ
 import pyvisa as visa
 # ============================================================================
@@ -73,7 +72,7 @@ class Application(Tk):
         :param value: value of the combobox
         """
         instrument_choose_combobox = LabelFrame(self, text="Choice of instrument")
-        instrument_choose_combobox.grid(row=0, column=0, ipadx=40, ipady=40, padx=0, pady=0)
+        instrument_choose_combobox.grid(row=0, column=0, ipadx=40, ipady=20, padx=0, pady=0)
 
         settings_label = tk.Label(instrument_choose_combobox, text="Settings", font="arial", fg="black")
         settings_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
@@ -84,22 +83,16 @@ class Application(Tk):
         choose_measuring_tool_combobox = ttk.Combobox(instrument_choose_combobox, values=[
             "Climatic chamber",  # The list of measuring tool
             "Signal generator"], state="readonly")
+
+        def chose(e, i=choose_measuring_tool_combobox):
+            return validate(e, i)
+
+        def validate(e, choose_measuring_tool_combobox):
+            self.interface(choose_measuring_tool_combobox.current())
+
+        choose_measuring_tool_combobox.bind("<<ComboboxSelected>>", chose)
         choose_measuring_tool_combobox.set(value)
         choose_measuring_tool_combobox.pack(padx=50, pady=0, expand=False, fill="x", side=TOP)
-        self.setting_up_validate_button(instrument_choose_combobox, choose_measuring_tool_combobox)
-
-    def setting_up_validate_button(self, instrument_choose_combobox, choose_measuring_tool_combobox):
-        validate_button = tk.Button(
-            instrument_choose_combobox,
-            text="validate",
-            borderwidth=8,
-            background=THE_COLOR,
-            activebackground="green",
-            disabledforeground="grey",
-            cursor="right_ptr",
-            overrelief="sunken",
-            command=lambda: [self.interface(choose_measuring_tool_combobox.current())])
-        validate_button.pack(padx=30, pady=10, expand=True, fill="both", side=TOP)
 
     def interface(self, choice):  # This function open other functions after the choice of the user
         if choice == -1:
@@ -120,12 +113,12 @@ class Application(Tk):
         Tk.__init__(self)
         self.title(window_title + " menu")
         self.create_choose_measuring_tool_combobox(window_title)
-        Sequencer.sequencer(self)
+        #  Sequencer.sequencer(self) not use anymore
 
     def climatic_chamber_widget(self):
         self.geometry(WINDOW_SIZE)  # set window size
         scanner_port_com_frame = LabelFrame(self, text="Detection of port com")
-        scanner_port_com_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
+        scanner_port_com_frame.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
         scanner_port_com_frame_label = Label(scanner_port_com_frame, text="Scanner for connection port")
         scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         self.scanner_button_climatic_chamber(scanner_port_com_frame)
@@ -173,8 +166,7 @@ class Application(Tk):
         port_com_frame.grid(row=1, column=1, ipadx=40, ipady=40, padx=0, pady=0)
         port_com_frame_label = Label(port_com_frame, text="Connection port :")
         port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-        combobox_scan = ttk.Combobox(port_com_frame,
-                                     values=[0], state="readonly")
+        combobox_scan = ttk.Combobox(port_com_frame, values=[0], state="readonly")
         combobox_scan.set("--choose your port here--")
         combobox_scan.pack(ipadx=0, ipady=0, padx=20, pady=10, expand=False, fill="x", side=TOP)
         write_climate_chamber_scan(combobox_scan)
@@ -214,7 +206,7 @@ class Application(Tk):
         # a live draw (not used because the user can easily break it),
         # and Start the test, witch allow the user to enter in the management test area
         climatic_chamber_scale_frame = LabelFrame(self, text="Start the test")
-        climatic_chamber_scale_frame.grid(row=1, column=0, ipadx=70, ipady=70, padx=0, pady=0)
+        climatic_chamber_scale_frame.grid(row=0, column=3, ipadx=0, ipady=0, padx=0, pady=0)
 
         start_test_button = tk.Button(climatic_chamber_scale_frame, text="Start",
                                       borderwidth=8, background=THE_COLOR,
@@ -238,9 +230,9 @@ class Application(Tk):
 
     def sg_menu(self):
         scanner_gpib_frame = LabelFrame(self, text="Detection of GPIB")
-        scanner_gpib_frame.grid(row=0, column=1, ipadx=40, ipady=40, padx=0, pady=0)
+        scanner_gpib_frame.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
         gpib_scale_frame = LabelFrame(self, text="Start the test")
-        gpib_scale_frame.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+        gpib_scale_frame.grid(row=0, column=3, ipadx=0, ipady=0, padx=0, pady=0)
         start_test_button = tk.Button(gpib_scale_frame, text="Begin transmission",
                                       borderwidth=8, background=THE_COLOR,
                                       activebackground="green", cursor="right_ptr", overrelief="sunken",
