@@ -21,6 +21,8 @@ THE_COLOR = "#E76145"
 def sequencer(self):
     global number_box
     number_box = int()
+    global list
+    list = {}
 
     def show_menu(e):
         menu_base.post(e.x_root, e.y_root)
@@ -30,7 +32,7 @@ def sequencer(self):
         menu_box.post(e.x_root, e.y_root)
         word = str(e.widget)
         try:
-            number = float(word[-1:])
+            number = int(word[-1:])-1
         except:
             number = 0
         box = number
@@ -68,9 +70,9 @@ def sequencer(self):
     sequencer_label.bind("<Button-2>", EA.Button_jump.play)
 
     menu_box = tkinter.Menu(self, tearoff=0)
-    menu_box.add_command(label="Delete 🚮", command=lambda: [print(f"Delete box {box}")])
-    menu_box.add_command(label="Move up ▲", command=lambda: [print(f"Move up {box}")])
-    menu_box.add_command(label="Move down ▼ ", command=lambda: [print(f"Move down {box}")])
+    menu_box.add_command(label="Delete 🚮", command=lambda: [delete_box(box)])
+    menu_box.add_command(label="Move up ▲", command=lambda: [move_up_box(box)])
+    menu_box.add_command(label="Move down ▼ ", command=lambda: [move_down_box(box)])
 
     def board_add(board_frame, name):
         global number_box
@@ -82,8 +84,20 @@ def sequencer(self):
         create_box(board_frame, number_box, name)
 
     def create_box(board_frame, number_box, name):
+        global list
+        var = number_box
         a = tk.Label(board_frame, text=str(number_box) + " : " + name + "      ⚙", bg="white", font="arial",
                               fg="black", relief="groove")
         a.pack(padx=1, pady=1, expand=True, fill="both", side=TOP)
+        list[var] = a
         a.bind("<Button-1>", show_menu_box)
 
+    def move_up_box(box):
+        print(f"Move up {box}")
+
+    def move_down_box(box):
+        print(f"Move down {box}")
+
+    def delete_box(box):
+        global list
+        list[box].destroy()
