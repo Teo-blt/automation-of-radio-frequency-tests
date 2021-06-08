@@ -192,15 +192,18 @@ class Application(Tk):
     def change_port(self, name, visual_color_button):
         self._port = name
         try:
-            a = serial.Serial(self._port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT, writeTimeout=WRITE_TIMEOUT)
-            a.write(CLIMATIC_CHAMBER_STOP)
-            visual_function(visual_color_button, 0)
-            self.status = 1
-            logger.debug("The connection was correctly established")
+            self.connection_test(visual_color_button)
         except serial.serialutil.SerialException:
             logger.critical(f"The port [{self._port}] is not link to the climate chamber")
         except:
             logger.critical("Error unknown")
+
+    def connection_test(self, visual_color_button):
+        a = serial.Serial(self._port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT, writeTimeout=WRITE_TIMEOUT)
+        a.write(CLIMATIC_CHAMBER_STOP)
+        visual_function(visual_color_button, 0)
+        self.status = 1
+        logger.debug("The connection was correctly established")
 
     def scale_climatic_chamber(self):  # creation of two vey important buttons, Live draw example,
         # a live draw (not used because the user can easily break it),
