@@ -155,7 +155,7 @@ def main_graphic_climatic_chamber(self, port):
                             temperature_min_duration_h_scale.get(),
                             temperature_max_duration_h_scale.get(),
                             number_of_cycles_scale.get(), 0, auto_scale_frame, a.get(), 0,
-                            0, 0, ani, ani2).start()
+                            0, 0, ani, ani2, state_graph).start()
             state_graph(0)
 
     global ani
@@ -382,7 +382,7 @@ def main_graphic_climatic_chamber(self, port):
                                                                          step_auto_stair_scale_frame_scale.get(),
                                                                          temperature_end_auto_stair_scale_frame_scale.get(),
                                                                          ani,
-                                                                         ani2).start(), state_graph(0)])
+                                                                         ani2, state_graph).start(), state_graph(0)])
     start_auto_stair_scale_frame_button.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
     off_auto_stair_scale_frame_button = tk.Button(auto_stair_scale_frame, text="Off",
                                                   borderwidth=8, background=THE_COLOR,
