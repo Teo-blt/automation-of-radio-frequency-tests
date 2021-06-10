@@ -1,30 +1,136 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# =============================================================================
+# Created By  : Bulteau Téo
+# Created Date: June 10 15:25:00 2021
+# For Kerlink, all rights reserved
+# =============================================================================
+"""The Module Has Been Build for the automation of radio frequency tests in python language"""
+# =============================================================================
 import paramiko
-import time
+import threading
+from tkinter import *
+import tkinter as tk
+from loguru import logger
+from tkinter import filedialog
+from tkinter.messagebox import *
 
-ip_address = "192.168.4.228"
-username = "root"
-password = "root"
+# =============================================================================
+global is_killed
+is_killed = 0
+THE_COLOR = "#E76145"
 
-ssh_client = paramiko.SSHClient()
-ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-ssh_client.connect(hostname=ip_address, username=username, password=password)
-print("Successfully connected to", ip_address)
 
-remote_connection = ssh_client.invoke_shell()
+def lunch_smiq():
+    new_window_main_graphic = tk.Toplevel()
+    new_window_main_graphic.title("Signal generator settings")
 
-remote_connection.send("configure terminal" + "\n")
+    settings_frame = LabelFrame(new_window_main_graphic, text="Settings")
+    settings_frame.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+    settings_frame.config(background='#fafafa')
 
-for vlan in range(2, 11):
-    print("Creating VLAN number " + str(vlan))
-    remote_connection.send("vlan " + str(vlan) + "\n")
-    remote_connection.send("name VLAN " + str(vlan) + "\n")
-    time.sleep(0.5)
+    scale_frame = LabelFrame(settings_frame, bd=0)  # , text="Scales"
+    scale_frame.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
+    scale_frame.config(background='#fafafa')
 
-remote_connection.send("end\n")
+    entry_frame = LabelFrame(scale_frame, text="Entry settings")
+    entry_frame.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
 
-time.sleep(1)
-output = remote_connection.recv(65535)
-print(output)
+    number_frames_label = Label(entry_frame, text="Number of sent frames :")
+    number_frames_label.grid(row=0, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+    number_frames = Entry(entry_frame, cursor="right_ptr")
+    number_frames.grid(row=0, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+    number_frames.insert(0, 10)
 
-ssh_client.close
+    frequency_label = Label(entry_frame, text="frequency channel :")
+    frequency_label.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+    frequency = Entry(entry_frame, cursor="right_ptr")
+    frequency.grid(row=1, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+    frequency.insert(0, 868950000)
+
+    sf_label = Label(entry_frame, text="Spreading factor 6 to 12:")
+    sf_label.grid(row=2, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+    sf = Entry(entry_frame, cursor="right_ptr")
+    sf.grid(row=2, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+    sf.insert(0, 7)
+
+    attenuate_label = Label(entry_frame, text="quarter dB attenuation :")
+    attenuate_label.grid(row=3, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+    attenuate = Entry(entry_frame, cursor="right_ptr")
+    attenuate.grid(row=3, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+    attenuate.insert(0, 0)
+
+    reset_button = tk.Button(entry_frame, text="Reset",
+                             borderwidth=8, background=THE_COLOR,
+                             activebackground="green", cursor="right_ptr", overrelief="sunken",
+                             command=lambda: [reset_all(frequency, sf, attenuate, number_frames)])
+    reset_button.grid(row=5, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+
+    start_button = tk.Button(scale_frame, text="Start",
+                             borderwidth=8, background=THE_COLOR,
+                             activebackground="green", cursor="right_ptr", overrelief="sunken",
+                             command=lambda: [lunch_safety(frequency, sf, attenuate, number_frames)])
+    start_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
+
+
+def lunch_safety(frequency, sf, attenuate, number_frames):
+    global is_killed
+    try:  # to chek if the values are integer
+        number_frames = int(number_frames.get())
+        frequency = int(frequency.get())
+        attenuate = int(attenuate.get())
+        sf = int(sf.get())
+        #  to chek if the values are conform
+        if sf < 6 or sf > 12:
+            logger.critical("Error, The symbol rate value is not conform")
+            showerror("Error", "The symbol rate value is not conform")
+        else:
+            if is_killed == 0:
+                is_killed = 1
+                Threadibts(frequency, sf, attenuate, number_frames).start()
+            else:
+                logger.info("The smiq program is already running")
+    except:
+        logger.critical("Error, One or more of the values are not a number")
+        showerror("Error", "One or more of the values are not a number")
+
+
+def reset_all(frequency, sf, attenuate, number_frames):
+    number_frames.delete(0, 20)
+    number_frames.insert(0, 10)
+    frequency.delete(0, 20)
+    frequency.insert(0, 868950000)
+    attenuate.delete(0, 20)
+    attenuate.insert(0, 0)
+    sf.delete(0, 20)
+    sf.insert(0, 7)
+
+
+class Threadibts(threading.Thread):
+
+    def __init__(self, frequency, sf, attenuate, number_frames):
+        threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
+        # additional data added to the class
+        self.frequency = frequency  # Number of sent frames
+        self.sf = sf
+        self.attenuate = attenuate
+        self.number_frames = number_frames
+
+    def run(self):
+        ip_address = "192.168.4.228"
+        username = "root"
+        password = "root"
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(hostname=ip_address, username=username, password=password)
+        print("Successfully connected to", ip_address)
+
+        cmd = "/user/libloragw2-utils_5.1.0-klk9-3-ga23e25f_FTK_Tx/send_pkt -d " \
+              "/dev/slot/1/spidev0 -f 868.950:1:1 -a 0 -b 125 -s "+ self.sf +" -c 1 -r 8 -z 20 -t 20 -x "+\
+              self.number_frames +" --atten" + self.attenuate
+
+        stdin, stdout, stderr = ssh.exec_command(cmd, get_pty=True)
+
+        for line in iter(stdout.readline, ""):
+            print(line, end="")
+        print('finished.')

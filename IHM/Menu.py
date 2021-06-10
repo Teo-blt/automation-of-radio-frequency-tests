@@ -17,7 +17,9 @@ from loguru import logger
 import Graphic
 import serial
 from SMIQ import test_SMIQ
+from SSH import Test_SSH
 import pyvisa as visa
+import paramiko
 # ============================================================================
 from Coroutines_experiment.devices_helper import scan_all_ports
 from Coroutines_experiment.devices_helper import scan_all_gpib
@@ -55,6 +57,7 @@ class Application(Tk):
         Tk.__init__(self)  # Initialisation of the first window
         self._port = 'COM11'
         self._gpib_port = "25"
+        self._ip_adress = "192.168.4.228"
         self.status = 0
         self.interface(0)
         self.type_gpib = "GPIB0"
@@ -82,7 +85,8 @@ class Application(Tk):
 
         choose_measuring_tool_combobox = ttk.Combobox(instrument_choose_combobox, values=[
             "Climatic chamber",  # The list of measuring tool
-            "Signal generator"], state="readonly")
+            "Signal generator",
+            "IBTS"], state="readonly")
 
         def chose(e, i=choose_measuring_tool_combobox):
             return validate(e, i)
@@ -103,6 +107,9 @@ class Application(Tk):
         elif choice == 1:
             self.create_new_window("Signal generator")  # Call the clear function to clean all the window
             self.sg()  # Open generator
+        elif choice == 2:
+            self.create_new_window("IBTS")  # Call the clear function to clean all the window
+            self.ibts()  # Open generator
 
     def create_new_window(self, window_title: str):
         """
@@ -220,7 +227,11 @@ class Application(Tk):
         start_test_button.pack(padx=0, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
 
     def call_graph_climatic_chamber(self):
-        self.change_port()
+        try:
+            self.connection_test()
+        except:
+            self.status = 0
+            visual_function(self.visual_color_button, 1)
         if self.status == 0:
             if askyesno("Warning", "The connection status is : offline\n Do you still want to continue ?"):
                 Graphic.main_graphic_climatic_chamber(self, self._port)
@@ -233,6 +244,11 @@ class Application(Tk):
         self.geometry(WINDOW_SIZE)
         self.sg_menu()
 
+    def ibts(self):
+        self.geometry(WINDOW_SIZE)
+        self.ibts_menu()
+
+
     def sg_menu(self):
         scanner_gpib_frame = LabelFrame(self, text="Detection of GPIB")
         scanner_gpib_frame.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
@@ -244,6 +260,28 @@ class Application(Tk):
                                       command=lambda: [self.call_graph_smiq()])
         start_test_button.pack(padx=0, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
         self.scanner_button_sg(scanner_gpib_frame)
+
+    def ibts_menu(self):
+        scanner_ibts_frame = LabelFrame(self, text="Detection of IBTS")
+        scanner_ibts_frame.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
+        ibts_scale_frame = LabelFrame(self, text="Start the test")
+        ibts_scale_frame.grid(row=0, column=3, ipadx=0, ipady=0, padx=0, pady=0)
+        start_test_button = tk.Button(ibts_scale_frame, text="Begin transmission",
+                                      borderwidth=8, background=THE_COLOR,
+                                      activebackground="green", cursor="right_ptr", overrelief="sunken",
+                                      command=lambda: [self.call_graph_ibts()])
+        start_test_button.pack(padx=0, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
+        self.scanner_button_ibts(scanner_ibts_frame)
+
+    def call_graph_ibts(self):
+        if self.status == 0:
+            if askyesno("Warning", "The connection status is : offline\n Do you still want to continue ?"):
+                Test_SSH.lunch_smiq()
+            else:
+                pass
+        else:
+            Test_SSH.lunch_smiq()
+
 
     def call_graph_smiq(self):
         if self.status == 0:
@@ -298,6 +336,44 @@ class Application(Tk):
         except:
             visual_function(self.visual_color_button_sg, 1)
 
+    def scanner_button_ibts(self, place):
+        scanner_port_com_frame_label = Label(place, text="Select your IP adress:")
+        scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+
+        port_com_frame_entry = Entry(place, text=self._ip_adress)
+        port_com_frame_entry.pack(padx=0, pady=10, expand=False, fill="none", side=TOP)
+
+        port_com_frame_button = Button(place, text="Connect", borderwidth=8, background=THE_COLOR,
+                                       activebackground="green", disabledforeground="grey",
+                                       cursor="right_ptr",
+                                       overrelief="sunken",
+                                       command=lambda: [])
+        port_com_frame_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        scanner_port_com_frame_label = Label(place, text="The currently selected IP adress :")
+        scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        port_com_frame_entry = Label(place, text=self._ip_adress)
+        port_com_frame_entry.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        scanner_port_com_frame_label = Label(place, text="Connection status :")
+        scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+
+        self.visual_color_button_sg = Button(place, state="disabled")
+        self.visual_color_button_sg.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        self.try_ibts_connection()
+
+
+    def try_ibts_connection(self):
+        try:
+            ip_address = self._ip_adress
+            username = "root"
+            password = "root"
+            ssh = paramiko.SSHClient()
+            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            ssh.connect(hostname=ip_address, username=username, password=password)
+            self.status = 1
+            visual_function(self.visual_color_button_sg, 0)
+        except:
+            visual_function(self.visual_color_button_sg, 1)
+
     def change_type(self, type):
         self.type_gpib = "GPIB" + type
 
@@ -327,15 +403,16 @@ class Application(Tk):
         values = list(data.values())
         combobox_scan["values"] = values
 
-    def gpib_scan_validate(self, combobox_scan):
-        if combobox_scan.current() == -1:
-            showerror("Error", "You must select a valid port")
-        else:
-            logger.info(f"The GPIB [{combobox_scan.get()}] was correctly selected"),
-            self.change_gpib(combobox_scan.get())
 
     def change_combo_gpib(self, port_com_frame_entry):
         port_com_frame_entry.config(text=self._gpib_port)
+
+    def ibts_scan_validate(self, combobox_scan):
+        if combobox_scan.current() == -1:
+            showerror("Error", "You must select a valid port")
+        else:
+            logger.info(f"The TP address [{combobox_scan.get()}] was correctly selected"),
+            self.change_ibts(combobox_scan.get())
 
     def change_gpib(self, name):
         self._gpib_port = name
@@ -350,6 +427,21 @@ class Application(Tk):
             logger.critical(f"The port [{self._gpib_port}] is not link to the climate chamber")
         except:
             logger.critical("Error unknown")
+
+    def change_ibts(self, name):
+        self._ip_adress = name
+        try:
+            username = "root"
+            password = "root"
+            ssh = paramiko.SSHClient()
+            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            ssh.connect(hostname=self._ip_adress, username=username, password=password)
+            self.status = 1
+            logger.debug("The connection was correctly established")
+        except:
+            logger.critical(f"The IP adress [{self._ip_adress}] is not link to the climate chamber")
+
+
 
 
 Application().mainloop()
