@@ -217,7 +217,7 @@ class Threadsmiq(threading.Thread):
             bit_rate = mod[2]
             sensitivity_level = mod[4]
 
-            csv_result = open("test_smiq", 'w+')
+            csv_result = open("Report_SMIQ", 'w+')
             csv_result.write("Sensitivity measurement\n")
             csv_result.write("EN300 220-1 v3.1.1\n")
             csv_result.write("Time; Channel frequency; Signal Level; Nb frame sent; PER\n\n")

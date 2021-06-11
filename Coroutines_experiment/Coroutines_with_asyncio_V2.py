@@ -60,7 +60,7 @@ class Thread(threading.Thread):
         self.temperature_end = temperature_end
         self._port = port
         self.extinct = 0
-        self.csv_result = open("test.txt", 'w+')
+        self.csv_result = open("Report_SMIQ", 'w+')
         self.ani = ani
         self.ani2 = ani2
         self.state_graph = state_graph
