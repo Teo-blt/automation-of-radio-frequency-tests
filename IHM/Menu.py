@@ -340,12 +340,13 @@ class Application(Tk):
 
         port_com_frame_entry = Entry(place)
         port_com_frame_entry.pack(padx=0, pady=10, expand=False, fill="none", side=TOP)
-        port_com_frame_entry.insert(0, 1921684228)
+        port_com_frame_entry.insert(0, self._ip_adress)
         port_com_frame_button = Button(place, text="Connect", borderwidth=8, background=THE_COLOR,
                                        activebackground="green", disabledforeground="grey",
                                        cursor="right_ptr",
                                        overrelief="sunken",
-                                       command=lambda: [self.try_ibts_connection(port_com_frame_entry)])
+                                       command=lambda: [self.try_ibts_connection(port_com_frame_entry,
+                                                                                 port_com_frame_entry_name)])
         port_com_frame_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         scanner_port_com_frame_label = Label(place, text="The currently selected IP adress :")
         scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
@@ -356,9 +357,9 @@ class Application(Tk):
 
         self.visual_color_button_sg = Button(place, state="disabled")
         self.visual_color_button_sg.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-        self.try_ibts_connection(port_com_frame_entry)
+        self.try_ibts_connection(port_com_frame_entry, port_com_frame_entry_name)
 
-    def try_ibts_connection(self, port_com_frame_entry):
+    def try_ibts_connection(self, port_com_frame_entry, port_com_frame_entry_name):
         try:
             ip_address = port_com_frame_entry.get()
             username = "root"
@@ -370,6 +371,8 @@ class Application(Tk):
             visual_function(self.visual_color_button_sg, 0)
         except:
             visual_function(self.visual_color_button_sg, 1)
+        finally:
+            port_com_frame_entry_name.config(text=ip_address)
 
     def change_type(self, type):
         self.type_gpib = "GPIB" + type
