@@ -27,7 +27,9 @@ THE_COLOR = "#E76145"
 global status
 
 
-def start_climatic_chamber(self, port):
+def start_climatic_chamber(self, port_give):
+    global port
+    port = port_give
     scanner_port_com_frame = LabelFrame(self, text="Detection of port com")
     scanner_port_com_frame.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
     scanner_port_com_frame_label = Label(scanner_port_com_frame, text="Scanner for connection port")

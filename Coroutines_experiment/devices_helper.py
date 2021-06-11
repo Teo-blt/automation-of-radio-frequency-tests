@@ -25,7 +25,7 @@ def scan_all_ports():
     data = {}
     a = 0
     logger.info("scan in progress")
-    for i in range(0, 100):
+    for i in range(0, 30):
         test = ('COM' + str(i))
         try:
             serial.Serial(test, SERIAL_SPEED, timeout=1, writeTimeout=1)
@@ -46,11 +46,11 @@ def scan_all_gpib(type_gpib):
     data = {}
     a = 0
     logger.info("scan in progress")
-    for i in range(0, 100):
+    for i in range(0, 30):
         test = str(i)
         try:
             rm = visa.ResourceManager()
-            smiq_send = rm.open_resource(type_gpib + '::' + test + '::INSTR')
+            smiq_send = rm.open_resource(type_gpib + '::' + test + '::INSTR', open_timeout=10)
             smiq_send.write('*RST')
             logger.info(f"The GPIB {i} is available")
             data[a] = i

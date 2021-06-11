@@ -26,7 +26,7 @@ class Application(Tk):
     def __init__(self):
         Tk.__init__(self)  # Initialisation of the first window
         self._port = 'COM11'
-        self._gpib_port = "25"
+        self._gpib_port = "24"
         self._ip_adress = "192.168.4.228"
         self.status = 0
         self.interface(0)

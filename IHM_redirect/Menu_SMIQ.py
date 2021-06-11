@@ -66,11 +66,12 @@ def sg_menu(self, type_gpib_give, gpib_port):
                                           activebackground="green",
                                           bd=8, selectcolor="green", overrelief="sunken")
     radiobutton_gpib_usb.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
+
     scanner_port_com_frame_button = Button(place, text="Scan", borderwidth=8, background=THE_COLOR,
                                            activebackground="green", disabledforeground="grey",
                                            cursor="right_ptr",
                                            overrelief="sunken",
-                                           command=lambda: [gpib_scan(self, port_com_frame_entry)])
+                                           command=lambda: [write_gpib_scan(combobox_scan)])
     scanner_port_com_frame_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
     scanner_port_com_frame_label = Label(place, text="The currently selected GPIB :")
     scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
@@ -82,13 +83,30 @@ def sg_menu(self, type_gpib_give, gpib_port):
     visual_color_button_sg.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
     try:
         rm = visa.ResourceManager()
-        smiq_send = rm.open_resource(self.type_gpib + '::' + self._gpib_port + '::INSTR')
+        smiq_send = rm.open_resource(type_gpib + '::' + gpib_port + '::INSTR')
         smiq_send.write('*RST')
         status = 1
         visual_function(visual_color_button_sg, 0)
     except:
         visual_function(visual_color_button_sg, 1)
         status = 0
+    port_com_frame_label = Label(place, text="Connection port :")
+    port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+    combobox_scan = ttk.Combobox(place,
+                                 values=[0], state="readonly")
+    combobox_scan.set("--choose your port here--")
+    combobox_scan.pack(padx=50, pady=0, expand=False, fill="x", side=TOP)
+
+    def automatic_1(e):
+        return automatic(port_com_frame_entry, combobox_scan)
+
+    def automatic(port_com_frame_entry, combobox_scan):
+        change_combo_gpib(port_com_frame_entry, combobox_scan)
+        change_gpib(combobox_scan, visual_color_button_sg)
+
+    combobox_scan.bind("<<ComboboxSelected>>", automatic_1)
+    write_gpib_scan(combobox_scan)
+
 
 def call_graph_smiq(gpib_port):
     global type_gpib
@@ -107,25 +125,6 @@ def change_type(type):
     type_gpib = "GPIB" + type
 
 
-def gpib_scan(self, port_com_frame_entry):
-    port_com_frame = LabelFrame(self, text="Settings of the GPIB")
-    port_com_frame.grid(row=1, column=1, ipadx=40, ipady=40, padx=0, pady=0)
-    port_com_frame_label = Label(port_com_frame, text="Connection port :")
-    port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-    combobox_scan = ttk.Combobox(port_com_frame,
-                                 values=[0], state="readonly")
-    combobox_scan.set("--choose your port here--")
-    combobox_scan.pack(padx=50, pady=0, expand=False, fill="x", side=TOP)
-    write_gpib_scan(combobox_scan)
-    port_com_frame_button = Button(port_com_frame, text="Connect", borderwidth=8, background=THE_COLOR,
-                                   activebackground="green", disabledforeground="grey",
-                                   cursor="right_ptr",
-                                   overrelief="sunken",
-                                   command=lambda: [self.gpib_scan_validate(combobox_scan),
-                                                    self.change_combo_gpib(port_com_frame_entry)])
-    port_com_frame_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-
-
 def write_gpib_scan(combobox_scan):
     global type_gpib
     [limit, multi_port] = scan_all_gpib(type_gpib)
@@ -136,14 +135,15 @@ def write_gpib_scan(combobox_scan):
     combobox_scan["values"] = values
 
 
-def change_combo_gpib(port_com_frame_entry, gpib_port):
+def change_combo_gpib(port_com_frame_entry, combobox_scan):
+    gpib_port = combobox_scan.get()
     port_com_frame_entry.config(text=gpib_port)
 
 
-def change_gpib(name, visual_color_button_sg):
+def change_gpib(combobox_scan, visual_color_button_sg):
     global type_gpib
     global status
-    gpib_port = name
+    gpib_port = combobox_scan.get()
     try:
         rm = visa.ResourceManager()
         smiq_send = rm.open_resource(type_gpib + '::' + gpib_port + '::INSTR')

@@ -107,6 +107,7 @@ def change_ibts(name):
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(hostname=ip_address, username=username, password=password)
         status = 1
+        logger.debug("The connection was correctly established")
     except:
         status = 0
         logger.critical(f"The IP address [{ip_address}] is not link to the IBTS")
