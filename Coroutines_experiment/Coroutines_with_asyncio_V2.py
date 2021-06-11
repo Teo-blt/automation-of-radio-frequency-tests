@@ -92,7 +92,7 @@ class Thread(threading.Thread):
             logger.info("################################################")
             logger.info("Start of Test")
             self.time_start = time.time()  # Collect the time of the beginning of the test
-            self.timer = 1 / 60  # For the test, it reduce the time of waiting to 1 min
+            # self.timer = 1 / 60  # For the test, it reduce the time of waiting to 1 min
             asyncio.run(self.several_methods_run_together())
 
     async def wait_temperature_reach_consign(self, timer):
@@ -117,7 +117,7 @@ class Thread(threading.Thread):
         a = time.localtime(time.time())
         logger.info(f"The climate chamber is stabilized with success at {a[3]}H{a[4]} and {a[5]} second(s)")  # Said
         # to the user When the
-        self.csv_result.write(f"The climate chamber is stabilized with success at {a[3]}H{a[4]} and {a[5]} second(s)")
+        self.csv_result.write(f"\nThe climate chamber is stabilized with success at {a[3]}H{a[4]} and {a[5]} second(s)")
         # climate chamber is stabilized
         self.time_start_min = time.time()  # Collect the actual time named time_start_min for the waiting loop
         while time.time() < self.time_start_min + (timer * 3600):  # While the actual

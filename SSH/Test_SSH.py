@@ -21,7 +21,7 @@ is_killed = 0
 THE_COLOR = "#E76145"
 
 
-def lunch_smiq():
+def lunch_smiq(ip):
     new_window_main_graphic = tk.Toplevel()
     new_window_main_graphic.title("Signal generator settings")
 
@@ -46,7 +46,7 @@ def lunch_smiq():
     frequency_label.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
     frequency = Entry(entry_frame, cursor="right_ptr")
     frequency.grid(row=1, column=1, ipadx=0, ipady=0, padx=0, pady=0)
-    frequency.insert(0, 868950000)
+    frequency.insert(0, 867300000)
 
     sf_label = Label(entry_frame, text="Spreading factor 7 to 12:")
     sf_label.grid(row=2, column=0, ipadx=0, ipady=0, padx=0, pady=0)
@@ -69,11 +69,11 @@ def lunch_smiq():
     start_button = tk.Button(scale_frame, text="Start",
                              borderwidth=8, background=THE_COLOR,
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
-                             command=lambda: [lunch_safety(frequency, sf, attenuate, number_frames)])
+                             command=lambda: [lunch_safety(frequency, sf, attenuate, number_frames, ip)])
     start_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
 
 
-def lunch_safety(frequency, sf, attenuate, number_frames):
+def lunch_safety(frequency, sf, attenuate, number_frames, ip):
     global is_killed
     try:  # to chek if the values are integer
         number_frames = int(number_frames.get())
@@ -87,7 +87,7 @@ def lunch_safety(frequency, sf, attenuate, number_frames):
         else:
             if is_killed == 0:
                 is_killed = 1
-                Threadibts(frequency, sf, attenuate, number_frames).start()
+                Threadibts(frequency, sf, attenuate, number_frames, ip).start()
             else:
                 logger.info("The smiq program is already running")
     except:
@@ -99,7 +99,7 @@ def reset_all(frequency, sf, attenuate, number_frames):
     number_frames.delete(0, 20)
     number_frames.insert(0, 10)
     frequency.delete(0, 20)
-    frequency.insert(0, 868950000)
+    frequency.insert(0, 867300000)
     attenuate.delete(0, 20)
     attenuate.insert(0, 0)
     sf.delete(0, 20)
@@ -108,27 +108,27 @@ def reset_all(frequency, sf, attenuate, number_frames):
 
 class Threadibts(threading.Thread):
 
-    def __init__(self, frequency, sf, attenuate, number_frames):
+    def __init__(self, frequency, sf, attenuate, number_frames, ip):
         threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
         # additional data added to the class
-        self.frequency = str(frequency)  # Number of sent frames
+        self.frequency = str(frequency / 1000000)  # Number of sent frames
         self.sf = str(sf)
         self.attenuate = str(attenuate)
         self.number_frames = str(number_frames)
+        self.ip = ip
 
     def run(self):
-        ip_address = "192.168.4.228"
+        ip_address = self.ip
         username = "root"
         password = "root"
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(hostname=ip_address, username=username, password=password)
         print("Successfully connected to", ip_address)
-        print(self.frequency, self.sf, self.attenuate, self.number_frames)
 
         cmd = "/user/libloragw2-utils_5.1.0-klk9-3-ga23e25f_FTK_Tx/send_pkt -d " \
-              "/dev/slot/1/spidev0 -f 868.950:1:1 -a 0 -b 125 -s "+ self.sf +" -c 1 -r 8 -z 20 -t 20 -x "+\
-              self.number_frames +" --atten " + self.attenuate
+              "/dev/slot/1/spidev0 -f " + self.frequency + ":1:1 -a 0 -b 125 -s " + self.sf + " -c 1 -r 8 -z 20 -t 20 -x " + \
+              self.number_frames + " --atten " + self.attenuate
 
         stdin, stdout, stderr = ssh.exec_command(cmd, get_pty=True)
 
