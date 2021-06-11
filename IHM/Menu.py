@@ -248,7 +248,6 @@ class Application(Tk):
         self.geometry(WINDOW_SIZE)
         self.ibts_menu()
 
-
     def sg_menu(self):
         scanner_gpib_frame = LabelFrame(self, text="Detection of GPIB")
         scanner_gpib_frame.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
@@ -281,7 +280,6 @@ class Application(Tk):
                 pass
         else:
             Test_SSH.lunch_smiq()
-
 
     def call_graph_smiq(self):
         if self.status == 0:
@@ -340,30 +338,29 @@ class Application(Tk):
         scanner_port_com_frame_label = Label(place, text="Select your IP adress:")
         scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
 
-        port_com_frame_entry = Entry(place, text=self._ip_adress)
+        port_com_frame_entry = Entry(place)
         port_com_frame_entry.pack(padx=0, pady=10, expand=False, fill="none", side=TOP)
-
+        port_com_frame_entry.insert(0, 1921684228)
         port_com_frame_button = Button(place, text="Connect", borderwidth=8, background=THE_COLOR,
                                        activebackground="green", disabledforeground="grey",
                                        cursor="right_ptr",
                                        overrelief="sunken",
-                                       command=lambda: [])
+                                       command=lambda: [self.try_ibts_connection(port_com_frame_entry)])
         port_com_frame_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         scanner_port_com_frame_label = Label(place, text="The currently selected IP adress :")
         scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-        port_com_frame_entry = Label(place, text=self._ip_adress)
-        port_com_frame_entry.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        port_com_frame_entry_name = Label(place, text=self._ip_adress)
+        port_com_frame_entry_name.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
         scanner_port_com_frame_label = Label(place, text="Connection status :")
         scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
 
         self.visual_color_button_sg = Button(place, state="disabled")
         self.visual_color_button_sg.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-        self.try_ibts_connection()
+        self.try_ibts_connection(port_com_frame_entry)
 
-
-    def try_ibts_connection(self):
+    def try_ibts_connection(self, port_com_frame_entry):
         try:
-            ip_address = self._ip_adress
+            ip_address = port_com_frame_entry.get()
             username = "root"
             password = "root"
             ssh = paramiko.SSHClient()
@@ -403,7 +400,6 @@ class Application(Tk):
         values = list(data.values())
         combobox_scan["values"] = values
 
-
     def change_combo_gpib(self, port_com_frame_entry):
         port_com_frame_entry.config(text=self._gpib_port)
 
@@ -440,8 +436,6 @@ class Application(Tk):
             logger.debug("The connection was correctly established")
         except:
             logger.critical(f"The IP adress [{self._ip_adress}] is not link to the climate chamber")
-
-
 
 
 Application().mainloop()
