@@ -9,7 +9,9 @@
 # =============================================================================
 import paramiko
 import threading
-import subprocess
+from tkinter import *
+
+
 # =============================================================================
 
 def lunch_izepto(ip):
@@ -24,18 +26,14 @@ class Threadizepto(threading.Thread):
         self.ip = ip
 
     def run(self):
-        ip_address = self.ip
         username = "root"
         password = "root"
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(hostname=ip_address, username=username, password=password)
-        print("Successfully connected to", ip_address)
-
+        ssh.connect(hostname=self.ip, username=username, password=password)
+        print("Successfully connected to", self.ip)
         cmd = "./lora_pkt_fwd -c global_conf.json.sx1250.EU868"
-
         cmd2 = "cd /user/libsx1302-utils_V1.0.5-klk1-dirty"
-
         stdin, stdout, stderr = ssh.exec_command(cmd2 + "\n" + cmd, get_pty=True)
 
         for line in iter(stdout.readline, ""):

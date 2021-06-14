@@ -48,7 +48,7 @@ def start_climatic_chamber(self, port_give):
     port_com_frame_entry.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
     scanner_port_com_frame_label = Label(place, text="Connection status :")
     scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-    visual_color_button = Button(place, state="disabled")
+    visual_color_button = Button(place, state="disabled", disabledforeground="black")
     visual_color_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
     port_com_frame_label = Label(place, text="Connection port :")
     port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
@@ -71,11 +71,9 @@ def start_climatic_chamber(self, port_give):
 
 def visual_function(visual_color_button, s):
     if s == 1:
-        visual_color_button.config(text="The connection status is : offline")
-        visual_color_button.config(bg="red", disabledforeground="black")
+        visual_color_button.config(text="The connection status is : offline", bg="red")
     else:
-        visual_color_button.config(text="The connection status is : online")
-        visual_color_button.config(bg="light green", disabledforeground="black")
+        visual_color_button.config(text="The connection status is : online", bg="light green")
 
 
 def try_climate_chamber(port, visual_color_button):

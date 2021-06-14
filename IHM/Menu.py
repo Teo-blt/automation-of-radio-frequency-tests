@@ -34,13 +34,6 @@ class Application(Tk):
         self.interface(0)
         self.carte_ip_address = "192.168.120.1"
 
-    def setting_lobby_window(self) -> Toplevel:
-        new_window = tk.Toplevel(self)
-        new_window.configure(bg="grey")
-        new_window.title("Start menu")
-        new_window.geometry(LOBBY_WINDOW_SIZE)
-        return new_window
-
     def create_choose_measuring_tool_combobox(self, value: str):
         """
         creation of a combobox, this combobox allow user to choose a measuring tool in a list

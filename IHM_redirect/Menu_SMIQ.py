@@ -24,11 +24,9 @@ global status
 
 def visual_function(visual_color_button, s):
     if s == 1:
-        visual_color_button.config(text="The connection status is : offline")
-        visual_color_button.config(bg="red", disabledforeground="black")
+        visual_color_button.config(text="The connection status is : offline", bg="red")
     else:
-        visual_color_button.config(text="The connection status is : online")
-        visual_color_button.config(bg="light green", disabledforeground="black")
+        visual_color_button.config(text="The connection status is : online", bg="light green")
 
 
 def sg_menu(self, gpib_port):
@@ -57,7 +55,7 @@ def sg_menu(self, gpib_port):
     port_com_frame_entry.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
     scanner_port_com_frame_label = Label(place, text="Connection status :")
     scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-    visual_color_button_sg = Button(place, state="disabled")
+    visual_color_button_sg = Button(place, state="disabled", disabledforeground="black")
     visual_color_button_sg.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
     try:
         rm = visa.ResourceManager()

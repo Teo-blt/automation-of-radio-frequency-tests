@@ -29,7 +29,7 @@ def izepto_menu(self, ip_address):
                                   borderwidth=8, background=THE_COLOR,
                                   activebackground="green", cursor="right_ptr", overrelief="sunken",
                                   command=lambda: [call_graph_izepto(ip_address, port_com_frame_entry,
-                                                                     visual_color_button_sg)])
+                                                                     visual_color_button_sg, izepto_info_label)])
     start_test_button.pack(padx=0, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
     place = scanner_ibts_frame
     scanner_port_com_frame_label = Label(place, text="Select your IP address:")
@@ -51,18 +51,21 @@ def izepto_menu(self, ip_address):
     port_com_frame_entry_name.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
     scanner_port_com_frame_label = Label(place, text="Connection status :")
     scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-    visual_color_button_sg = Button(place, state="disabled")
+    visual_color_button_sg = Button(place, state="disabled", disabledforeground="black")
     visual_color_button_sg.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+
+    izepto_info_label = Button(place, text="The Izepto card is not ready", disabledforeground="black",
+                               bg="red", state="disabled")
+    izepto_info_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+
     try_izepto_connection(port_com_frame_entry, port_com_frame_entry_name, visual_color_button_sg)
 
 
 def visual_function(visual_color_button, s):
     if s == 1:
-        visual_color_button.config(text="The connection status is : offline")
-        visual_color_button.config(bg="red", disabledforeground="black")
+        visual_color_button.config(text="The connection status is : offline", bg="red")
     else:
-        visual_color_button.config(text="The connection status is : online")
-        visual_color_button.config(bg="light green", disabledforeground="black")
+        visual_color_button.config(text="The connection status is : online", bg="light green")
 
 
 def try_izepto_connection(port_com_frame_entry, port_com_frame_entry_name, visual_color_button_sg):
@@ -85,7 +88,7 @@ def try_izepto_connection(port_com_frame_entry, port_com_frame_entry_name, visua
         port_com_frame_entry_name.config(text=ip_address)
 
 
-def call_graph_izepto(ip_address, port_com_frame_entry, visual_color_button_sg):
+def call_graph_izepto(ip_address, port_com_frame_entry, visual_color_button_sg, izepto_info_label):
     global status
     change_izepto(port_com_frame_entry.get())
     if status == 0:
@@ -95,7 +98,7 @@ def call_graph_izepto(ip_address, port_com_frame_entry, visual_color_button_sg):
             visual_function(visual_color_button_sg, 1)
     else:
         I_zepto_test.lunch_izepto(ip_address)
-
+        izepto_info_label.config(text="The Izepto card is ready to received", bg="light green")
 
 def change_izepto(name):
     global status
