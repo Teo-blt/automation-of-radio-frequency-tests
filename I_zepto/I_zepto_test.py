@@ -9,12 +9,8 @@
 # =============================================================================
 import paramiko
 import threading
-
+import subprocess
 # =============================================================================
-global is_killed
-is_killed = 0
-THE_COLOR = "#E76145"
-
 
 def lunch_izepto(ip):
     Threadizepto(ip).start()
@@ -35,10 +31,12 @@ class Threadizepto(threading.Thread):
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(hostname=ip_address, username=username, password=password)
         print("Successfully connected to", ip_address)
-        cmd = "/user/libsx1302-utils_V1.0.5-klk1-dirty/lora_pkt_fwd -c /user/libsx1302-utils_V1.0.5-klk1-dirty/" \
-              "global_conf.json.sx1250.EU868"
 
-        stdin, stdout, stderr = ssh.exec_command(cmd, get_pty=True)
+        cmd = "./lora_pkt_fwd -c global_conf.json.sx1250.EU868"
+
+        cmd2 = "cd /user/libsx1302-utils_V1.0.5-klk1-dirty"
+
+        stdin, stdout, stderr = ssh.exec_command(cmd2 + "\n" + cmd, get_pty=True)
 
         for line in iter(stdout.readline, ""):
             print(line, end="")
