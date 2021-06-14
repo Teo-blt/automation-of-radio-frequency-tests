@@ -12,6 +12,7 @@ import tkinter as tk
 from tkinter import *
 from tkinter import ttk
 from tkinter.messagebox import *
+from IHM_redirect import Menu_Izepto
 from IHM_redirect import Menu_IBTS
 from IHM_redirect import Menu_SMIQ
 from IHM_redirect import Menu_Climatic_chamber
@@ -22,15 +23,17 @@ LOBBY_WINDOW_SIZE = "700x200"
 WINDOW_SIZE = "1200x500"
 THE_COLOR = "#E76145"
 
+
 class Application(Tk):
     def __init__(self):
         Tk.__init__(self)  # Initialisation of the first window
         self._port = 'COM11'
         self._gpib_port = "24"
-        self._ip_adress = "192.168.4.228"
+        self._ip_address = "192.168.4.228"
         self.status = 0
         self.interface(0)
         self.type_gpib = "GPIB0"
+        self.carte_ip_address = "192.168.120.1"
 
     def setting_lobby_window(self) -> Toplevel:
         new_window = tk.Toplevel(self)
@@ -92,18 +95,21 @@ class Application(Tk):
         self.create_choose_measuring_tool_combobox(window_title)
         #  Sequencer.sequencer(self) not use anymore
 
-
-
     def sg(self):  # The signal generator menu
-        self.geometry(WINDOW_SIZE)
+        self.geometry(WINDOW_SIZE)  # set window size
         Menu_SMIQ.sg_menu(self, self.type_gpib, self._gpib_port)
 
     def ibts(self):  # The IBTS menu
-        self.geometry(WINDOW_SIZE)
+        self.geometry(WINDOW_SIZE)  # set window size
         Menu_IBTS.ibts_menu(self, self._ip_adress)
 
-    def climatic_chamber_widget(self):  # The climatic_chamber menu
+    def climatic_chamber_widget(self):  # The climatic chamber menu
         self.geometry(WINDOW_SIZE)  # set window size
         Menu_Climatic_chamber.start_climatic_chamber(self, self._port)
+
+    def carte_izepto(self):  # The Izepto menu
+        self.geometry(WINDOW_SIZE)  # set window size
+        Menu_Izepto.izepto_menu(self, )
+
 
 Application().mainloop()
