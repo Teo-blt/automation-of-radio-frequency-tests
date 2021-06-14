@@ -16,19 +16,23 @@ from tkinter import filedialog
 from tkinter.messagebox import *
 
 # =============================================================================
-
+global is_killed
+is_killed = 0
 THE_COLOR = "#E76145"
 
+def lunch_izepto(ip):
+    Threadibts(ip).start()
 
 
 class Threadibts(threading.Thread):
 
-    def __init__(self):
+    def __init__(self, ip):
         threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
         # additional data added to the class
+        self.ip = ip
 
     def run(self):
-        ip_address = "192.168.120.1"
+        ip_address = self.ip
         username = "root"
         password = "root"
         ssh = paramiko.SSHClient()
@@ -36,7 +40,7 @@ class Threadibts(threading.Thread):
         ssh.connect(hostname=ip_address, username=username, password=password)
         print("Successfully connected to", ip_address)
 
-        cmd = "/user/libsx1302-utils_V1.0.5-klk1-dirty # ./lora_pkt_fwd -c global_conf.json.sx1250.EU868"
+        cmd = "/user/libsx1302-utils_V1.0.5-klk1-dirty/lora_pkt_fwd -c global_conf.json.sx1250.EU868"
 
         stdin, stdout, stderr = ssh.exec_command(cmd, get_pty=True)
 
@@ -44,4 +48,5 @@ class Threadibts(threading.Thread):
             print(line, end="")
         print('finished.')
 
-Threadibts().start()
+
+

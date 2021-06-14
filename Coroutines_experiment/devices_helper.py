@@ -39,7 +39,7 @@ def scan_all_ports():
     return [a, values]
 
 
-def scan_all_gpib(type_gpib):
+def scan_all_gpib():
     """
     Scan all gpib
     """
@@ -50,7 +50,7 @@ def scan_all_gpib(type_gpib):
         test = str(i)
         try:
             rm = visa.ResourceManager()
-            smiq_send = rm.open_resource(type_gpib + '::' + test + '::INSTR', open_timeout=10)
+            smiq_send = rm.open_resource("GPIB1" + '::' + test + '::INSTR', open_timeout=10)
             smiq_send.write('*RST')
             logger.info(f"The GPIB {i} is available")
             data[a] = i

@@ -12,7 +12,6 @@ import threading
 from tkinter import *
 import tkinter as tk
 from loguru import logger
-from tkinter import filedialog
 from tkinter.messagebox import *
 
 # =============================================================================
@@ -21,7 +20,7 @@ is_killed = 0
 THE_COLOR = "#E76145"
 
 
-def lunch_smiq(ip):
+def lunch_ibts(ip):
     new_window_main_graphic = tk.Toplevel()
     new_window_main_graphic.title("Signal generator settings")
 

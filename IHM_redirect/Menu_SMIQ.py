@@ -20,7 +20,6 @@ from Coroutines_experiment.devices_helper import scan_all_gpib
 # =============================================================================
 THE_COLOR = "#E76145"
 global status
-global type_gpib
 
 
 def visual_function(visual_color_button, s):
@@ -32,11 +31,8 @@ def visual_function(visual_color_button, s):
         visual_color_button.config(bg="light green", disabledforeground="black")
 
 
-def sg_menu(self, type_gpib_give, gpib_port):
-    global type_gpib
+def sg_menu(self, gpib_port):
     global status
-    type_gpib = type_gpib_give
-    a = IntVar()
     scanner_gpib_frame = LabelFrame(self, text="Detection of GPIB")
     scanner_gpib_frame.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
     gpib_scale_frame = LabelFrame(self, text="Start the test")
@@ -47,26 +43,8 @@ def sg_menu(self, type_gpib_give, gpib_port):
                                   command=lambda: [call_graph_smiq(gpib_port)])
     start_test_button.pack(padx=0, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
     place = scanner_gpib_frame
-    scanner_port_com_frame_label = Label(place, text="The currently type of connection :")
-    scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
     button_frame = LabelFrame(place, bd=0)  # , text="Scales"
     button_frame.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-    radiobutton_gpib = tk.Radiobutton(button_frame, text="GPIB/GPIB",
-                                      variable=a, value=0, cursor="right_ptr",
-                                      indicatoron=0, command=lambda: [change_type(str(a.get()))],
-                                      background=THE_COLOR,
-                                      activebackground="green",
-                                      bd=8, selectcolor="green", overrelief="sunken")
-    radiobutton_gpib.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
-    radiobutton_gpib.invoke()
-    radiobutton_gpib_usb = tk.Radiobutton(button_frame, text="GPIB/USB",
-                                          variable=a, value=1, cursor="right_ptr",
-                                          indicatoron=0, command=lambda: [change_type(str(a.get()))],
-                                          background=THE_COLOR,
-                                          activebackground="green",
-                                          bd=8, selectcolor="green", overrelief="sunken")
-    radiobutton_gpib_usb.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
-
     scanner_port_com_frame_button = Button(place, text="Scan", borderwidth=8, background=THE_COLOR,
                                            activebackground="green", disabledforeground="grey",
                                            cursor="right_ptr",
@@ -83,7 +61,7 @@ def sg_menu(self, type_gpib_give, gpib_port):
     visual_color_button_sg.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
     try:
         rm = visa.ResourceManager()
-        smiq_send = rm.open_resource(type_gpib + '::' + gpib_port + '::INSTR')
+        smiq_send = rm.open_resource("GPIB1" + '::' + gpib_port + '::INSTR')
         smiq_send.write('*RST')
         status = 1
         visual_function(visual_color_button_sg, 0)
@@ -113,21 +91,15 @@ def call_graph_smiq(gpib_port):
     global status
     if status == 0:
         if askyesno("Warning", "The connection status is : offline\n Do you still want to continue ?"):
-            test_SMIQ.lunch_smiq(gpib_port, type_gpib)
+            test_SMIQ.lunch_smiq(gpib_port)
         else:
             pass
     else:
-        test_SMIQ.lunch_smiq(gpib_port, type_gpib)
-
-
-def change_type(type):
-    global type_gpib
-    type_gpib = "GPIB" + type
-
+        test_SMIQ.lunch_smiq(gpib_port)
 
 def write_gpib_scan(combobox_scan):
     global type_gpib
-    [limit, multi_port] = scan_all_gpib(type_gpib)
+    [limit, multi_port] = scan_all_gpib()
     data = {}
     for i in range(0, limit):
         data[i] = str(multi_port[i])
@@ -141,12 +113,11 @@ def change_combo_gpib(port_com_frame_entry, combobox_scan):
 
 
 def change_gpib(combobox_scan, visual_color_button_sg):
-    global type_gpib
     global status
     gpib_port = combobox_scan.get()
     try:
         rm = visa.ResourceManager()
-        smiq_send = rm.open_resource(type_gpib + '::' + gpib_port + '::INSTR')
+        smiq_send = rm.open_resource("GPIB1" + '::' + gpib_port + '::INSTR')
         smiq_send.write('*RST')
         visual_function(visual_color_button_sg, 0)
         status = 1

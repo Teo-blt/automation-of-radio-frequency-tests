@@ -28,11 +28,10 @@ class Application(Tk):
     def __init__(self):
         Tk.__init__(self)  # Initialisation of the first window
         self._port = 'COM11'
-        self._gpib_port = "24"
+        self._gpib_port = "25"
         self._ip_address = "192.168.4.228"
         self.status = 0
         self.interface(0)
-        self.type_gpib = "GPIB0"
         self.carte_ip_address = "192.168.120.1"
 
     def setting_lobby_window(self) -> Toplevel:
@@ -59,7 +58,8 @@ class Application(Tk):
         choose_measuring_tool_combobox = ttk.Combobox(instrument_choose_combobox, values=[
             "Climatic chamber",  # The list of measuring tool
             "Signal generator",
-            "IBTS"], state="readonly")
+            "IBTS",
+            "Izepto"], state="readonly")
 
         def chose(e, i=choose_measuring_tool_combobox):
             return validate(e, i)
@@ -83,6 +83,9 @@ class Application(Tk):
         elif choice == 2:
             self.create_new_window("IBTS")  # Call the clear function to clean all the window
             self.ibts()  # Open generator
+        elif choice == 3:
+            self.create_new_window("Izepto")  # Call the clear function to clean all the window
+            self.carte_izepto()  # Open generator
 
     def create_new_window(self, window_title: str):
         """
@@ -97,11 +100,11 @@ class Application(Tk):
 
     def sg(self):  # The signal generator menu
         self.geometry(WINDOW_SIZE)  # set window size
-        Menu_SMIQ.sg_menu(self, self.type_gpib, self._gpib_port)
+        Menu_SMIQ.sg_menu(self, self._gpib_port)
 
     def ibts(self):  # The IBTS menu
         self.geometry(WINDOW_SIZE)  # set window size
-        Menu_IBTS.ibts_menu(self, self._ip_adress)
+        Menu_IBTS.ibts_menu(self, self._ip_address)
 
     def climatic_chamber_widget(self):  # The climatic chamber menu
         self.geometry(WINDOW_SIZE)  # set window size
@@ -109,7 +112,7 @@ class Application(Tk):
 
     def carte_izepto(self):  # The Izepto menu
         self.geometry(WINDOW_SIZE)  # set window size
-        Menu_Izepto.izepto_menu(self, )
+        Menu_Izepto.izepto_menu(self, self.carte_ip_address)
 
 
 Application().mainloop()

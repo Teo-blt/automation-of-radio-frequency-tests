@@ -15,6 +15,7 @@ import tkinter as tk
 from loguru import logger
 from tkinter import filedialog
 from tkinter.messagebox import *
+
 # =============================================================================
 global is_killed
 is_killed = 0
@@ -25,7 +26,7 @@ SERIAL_TIMEOUT = 5
 WRITE_TIMEOUT = 5
 
 
-def lunch_smiq(gpib_port, type_gpib):
+def lunch_smiq(gpib_port):
     new_window_main_graphic = tk.Toplevel()
     new_window_main_graphic.title("Signal generator settings")
 
@@ -80,7 +81,7 @@ def lunch_smiq(gpib_port, type_gpib):
     start_button = tk.Button(scale_frame, text="Start",
                              borderwidth=8, background=THE_COLOR,
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
-                             command=lambda: [lunch_safety(number_frames, measurement_channel, gpib_port, type_gpib,
+                             command=lambda: [lunch_safety(number_frames, measurement_channel, gpib_port,
                                                            sensitivity_level,
                                                            freq_dev, bit_rate)])
     start_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
@@ -97,7 +98,7 @@ def lunch_smiq(gpib_port, type_gpib):
     import_file_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
 
 
-def lunch_safety(number_frames, measurement_channel, gpib_port, type_gpib, sensitivity_level, freq_dev, bit_rate):
+def lunch_safety(number_frames, measurement_channel, gpib_port, sensitivity_level, freq_dev, bit_rate):
     global is_killed
     try:  # to chek if the values are integer
         number_frames = int(number_frames.get())
@@ -121,7 +122,7 @@ def lunch_safety(number_frames, measurement_channel, gpib_port, type_gpib, sensi
         else:
             if is_killed == 0:
                 is_killed = 1
-                Threadsmiq(number_frames, measurement_channel, gpib_port, type_gpib, sensitivity_level,
+                Threadsmiq(number_frames, measurement_channel, sensitivity_level, gpib_port,
                            freq_dev, bit_rate).start()
             else:
                 logger.info("The smiq program is already running")
@@ -157,14 +158,13 @@ def off():
 
 class Threadsmiq(threading.Thread):
 
-    def __init__(self, nb_frame, measurement_channel, gpib_port, type_gpib, sensitivity_level, freq_dev, bit_rate):
+    def __init__(self, nb_frame, measurement_channel, gpib_port, sensitivity_level, freq_dev, bit_rate):
         threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
         # additional data added to the class
         self.nb_frame = nb_frame  # Number of sent frames
         self.wait_measure = 1  # Delay between measurement (s)
         self.channel_list = [measurement_channel]  # List of Measurement channel (Hz)
         self.gpib_port = gpib_port
-        self.type_gpib = type_gpib
         self.sensitivity_level = -110  # Set channel frequency
         self.freq_dev = freq_dev  # frequency deviation 100 Hz to 2.5 MHz
         self.bit_rate = bit_rate  # symbol rate 1kHz to 7 MHz
@@ -174,7 +174,7 @@ class Threadsmiq(threading.Thread):
         global is_killed
         sys.path.append('P:\\e2b\\hardware\\Scripts_auto\\Python\\lib')
         rm = visa.ResourceManager()
-        smiq_send = rm.open_resource(self.type_gpib + '::' + self.gpib_port + '::INSTR')
+        smiq_send = rm.open_resource("GPIB1" + '::' + self.gpib_port + '::INSTR')
         smiq_send.write('*RST')
         logger.info(smiq_send.query('*IDN?'))
         smiq_send.write('OUTP:STAT OFF')  # RF Output OFF
