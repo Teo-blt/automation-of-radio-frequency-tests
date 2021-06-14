@@ -13,6 +13,8 @@ from tkinter import *
 import tkinter as tk
 from loguru import logger
 from tkinter.messagebox import *
+import time
+
 
 # =============================================================================
 global is_killed
