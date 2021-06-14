@@ -65,6 +65,7 @@ def sg_menu(self, gpib_port):
         smiq_send.write('*RST')
         status = 1
         visual_function(visual_color_button_sg, 0)
+        logger.debug("The connection was correctly established")
     except:
         visual_function(visual_color_button_sg, 1)
         status = 0

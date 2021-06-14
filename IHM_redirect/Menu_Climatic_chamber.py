@@ -39,7 +39,8 @@ def start_climatic_chamber(self, port_give):
                                            activebackground="green", disabledforeground="grey",
                                            cursor="right_ptr",
                                            overrelief="sunken",
-                                           command=lambda: [write_climate_chamber_scan(combobox_scanner)])
+                                           command=lambda: [write_climate_chamber_scan(combobox_scanner),
+                                                            try_climate_chamber(port, visual_color_button)])
     scanner_port_com_frame_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
     scanner_port_com_frame_label = Label(place, text="The currently selected port :")
     scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
@@ -91,7 +92,9 @@ def try_climate_chamber(port, visual_color_button):
         status = 1
         visual_function(visual_color_button, 0)
     except:
+        status = 0
         visual_function(visual_color_button, 1)
+        logger.critical(f"The port [{port}] is not link to the climate chamber")
 
 
 def write_climate_chamber_scan(combobox_scan):
@@ -122,16 +125,19 @@ def change_port(combobox_scanner, visual_color_button):
     try:
         port_test = combobox_scanner.get()
         a = serial.Serial(port_test, SERIAL_SPEED, timeout=SERIAL_TIMEOUT, writeTimeout=WRITE_TIMEOUT)
-        a.write(CLIMATIC_CHAMBER_STOP)
-        visual_function(visual_color_button, 0)
+        a.write(b"$00I\n\r")
+        time.sleep(0.2)
+        received_frame = a.read_all().decode('utf-8')  # Decipher the frame that was send by the climatic chamber
+        word = received_frame.split(" ")  # Split the decipher the frame that was send by the climatic chamber
+        strings = str(word[1])
+        number = float(strings)
+        logger.info(f"The actual temperature of the climatic chamber is : {number}")
         status = 1
-        logger.debug("The connection was correctly established")
-    except serial.serialutil.SerialException:
+        visual_function(visual_color_button, 0)
+    except:
         logger.critical(f"The port [{port_test}] is not link to the climate chamber")
         status = 0
         visual_function(visual_color_button, 1)
-    except:
-        logger.critical("Error unknown")
 
 
 def scale_climatic_chamber(self, visual_color_button):  # creation of two vey important buttons, Live draw example,
@@ -151,14 +157,7 @@ def scale_climatic_chamber(self, visual_color_button):  # creation of two vey im
 def call_graph_climatic_chamber(self, visual_color_button):
     global port
     global status
-    try:
-        a = serial.Serial(port, SERIAL_SPEED, timeout=SERIAL_TIMEOUT, writeTimeout=WRITE_TIMEOUT)
-        a.write(CLIMATIC_CHAMBER_STOP)
-        visual_function(visual_color_button, 0)
-        status = 1
-    except:
-        status = 0
-        visual_function(visual_color_button, 1)
+    try_climate_chamber(port, visual_color_button)
     if status == 0:
         if askyesno("Warning", "The connection status is : offline\n Do you still want to continue ?"):
             Graphic.main_graphic_climatic_chamber(self, port)
