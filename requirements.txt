@@ -5,3 +5,4 @@ loguru~=0.5.3
 future~=0.18.2
 PyVISA~=1.11.3
 paramiko~=2.7.2
+visa~=1.0.0
