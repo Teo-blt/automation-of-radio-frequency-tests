@@ -39,7 +39,7 @@ def scan_all_ports():
     return [a, values]
 
 
-def scan_all_gpib():
+def scan_all_gpib(version):
     """
     Scan all gpib
     """
@@ -49,12 +49,20 @@ def scan_all_gpib():
     for i in range(0, 30):
         test = str(i)
         try:
-            rm = visa.ResourceManager()
-            smiq_send = rm.open_resource("GPIB1" + '::' + test + '::INSTR', open_timeout=10)
-            smiq_send.write('*RST')
-            logger.info(f"The GPIB {i} is available")
-            data[a] = i
-            a = a + 1
+            if version:
+                ser = serial.Serial("COM18", 9600, timeout=10)
+                ser.write('++addr 25\n'.encode())
+                ser.write('*RST\n'.encode())
+                logger.info(f"The GPIB {i} is available")
+                data[a] = i
+                a = a + 1
+            else:
+                rm = visa.ResourceManager()
+                smiq_send = rm.open_resource("GPIB1" + '::' + test + '::INSTR', timeout=10)
+                smiq_send.write('*RST')
+                logger.info(f"The GPIB {i} is available")
+                data[a] = i
+                a = a + 1
         except:
             logger.debug(f"The GPIB {i} is unavailable")
     values = list(data.values())

@@ -164,7 +164,7 @@ class Threadsmiq(threading.Thread):
         self.nb_frame = nb_frame  # Number of sent frames
         self.wait_measure = 1  # Delay between measurement (s)
         self.channel_list = [measurement_channel]  # List of Measurement channel (Hz)
-        self.gpib_port = gpib_port
+        self.gpib_port = str(gpib_port)
         self.sensitivity_level = -110  # Set channel frequency
         self.freq_dev = freq_dev  # frequency deviation 100 Hz to 2.5 MHz
         self.bit_rate = bit_rate  # symbol rate 1kHz to 7 MHz

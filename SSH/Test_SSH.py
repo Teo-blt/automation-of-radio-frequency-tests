@@ -13,8 +13,6 @@ from tkinter import *
 import tkinter as tk
 from loguru import logger
 from tkinter.messagebox import *
-import time
-
 
 # =============================================================================
 global is_killed
@@ -128,7 +126,8 @@ class Threadibts(threading.Thread):
         print("Successfully connected to", ip_address)
 
         cmd = "/user/libloragw2-utils_5.1.0-klk9-3-ga23e25f_FTK_Tx/send_pkt -d " \
-              "/dev/slot/1/spidev0 -f " + self.frequency + ":1:1 -a 0 -b 125 -s " + self.sf + " -c 1 -r 8 -z 20 -t 20 -x " + \
+              "/dev/slot/1/spidev0 -f " + self.frequency + ":1:1 -a 0 -b 125 -s " + self.sf + "-c 1 -r 8 -z 20 -t 20 " \
+                                                                                              "-x " + \
               self.number_frames + " --atten " + self.attenuate
 
         stdin, stdout, stderr = ssh.exec_command(cmd, get_pty=True)
