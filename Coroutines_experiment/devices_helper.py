@@ -46,7 +46,7 @@ def scan_all_gpib(version):
     data = {}
     a = 0
     logger.info("scan in progress")
-    for i in range(0, 30):
+    for i in range(25, 30):
         test = str(i)
         try:
             if version:
@@ -58,7 +58,7 @@ def scan_all_gpib(version):
                 a = a + 1
             else:
                 rm = visa.ResourceManager()
-                smiq_send = rm.open_resource("GPIB1" + '::' + test + '::INSTR', timeout=10)
+                smiq_send = rm.open_resource("GPIB0" + '::' + test + '::INSTR', timeout=10)
                 smiq_send.write('*RST')
                 logger.info(f"The GPIB {i} is available")
                 data[a] = i

@@ -164,7 +164,7 @@ class Threadsmiq(threading.Thread):
         self.nb_frame = nb_frame  # Number of sent frames
         self.wait_measure = 1  # Delay between measurement (s)
         self.channel_list = [measurement_channel]  # List of Measurement channel (Hz)
-        self.gpib_port = str(gpib_port)
+        self.gpib_port = gpib_port
         self.sensitivity_level = -110  # Set channel frequency
         self.freq_dev = freq_dev  # frequency deviation 100 Hz to 2.5 MHz
         self.bit_rate = bit_rate  # symbol rate 1kHz to 7 MHz
@@ -174,7 +174,7 @@ class Threadsmiq(threading.Thread):
         global is_killed
         sys.path.append('P:\\e2b\\hardware\\Scripts_auto\\Python\\lib')
         rm = visa.ResourceManager()
-        smiq_send = rm.open_resource("GPIB1" + '::' + self.gpib_port + '::INSTR')
+        smiq_send = rm.open_resource("GPIB0" + '::' + str(self.gpib_port) + '::INSTR')
         smiq_send.write('*RST')
         logger.info(smiq_send.query('*IDN?'))
         smiq_send.write('OUTP:STAT OFF')  # RF Output OFF

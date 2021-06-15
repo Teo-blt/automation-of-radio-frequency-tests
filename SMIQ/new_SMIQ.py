@@ -223,20 +223,20 @@ class Threadsmiq(threading.Thread):
             for freq in self.channel_list:
 
                 # Configure sending device modulation
-                ser.write('SOUR:DM:FORM FSK2')  # FSK2 / GFSK
-                ser.write('SOUR:DM:SRATe %d Hz' % bit_rate)  # symbol rate 1kHz to 7 MHz /
+                ser.write('SOUR:DM:FORM FSK2'.encode())  # FSK2 / GFSK
+                ser.write(('SOUR:DM:SRATe ' + str(bit_rate) + ' Hz\n').encode())  # symbol rate 1kHz to 7 MHz /
                 # Set rate BEFORE deviation
-                ser.write('SOUR:DM:FSK:DEV %d' % freq_dev)  # frequency deviation 100 Hz to 2.5 MHz
-                ser.write('SOUR:FREQ:MODE CW')  # Set mode to fixed frequency
-                ser.write('SOUR:FREQ:CW %d' % int(freq))  # Set channel frequency
+                ser.write(('SOUR:DM:FSK:DEV ' + str(freq_dev) + '\n').encode())  # frequency deviation 100 Hz to 2.5 MHz
+                ser.write('SOUR:FREQ:MODE CW'.encode())  # Set mode to fixed frequency
+                ser.write(('SOUR:FREQ:CW ' + str(freq) + '\n').encode())  # Set channel frequency
                 # smiq_send.write('SOUR:DM:FILT:TYPE RECTangle')
                 # SCOSine | COSine | GAUSs | LGAuss | BESS1 | BESS2 | IS95 |
                 # EIS95 | APCO | TETRa | WCDMa | RECTangle | SPHase | USER
 
-                ser.write('SOUR:FREQ:MODE CW')  # Set mode to fixed frequency
-                ser.write('OUTP:STAT ON')  # RF Output ON
+                ser.write('SOUR:FREQ:MODE CW'.encode())  # Set mode to fixed frequency
+                ser.write('OUTP:STAT ON'.encode())  # RF Output ON
 
-                ser.write('SOUR:POW:MODE FIX')  # Set power to "Fixed" mode
+                ser.write('SOUR:POW:MODE FIX'.encode())  # Set power to "Fixed" mode
 
                 sensitivity_steps = list(range(sensitivity_level - 4, sensitivity_level + 11, 1))
                 sensitivity_steps = sensitivity_steps + list(range(sensitivity_level + 11, sensitivity_level + 21, 2))
@@ -246,7 +246,7 @@ class Threadsmiq(threading.Thread):
 
                 for signal_level in sensitivity_steps:
 
-                    ser.write('POW %d' % signal_level)
+                    ser.write(('POW ' + str(signal_level) + '\n').encode())
                     # Set output power level at Theoretical sensitivity + 3dB
 
                     # Set product in reception
@@ -261,7 +261,7 @@ class Threadsmiq(threading.Thread):
                         # Send 1 frame
                         logger.info('===========')
                         logger.info(f' Sending frame {i + 1}/{self.nb_frame}...')
-                        ser.write('TRIG:DM:IMM')  # Send 1 trigger event
+                        ser.write('TRIG:DM:IMM'.encode())  # Send 1 trigger event
                         nb_frame_sent = nb_frame_sent + 1
                         time.sleep(1)
                         # Check frame reception
@@ -309,5 +309,3 @@ class Threadsmiq(threading.Thread):
         a = time.localtime(time_stop - time_start)
         logger.info(f'Test duration : {a[3] - 1}H{a[4]} and {a[5]} second(s)')
         # DUT.close()
-
-

@@ -103,7 +103,7 @@ def try_gpib_connection(gpib_port, visual_color_button_sg):
     global status
     try:
         rm = visa.ResourceManager()
-        smiq_send = rm.open_resource("GPIB1" + '::' + gpib_port + '::INSTR')
+        smiq_send = rm.open_resource("GPIB0" + '::' + gpib_port + '::INSTR')
         smiq_send.write('*RST')
         status = 1
         visual_function(visual_color_button_sg, 0)
@@ -154,7 +154,7 @@ def change_gpib(combobox_scan, visual_color_button_sg):
     gpib_port = combobox_scan.get()
     try:
         rm = visa.ResourceManager()
-        smiq_send = rm.open_resource("GPIB1" + '::' + gpib_port + '::INSTR')
+        smiq_send = rm.open_resource("GPIB0" + '::' + gpib_port + '::INSTR')
         smiq_send.write('*RST')
         visual_function(visual_color_button_sg, 0)
         status = 1
