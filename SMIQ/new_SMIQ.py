@@ -1,63 +1,18 @@
-import os.path
-import serial
+import pyvisa as visa
+from tkinter import *
+from loguru import logger
 import sys
 
-if __name__ == '__main__':
 
-    if len(sys.argv) != 3:
-        print("Usage: ", os.path.basename(sys.argv[0]), "<COM port> <GPIB address>")
-        sys.exit(1)
-
-    comport = sys.argv[1]
-    addr = sys.argv[2]
-
-    ser = serial.Serial()
-
-    try:
-        success = True
-
-        ser = serial.Serial('\\\\.\\' + sys.argv[1], 9600, timeout=0.5)
-
-        cmd = '++mode 1'
-        print('Sending:', cmd)
-        ser.write(cmd + '\n')
-        s = ser.read(256)
-        if len(s) > 0:
-            print(s)
-
-        cmd = '++addr ' + addr
-        print('Sending:', cmd)
-        ser.write(cmd + '\n')
-        s = ser.read(256)
-        if len(s) > 0:
-            print(s)
-
-        cmd = '++auto 1'
-        print('Sending:', cmd)
-        ser.write(cmd + '\n')
-        s = ser.read(256)
-        if len(s) > 0:
-            print(s)
-
-        cmd = 'plot;'
-        print('Sending:', cmd)
-        ser.write(cmd + '\n')
-
-        f = open("plot.bin", "wb")
-
-        while 1:
-            s = ser.read(1000)
-            if len(s) > 0:
-                f.write(s)
-            else:
-                break
-
-        f.close()
-
-    except serial.SerialException as e:
-        print(e)
-        open("plot.bin", "wb").close()
-
-    except KeyboardInterrupt as e:
-        ser.close()
-        open("plot.bin", "wb").close()
+sys.path.append('P:\\e2b\\hardware\\Scripts_auto\\Python\\lib')
+rm = visa.ResourceManager()
+smiq_send = rm.open_resource('PROLOGIX::COM12::GPIB::20')
+smiq_send.write('*RST')
+logger.info(smiq_send.query('*IDN?'))
+smiq_send.write('OUTP:STAT OFF')  # RF Output OFF
+smiq_send.write('SOUR:DM:STAT ON')  # Digital Modulation ON
+smiq_send.write('SOUR:DM:SOUR DLIST')  # Source selection
+smiq_send.write("SOUR:DM:DLIST:SEL 'T1_TEST'")  # 169_N2
+smiq_send.write('SOUR:DM:SEQ SINGLE')  # AUTO | RETRigger | AAUTo | ARETrigger | SINGle
+# Rectangle filter mandatory for WM4800 !
+smiq_send.write('SOUR:DM:FILT:TYPE RECT')
