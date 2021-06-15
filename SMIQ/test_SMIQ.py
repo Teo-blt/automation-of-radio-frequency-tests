@@ -122,7 +122,7 @@ def lunch_safety(number_frames, measurement_channel, gpib_port, sensitivity_leve
         else:
             if is_killed == 0:
                 is_killed = 1
-                Threadsmiq(number_frames, measurement_channel, sensitivity_level, gpib_port,
+                Threadsmiq(number_frames, measurement_channel, gpib_port,sensitivity_level,
                            freq_dev, bit_rate).start()
             else:
                 logger.info("The smiq program is already running")
