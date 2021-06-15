@@ -21,7 +21,7 @@ class PrologixInstrument(object):
     def __init__(self, gpibAddr, comPort, baud_rate=921600, timeout=0.25, silent=True):
         comPort = "COM18" #  int(comPort[3:]) - 1
         self._silent = silent
-        self.gpibAddr = "GPIB25" #  gpibAddr
+        self.gpibAddr = 25 #  gpibAddr
 
         if timeout is None:
             timeout = 2
