@@ -223,20 +223,20 @@ class Threadsmiq(threading.Thread):
             for freq in self.channel_list:
 
                 # Configure sending device modulation
-                ser.write('SOUR:DM:FORM FSK2'.encode())  # FSK2 / GFSK
+                ser.write('SOUR:DM:FORM FSK2\n'.encode())  # FSK2 / GFSK
                 ser.write(('SOUR:DM:SRATe ' + str(bit_rate) + ' Hz\n').encode())  # symbol rate 1kHz to 7 MHz /
                 # Set rate BEFORE deviation
                 ser.write(('SOUR:DM:FSK:DEV ' + str(freq_dev) + '\n').encode())  # frequency deviation 100 Hz to 2.5 MHz
-                ser.write('SOUR:FREQ:MODE CW'.encode())  # Set mode to fixed frequency
+                ser.write('SOUR:FREQ:MODE CW\n'.encode())  # Set mode to fixed frequency
                 ser.write(('SOUR:FREQ:CW ' + str(freq) + '\n').encode())  # Set channel frequency
                 # smiq_send.write('SOUR:DM:FILT:TYPE RECTangle')
                 # SCOSine | COSine | GAUSs | LGAuss | BESS1 | BESS2 | IS95 |
                 # EIS95 | APCO | TETRa | WCDMa | RECTangle | SPHase | USER
 
-                ser.write('SOUR:FREQ:MODE CW'.encode())  # Set mode to fixed frequency
-                ser.write('OUTP:STAT ON'.encode())  # RF Output ON
+                ser.write('SOUR:FREQ:MODE CW\n'.encode())  # Set mode to fixed frequency
+                ser.write('OUTP:STAT ON\n'.encode())  # RF Output ON
 
-                ser.write('SOUR:POW:MODE FIX'.encode())  # Set power to "Fixed" mode
+                ser.write('SOUR:POW:MODE FIX\n'.encode())  # Set power to "Fixed" mode
 
                 sensitivity_steps = list(range(sensitivity_level - 4, sensitivity_level + 11, 1))
                 sensitivity_steps = sensitivity_steps + list(range(sensitivity_level + 11, sensitivity_level + 21, 2))
@@ -261,7 +261,7 @@ class Threadsmiq(threading.Thread):
                         # Send 1 frame
                         logger.info('===========')
                         logger.info(f' Sending frame {i + 1}/{self.nb_frame}...')
-                        ser.write('TRIG:DM:IMM'.encode())  # Send 1 trigger event
+                        ser.write('TRIG:DM:IMM\n'.encode())  # Send 1 trigger event
                         nb_frame_sent = nb_frame_sent + 1
                         time.sleep(1)
                         # Check frame reception
