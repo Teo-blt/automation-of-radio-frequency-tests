@@ -11,7 +11,6 @@ import tkinter as tk
 from tkinter import *
 from tkinter.messagebox import *
 from loguru import logger
-from SSH import Test_SSH
 import paramiko
 from I_zepto import I_zepto_test
 
@@ -58,7 +57,7 @@ def izepto_menu(self, ip_address):
                                bg="red", state="disabled")
     izepto_info_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
 
-    try_izepto_connection(port_com_frame_entry, port_com_frame_entry_name, visual_color_button_sg)
+    # try_izepto_connection(port_com_frame_entry, port_com_frame_entry_name, visual_color_button_sg)
 
 
 def visual_function(visual_color_button, s):
