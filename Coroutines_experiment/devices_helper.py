@@ -46,11 +46,12 @@ def scan_all_gpib(version):
     if version:
         data = {}
         a = 0
+        time = 1
         logger.info("New version scan in progress")
         [numbera, numberb] = scan_all_ports()
         for t in range(0, numbera):
             test1 = "COM" + str(numberb[t])
-            ser = serial.Serial(test1, 9600, timeout=10)
+            ser = serial.Serial("COM18", 9600, timeout=time, write_timeout=time, inter_byte_timeout=time)
             for i in range(0, 30):
                 test = str(i)
                 ser.write(('++addr ' + test + '\n').encode())
@@ -62,8 +63,9 @@ def scan_all_gpib(version):
                     logger.info(f"The GPIB {i} is available")
                     data[a] = i
                     a = a + 1
+                    break
                 except:
-                    logger.debug(f"The GPIB {i} is unavailable")
+                    pass
             values = list(data.values())
             logger.info(f"The available GPIB are : {values} ")
             return [a, values]
@@ -71,12 +73,14 @@ def scan_all_gpib(version):
     else:
         data = {}
         a = 0
+        time = 1
         logger.info("Old version scan in progress")
         for i in range(0, 30):
             test = str(abs((i - 30)))
             try:
                 rm = visa.ResourceManager()
-                smiq_send = rm.open_resource("GPIB0" + '::' + test + '::INSTR', timeout=10)
+                smiq_send = rm.open_resource("GPIB0" + '::' + test + '::INSTR', timeout=time,
+                                             write_timeout=time, inter_byte_timeout=time)
                 smiq_send.write('*RST')
                 logger.info(f"The GPIB {test} is available")
                 data[a] = test

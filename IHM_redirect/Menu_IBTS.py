@@ -72,7 +72,7 @@ def try_ibts_connection(port_com_frame_entry, port_com_frame_entry_name, visual_
         password = "root"
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(hostname=ip_address, username=username, password=password)
+        ssh.connect(hostname=ip_address, username=username, password=password, timeout=1)
         status = 1
         visual_function(visual_color_button_sg, 0)
     except:

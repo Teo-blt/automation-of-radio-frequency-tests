@@ -23,6 +23,7 @@ THE_COLOR = "#E76145"
 global status
 global version
 
+
 def visual_function(visual_color_button, s):
     if s == 1:
         visual_color_button.config(text="The connection status is : offline", bg="red")
@@ -79,11 +80,15 @@ def sg_menu(self, gpib_port):
     visual_color_button_sg.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
     port_com_frame_label = Label(place, text="Connection port :")
     port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-    combobox_scan = ttk.Combobox(place,
-                                 values=[0], state="readonly")
+    combobox_scan = ttk.Combobox(place, values=[0], state="readonly")
     combobox_scan.set("--choose your port here--")
     combobox_scan.pack(padx=50, pady=0, expand=False, fill="x", side=TOP)
-    try_gpib_connection(gpib_port, visual_color_button_sg)
+    manual_button = Button(place, text="Manual Menu", borderwidth=8, background=THE_COLOR,
+                           activebackground="green", disabledforeground="grey",
+                           cursor="right_ptr",
+                           overrelief="sunken",
+                           command=lambda: [manual_menu(self)])
+    manual_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
 
     def automatic_1(e):
         return automatic(port_com_frame_entry, combobox_scan)
@@ -93,11 +98,31 @@ def sg_menu(self, gpib_port):
         change_gpib(combobox_scan, visual_color_button_sg)
 
     combobox_scan.bind("<<ComboboxSelected>>", automatic_1)
-    write_gpib_scan(combobox_scan)
+    try_gpib_connection(gpib_port, visual_color_button_sg)
+
 
 def change_version(a):
     global version
     version = a
+
+
+def manual_menu(self):
+    Manual_connection = LabelFrame(self, text="Manual connection")
+    Manual_connection.grid(row=1, column=1, ipadx=40, ipady=20, padx=0, pady=0)
+    Manual_connection_port_label = Label(Manual_connection, text="Port COM")
+    Manual_connection_port_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+    com_entry = Entry(Manual_connection)
+    com_entry.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+    Manual_connection_gpib_label = Label(Manual_connection, text="GPIB address")
+    Manual_connection_gpib_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+    gpib_entry = Entry(Manual_connection)
+    gpib_entry.pack(padx=0, pady=10, expand=False, fill="none", side=TOP)
+    start_test_button = tk.Button(Manual_connection, text="Begin transmission",
+                                  borderwidth=8, background=THE_COLOR,
+                                  activebackground="green", cursor="right_ptr", overrelief="sunken",
+                                  command=lambda: [manual_launch(gpib_entry.get(), com_entry.get())])
+    start_test_button.pack(padx=0, pady=0, ipadx=10, ipady=10, expand=False, fill="none", side=TOP)
+
 
 def try_gpib_connection(gpib_port, visual_color_button_sg):
     global status
@@ -109,7 +134,6 @@ def try_gpib_connection(gpib_port, visual_color_button_sg):
             ser.write("*IDN?\r".encode())
             ans = ser.readlines(ser.write(('++read\n'.encode())))
             word = ans[0]
-            word2 = word[10:11]
             logger.debug(f"The connection was correctly established")
             visual_function(visual_color_button_sg, 0)
             status = 1
@@ -128,6 +152,20 @@ def try_gpib_connection(gpib_port, visual_color_button_sg):
         except:
             visual_function(visual_color_button_sg, 1)
             status = 0
+
+
+def manual_launch(gpib, port):
+    try:
+        port_com = "COM" + str(port)
+        ser = serial.Serial(port_com, 9600, timeout=0.5)
+        ser.write(('++addr ' + gpib + '\n').encode())
+        ser.write("*IDN?\r".encode())
+        ans = ser.readlines(ser.write(('++read\n'.encode())))
+        word = ans[0]
+        logger.debug(f"The connection was correctly established")
+        new_SMIQ.lunch_smiq(gpib)
+    except:
+        showerror("Error", "Values invalid")
 
 
 def call_graph_smiq(gpib_port):
@@ -177,7 +215,6 @@ def change_gpib(combobox_scan, visual_color_button_sg):
             ser.write("*IDN?\r".encode())
             ans = ser.readlines(ser.write(('++read\n'.encode())))
             word = ans[0]
-            word2 = word[10:11]
             logger.debug(f"The connection was correctly established")
             visual_function(visual_color_button_sg, 0)
             status = 1
@@ -198,4 +235,3 @@ def change_gpib(combobox_scan, visual_color_button_sg):
             status = 0
             visual_function(visual_color_button_sg, 1)
             logger.critical(f"The port [{gpib_port}] is not link to the climate chamber")
-
