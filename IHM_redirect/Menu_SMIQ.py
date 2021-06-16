@@ -101,16 +101,33 @@ def change_version(a):
 
 def try_gpib_connection(gpib_port, visual_color_button_sg):
     global status
-    try:
-        rm = visa.ResourceManager()
-        smiq_send = rm.open_resource("GPIB0" + '::' + gpib_port + '::INSTR')
-        smiq_send.write('*RST')
-        status = 1
-        visual_function(visual_color_button_sg, 0)
-        logger.debug("The connection was correctly established")
-    except:
-        visual_function(visual_color_button_sg, 1)
-        status = 0
+    global version
+    if version:
+        ser = serial.Serial("COM18", 9600, timeout=0.5)
+        try:
+            ser.write(('++addr ' + gpib_port + '\n').encode())
+            ser.write("*IDN?\r".encode())
+            ans = ser.readlines(ser.write(('++read\n'.encode())))
+            word = ans[0]
+            word2 = word[10:11]
+            logger.debug(f"The connection was correctly established")
+            visual_function(visual_color_button_sg, 0)
+            status = 1
+        except:
+            visual_function(visual_color_button_sg, 1)
+            status = 0
+            logger.critical(f"The port [{gpib_port}] is not link to the climate chamber")
+    else:
+        try:
+            rm = visa.ResourceManager()
+            smiq_send = rm.open_resource("GPIB0" + '::' + gpib_port + '::INSTR')
+            smiq_send.write('*RST')
+            status = 1
+            visual_function(visual_color_button_sg, 0)
+            logger.debug("The connection was correctly established")
+        except:
+            visual_function(visual_color_button_sg, 1)
+            status = 0
 
 
 def call_graph_smiq(gpib_port):
@@ -151,14 +168,34 @@ def change_combo_gpib(port_com_frame_entry, combobox_scan):
 
 def change_gpib(combobox_scan, visual_color_button_sg):
     global status
+    global version
     gpib_port = combobox_scan.get()
-    try:
-        rm = visa.ResourceManager()
-        smiq_send = rm.open_resource("GPIB0" + '::' + gpib_port + '::INSTR')
-        smiq_send.write('*RST')
-        visual_function(visual_color_button_sg, 0)
-        status = 1
-        logger.debug("The connection was correctly established")
-    except:
-        logger.critical(f"The port [{gpib_port}] is not link to the climate chamber")
+    if version:
+        ser = serial.Serial("COM18", 9600, timeout=0.5)
+        try:
+            ser.write(('++addr ' + gpib_port + '\n').encode())
+            ser.write("*IDN?\r".encode())
+            ans = ser.readlines(ser.write(('++read\n'.encode())))
+            word = ans[0]
+            word2 = word[10:11]
+            logger.debug(f"The connection was correctly established")
+            visual_function(visual_color_button_sg, 0)
+            status = 1
+        except:
+            status = 0
+            visual_function(visual_color_button_sg, 1)
+            logger.critical(f"The port [{gpib_port}] is not link to the climate chamber")
+
+    else:
+        try:
+            rm = visa.ResourceManager()
+            smiq_send = rm.open_resource("GPIB0" + '::' + gpib_port + '::INSTR')
+            smiq_send.write('*RST')
+            visual_function(visual_color_button_sg, 0)
+            status = 1
+            logger.debug("The connection was correctly established")
+        except:
+            status = 0
+            visual_function(visual_color_button_sg, 1)
+            logger.critical(f"The port [{gpib_port}] is not link to the climate chamber")
 

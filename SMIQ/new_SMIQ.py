@@ -175,6 +175,8 @@ class Threadsmiq(threading.Thread):
         ser = serial.Serial("COM18", 9600, timeout=0.5)
         ser.write('++addr 25\n'.encode())
         ser.write('*RST\n'.encode())
+        ser.write("*IDN?\r".encode())
+        logger.info(ser.readlines(ser.write(('++read\n'.encode()))))
         ser.write('OUTP:STAT OFF\n'.encode())  # RF Output OFF
         ser.write('SOUR:DM:STAT ON\n'.encode())  # Digital Modulation ON
         ser.write('SOUR:DM:SOUR DLIST\n'.encode())  # Source selection

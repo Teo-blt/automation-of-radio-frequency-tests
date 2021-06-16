@@ -33,7 +33,7 @@ def scan_all_ports():
             data[a] = i
             a = a + 1
         except:
-            logger.debug(f"The connection port {i} is unavailable")
+            pass
     values = list(data.values())
     logger.info(f"The available ports are : {values} ")
     return [a, values]
@@ -47,20 +47,26 @@ def scan_all_gpib(version):
         data = {}
         a = 0
         logger.info("New version scan in progress")
-        ser = serial.Serial("COM18", 9600, timeout=10)
-        for i in range(0, 30):
-            test = str(i)
-            try:
+        [numbera, numberb] = scan_all_ports()
+        for t in range(0, numbera):
+            test1 = "COM" + str(numberb[t])
+            ser = serial.Serial(test1, 9600, timeout=10)
+            for i in range(0, 30):
+                test = str(i)
                 ser.write(('++addr ' + test + '\n').encode())
-                ser.write('*RST\n'.encode())
-                logger.info(f"The GPIB {i} is available")
-                data[a] = i
-                a = a + 1
-            except:
-                logger.debug(f"The GPIB {i} is unavailable")
-        values = list(data.values())
-        logger.info(f"The available GPIB are : {values} ")
-        return [a, values]
+                ser.write("*IDN?\r".encode())
+                ans = ser.readlines(ser.write(('++read\n'.encode())))
+                try:
+                    word = ans[0]
+                    word2 = word[10:11]
+                    logger.info(f"The GPIB {i} is available")
+                    data[a] = i
+                    a = a + 1
+                except:
+                    logger.debug(f"The GPIB {i} is unavailable")
+            values = list(data.values())
+            logger.info(f"The available GPIB are : {values} ")
+            return [a, values]
 
     else:
         data = {}
