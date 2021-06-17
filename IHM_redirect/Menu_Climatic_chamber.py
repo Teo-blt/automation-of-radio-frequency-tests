@@ -86,7 +86,6 @@ def try_climate_chamber(port, visual_color_button):
         word = received_frame.split(" ")  # Split the decipher the frame that was send by the climatic chamber
         strings = str(word[1])
         number = float(strings)
-        logger.info(f"The actual temperature of the climatic chamber is : {number}")
         status = 1
         visual_function(visual_color_button, 0)
     except:

@@ -24,12 +24,11 @@ def scan_all_ports():
     """
     data = {}
     a = 0
-    logger.info("scan in progress")
+    logger.info("Scan in progress")
     for i in range(0, 30):
         test = ('COM' + str(i))
         try:
             serial.Serial(test, SERIAL_SPEED, timeout=1, writeTimeout=1)
-            logger.info(f"The connection port {i} is available")
             data[a] = i
             a = a + 1
         except:

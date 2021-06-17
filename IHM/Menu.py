@@ -16,6 +16,7 @@ from IHM_redirect import Menu_Izepto
 from IHM_redirect import Menu_IBTS
 from IHM_redirect import Menu_SMIQ
 from IHM_redirect import Menu_Climatic_chamber
+from IHM_redirect import Menu_Sensibility_test
 
 # ============================================================================
 
@@ -32,7 +33,7 @@ class Application(Tk):
         self._ip_address = "192.168.4.228"
         self.status = 0
         self.interface(0)
-        self.carte_ip_address = "192.168.120.1"
+        self._carte_ip_address = "192.168.120.1"
 
     def create_choose_measuring_tool_combobox(self, value: str):
         """
@@ -52,7 +53,8 @@ class Application(Tk):
             "Climatic chamber",  # The list of measuring tool
             "Signal generator",
             "IBTS",
-            "Izepto"], state="readonly")
+            "Izepto",
+            "Sensibility test"], state="readonly")
 
         def chose(e, i=choose_measuring_tool_combobox):
             return validate(e, i)
@@ -79,6 +81,9 @@ class Application(Tk):
         elif choice == 3:
             self.create_new_window("Izepto")  # Call the clear function to clean all the window
             self.carte_izepto()  # Open generator
+        elif choice == 4:
+            self.create_new_window("Sensibility test")  # Call the clear function to clean all the window
+            self.Sensibility_test()  # Open generator
 
     def create_new_window(self, window_title: str):
         """
@@ -105,7 +110,11 @@ class Application(Tk):
 
     def carte_izepto(self):  # The Izepto menu
         self.geometry(WINDOW_SIZE)  # set window size
-        Menu_Izepto.izepto_menu(self, self.carte_ip_address)
+        Menu_Izepto.izepto_menu(self, self._carte_ip_address)
+
+    def Sensibility_test(self):  # The Sensibility test menu
+        self.geometry(WINDOW_SIZE)  # set window size
+        Menu_Sensibility_test.sensibility_test_menu(self, self._port, self._ip_address, self._carte_ip_address)
 
 
 Application().mainloop()

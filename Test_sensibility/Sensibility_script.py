@@ -7,21 +7,10 @@
 # =============================================================================
 """The Module Has Been Build for the automation of radio frequency tests"""
 # =============================================================================
-import asyncio
-import time
+from loguru import logger
 
 # =============================================================================
 
-async def func_a():
-    print("a")
 
-async def func_b():
-    time.sleep(5)
-    print("b")
-
-async def several_methods_run_together():
-    statements = [func_a(), func_b()]
-    await asyncio.gather(*statements)
-    print("c")
-
-asyncio.run(several_methods_run_together())
+def launch_script():
+    logger.info("go")
