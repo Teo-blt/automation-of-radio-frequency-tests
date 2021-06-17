@@ -19,12 +19,13 @@ THE_COLOR = "#E76145"
 global status
 
 
+
 def izepto_menu(self, ip_address):
     scanner_ibts_frame = LabelFrame(self, text="Detection of Izepto")
     scanner_ibts_frame.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
     ibts_scale_frame = LabelFrame(self, text="Start the test")
     ibts_scale_frame.grid(row=0, column=3, ipadx=0, ipady=0, padx=0, pady=0)
-    start_test_button = tk.Button(ibts_scale_frame, text="Begin transmission",
+    start_test_button = tk.Button(ibts_scale_frame, text="ignition of the card",
                                   borderwidth=8, background=THE_COLOR,
                                   activebackground="green", cursor="right_ptr", overrelief="sunken",
                                   command=lambda: [call_graph_izepto(ip_address, port_com_frame_entry,
@@ -52,7 +53,6 @@ def izepto_menu(self, ip_address):
     scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
     visual_color_button_sg = Button(place, state="disabled", disabledforeground="black")
     visual_color_button_sg.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-
     izepto_info_label = Button(place, text="The Izepto card is not ready", disabledforeground="black",
                                bg="red", state="disabled")
     izepto_info_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
@@ -88,7 +88,7 @@ def try_izepto_connection(port_com_frame_entry, port_com_frame_entry_name, visua
 
 def call_graph_izepto(ip_address, port_com_frame_entry, visual_color_button_sg, izepto_info_label):
     global status
-    change_izepto(port_com_frame_entry.get())
+    change_izepto(port_com_frame_entry.get(), visual_color_button_sg)
     if status == 0:
         if askyesno("Warning", "The connection status is : offline\n Do you still want to continue ?"):
             I_zepto_test.lunch_izepto(ip_address)
@@ -98,7 +98,7 @@ def call_graph_izepto(ip_address, port_com_frame_entry, visual_color_button_sg, 
         I_zepto_test.lunch_izepto(ip_address)
         izepto_info_label.config(text="The Izepto card is ready to received", bg="light green")
 
-def change_izepto(name):
+def change_izepto(name, visual_color_button_sg):
     global status
     ip_address = name
     try:
@@ -108,6 +108,7 @@ def change_izepto(name):
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(hostname=ip_address, username=username, password=password)
         status = 1
+        visual_function(visual_color_button_sg, 0)
     except:
         status = 0
         logger.critical(f"The IP address [{ip_address}] is not link to the izepto")

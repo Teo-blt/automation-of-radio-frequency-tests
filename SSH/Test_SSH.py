@@ -132,6 +132,17 @@ class Threadibts(threading.Thread):
 
         stdin, stdout, stderr = ssh.exec_command(cmd, get_pty=True)
 
-        for line in iter(stdout.readline, ""):
-            print(line, end="")
-        print('finished.')
+        while (1):
+            wah = stdout.readline()
+            print(wah)
+            if wah[3:5] == "27":
+                break
+
+        wah1 = 0
+        while wah1 != int(self.number_frames):
+            a = stdout.read(1)
+            wah1 = wah1 + len(a)
+            print(f"The number of frames sent is {wah1}")
+        print("finish")
+        ssh.close()
+
