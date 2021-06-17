@@ -171,6 +171,8 @@ class Threadsmiq(threading.Thread):
         self._kill = 0  # to kill the thread
 
     def run(self):
+        smiq_result = open("Report_SMIQ.txt", 'w+')
+        smiq_result.close()
         global is_killed
         sys.path.append('P:\\e2b\\hardware\\Scripts_auto\\Python\\lib')
         rm = visa.ResourceManager()
@@ -217,10 +219,10 @@ class Threadsmiq(threading.Thread):
             bit_rate = mod[2]
             sensitivity_level = mod[4]
 
-            csv_result = open("Report_SMIQ", 'w+')
-            csv_result.write("Sensitivity measurement\n")
-            csv_result.write("EN300 220-1 v3.1.1\n")
-            csv_result.write("Time; Channel frequency; Signal Level; Nb frame sent; PER\n\n")
+            self.write_doc("Report_SMIQ")
+            self.write_doc("Sensitivity measurement")
+            self.write_doc("EN300 220-1 v3.1.1")
+            self.write_doc("Time; Channel frequency; Signal Level; Nb frame sent; PER")
 
             for freq in self.channel_list:
 
@@ -298,12 +300,10 @@ class Threadsmiq(threading.Thread):
                     logger.info(f'Number of frames sent : {nb_frame_sent}')
                     logger.info(f'Percentage of loose {per * 100}%')
                     logger.info(f'Rssi average : {rssi_average}\n')
-                    csv_result.write(res_str)
+                    self.write_doc(res_str)
                     if not is_killed:
                         break
                     time.sleep(self.wait_measure)
-
-            csv_result.close()
 
         time_stop = time.time()
         logger.info("################################################")
@@ -311,3 +311,8 @@ class Threadsmiq(threading.Thread):
         a = time.localtime(time_stop - time_start)
         logger.info(f'Test duration : {a[3] - 1}H{a[4]} and {a[5]} second(s)')
         # DUT.close()
+
+    def write_doc(self, text):
+        smiq_result = open("Report_SMIQ.txt", 'a')
+        smiq_result.write(str(text) + "\n")
+        smiq_result.close()

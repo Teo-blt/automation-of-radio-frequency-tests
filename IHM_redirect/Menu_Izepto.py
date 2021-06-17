@@ -25,7 +25,7 @@ def izepto_menu(self, ip_address):
     scanner_ibts_frame.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
     ibts_scale_frame = LabelFrame(self, text="Start the test")
     ibts_scale_frame.grid(row=0, column=3, ipadx=0, ipady=0, padx=0, pady=0)
-    start_test_button = tk.Button(ibts_scale_frame, text="ignition of the card",
+    start_test_button = tk.Button(ibts_scale_frame, text="Ignition of the card",
                                   borderwidth=8, background=THE_COLOR,
                                   activebackground="green", cursor="right_ptr", overrelief="sunken",
                                   command=lambda: [call_graph_izepto(ip_address, port_com_frame_entry,
