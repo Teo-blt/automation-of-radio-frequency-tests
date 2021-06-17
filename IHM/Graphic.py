@@ -97,6 +97,7 @@ def live_graph(self):  # The function live_graph crate a new window with a graph
 
 
 def main_graphic_climatic_chamber(self, port):
+
     global color_button
 
     def state_graph(state):
@@ -128,7 +129,6 @@ def main_graphic_climatic_chamber(self, port):
                 start_button_frame_button.invoke()
             else:
                 pass
-
 
     def quit_graph():
         global ani
@@ -168,8 +168,9 @@ def main_graphic_climatic_chamber(self, port):
     b = IntVar()
     c = IntVar()
 
-    new_window_main_graphic = tk.Toplevel(self)
+    new_window_main_graphic = Tk()
     new_window_main_graphic.title("Climatic chamber settings")
+    new_window_main_graphic.config(background='#fafafa')
 
     root = Tk()
     root.title('Graph window')
@@ -404,10 +405,10 @@ def main_graphic_climatic_chamber(self, port):
     temperature_start_stair_scale.grid(row=1, column=1, ipadx=10, ipady=10, padx=30, pady=0)
     temperature_start_stair_scale.set(-1)
     temperature_duration_h_stair_scale = Scale(auto_stair_scale_frame, orient='horizontal',
-                                                troughcolor=THE_COLOR, from_=1, to=20,
-                                                resolution=1, tickinterval=4, length=100,
-                                                command=lambda x: [create_stair()],
-                                                label='Temperature duration (H)', state="active")
+                                               troughcolor=THE_COLOR, from_=1, to=20,
+                                               resolution=1, tickinterval=4, length=100,
+                                               command=lambda x: [create_stair()],
+                                               label='Temperature duration (H)', state="active")
     temperature_duration_h_stair_scale.grid(row=1, column=2, ipadx=30, ipady=10, padx=30, pady=0)
     temperature_duration_h_stair_scale.set(1)
     temperature_end_auto_stair_scale_frame_scale = Scale(auto_stair_scale_frame, orient='vertical',

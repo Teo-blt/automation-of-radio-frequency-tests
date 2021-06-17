@@ -10,12 +10,10 @@
 import tkinter as tk
 from tkinter import *
 from Test_sensibility import Sensibility_script
-import asyncio
 import paramiko
 import time
 from loguru import logger
 import serial
-from tkinter.messagebox import *
 
 # =============================================================================
 THE_COLOR = "#E76145"
@@ -32,7 +30,7 @@ def sensibility_test_menu(self, port, ip_address, carte_ip_address):
                                   borderwidth=8, background=THE_COLOR,
                                   activebackground="green", cursor="right_ptr", overrelief="sunken",
                                   command=lambda: [run(iBTS_entry.get(), iZepto_entry.get(),
-                                                       climate_chamber_entry.get())])
+                                                       climate_chamber_entry.get(), self)])
     start_test_button.pack(padx=0, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
     place = scanner_ibts_frame
 
@@ -55,7 +53,7 @@ def sensibility_test_menu(self, port, ip_address, carte_ip_address):
     climate_chamber_entry.insert(0, port)
 
 
-async def func_a(ip_address):
+def func_a(ip_address):
     # ip_address = "192.168.4.228"
     global validation
     try:
@@ -66,28 +64,28 @@ async def func_a(ip_address):
         ssh.connect(hostname=ip_address, username=username, password=password)
         logger.info(f"Successfully connected to {ip_address}")
         validation = validation + 1
-        return 1
+        return ssh
     except:
         logger.critical(f"Impossible to connected to {ip_address}")
 
 
-async def func_b(ip):
+def func_b(ip):
     # ip = "192.168.120.1"
     global validation
     try:
         username = "root"
         password = "root"
-        ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(hostname=ip, username=username, password=password)
+        ssh2 = paramiko.SSHClient()
+        ssh2.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh2.connect(hostname=ip, username=username, password=password)
         logger.info(f"Successfully connected to {ip}")
         validation = validation + 1
-        return 1
+        return ssh2
     except:
         logger.critical(f"Impossible to connected to {ip}")
 
 
-async def func_c(port_test):
+def func_c(port_test):
     # port_test = "COM11"
     global validation
     try:
@@ -100,20 +98,22 @@ async def func_c(port_test):
         number = float(strings)
         logger.info(f"Successfully connected to {port_test}")
         validation = validation + 1
-        return 1
+        return wah
     except:
         logger.critical(f"Impossible to connected to {port_test}")
 
 
-async def several_methods_run_together(ip_address, ip, port_test):
+def several_methods_run_together(ip_address, ip, port_test, self):
     global validation
-    statements = [func_a(ip_address), func_b(ip), func_c(port_test)]
-    await asyncio.gather(*statements)
+    ssh = func_a(ip_address)
+    ssh2 = func_b(ip)
+    wah = func_c(port_test)
     if validation == 3:
-        Sensibility_script.launch_script()
+        self.destroy()
+        Sensibility_script.Sensibility(ip_address, ip).start()
     else:
         logger.warning("Please check your data")
 
 
-def run(ip_address, ip, port_test):
-    asyncio.run(several_methods_run_together(ip_address, ip, port_test))
+def run(ip_address, ip, port_test, self):
+    several_methods_run_together(ip_address, ip, port_test, self)

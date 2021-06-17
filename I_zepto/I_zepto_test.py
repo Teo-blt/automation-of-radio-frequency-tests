@@ -34,7 +34,7 @@ class Threadizepto(threading.Thread):
         cmd = "./lora_pkt_fwd -c global_conf.json.sx1250.EU868"
         cmd2 = "cd /user/libsx1302-utils_V1.0.5-klk1-dirty"
         stdin, stdout, stderr = ssh.exec_command(cmd2 + "\n" + cmd, get_pty=True)
-
+        i = 0
         for line in iter(stdout.readline, ""):
             print(line, end="")
         print('finished.')
