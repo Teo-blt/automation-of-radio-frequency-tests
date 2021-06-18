@@ -46,10 +46,9 @@ class Threadizepto(threading.Thread):
                 break
         self.write_doc("Sensitivity measurement iZepto")
         wah1 = 0
-        for i in range(0, 10):
+        while 1:
             a = stdout.readline()
-            print(a)
-            wah1 = wah1 + len(a)
+            wah1 = wah1 + 0.25
             logger.info(f"The number of frames receive is {wah1}")
             self.write_doc(f"The number of frames receive is {wah1}")
         logger.info("finish")

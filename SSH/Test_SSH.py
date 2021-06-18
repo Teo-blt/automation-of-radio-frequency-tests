@@ -117,6 +117,7 @@ class Threadibts(threading.Thread):
         self.ip = ip
 
     def run(self):
+        global is_killed
         ibts_result = open("Report_iBTS.txt", 'w+')
         ibts_result.close()
         ip_address = self.ip
@@ -140,18 +141,10 @@ class Threadibts(threading.Thread):
             if wah[3:5] == "27":
                 logger.debug("The iBTS is ready")
                 break
-        self.write_doc("Sensitivity measurement iBTS")
         wah1 = 0
         while wah1 != int(self.number_frames):
             a = stdout.read(1)
             wah1 = wah1 + len(a)
-            logger.info(f"The number of frames sent is {wah1}")
-            self.write_doc(f"The number of frames sent is {wah1}")
-        logger.info("All frames have been sent")
-        self.write_doc("All frames have been sent")
+        logger.info(f"All frames have been sent at -{int(self.attenuate)/4} dB")
         ssh.close()
-
-    def write_doc(self, text):
-        ibts_result = open("Report_iBTS.txt", 'a')
-        ibts_result.write(str(text) + "\n")
-        ibts_result.close()
+        is_killed = 0

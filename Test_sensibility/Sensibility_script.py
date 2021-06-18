@@ -15,8 +15,6 @@ from loguru import logger
 from tkinter.messagebox import *
 
 # =============================================================================
-global is_killed
-is_killed = 0
 THE_COLOR = "#E76145"
 
 
@@ -28,39 +26,56 @@ class Thread_sensibility(threading.Thread):
         self.ip_address = ip_address
         self.ip = ip
         self.port_test = port_test
+        self.attenuate = 0  # 0.25dB par pas
 
     def run(self):
-        sensibility_result = open("Report_sensibility.txt", 'w+')
-        sensibility_result.close()
-        username = "root"
-        password = "root"
-        ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(hostname=self.ip, username=username, password=password)
-        logger.debug(f"Successfully connected to {self.ip}")
-        cmd = "./lora_pkt_fwd -c global_conf.json.sx1250.EU868"
-        cmd2 = "cd /user/libsx1302-utils_V1.0.5-klk1-dirty"
-        stdin, stdout, stderr = ssh.exec_command(cmd2 + "\n" + cmd, get_pty=True)
-
-        while (1):
-            wah = stdout.readline()
-            logger.info(wah)
-            if wah[19:22] == "EUI":
-                logger.debug("The iZepto is ready")
-                break
-        self.lunch_ibts()
-        print("a")
-        self.write_doc("Sensitivity measurement iZepto")
-        wah1 = 0
         for i in range(0, 10):
-            a = stdout.readline()
-            print(a)
-            wah1 = wah1 + len(a)
-            logger.info(f"The number of frames receive is {wah1}")
-            self.write_doc(f"The number of frames receive is {wah1}")
-        logger.info("finish")
-        self.write_doc("finish")
-        ssh.close()
+            if i == 0:
+                sensibility_result = open("Report_sensibility.txt", 'w+')
+                sensibility_result.close()
+                self.write_doc("Sensitivity measurement iZepto")
+                self.write_doc("Sensitivity measurement iBTS")
+            username = "root"
+            password = "root"
+            ssh = paramiko.SSHClient()
+            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            ssh.connect(hostname=self.ip, username=username, password=password)
+            cmd = "./lora_pkt_fwd -c global_conf.json.sx1250.EU868"
+            cmd2 = "cd /user/libsx1302-utils_V1.0.5-klk1-dirty"
+            stdin, stdout, stderr = ssh.exec_command(cmd2 + "\n" + cmd, get_pty=True)
+
+            while (1):
+                wah = stdout.readline()
+                logger.info(wah)
+                if wah[19:22] == "EUI":
+                    logger.debug("The iZepto is ready")
+                    break
+            if i == 0:
+                self.lunch_ibts()
+            else:
+                self.attenuate = int(self.attenuate) + 10
+                self.ready_ibts()
+            wah1 = 0
+            for i in range(0, int(self.number_frames)):
+                a = stdout.readline()
+                print(a)
+                wah1 = wah1 + 1
+                logger.info(f"The number of frames receive is {wah1}")
+            logger.debug("finish")
+            logger.debug("---------------------------------")
+            logger.debug(f"The level of attenuation is : {self.attenuate} = {int(self.attenuate)/4} dB")
+            logger.debug(f"you send {self.number_frames} frames")
+            logger.debug(f"you received {wah1} frames")
+            result = (wah1 / int(self.number_frames)) * 100
+            logger.debug(f"The rate is : {result}%")
+            logger.debug("---------------------------------")
+            self.write_doc("---------------------------------")
+            self.write_doc(f"The level of attenuation is : {self.attenuate} = {int(self.attenuate)/4} dB")
+            self.write_doc(f"you send {self.number_frames} frames")
+            self.write_doc(f"you received {wah1} frames")
+            self.write_doc(f"The rate is : {result}%")
+            self.write_doc("---------------------------------")
+            ssh.close()
 
     def lunch_ibts(self):
         new_window_main_graphic = Tk()
@@ -110,10 +125,12 @@ class Thread_sensibility(threading.Thread):
         start_button = tk.Button(scale_frame, text="Start",
                                  borderwidth=8, background=THE_COLOR,
                                  activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                 command=lambda: [self.lunch_safety(frequency, sf, attenuate, number_frames)])
+                                 command=lambda: [self.lunch_safety(frequency, sf, attenuate, number_frames,
+                                                                    new_window_main_graphic)])
         start_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
+        new_window_main_graphic.mainloop()
 
-    def lunch_safety(self, frequency, sf, attenuate, number_frames):
+    def lunch_safety(self, frequency, sf, attenuate, number_frames, new_window_main_graphic):
         global is_killed
         try:  # to chek if the values are integer
             number_frames = int(number_frames.get())
@@ -125,11 +142,12 @@ class Thread_sensibility(threading.Thread):
                 logger.critical("Error, The symbol rate value is not conform")
                 showerror("Error", "The symbol rate value is not conform")
             else:
-                if is_killed == 0:
-                    is_killed = 1
-                    print("run")
-                else:
-                    logger.info("The smiq program is already running")
+                new_window_main_graphic.destroy()
+                self.number_frames = str(number_frames)
+                self.frequency = str(frequency / 1000000)
+                self.attenuate = str(attenuate)
+                self.sf = str(sf)
+                self.ready_ibts()
         except:
             logger.critical("Error, One or more of the values are not a number")
             showerror("Error", "One or more of the values are not a number")
@@ -148,3 +166,25 @@ class Thread_sensibility(threading.Thread):
         sensibility_result = open("Report_sensibility.txt", 'a')
         sensibility_result.write(str(text) + "\n")
         sensibility_result.close()
+
+    def ready_ibts(self):
+        username = "root"
+        password = "root"
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(hostname=self.ip_address, username=username, password=password)
+
+        cmd = "/user/libloragw2-utils_5.1.0-klk9-3-ga23e25f_FTK_Tx/send_pkt -d " \
+              "/dev/slot/1/spidev0 -f " + self.frequency + ":1:1 -a 0 -b 125 -s " + self.sf + "-c 1 -r 8 -z 20 -t 20 " \
+                                                                                              "-x " + \
+              self.number_frames + " --atten " + str(self.attenuate)
+
+        stdin, stdout, stderr = ssh.exec_command(cmd, get_pty=True)
+
+        while 1:
+            wah = stdout.readline()
+            logger.info(wah)
+            if wah[3:5] == "27":
+                logger.debug("The iBTS is ready")
+                break
+
