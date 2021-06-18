@@ -110,7 +110,7 @@ def several_methods_run_together(ip_address, ip, port_test, self):
     wah = func_c(port_test)
     if validation == 3:
         self.destroy()
-        Sensibility_script.Sensibility(ip_address, ip).start()
+        Sensibility_script.Thread_sensibility(ip_address, ip, port_test).run()
     else:
         logger.warning("Please check your data")
 

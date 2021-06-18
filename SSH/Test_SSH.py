@@ -125,7 +125,7 @@ class Threadibts(threading.Thread):
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(hostname=ip_address, username=username, password=password)
-        print("Successfully connected to", ip_address)
+        logger.debug("Successfully connected to", ip_address)
 
         cmd = "/user/libloragw2-utils_5.1.0-klk9-3-ga23e25f_FTK_Tx/send_pkt -d " \
               "/dev/slot/1/spidev0 -f " + self.frequency + ":1:1 -a 0 -b 125 -s " + self.sf + "-c 1 -r 8 -z 20 -t 20 " \
@@ -136,18 +136,19 @@ class Threadibts(threading.Thread):
 
         while (1):
             wah = stdout.readline()
-            print(wah)
+            logger.info(wah)
             if wah[3:5] == "27":
+                logger.debug("The iBTS is ready")
                 break
-        self.write_doc("Sensitivity measurement")
+        self.write_doc("Sensitivity measurement iBTS")
         wah1 = 0
         while wah1 != int(self.number_frames):
             a = stdout.read(1)
             wah1 = wah1 + len(a)
-            print(f"The number of frames sent is {wah1}")
+            logger.info(f"The number of frames sent is {wah1}")
             self.write_doc(f"The number of frames sent is {wah1}")
-        print("finish")
-        self.write_doc("finish")
+        logger.info("All frames have been sent")
+        self.write_doc("All frames have been sent")
         ssh.close()
 
     def write_doc(self, text):
