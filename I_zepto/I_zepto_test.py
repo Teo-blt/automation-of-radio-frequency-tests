@@ -10,7 +10,8 @@
 import paramiko
 import threading
 from loguru import logger
-
+import time
+import asyncio
 
 # =============================================================================
 
@@ -30,13 +31,13 @@ class Threadizepto(threading.Thread):
         izepto_result.close()
         username = "root"
         password = "root"
-        ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(hostname=self.ip, username=username, password=password)
+        self.ssh = paramiko.SSHClient()
+        self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        self.ssh.connect(hostname=self.ip, username=username, password=password)
         logger.debug(f"Successfully connected to {self.ip}")
         cmd = "./lora_pkt_fwd -c global_conf.json.sx1250.EU868"
         cmd2 = "cd /user/libsx1302-utils_V1.0.5-klk1-dirty"
-        stdin, stdout, stderr = ssh.exec_command(cmd2 + "\n" + cmd, get_pty=True)
+        stdin, stdout, stderr = self.ssh.exec_command(cmd2 + "\n" + cmd, get_pty=True)
 
         while (1):
             wah = stdout.readline()
@@ -45,15 +46,18 @@ class Threadizepto(threading.Thread):
                 logger.debug("The iZepto is ready")
                 break
         self.write_doc("Sensitivity measurement iZepto")
-        wah1 = 0
+        self.wah1 = 0
+
         while 1:
             a = stdout.readline()
-            wah1 = wah1 + 0.25
-            logger.info(f"The number of frames receive is {wah1}")
-            self.write_doc(f"The number of frames receive is {wah1}")
-        logger.info("finish")
-        self.write_doc("finish")
-        ssh.close()
+            print(a)
+            self.wah1 = self.wah1 + 1
+            logger.info(f"The number of frames receive is {self.wah1}")
+            self.write_doc(f"The number of frames receive is {self.wah1}")
+
+
+
+
 
     def write_doc(self, text):
         izepto_result = open("Report_iZepto.txt", 'a')

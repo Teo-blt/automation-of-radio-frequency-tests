@@ -13,6 +13,7 @@ from tkinter import *
 import tkinter as tk
 from loguru import logger
 from tkinter.messagebox import *
+import time
 
 # =============================================================================
 THE_COLOR = "#E76145"
@@ -46,7 +47,7 @@ class Thread_sensibility(threading.Thread):
 
             while (1):
                 wah = stdout.readline()
-                logger.info(wah)
+                #  logger.info(wah)
                 if wah[19:22] == "EUI":
                     logger.debug("The iZepto is ready")
                     break
@@ -56,13 +57,13 @@ class Thread_sensibility(threading.Thread):
                 self.attenuate = int(self.attenuate) + 10
                 self.ready_ibts()
             wah1 = 0
+            time.sleep(1)
             for i in range(0, int(self.number_frames)):
                 a = stdout.readline()
-                print(a)
                 wah1 = wah1 + 1
-                logger.info(f"The number of frames receive is {wah1}")
-            logger.debug("finish")
+                #  logger.info(f"The number of frames receive is {wah1}")
             logger.debug("---------------------------------")
+            logger.debug(f"Test {i} of {10}")
             logger.debug(f"The level of attenuation is : {self.attenuate} = {int(self.attenuate)/4} dB")
             logger.debug(f"you send {self.number_frames} frames")
             logger.debug(f"you received {wah1} frames")
@@ -70,6 +71,7 @@ class Thread_sensibility(threading.Thread):
             logger.debug(f"The rate is : {result}%")
             logger.debug("---------------------------------")
             self.write_doc("---------------------------------")
+            self.write_doc(f"Test {i} of {10}")
             self.write_doc(f"The level of attenuation is : {self.attenuate} = {int(self.attenuate)/4} dB")
             self.write_doc(f"you send {self.number_frames} frames")
             self.write_doc(f"you received {wah1} frames")
@@ -183,7 +185,7 @@ class Thread_sensibility(threading.Thread):
 
         while 1:
             wah = stdout.readline()
-            logger.info(wah)
+            #  logger.info(wah)
             if wah[3:5] == "27":
                 logger.debug("The iBTS is ready")
                 break
