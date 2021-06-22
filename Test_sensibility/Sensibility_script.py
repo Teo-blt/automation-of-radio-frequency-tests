@@ -14,6 +14,7 @@ import tkinter as tk
 from loguru import logger
 from tkinter.messagebox import *
 import time
+import json
 
 # =============================================================================
 THE_COLOR = "#E76145"
@@ -30,10 +31,13 @@ class Thread_sensibility(threading.Thread):
         self.attenuate = 0  # 0.25dB par pas
 
     def run(self):
+        data = []
         for i in range(0, 26):
             if i == 0:
                 sensibility_result = open("Report_sensibility.txt", 'w+')
                 sensibility_result.close()
+                outfile = open('data.txt', 'w+')
+                outfile.close()
                 self.write_doc("Sensitivity measurement iZepto")
                 self.write_doc("Sensitivity measurement iBTS")
             username = "root"
@@ -62,19 +66,20 @@ class Thread_sensibility(threading.Thread):
             number = (len(a) / 4)
             logger.debug("---------------------------------")
             logger.debug(f"Test {i} of {10}")
-            logger.debug(f"The level of attenuation is : -{float(self.attenuate)/4 + int(self.offset)} dB")
+            logger.debug(f"The level of attenuation is : -{round(float(self.attenuate)/4 + int(self.offset), 1)} dB")
             logger.debug(f"you send {self.number_frames} frames")
             logger.debug(f"you received {number} frames")
             result = (number / int(self.number_frames)) * 100
-            logger.debug(f"The rate is : {result}%")
+            logger.debug(f"The rate is : {round(result, 1)}%")
             logger.debug("---------------------------------")
             self.write_doc("---------------------------------")
             self.write_doc(f"Test {i} of {10}")
-            self.write_doc(f"The level of attenuation is : -{int(self.attenuate)/4 + int(self.offset)} dB")
+            self.write_doc(f"The level of attenuation is : -{round(float(self.attenuate)/4 + int(self.offset), 1)} dB")
             self.write_doc(f"you send {self.number_frames} frames")
             self.write_doc(f"you received {number} frames")
             self.write_doc(f"The rate is : {result}%")
             self.write_doc("---------------------------------")
+            self.write_json(data, round(float(self.attenuate)/4 + int(self.offset), 1), round(result, 1))
 
     def lunch_ibts(self):
         new_window_main_graphic = Tk()
@@ -95,7 +100,7 @@ class Thread_sensibility(threading.Thread):
         number_frames_label.grid(row=0, column=0, ipadx=0, ipady=0, padx=0, pady=0)
         number_frames = Entry(entry_frame, cursor="right_ptr")
         number_frames.grid(row=0, column=1, ipadx=0, ipady=0, padx=0, pady=0)
-        number_frames.insert(0, 10)
+        number_frames.insert(0, 100)
 
         frequency_label = Label(entry_frame, text="frequency channel :")
         frequency_label.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
@@ -113,7 +118,7 @@ class Thread_sensibility(threading.Thread):
         attenuate_label.grid(row=3, column=0, ipadx=0, ipady=0, padx=0, pady=0)
         attenuate = Entry(entry_frame, cursor="right_ptr")
         attenuate.grid(row=3, column=1, ipadx=0, ipady=0, padx=0, pady=0)
-        attenuate.insert(0, 0)
+        attenuate.insert(0, 280)
 
         offset_label = Label(entry_frame, text="Offset dB")
         offset_label.grid(row=4, column=0, ipadx=0, ipady=0, padx=0, pady=0)
@@ -161,11 +166,11 @@ class Thread_sensibility(threading.Thread):
 
     def reset_all(self, frequency, sf, attenuate, number_frames, offset):
         number_frames.delete(0, 20)
-        number_frames.insert(0, 10)
+        number_frames.insert(0, 100)
         frequency.delete(0, 20)
         frequency.insert(0, 867300000)
         attenuate.delete(0, 20)
-        attenuate.insert(0, 0)
+        attenuate.insert(0, 280)
         sf.delete(0, 20)
         sf.insert(0, 7)
         offset.delete(0, 20)
@@ -176,13 +181,22 @@ class Thread_sensibility(threading.Thread):
         sensibility_result.write(str(text) + "\n")
         sensibility_result.close()
 
+    def write_json(self, data, text1, text2):
+        print(int(text1))
+        print(int(text2))
+        data.append = [int(text1), int(text2)]
+        outfile = open('data.txt', 'w')
+        json.dump(data, outfile)
+        outfile.close()
+
+
+
     def ready_ibts(self):
         username = "root"
         password = "root"
         ssh2 = paramiko.SSHClient()
         ssh2.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh2.connect(hostname=self.ip_address, username=username, password=password)
-        print(self.attenuate)
         cmd = "/user/libloragw2-utils_5.1.0-klk9-3-ga23e25f_FTK_Tx/send_pkt -d " \
               "/dev/slot/1/spidev0 -f " + self.frequency + ":1:1 -a 0 -b 125 -s " + self.sf + "-c 1 -r 8 -z 20 -t 20 " \
                                                                                               "-x " + \
