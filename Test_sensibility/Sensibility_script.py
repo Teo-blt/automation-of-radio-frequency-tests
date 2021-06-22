@@ -58,7 +58,7 @@ class Thread_sensibility(threading.Thread):
             if i == 0:
                 self.lunch_ibts()
             else:
-                self.attenuate = float(self.attenuate) + 0.4
+                self.attenuate = float(self.attenuate) + 4
                 self.ready_ibts()
             time.sleep(1)
             ssh.close()
@@ -79,7 +79,7 @@ class Thread_sensibility(threading.Thread):
             self.write_doc(f"you received {number} frames")
             self.write_doc(f"The rate is : {result}%")
             self.write_doc("---------------------------------")
-            self.write_json(data, round(float(self.attenuate)/4 + int(self.offset), 1), round(result, 1))
+            # self.write_json(data, round(float(self.attenuate)/4 + int(self.offset), 1), round(result, 1))
 
     def lunch_ibts(self):
         new_window_main_graphic = Tk()
