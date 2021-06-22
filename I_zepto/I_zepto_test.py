@@ -11,7 +11,6 @@ import paramiko
 import threading
 from loguru import logger
 import time
-import asyncio
 
 # =============================================================================
 
@@ -45,19 +44,32 @@ class Threadizepto(threading.Thread):
             if wah[19:22] == "EUI":
                 logger.debug("The iZepto is ready")
                 break
-        self.write_doc("Sensitivity measurement iZepto")
-        self.wah1 = 0
 
-        while 1:
-            a = stdout.readline()
-            print(a)
-            self.wah1 = self.wah1 + 1
+        self.write_doc("Sensitivity measurement iZepto")
+        a = stdout.readline()
+        time.sleep(20)
+        self.ssh.close()
+        a = stdout.readlines()
+        number = ((len(a) + 1)/4)
+        print(number)
+
+
+        """
+        try:
+            with eventlet.timeout.Timeout(10, False):
+                while True:
+                    print("a")
+                    a = stdout.readline()
+                    print("b")
+                    self.wah1 = self.wah1 + 0.5
+                    eventlet.sleep(0.1)
+        except Exception as e:
+            print(' Exception: ', e)
+        finally:
             logger.info(f"The number of frames receive is {self.wah1}")
             self.write_doc(f"The number of frames receive is {self.wah1}")
-
-
-
-
+            self.ssh.close()
+        """
 
     def write_doc(self, text):
         izepto_result = open("Report_iZepto.txt", 'a')

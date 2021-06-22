@@ -144,7 +144,10 @@ class Threadibts(threading.Thread):
         wah1 = 0
         while wah1 != int(self.number_frames):
             a = stdout.read(1)
-            wah1 = wah1 + len(a)
-        logger.info(f"All frames have been sent at -{int(self.attenuate)/4} dB")
+            if a == b'X':
+                wah1 = wah1 + len(a)
+            else:
+                pass
+        logger.info(f"{self.number_frames} frames have been sent at -{int(self.attenuate)/4} dB")
         ssh.close()
         is_killed = 0

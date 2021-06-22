@@ -56,28 +56,25 @@ class Thread_sensibility(threading.Thread):
             else:
                 self.attenuate = int(self.attenuate) + 10
                 self.ready_ibts()
-            wah1 = 0
             time.sleep(1)
-            for i in range(0, int(self.number_frames)):
-                a = stdout.readline()
-                wah1 = wah1 + 1
-                #  logger.info(f"The number of frames receive is {wah1}")
+            ssh.close()
+            a = stdout.readlines()
+            number = (len(a) / 4)
             logger.debug("---------------------------------")
             logger.debug(f"Test {i} of {10}")
-            logger.debug(f"The level of attenuation is : {self.attenuate} = {int(self.attenuate)/4} dB")
+            logger.debug(f"The level of attenuation is : {self.attenuate} = -{int(self.attenuate)/4} dB")
             logger.debug(f"you send {self.number_frames} frames")
-            logger.debug(f"you received {wah1} frames")
-            result = (wah1 / int(self.number_frames)) * 100
+            logger.debug(f"you received {number} frames")
+            result = (number / int(self.number_frames)) * 100
             logger.debug(f"The rate is : {result}%")
             logger.debug("---------------------------------")
             self.write_doc("---------------------------------")
             self.write_doc(f"Test {i} of {10}")
-            self.write_doc(f"The level of attenuation is : {self.attenuate} = {int(self.attenuate)/4} dB")
+            self.write_doc(f"The level of attenuation is : {self.attenuate} = -{int(self.attenuate)/4} dB")
             self.write_doc(f"you send {self.number_frames} frames")
-            self.write_doc(f"you received {wah1} frames")
+            self.write_doc(f"you received {number} frames")
             self.write_doc(f"The rate is : {result}%")
             self.write_doc("---------------------------------")
-            ssh.close()
 
     def lunch_ibts(self):
         new_window_main_graphic = Tk()
@@ -172,16 +169,16 @@ class Thread_sensibility(threading.Thread):
     def ready_ibts(self):
         username = "root"
         password = "root"
-        ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(hostname=self.ip_address, username=username, password=password)
+        ssh2 = paramiko.SSHClient()
+        ssh2.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh2.connect(hostname=self.ip_address, username=username, password=password)
 
         cmd = "/user/libloragw2-utils_5.1.0-klk9-3-ga23e25f_FTK_Tx/send_pkt -d " \
               "/dev/slot/1/spidev0 -f " + self.frequency + ":1:1 -a 0 -b 125 -s " + self.sf + "-c 1 -r 8 -z 20 -t 20 " \
                                                                                               "-x " + \
               self.number_frames + " --atten " + str(self.attenuate)
 
-        stdin, stdout, stderr = ssh.exec_command(cmd, get_pty=True)
+        stdin, stdout, stderr = ssh2.exec_command(cmd, get_pty=True)
 
         while 1:
             wah = stdout.readline()
@@ -189,4 +186,12 @@ class Thread_sensibility(threading.Thread):
             if wah[3:5] == "27":
                 logger.debug("The iBTS is ready")
                 break
+        wah1 = 0
+        while wah1 != int(self.number_frames):
+            a = stdout.read(1)
+            if a == b'X':
+                wah1 = wah1 + len(a)
+            else:
+                pass
+        ssh2.close()
 
