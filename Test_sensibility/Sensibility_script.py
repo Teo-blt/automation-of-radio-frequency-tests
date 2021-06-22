@@ -30,7 +30,7 @@ class Thread_sensibility(threading.Thread):
         self.attenuate = 0  # 0.25dB par pas
 
     def run(self):
-        for i in range(0, 10):
+        for i in range(0, 26):
             if i == 0:
                 sensibility_result = open("Report_sensibility.txt", 'w+')
                 sensibility_result.close()
@@ -54,7 +54,7 @@ class Thread_sensibility(threading.Thread):
             if i == 0:
                 self.lunch_ibts()
             else:
-                self.attenuate = int(self.attenuate) + 10
+                self.attenuate = float(self.attenuate) + 0.4
                 self.ready_ibts()
             time.sleep(1)
             ssh.close()
@@ -62,7 +62,7 @@ class Thread_sensibility(threading.Thread):
             number = (len(a) / 4)
             logger.debug("---------------------------------")
             logger.debug(f"Test {i} of {10}")
-            logger.debug(f"The level of attenuation is : {self.attenuate} = -{int(self.attenuate)/4} dB")
+            logger.debug(f"The level of attenuation is : -{float(self.attenuate)/4 + int(self.offset)} dB")
             logger.debug(f"you send {self.number_frames} frames")
             logger.debug(f"you received {number} frames")
             result = (number / int(self.number_frames)) * 100
@@ -70,7 +70,7 @@ class Thread_sensibility(threading.Thread):
             logger.debug("---------------------------------")
             self.write_doc("---------------------------------")
             self.write_doc(f"Test {i} of {10}")
-            self.write_doc(f"The level of attenuation is : {self.attenuate} = -{int(self.attenuate)/4} dB")
+            self.write_doc(f"The level of attenuation is : -{int(self.attenuate)/4 + int(self.offset)} dB")
             self.write_doc(f"you send {self.number_frames} frames")
             self.write_doc(f"you received {number} frames")
             self.write_doc(f"The rate is : {result}%")
@@ -109,33 +109,40 @@ class Thread_sensibility(threading.Thread):
         sf.grid(row=2, column=1, ipadx=0, ipady=0, padx=0, pady=0)
         sf.insert(0, 7)
 
-        attenuate_label = Label(entry_frame, text="quarter dB attenuation :")
+        attenuate_label = Label(entry_frame, text="Quarter dB attenuation :")
         attenuate_label.grid(row=3, column=0, ipadx=0, ipady=0, padx=0, pady=0)
         attenuate = Entry(entry_frame, cursor="right_ptr")
         attenuate.grid(row=3, column=1, ipadx=0, ipady=0, padx=0, pady=0)
         attenuate.insert(0, 0)
 
+        offset_label = Label(entry_frame, text="Offset dB")
+        offset_label.grid(row=4, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+        offset = Entry(entry_frame, cursor="right_ptr")
+        offset.grid(row=4, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+        offset.insert(0, 60)
+
         reset_button = tk.Button(entry_frame, text="Reset",
                                  borderwidth=8, background=THE_COLOR,
                                  activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                 command=lambda: [self.reset_all(frequency, sf, attenuate, number_frames)])
+                                 command=lambda: [self.reset_all(frequency, sf, attenuate, number_frames, offset)])
         reset_button.grid(row=5, column=0, ipadx=0, ipady=0, padx=0, pady=0)
 
         start_button = tk.Button(scale_frame, text="Start",
                                  borderwidth=8, background=THE_COLOR,
                                  activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                 command=lambda: [self.lunch_safety(frequency, sf, attenuate, number_frames,
+                                 command=lambda: [self.lunch_safety(frequency, sf, attenuate, number_frames, offset,
                                                                     new_window_main_graphic)])
         start_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
         new_window_main_graphic.mainloop()
 
-    def lunch_safety(self, frequency, sf, attenuate, number_frames, new_window_main_graphic):
+    def lunch_safety(self, frequency, sf, attenuate, number_frames, offset, new_window_main_graphic):
         global is_killed
         try:  # to chek if the values are integer
             number_frames = int(number_frames.get())
             frequency = int(frequency.get())
             attenuate = int(attenuate.get())
             sf = int(sf.get())
+            offset = int(offset.get())
             #  to chek if the values are conform
             if sf < 6 or sf > 12:
                 logger.critical("Error, The symbol rate value is not conform")
@@ -146,12 +153,13 @@ class Thread_sensibility(threading.Thread):
                 self.frequency = str(frequency / 1000000)
                 self.attenuate = str(attenuate)
                 self.sf = str(sf)
+                self.offset = str(offset)
                 self.ready_ibts()
         except:
             logger.critical("Error, One or more of the values are not a number")
             showerror("Error", "One or more of the values are not a number")
 
-    def reset_all(self, frequency, sf, attenuate, number_frames):
+    def reset_all(self, frequency, sf, attenuate, number_frames, offset):
         number_frames.delete(0, 20)
         number_frames.insert(0, 10)
         frequency.delete(0, 20)
@@ -160,6 +168,8 @@ class Thread_sensibility(threading.Thread):
         attenuate.insert(0, 0)
         sf.delete(0, 20)
         sf.insert(0, 7)
+        offset.delete(0, 20)
+        offset.insert(0, 60)
 
     def write_doc(self, text):
         sensibility_result = open("Report_sensibility.txt", 'a')
@@ -172,7 +182,7 @@ class Thread_sensibility(threading.Thread):
         ssh2 = paramiko.SSHClient()
         ssh2.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh2.connect(hostname=self.ip_address, username=username, password=password)
-
+        print(self.attenuate)
         cmd = "/user/libloragw2-utils_5.1.0-klk9-3-ga23e25f_FTK_Tx/send_pkt -d " \
               "/dev/slot/1/spidev0 -f " + self.frequency + ":1:1 -a 0 -b 125 -s " + self.sf + "-c 1 -r 8 -z 20 -t 20 " \
                                                                                               "-x " + \
