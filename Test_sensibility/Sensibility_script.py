@@ -31,8 +31,8 @@ class Thread_sensibility(threading.Thread):
         self.attenuate = 0  # 0.25dB par pas
 
     def run(self):
-        data = []
-        for i in range(0, 26):
+        self.data = []
+        for i in range(0, 21):
             if i == 0:
                 sensibility_result = open("Report_sensibility.txt", 'w+')
                 sensibility_result.close()
@@ -66,7 +66,7 @@ class Thread_sensibility(threading.Thread):
             number = (len(a) / 4)
             logger.debug("---------------------------------")
             logger.debug(f"Test {i} of {10}")
-            logger.debug(f"The level of attenuation is : -{round(float(self.attenuate)/4 + int(self.offset), 1)} dB")
+            logger.debug(f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
             logger.debug(f"you send {self.number_frames} frames")
             logger.debug(f"you received {number} frames")
             result = (number / int(self.number_frames)) * 100
@@ -74,12 +74,13 @@ class Thread_sensibility(threading.Thread):
             logger.debug("---------------------------------")
             self.write_doc("---------------------------------")
             self.write_doc(f"Test {i} of {10}")
-            self.write_doc(f"The level of attenuation is : -{round(float(self.attenuate)/4 + int(self.offset), 1)} dB")
+            self.write_doc(
+                f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
             self.write_doc(f"you send {self.number_frames} frames")
             self.write_doc(f"you received {number} frames")
             self.write_doc(f"The rate is : {result}%")
             self.write_doc("---------------------------------")
-            # self.write_json(data, round(float(self.attenuate)/4 + int(self.offset), 1), round(result, 1))
+            self.write_json(round(float(self.attenuate) / 4 + int(self.offset), 1), round(result, 1))
 
     def lunch_ibts(self):
         new_window_main_graphic = Tk()
@@ -181,15 +182,11 @@ class Thread_sensibility(threading.Thread):
         sensibility_result.write(str(text) + "\n")
         sensibility_result.close()
 
-    def write_json(self, data, text1, text2):
-        print(int(text1))
-        print(int(text2))
-        data.append = [int(text1), int(text2)]
-        outfile = open('data.txt', 'w')
-        json.dump(data, outfile)
+    def write_json(self, text1, text2):
+        self.data.append([int(text1), int(text2)])
+        outfile = open('test.txt', 'w')
+        json.dump(self.data, outfile)
         outfile.close()
-
-
 
     def ready_ibts(self):
         username = "root"
@@ -218,4 +215,3 @@ class Thread_sensibility(threading.Thread):
             else:
                 pass
         ssh2.close()
-
