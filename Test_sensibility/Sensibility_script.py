@@ -14,7 +14,6 @@ import tkinter as tk
 from loguru import logger
 from tkinter.messagebox import *
 import time
-import json
 
 # =============================================================================
 THE_COLOR = "#E76145"
@@ -31,12 +30,11 @@ class Thread_sensibility(threading.Thread):
         self.attenuate = 0  # 0.25dB par pas
 
     def run(self):
-        self.data = []
-        for i in range(0, 21):
+        for i in range(0, 101):
             if i == 0:
                 sensibility_result = open("Report_sensibility.txt", 'w+')
                 sensibility_result.close()
-                outfile = open('data.txt', 'w+')
+                outfile = open('test.txt', 'w+')
                 outfile.close()
                 self.write_doc("Sensitivity measurement iZepto")
                 self.write_doc("Sensitivity measurement iBTS")
@@ -49,7 +47,7 @@ class Thread_sensibility(threading.Thread):
             cmd2 = "cd /user/libsx1302-utils_V1.0.5-klk1-dirty"
             stdin, stdout, stderr = ssh.exec_command(cmd2 + "\n" + cmd, get_pty=True)
 
-            while (1):
+            while 1:
                 wah = stdout.readline()
                 #  logger.info(wah)
                 if wah[19:22] == "EUI":
@@ -58,7 +56,7 @@ class Thread_sensibility(threading.Thread):
             if i == 0:
                 self.lunch_ibts()
             else:
-                self.attenuate = float(self.attenuate) + 4
+                self.attenuate = float(self.attenuate) + 0.8
                 self.ready_ibts()
             time.sleep(1)
             ssh.close()
@@ -80,7 +78,7 @@ class Thread_sensibility(threading.Thread):
             self.write_doc(f"you received {number} frames")
             self.write_doc(f"The rate is : {result}%")
             self.write_doc("---------------------------------")
-            self.write_json(round(float(self.attenuate) / 4 + int(self.offset), 1), round(result, 1))
+            self.write_json(round(float(self.attenuate) / 4 + int(self.offset), 1), 100 - round(result, 1))
 
     def lunch_ibts(self):
         new_window_main_graphic = Tk()
@@ -183,9 +181,8 @@ class Thread_sensibility(threading.Thread):
         sensibility_result.close()
 
     def write_json(self, text1, text2):
-        self.data.append([int(text1), int(text2)])
-        outfile = open('test.txt', 'w')
-        json.dump(self.data, outfile)
+        outfile = open('test.txt', 'a')
+        outfile.write(str(text1) + ' ' + str(text2) + '\n')
         outfile.close()
 
     def ready_ibts(self):

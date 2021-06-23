@@ -144,6 +144,7 @@ def main_graphic_climatic_chamber(self, port):
             state_graph(1)
 
     def verification_temp():
+        global high_low
         if temperature_min_scale.get() > temperature_max_scale.get():
             logger.critical(f"Error temperature_min_scale : {temperature_min_scale.get()} "
                             f">  temperature_max_scale : {temperature_max_scale.get()}")
@@ -154,7 +155,7 @@ def main_graphic_climatic_chamber(self, port):
             VARIABLE.Thread(port, temperature_min_scale.get(), temperature_max_scale.get(),
                             temperature_min_duration_h_scale.get(),
                             temperature_max_duration_h_scale.get(),
-                            number_of_cycles_scale.get(), 0, auto_scale_frame, a.get(), 0,
+                            number_of_cycles_scale.get(), 0, auto_scale_frame, high_low, 0,
                             0, 0, ani, ani2, state_graph).start()
             state_graph(0)
 
@@ -162,8 +163,11 @@ def main_graphic_climatic_chamber(self, port):
     global ani2
     global first_time
     global graph_lunch
+    global high_low
+    global stair_cycle
     graph_lunch = 0
     first_time = 1
+
     a = IntVar()
     b = IntVar()
     c = IntVar()
@@ -218,7 +222,7 @@ def main_graphic_climatic_chamber(self, port):
                              command=lambda: [verification_temp()])
     start_button.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
 
-    off_auto_scale_frame_button = tk.Button(auto_scale_frame, text="Off",
+    off_auto_scale_frame_button = tk.Button(auto_scale_frame, text="Stop",
                                             borderwidth=8, background=THE_COLOR,
                                             activebackground="green", cursor="right_ptr", overrelief="sunken",
                                             command=lambda: [quit_graph(),
@@ -275,7 +279,7 @@ def main_graphic_climatic_chamber(self, port):
                             command=lambda: [send_verification(0),
                                              VARIABLE.Thread.order(self, order_scale.get())])
     send_button.pack(padx=10, pady=10, ipadx=10, ipady=10, expand=False, fill="none", side=RIGHT)
-    off_scale_frame_button = tk.Button(scale_frame, text="Off",
+    off_scale_frame_button = tk.Button(scale_frame, text="Stop",
                                        borderwidth=8, background=THE_COLOR,
                                        activebackground="green", cursor="right_ptr", overrelief="sunken",
                                        command=lambda: [quit_graph(), send_verification(1),
@@ -310,7 +314,6 @@ def main_graphic_climatic_chamber(self, port):
     color_button = Button(button_frame, state="disabled")
     color_button.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
     color_button.pack_forget()
-
     radiobutton_automatic = tk.Radiobutton(rb_frame_mode_selection, text="Automatic",
                                            variable=b, value=1, cursor="right_ptr",
                                            indicatoron=1, font=('Helvetica', '16'),
@@ -325,7 +328,8 @@ def main_graphic_climatic_chamber(self, port):
                                                                                               expand=True,
                                                                                               fill="both",
                                                                                               side=RIGHT),
-                                                            radiobutton_cycle.invoke()])
+                                                            radiobutton_cycle.invoke(),
+                                                            radiobutton_start_with_low_temp.invoke()])
     radiobutton_automatic.pack(padx=0, pady=0, expand=False, fill="none", side=BOTTOM)
     radiobutton_manual = tk.Radiobutton(rb_frame_mode_selection, text="Manual",
                                         variable=b, value=0, cursor="right_ptr", font=('Helvetica', '16'),
@@ -340,14 +344,14 @@ def main_graphic_climatic_chamber(self, port):
     radiobutton_manual.invoke()
     radiobutton_start_with_high_temp = tk.Radiobutton(auto_scale_frame, text="Start with high temp",
                                                       variable=a, value=0, cursor="right_ptr",
-                                                      indicatoron=0, command=lambda: [create_cycle()],
+                                                      indicatoron=0, command=lambda: [change(0), create_cycle()],
                                                       background=THE_COLOR,
                                                       activebackground="green",
                                                       bd=8, selectcolor="green", overrelief="sunken")
     radiobutton_start_with_high_temp.grid(row=1, column=2, ipadx=10, ipady=10, padx=0, pady=0)
     radiobutton_start_with_low_temp = tk.Radiobutton(auto_scale_frame, text="Start with low temp",
                                                      variable=a, value=1, cursor="right_ptr",
-                                                     indicatoron=0, command=lambda: [create_cycle()],
+                                                     indicatoron=0, command=lambda: [change(1), create_cycle()],
                                                      background=THE_COLOR,
                                                      activebackground="green",
                                                      bd=8, selectcolor="green", overrelief="sunken")
@@ -359,14 +363,15 @@ def main_graphic_climatic_chamber(self, port):
                                                                                                    expand=True,
                                                                                                    fill="both",
                                                                                                    side=LEFT),
-                                                                       create_stair()])
+                                                                       create_stair(), change_2(1)])
     radiobutton_stair.pack(padx=0, pady=0, expand=False, fill="none", side=BOTTOM)
     radiobutton_cycle = tk.Radiobutton(rb_frame_automatic_selection, text="Cycle",
                                        variable=c, value=0, cursor="right_ptr", font=('Helvetica', '16'),
                                        indicatoron=1, command=lambda: [auto_scale_frame.pack(padx=0, pady=0,
                                                                                              expand=True, fill="both",
                                                                                              side=LEFT),
-                                                                       auto_stair_scale_frame.pack_forget()])
+                                                                       auto_stair_scale_frame.pack_forget(),
+                                                                       change_2(0)])
     radiobutton_cycle.pack(padx=0, pady=0, expand=False, fill="none", side=BOTTOM)
     start_auto_stair_scale_frame_button = tk.Button(auto_stair_scale_frame, text="Start",
                                                     borderwidth=8, background=THE_COLOR,
@@ -379,13 +384,13 @@ def main_graphic_climatic_chamber(self, port):
                                                                          temperature_duration_h_stair_scale.get(),
                                                                          temperature_duration_h_stair_scale.get(),
                                                                          0, 0, auto_scale_frame, 0,
-                                                                         c.get(),
+                                                                         stair_cycle,
                                                                          step_auto_stair_scale_frame_scale.get(),
                                                                          temperature_end_auto_stair_scale_frame_scale.get(),
                                                                          ani,
                                                                          ani2, state_graph).start(), state_graph(0)])
     start_auto_stair_scale_frame_button.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
-    off_auto_stair_scale_frame_button = tk.Button(auto_stair_scale_frame, text="Off",
+    off_auto_stair_scale_frame_button = tk.Button(auto_stair_scale_frame, text="Stop",
                                                   borderwidth=8, background=THE_COLOR,
                                                   activebackground="green", cursor="right_ptr", overrelief="sunken",
                                                   command=lambda: [quit_graph(), VARIABLE.Thread.off(self)])
@@ -408,7 +413,7 @@ def main_graphic_climatic_chamber(self, port):
                                                troughcolor=THE_COLOR, from_=1, to=20,
                                                resolution=1, tickinterval=4, length=100,
                                                command=lambda x: [create_stair()],
-                                               label='Temperature duration (H)', state="active")
+                                               label='Duration of the plateau (H)', state="active")
     temperature_duration_h_stair_scale.grid(row=1, column=2, ipadx=30, ipady=10, padx=30, pady=0)
     temperature_duration_h_stair_scale.set(1)
     temperature_end_auto_stair_scale_frame_scale = Scale(auto_stair_scale_frame, orient='vertical',
@@ -433,7 +438,15 @@ def main_graphic_climatic_chamber(self, port):
                                  number_of_cycles_scale.get(),
                                  temperature_min_duration_h_scale.get(),
                                  temperature_max_duration_h_scale.get(),
-                                 a.get(), auto_scale_frame)
+                                 high_low, auto_scale_frame)
+
+    def change(high_low_value):
+        global high_low
+        high_low = high_low_value
+
+    def change_2(stair_cycle_value):
+        global stair_cycle
+        stair_cycle = stair_cycle_value
 
     def dot_animation() -> [FuncAnimation, FuncAnimation]:
         global ani
