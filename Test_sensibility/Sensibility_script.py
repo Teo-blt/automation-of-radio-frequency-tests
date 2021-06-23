@@ -30,8 +30,7 @@ class Thread_sensibility(threading.Thread):
         self.attenuate = 0  # 0.25dB par pas
 
     def run(self):
-        self.lunch_ibts()
-        for i in range(0, self.test):
+        for i in range(0, 10):
             if i == 0:
                 sensibility_result = open("Report_sensibility.txt", 'w+')
                 sensibility_result.close()
@@ -56,11 +55,11 @@ class Thread_sensibility(threading.Thread):
                     break
 
             if i==0:
-                pass
+                self.lunch_ibts()
             else:
                 self.attenuate = float(self.attenuate) + self.step
+                self.ready_ibts()
 
-            self.ready_ibts()
             time.sleep(1)
             ssh.close()
             a = stdout.readlines()
@@ -170,9 +169,27 @@ class Thread_sensibility(threading.Thread):
             offset = int(offset.get())
             test = int(test.get())
             #  to chek if the values are conform
+            if number_frames < 0 or number_frames > 1000000:
+                logger.critical("Error, The number frames value is not conform")
+                showerror("Error", "The number frames value is not conform")
+            if frequency < 0 or frequency > 10000000000:
+                logger.critical("Error, The frequency value is not conform")
+                showerror("Error", "The frequency value is not conform")
+            if attenuate < 0 or attenuate > 1000000:
+                logger.critical("Error, The attenuate value is not conform")
+                showerror("Error", "The attenuate value is not conform")
             if sf < 6 or sf > 12:
                 logger.critical("Error, The symbol rate value is not conform")
                 showerror("Error", "The symbol rate value is not conform")
+            if step < 0 or step > 10000000:
+                logger.critical("Error, The step value is not conform")
+                showerror("Error", "The step value is not conform")
+            if offset < 0 or offset > 10000000:
+                logger.critical("Error, The offset value is not conform")
+                showerror("Error", "The offset value is not conform")
+            if test < 0 or test > 10000000:
+                logger.critical("Error, The test value is not conform")
+                showerror("Error", "The test value is not conform")
             else:
                 new_window_main_graphic.destroy()
                 self.number_frames = str(number_frames)
@@ -182,6 +199,7 @@ class Thread_sensibility(threading.Thread):
                 self.step = int(step)
                 self.offset = str(offset)
                 self.test = int(test)
+                self.ready_ibts()
         except:
             logger.critical("Error, One or more of the values are not a number")
             showerror("Error", "One or more of the values are not a number")

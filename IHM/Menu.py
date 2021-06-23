@@ -53,8 +53,8 @@ class Application(Tk):
             "Climatic chamber",  # The list of measuring tool
             "Signal generator",
             "IBTS",
-            "Izepto",
-            "Sensibility test"], state="readonly")
+            "Izepto"
+                    ], state="readonly")
 
         def chose(e, i=choose_measuring_tool_combobox):
             return validate(e, i)
@@ -65,6 +65,33 @@ class Application(Tk):
         choose_measuring_tool_combobox.bind("<<ComboboxSelected>>", chose)
         choose_measuring_tool_combobox.set(value)
         choose_measuring_tool_combobox.pack(padx=50, pady=0, expand=False, fill="x", side=TOP)
+
+    def create_choose_scenario_combobox(self, value: str):
+        """
+        creation of a combobox, this combobox allow user to choose a measuring tool in a list
+        :param value: value of the combobox
+        """
+        scenario_choose_combobox = LabelFrame(self, text="Choice of scenario")
+        scenario_choose_combobox.grid(row=1, column=0, ipadx=40, ipady=20, padx=0, pady=0)
+
+        settings_label = tk.Label(scenario_choose_combobox, text="Settings", font="arial", fg="black")
+        settings_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+
+        label_top = tk.Label(scenario_choose_combobox, text="Choose your scenario")
+        label_top.pack(expand=False, fill="none", side=TOP)
+
+        choose_scenario_combobox = ttk.Combobox(scenario_choose_combobox, values=[
+            "Sensibility test"], state="readonly")  # The list of measuring tool
+
+        def chose(e, i=choose_scenario_combobox):
+            return validate(e, i)
+
+        def validate(e, choose_scenario_combobox):
+            self.interface_2(choose_scenario_combobox.current())
+
+        choose_scenario_combobox.bind("<<ComboboxSelected>>", chose)
+        choose_scenario_combobox.set(value)
+        choose_scenario_combobox.pack(padx=50, pady=0, expand=False, fill="x", side=TOP)
 
     def interface(self, choice):  # This function open other functions after the choice of the user
         if choice == -1:
@@ -81,9 +108,14 @@ class Application(Tk):
         elif choice == 3:
             self.create_new_window("Izepto")  # Call the clear function to clean all the window
             self.carte_izepto()  # Open generator
-        elif choice == 4:
+
+    def interface_2(self, choice):  # This function open other functions after the choice of the user
+        if choice == -1:
+            showerror("Error", "You must select a valid instrument")
+        elif choice == 0:
             self.create_new_window("Sensibility test")  # Call the clear function to clean all the window
             self.Sensibility_test()  # Open generator
+
 
     def create_new_window(self, window_title: str):
         """
@@ -94,6 +126,7 @@ class Application(Tk):
         Tk.__init__(self)
         self.title(window_title + " menu")
         self.create_choose_measuring_tool_combobox(window_title)
+        self.create_choose_scenario_combobox(window_title)
         #  Sequencer.sequencer(self) not use anymore
 
     def sg(self):  # The signal generator menu

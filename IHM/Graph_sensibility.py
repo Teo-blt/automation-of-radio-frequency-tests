@@ -8,7 +8,7 @@ def draw_graph():
         data = pd.DataFrame(data)
         x = data[0]
         y = data[1]
-        plt.plot(x, y, 'r', marker=",")
+        plt.plot(x, y, 'b', marker=",")
         plt.legend("test")
         plt.show()
     except:

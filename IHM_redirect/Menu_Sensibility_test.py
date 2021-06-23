@@ -39,13 +39,13 @@ def sensibility_test_menu(self, port, ip_address, carte_ip_address):
     start_test_button.pack(padx=0, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
     place = scanner_ibts_frame
 
-    iBTS_label = Label(place, text="Select your iBTS IP address:")
+    iBTS_label = Label(place, text="Transmitter IP address:")
     iBTS_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
     iBTS_entry = Entry(place)
     iBTS_entry.pack(padx=0, pady=10, expand=False, fill="none", side=TOP)
     iBTS_entry.insert(0, ip_address)
 
-    iZepto_label = Label(place, text="Select your iZepto IP address:")
+    iZepto_label = Label(place, text="Receiver IP address:")
     iZepto_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
     iZepto_entry = Entry(place)
     iZepto_entry.pack(padx=0, pady=10, expand=False, fill="none", side=TOP)
