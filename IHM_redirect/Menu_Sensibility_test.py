@@ -22,6 +22,8 @@ validation = 0
 
 
 def sensibility_test_menu(self, port, ip_address, carte_ip_address):
+    global number
+    number = 0
     scanner_ibts_frame = LabelFrame(self, text="Sensibility Menu")
     scanner_ibts_frame.grid(row=0, column=1, ipadx=10, ipady=10, padx=0, pady=0)
     ibts_scale_frame = LabelFrame(self, text="Start the test")
@@ -30,7 +32,7 @@ def sensibility_test_menu(self, port, ip_address, carte_ip_address):
                                   borderwidth=8, background=THE_COLOR,
                                   activebackground="green", cursor="right_ptr", overrelief="sunken",
                                   command=lambda: [run(iBTS_entry.get(), iZepto_entry.get(),
-                                                       climate_chamber_entry.get(), self)])
+                                                       climate_chamber_entry.get(), self, number)])
     start_test_button.pack(padx=0, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
     place = scanner_ibts_frame
 
@@ -47,10 +49,27 @@ def sensibility_test_menu(self, port, ip_address, carte_ip_address):
     iZepto_entry.insert(0, carte_ip_address)
 
     climate_chamber_label = Label(place, text="Select your climate chamber port com :")
-    climate_chamber_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
     climate_chamber_entry = Entry(place)
-    climate_chamber_entry.pack(padx=0, pady=10, expand=False, fill="none", side=TOP)
     climate_chamber_entry.insert(0, port)
+
+    Add_climate_chamber = tk.Button(place, text="Add climate chamber",
+                                    borderwidth=8, background=THE_COLOR,
+                                    activebackground="green", cursor="right_ptr", overrelief="sunken",
+                                    command=lambda: [change()])
+    Add_climate_chamber.pack(padx=0, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
+
+    climate_chamber_label = Label(place, text="Select your climate chamber port com :")
+    climate_chamber_entry = Entry(place)
+    climate_chamber_entry.insert(0, port)
+
+    def change():
+        global number
+        number = 1
+        Add_climate_chamber.forget(),
+        climate_chamber_label.pack(padx=0, pady=10, expand=False,
+                                   fill="none", side=TOP),
+        climate_chamber_entry.pack(padx=0, pady=0, expand=False,
+                                   fill="none", side=TOP)
 
 
 def func_a(ip_address):
@@ -103,17 +122,32 @@ def func_c(port_test):
         logger.critical(f"Impossible to connected to {port_test}")
 
 
-def several_methods_run_together(ip_address, ip, port_test, self):
+def three_methods_run_together(ip_address, ip, port_test, self):
     global validation
-    ssh = func_a(ip_address)
-    ssh2 = func_b(ip)
-    wah = func_c(port_test)
+    func_a(ip_address)
+    func_b(ip)
+    func_c(port_test)
     if validation == 3:
         self.destroy()
         Sensibility_script.Thread_sensibility(ip_address, ip, port_test).run()
     else:
         logger.warning("Please check your data")
 
+def two_methods_run_together(ip_address, ip, self):
+    global validation
+    func_a(ip_address)
+    func_b(ip)
+    if validation == 2:
+        self.destroy()
+        Sensibility_script.Thread_sensibility(ip_address, ip, -1).run()
+    else:
+        logger.warning("Please check your data")
 
-def run(ip_address, ip, port_test, self):
-    several_methods_run_together(ip_address, ip, port_test, self)
+
+
+def run(ip_address, ip, port_test, self, number):
+    print(number)
+    if number:
+        three_methods_run_together(ip_address, ip, port_test, self)
+    else:
+        two_methods_run_together(ip_address, ip, self)
