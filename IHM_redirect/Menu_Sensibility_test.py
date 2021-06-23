@@ -14,6 +14,7 @@ import paramiko
 import time
 from loguru import logger
 import serial
+from IHM import Graph_sensibility
 
 # =============================================================================
 THE_COLOR = "#E76145"
@@ -28,6 +29,8 @@ def sensibility_test_menu(self, port, ip_address, carte_ip_address):
     scanner_ibts_frame.grid(row=0, column=1, ipadx=10, ipady=10, padx=0, pady=0)
     ibts_scale_frame = LabelFrame(self, text="Start the test")
     ibts_scale_frame.grid(row=0, column=3, ipadx=0, ipady=0, padx=0, pady=0)
+    make_a_graph = LabelFrame(self, text="Make a graph")
+    make_a_graph.grid(row=1, column=1, ipadx=0, ipady=0, padx=0, pady=0)
     start_test_button = tk.Button(ibts_scale_frame, text="Ignition of the card",
                                   borderwidth=8, background=THE_COLOR,
                                   activebackground="green", cursor="right_ptr", overrelief="sunken",
@@ -61,6 +64,12 @@ def sensibility_test_menu(self, port, ip_address, carte_ip_address):
     climate_chamber_label = Label(place, text="Select your climate chamber port com :")
     climate_chamber_entry = Entry(place)
     climate_chamber_entry.insert(0, port)
+
+    make_a_graph_button = tk.Button(make_a_graph, text="Draw",
+                                    borderwidth=8, background=THE_COLOR,
+                                    activebackground="green", cursor="right_ptr", overrelief="sunken",
+                                    command=lambda: [Graph_sensibility.draw_graph()])
+    make_a_graph_button.pack(padx=0, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
 
     def change():
         global number
@@ -128,25 +137,24 @@ def three_methods_run_together(ip_address, ip, port_test, self):
     func_b(ip)
     func_c(port_test)
     if validation == 3:
-        self.destroy()
+        # self.destroy()
         Sensibility_script.Thread_sensibility(ip_address, ip, port_test).run()
     else:
         logger.warning("Please check your data")
+
 
 def two_methods_run_together(ip_address, ip, self):
     global validation
     func_a(ip_address)
     func_b(ip)
     if validation == 2:
-        self.destroy()
+        #self.destroy()
         Sensibility_script.Thread_sensibility(ip_address, ip, -1).run()
     else:
         logger.warning("Please check your data")
 
 
-
 def run(ip_address, ip, port_test, self, number):
-    print(number)
     if number:
         three_methods_run_together(ip_address, ip, port_test, self)
     else:

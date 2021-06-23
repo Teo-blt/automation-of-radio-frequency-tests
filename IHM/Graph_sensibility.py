@@ -13,5 +13,3 @@ def draw_graph():
         plt.show()
     except:
         logger.critical("Error no data available in test.txt")
-
-draw_graph()

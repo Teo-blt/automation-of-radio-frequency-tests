@@ -30,7 +30,8 @@ class Thread_sensibility(threading.Thread):
         self.attenuate = 0  # 0.25dB par pas
 
     def run(self):
-        for i in range(0, 101):
+        self.lunch_ibts()
+        for i in range(0, self.test):
             if i == 0:
                 sensibility_result = open("Report_sensibility.txt", 'w+')
                 sensibility_result.close()
@@ -53,17 +54,19 @@ class Thread_sensibility(threading.Thread):
                 if wah[19:22] == "EUI":
                     logger.debug("The iZepto is ready")
                     break
-            if i == 0:
-                self.lunch_ibts()
+
+            if i==0:
+                pass
             else:
-                self.attenuate = float(self.attenuate) + 0.8
-                self.ready_ibts()
+                self.attenuate = float(self.attenuate) + self.step
+
+            self.ready_ibts()
             time.sleep(1)
             ssh.close()
             a = stdout.readlines()
             number = (len(a) / 4)
             logger.debug("---------------------------------")
-            logger.debug(f"Test {i} of {10}")
+            logger.debug(f"Test {i} of {self.test}")
             logger.debug(f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
             logger.debug(f"you send {self.number_frames} frames")
             logger.debug(f"you received {number} frames")
@@ -79,6 +82,10 @@ class Thread_sensibility(threading.Thread):
             self.write_doc(f"The rate is : {result}%")
             self.write_doc("---------------------------------")
             self.write_json(round(float(self.attenuate) / 4 + int(self.offset), 1), 100 - round(result, 1))
+            if round(result, 1) == 0:
+                logger.debug("fin")
+                self.write_doc("fin")
+                break
 
     def lunch_ibts(self):
         new_window_main_graphic = Tk()
@@ -113,40 +120,55 @@ class Thread_sensibility(threading.Thread):
         sf.grid(row=2, column=1, ipadx=0, ipady=0, padx=0, pady=0)
         sf.insert(0, 7)
 
-        attenuate_label = Label(entry_frame, text="Quarter dB attenuation :")
+        attenuate_label = Label(entry_frame, text="Quarter dB attenuation start :")
         attenuate_label.grid(row=3, column=0, ipadx=0, ipady=0, padx=0, pady=0)
         attenuate = Entry(entry_frame, cursor="right_ptr")
         attenuate.grid(row=3, column=1, ipadx=0, ipady=0, padx=0, pady=0)
         attenuate.insert(0, 280)
 
-        offset_label = Label(entry_frame, text="Offset dB")
-        offset_label.grid(row=4, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+        step_label = Label(entry_frame, text="Step of quarter dB attenuation :")
+        step_label.grid(row=4, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+        step = Entry(entry_frame, cursor="right_ptr")
+        step.grid(row=4, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+        step.insert(0, 4)
+
+        offset_label = Label(entry_frame, text="Offset dB :")
+        offset_label.grid(row=5, column=0, ipadx=0, ipady=0, padx=0, pady=0)
         offset = Entry(entry_frame, cursor="right_ptr")
-        offset.grid(row=4, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+        offset.grid(row=5, column=1, ipadx=0, ipady=0, padx=0, pady=0)
         offset.insert(0, 60)
+
+        test_label = Label(entry_frame, text="Number of test")
+        test_label.grid(row=6, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+        test = Entry(entry_frame, cursor="right_ptr")
+        test.grid(row=6, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+        test.insert(0, 10)
 
         reset_button = tk.Button(entry_frame, text="Reset",
                                  borderwidth=8, background=THE_COLOR,
                                  activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                 command=lambda: [self.reset_all(frequency, sf, attenuate, number_frames, offset)])
-        reset_button.grid(row=5, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+                                 command=lambda: [self.reset_all(frequency, sf, attenuate,
+                                                                 number_frames, step, offset, test)])
+        reset_button.grid(row=7, column=0, ipadx=0, ipady=0, padx=0, pady=0)
 
         start_button = tk.Button(scale_frame, text="Start",
                                  borderwidth=8, background=THE_COLOR,
                                  activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                 command=lambda: [self.lunch_safety(frequency, sf, attenuate, number_frames, offset,
-                                                                    new_window_main_graphic)])
+                                 command=lambda: [self.lunch_safety(frequency, sf, attenuate, number_frames,
+                                                                    step, offset, test, new_window_main_graphic)])
         start_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
         new_window_main_graphic.mainloop()
 
-    def lunch_safety(self, frequency, sf, attenuate, number_frames, offset, new_window_main_graphic):
+    def lunch_safety(self, frequency, sf, attenuate, number_frames, step, offset, test, new_window_main_graphic):
         global is_killed
         try:  # to chek if the values are integer
             number_frames = int(number_frames.get())
             frequency = int(frequency.get())
             attenuate = int(attenuate.get())
             sf = int(sf.get())
+            step = int(step.get())
             offset = int(offset.get())
+            test = int(test.get())
             #  to chek if the values are conform
             if sf < 6 or sf > 12:
                 logger.critical("Error, The symbol rate value is not conform")
@@ -157,13 +179,14 @@ class Thread_sensibility(threading.Thread):
                 self.frequency = str(frequency / 1000000)
                 self.attenuate = str(attenuate)
                 self.sf = str(sf)
+                self.step = int(step)
                 self.offset = str(offset)
-                self.ready_ibts()
+                self.test = int(test)
         except:
             logger.critical("Error, One or more of the values are not a number")
             showerror("Error", "One or more of the values are not a number")
 
-    def reset_all(self, frequency, sf, attenuate, number_frames, offset):
+    def reset_all(self, frequency, sf, attenuate, number_frames, step, offset, test):
         number_frames.delete(0, 20)
         number_frames.insert(0, 100)
         frequency.delete(0, 20)
@@ -172,8 +195,12 @@ class Thread_sensibility(threading.Thread):
         attenuate.insert(0, 280)
         sf.delete(0, 20)
         sf.insert(0, 7)
+        step.delete(0, 20)
+        step.insert(0, 4)
         offset.delete(0, 20)
         offset.insert(0, 60)
+        test.delete(0, 20)
+        test.insert(0, 10)
 
     def write_doc(self, text):
         sensibility_result = open("Report_sensibility.txt", 'a')
