@@ -61,14 +61,12 @@ class Threadsensibility(threading.Thread):
                 if wah[19:22] == "EUI":
                     logger.debug("The iZepto is ready")
                     break
-
             if i == 0:
                 self.lunch_ibts()
             else:
                 self.attenuate = float(self.attenuate) + self.step
                 self.ready_ibts()
 
-            print("c")
             time.sleep(1)
             ssh.close()
             a = stdout.readlines()
