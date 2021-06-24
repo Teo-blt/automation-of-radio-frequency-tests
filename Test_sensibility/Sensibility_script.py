@@ -68,6 +68,7 @@ class Threadsensibility(threading.Thread):
                 self.attenuate = float(self.attenuate) + self.step
                 self.ready_ibts()
 
+            print("c")
             time.sleep(1)
             ssh.close()
             a = stdout.readlines()
@@ -112,69 +113,69 @@ class Threadsensibility(threading.Thread):
         test_frame = LabelFrame(scale_frame, text="Test settings")
         test_frame.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
 
-        attenuation_frame = LabelFrame(scale_frame, text="Attenuation settings")
-        attenuation_frame.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
+        packet_frame = LabelFrame(scale_frame, text="Packet settings")
+        packet_frame.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
 
-        number_frames_label = Label(transmitter_frame, text="Number of sent frames :")
-        number_frames_label.grid(row=0, column=0, ipadx=0, ipady=0, padx=0, pady=0)
-        number_frames = Entry(transmitter_frame, cursor="right_ptr")
-        number_frames.grid(row=0, column=1, ipadx=0, ipady=0, padx=0, pady=0)
-        number_frames.insert(0, 100)
+        test_label = Label(test_frame, text="Number of tests")
+        test_label.grid(row=0, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+        test = Entry(test_frame, cursor="right_ptr")
+        test.grid(row=0, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+        test.insert(0, 10)
 
-        frequency_label = Label(transmitter_frame, text="frequency channel :")
-        frequency_label.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
-        frequency = Entry(transmitter_frame, cursor="right_ptr")
-        frequency.grid(row=1, column=1, ipadx=0, ipady=0, padx=0, pady=0)
-        frequency.insert(0, 867300000)
-
-        sf_label = Label(transmitter_frame, text="Spreading factor 7 to 12:")
-        sf_label.grid(row=2, column=0, ipadx=0, ipady=0, padx=0, pady=0)
-        sf = Entry(transmitter_frame, cursor="right_ptr")
-        sf.grid(row=2, column=1, ipadx=0, ipady=0, padx=0, pady=0)
-        sf.insert(0, 7)
-
-        bw_label = Label(transmitter_frame, text="band width:")
-        bw_label.grid(row=3, column=0, ipadx=0, ipady=0, padx=0, pady=0)
-        bw = Entry(transmitter_frame, cursor="right_ptr")
-        bw.grid(row=3, column=1, ipadx=0, ipady=0, padx=0, pady=0)
-        bw.insert(0, 125)
-
-        attenuate_label = Label(attenuation_frame, text="Quarter dB attenuation start :")
-        attenuate_label.grid(row=0, column=0, ipadx=0, ipady=0, padx=0, pady=0)
-        attenuate = Entry(attenuation_frame, cursor="right_ptr")
-        attenuate.grid(row=0, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+        attenuate_label = Label(test_frame, text="Quarter dB attenuation start :")
+        attenuate_label.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+        attenuate = Entry(test_frame, cursor="right_ptr")
+        attenuate.grid(row=1, column=1, ipadx=0, ipady=0, padx=0, pady=0)
         attenuate.insert(0, 280)
 
-        power_label = Label(attenuation_frame, text="Power of the transmitter in dBm")
-        power_label.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
-        power = Entry(attenuation_frame, cursor="right_ptr")
-        power.grid(row=1, column=1, ipadx=0, ipady=0, padx=0, pady=0)
-        power.insert(0, 5)
-
         step_label = Label(test_frame, text="Step of quarter dB attenuation :")
-        step_label.grid(row=0, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+        step_label.grid(row=2, column=0, ipadx=0, ipady=0, padx=0, pady=0)
         step = Entry(test_frame, cursor="right_ptr")
-        step.grid(row=0, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+        step.grid(row=2, column=1, ipadx=0, ipady=0, padx=0, pady=0)
         step.insert(0, 4)
-
-        offset_label = Label(test_frame, text="Offset dB :")
+        
+        power_label = Label(transmitter_frame, text="Power of the transmitter in dBm")
+        power_label.grid(row=0, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+        power = Entry(transmitter_frame, cursor="right_ptr")
+        power.grid(row=0, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+        power.insert(0, 5)
+        
+        offset_label = Label(transmitter_frame, text="Offset dB :")
         offset_label.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
-        offset = Entry(test_frame, cursor="right_ptr")
+        offset = Entry(transmitter_frame, cursor="right_ptr")
         offset.grid(row=1, column=1, ipadx=0, ipady=0, padx=0, pady=0)
         offset.insert(0, 60)
 
-        test_label = Label(test_frame, text="Number of test")
-        test_label.grid(row=2, column=0, ipadx=0, ipady=0, padx=0, pady=0)
-        test = Entry(test_frame, cursor="right_ptr")
-        test.grid(row=2, column=1, ipadx=0, ipady=0, padx=0, pady=0)
-        test.insert(0, 10)
+        number_frames_label = Label(packet_frame, text="Number of sent frames :")
+        number_frames_label.grid(row=0, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+        number_frames = Entry(packet_frame, cursor="right_ptr")
+        number_frames.grid(row=0, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+        number_frames.insert(0, 100)
 
-        reset_button = tk.Button(transmitter_frame, text="Reset",
+        frequency_label = Label(packet_frame, text="frequency channel :")
+        frequency_label.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+        frequency = Entry(packet_frame, cursor="right_ptr")
+        frequency.grid(row=1, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+        frequency.insert(0, 867300000)
+
+        sf_label = Label(packet_frame, text="Spreading factor 7 to 12:")
+        sf_label.grid(row=2, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+        sf = Entry(packet_frame, cursor="right_ptr")
+        sf.grid(row=2, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+        sf.insert(0, 7)
+
+        bw_label = Label(packet_frame, text="band width:")
+        bw_label.grid(row=3, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+        bw = Entry(packet_frame, cursor="right_ptr")
+        bw.grid(row=3, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+        bw.insert(0, 125)
+
+        reset_button = tk.Button(scale_frame, text="Reset",
                                  borderwidth=8, background=THE_COLOR,
                                  activebackground="green", cursor="right_ptr", overrelief="sunken",
                                  command=lambda: [self.reset_all(frequency, sf, attenuate,
                                                                  number_frames, step, offset, test, bw)])
-        reset_button.grid(row=9, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+        reset_button.pack(padx=0, pady=0, expand=True, fill="both", side=BOTTOM)
 
         start_button = tk.Button(scale_frame, text="Start",
                                  borderwidth=8, background=THE_COLOR,
@@ -293,10 +294,11 @@ class Threadsensibility(threading.Thread):
                 logger.debug("The iBTS is ready")
                 break
         wah1 = 0
-        while wah1 != "%d" % int(self.number_frames):
+        while wah1 != int("%d" % int(self.number_frames)):
             a = stdout.read(1)
             if a == b'X':
                 wah1 = wah1 + len(a)
             else:
                 pass
+        logger.debug("All frames send")
         ssh2.close()
