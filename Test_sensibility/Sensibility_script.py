@@ -118,7 +118,7 @@ class Threadsensibility(threading.Thread):
         test_label.grid(row=0, column=0, ipadx=0, ipady=0, padx=0, pady=0)
         test = Entry(test_frame, cursor="right_ptr")
         test.grid(row=0, column=1, ipadx=0, ipady=0, padx=0, pady=0)
-        test.insert(0, 10)
+        test.insert(0, -1)
 
         attenuate_label = Label(test_frame, text="Quarter dB attenuation start :")
         attenuate_label.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
@@ -217,8 +217,11 @@ class Threadsensibility(threading.Thread):
                 logger.critical("Error, The offset value is not conform")
                 showerror("Error", "The offset value is not conform")
             if test < 0 or test > 10000000:
-                logger.critical("Error, The test value is not conform")
-                showerror("Error", "The test value is not conform")
+                if test == -1:
+                    test = 1000
+                else:
+                    logger.critical("Error, The test value is not conform")
+                    showerror("Error", "The test value is not conform")
             if bw < 0 or bw > 10000000:
                 logger.critical("Error, The band width value is not conform")
                 showerror("Error", "The band width value is not conform")
@@ -254,7 +257,7 @@ class Threadsensibility(threading.Thread):
         offset.delete(0, 20)
         offset.insert(0, 60)
         test.delete(0, 20)
-        test.insert(0, 10)
+        test.insert(0, -1)
         bw.delete(0, 20)
         bw.insert(0, 125)
 
