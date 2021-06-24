@@ -157,22 +157,30 @@ class Threadsensibility(threading.Thread):
         test.grid(row=7, column=1, ipadx=0, ipady=0, padx=0, pady=0)
         test.insert(0, 10)
 
+        power_label = Label(entry_frame, text="Power of the transmitter in dBm")
+        power_label.grid(row=8, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+        power = Entry(entry_frame, cursor="right_ptr")
+        power.grid(row=8, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+        power.insert(0, 5)
+
         reset_button = tk.Button(entry_frame, text="Reset",
                                  borderwidth=8, background=THE_COLOR,
                                  activebackground="green", cursor="right_ptr", overrelief="sunken",
                                  command=lambda: [self.reset_all(frequency, sf, attenuate,
                                                                  number_frames, step, offset, test, bw)])
-        reset_button.grid(row=7, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+        reset_button.grid(row=9, column=0, ipadx=0, ipady=0, padx=0, pady=0)
 
         start_button = tk.Button(scale_frame, text="Start",
                                  borderwidth=8, background=THE_COLOR,
                                  activebackground="green", cursor="right_ptr", overrelief="sunken",
                                  command=lambda: [self.lunch_safety(frequency, sf, attenuate, number_frames,
-                                                                    step, offset, test, bw, new_window_main_graphic)])
+                                                                    step, offset, test, bw, power,
+                                                                    new_window_main_graphic)])
         start_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
         new_window_main_graphic.mainloop()
 
-    def lunch_safety(self, frequency, sf, attenuate, number_frames, step, offset, test, bw, new_window_main_graphic):
+    def lunch_safety(self, frequency, sf, attenuate, number_frames, step, offset, test, bw, power,
+                     new_window_main_graphic):
         global is_killed
         try:  # to chek if the values are integer
             number_frames = float(number_frames.get())
@@ -183,6 +191,7 @@ class Threadsensibility(threading.Thread):
             offset = float(offset.get())
             test = float(test.get())
             bw = float(bw.get())
+            power = float(power.get())
             #  to chek if the values are conform
             if number_frames < 0 or number_frames > 1000000:
                 logger.critical("Error, The number frames value is not conform")
@@ -208,6 +217,9 @@ class Threadsensibility(threading.Thread):
             if bw < 0 or bw > 10000000:
                 logger.critical("Error, The band with value is not conform")
                 showerror("Error", "The band with value is not conform")
+            if power < 0 or power > 10000000:
+                logger.critical("Error, The power value is not conform")
+                showerror("Error", "The power value is not conform")
             else:
                 new_window_main_graphic.destroy()
                 self.number_frames = number_frames
@@ -218,6 +230,7 @@ class Threadsensibility(threading.Thread):
                 self.offset = offset
                 self.test = test
                 self.bw = bw
+                self.power = power
                 self.ready_ibts()
         except:
             logger.critical("Error, One or more of the values are not a number")

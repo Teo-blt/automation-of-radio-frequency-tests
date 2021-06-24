@@ -10,7 +10,7 @@ def draw_graph():
         x = data[0]
         y = data[1]
         plt.plot(x, y, 'b', marker=",")
-        plt.legend("test")
+        plt.legend(["order C°/min", "actual temperature C°/min"])
         plt.show()
     except:
         logger.critical("Error no data available in test.txt")
