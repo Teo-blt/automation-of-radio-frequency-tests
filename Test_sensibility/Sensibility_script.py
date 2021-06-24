@@ -71,23 +71,31 @@ class Threadsensibility(threading.Thread):
             ssh.close()
             a = stdout.readlines()
             number = (len(a) / 4)
+
             logger.debug("---------------------------------")
-            logger.debug(f"Test {i} of {self.test}")
+            if int(self.test) == 1000:
+                logger.debug(f"Test {i} of ∞")
+            else:
+                logger.debug(f"Test {i} of {self.test}")
             logger.debug(f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
             logger.debug(f"you send {self.number_frames} frames")
             logger.debug(f"you received {number} frames")
             result = (number / int(self.number_frames)) * 100
             logger.debug(f"The rate is : {round(result, 1)}%")
             logger.debug("---------------------------------")
+
             self.write_doc("---------------------------------")
-            self.write_doc(f"Test {i} of {10}")
+            if int(self.test) == 1000:
+                self.write_doc(f"Test {i} of inf")
+            else:
+                self.write_doc(f"Test {i} of {self.test}")
             self.write_doc(
                 f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
             self.write_doc(f"you send {self.number_frames} frames")
             self.write_doc(f"you received {number} frames")
             self.write_doc(f"The rate is : {result}%")
             self.write_doc("---------------------------------")
-            self.write_json(round(float(self.attenuate) / 4 + int(self.offset), 1), 100 - round(result, 1))
+            self.write_json(round(float(self.attenuate) / 4 + int(self.offset), 1), 100 - round(result, 1), self.power)
             if round(result, 1) == 0:
                 logger.debug("fin")
                 self.write_doc("fin")
@@ -266,9 +274,10 @@ class Threadsensibility(threading.Thread):
         sensibility_result.write(str(text) + "\n")
         sensibility_result.close()
 
-    def write_json(self, text1, text2):
+    def write_json(self, attenuation_db, packet_lost, power_out):
         outfile = open('test.txt', 'a')
-        outfile.write(str(text1) + ' ' + str(text2) + '\n')
+        power_in = power_out - attenuation_db
+        outfile.write(str(power_in) + ' ' + str(packet_lost) + '\n')
         outfile.close()
 
     def ready_ibts(self):
