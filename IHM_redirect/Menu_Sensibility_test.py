@@ -138,7 +138,7 @@ def three_methods_run_together(ip_address, ip, port_test, self):
     func_c(port_test)
     if validation == 3:
         # self.destroy()
-        Sensibility_script.Threadsensibility(ip_address, ip, port_test).run()
+        Sensibility_script.Threadsensibility(ip_address, ip, port_test).start()
     else:
         logger.warning("Please check your data")
 
@@ -149,7 +149,7 @@ def two_methods_run_together(ip_address, ip, self):
     func_b(ip)
     if validation == 2:
         # self.destroy()
-        Sensibility_script.Threadsensibility(ip_address, ip, -1).run()
+        Sensibility_script.Threadsensibility(ip_address, ip, -1).start()
     else:
         logger.warning("Please check your data")
 

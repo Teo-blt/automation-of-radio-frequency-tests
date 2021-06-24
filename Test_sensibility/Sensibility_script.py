@@ -38,7 +38,8 @@ class Threadsensibility(threading.Thread):
         self.bw = 0
 
     def run(self):
-        for i in range(0, 10):
+        self.lunch_ibts()
+        for i in range(0, int(self.test)):
             if i == 0:
                 sensibility_result = open("Report_sensibility.txt", 'w+')
                 sensibility_result.close()
@@ -62,11 +63,10 @@ class Threadsensibility(threading.Thread):
                     logger.debug("The iZepto is ready")
                     break
             if i == 0:
-                self.lunch_ibts()
+                self.ready_ibts()
             else:
                 self.attenuate = float(self.attenuate) + self.step
                 self.ready_ibts()
-
             time.sleep(1)
             ssh.close()
             a = stdout.readlines()
@@ -131,13 +131,13 @@ class Threadsensibility(threading.Thread):
         step = Entry(test_frame, cursor="right_ptr")
         step.grid(row=2, column=1, ipadx=0, ipady=0, padx=0, pady=0)
         step.insert(0, 4)
-        
+
         power_label = Label(transmitter_frame, text="Power of the transmitter in dBm")
         power_label.grid(row=0, column=0, ipadx=0, ipady=0, padx=0, pady=0)
         power = Entry(transmitter_frame, cursor="right_ptr")
         power.grid(row=0, column=1, ipadx=0, ipady=0, padx=0, pady=0)
         power.insert(0, 5)
-        
+
         offset_label = Label(transmitter_frame, text="Offset dB :")
         offset_label.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
         offset = Entry(transmitter_frame, cursor="right_ptr")
@@ -236,7 +236,6 @@ class Threadsensibility(threading.Thread):
                 self.test = test
                 self.bw = bw
                 self.power = power
-                self.ready_ibts()
         except:
             logger.critical("Error, One or more of the values are not a number")
             showerror("Error", "One or more of the values are not a number")
