@@ -287,7 +287,7 @@ class Threadsensibility(threading.Thread):
                 logger.debug("The iBTS is ready")
                 break
         wah1 = 0
-        while wah1 != int(self.number_frames):
+        while wah1 != "%d" % int(self.number_frames):
             a = stdout.read(1)
             if a == b'X':
                 wah1 = wah1 + len(a)

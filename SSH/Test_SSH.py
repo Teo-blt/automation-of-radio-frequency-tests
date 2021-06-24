@@ -59,34 +59,53 @@ def lunch_ibts(ip):
     attenuate.grid(row=3, column=1, ipadx=0, ipady=0, padx=0, pady=0)
     attenuate.insert(0, 0)
 
+    bw_label = Label(entry_frame, text="Band with :")
+    bw_label.grid(row=4, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+    bw = Entry(entry_frame, cursor="right_ptr")
+    bw.grid(row=4, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+    bw.insert(0, 125)
+
     reset_button = tk.Button(entry_frame, text="Reset",
                              borderwidth=8, background=THE_COLOR,
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
-                             command=lambda: [reset_all(frequency, sf, attenuate, number_frames)])
+                             command=lambda: [reset_all(frequency, sf, attenuate, number_frames, bw)])
     reset_button.grid(row=5, column=0, ipadx=0, ipady=0, padx=0, pady=0)
 
     start_button = tk.Button(scale_frame, text="Start",
                              borderwidth=8, background=THE_COLOR,
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
-                             command=lambda: [lunch_safety(frequency, sf, attenuate, number_frames, ip)])
+                             command=lambda: [lunch_safety(frequency, sf, attenuate, number_frames, ip, bw)])
     start_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
 
 
-def lunch_safety(frequency, sf, attenuate, number_frames, ip):
+def lunch_safety(frequency, sf, attenuate, number_frames, ip, bw):
     global is_killed
     try:  # to chek if the values are integer
-        number_frames = int(number_frames.get())
-        frequency = int(frequency.get())
-        attenuate = int(attenuate.get())
-        sf = int(sf.get())
+        number_frames = float(number_frames.get())
+        frequency = float(frequency.get())
+        attenuate = float(attenuate.get())
+        sf = float(sf.get())
+        bw = float(bw.get())
         #  to chek if the values are conform
+        if number_frames < 0 or number_frames > 1000000:
+            logger.critical("Error, The number frames value is not conform")
+            showerror("Error", "The number frames value is not conform")
+        if frequency < 0 or frequency > 10000000000:
+            logger.critical("Error, The frequency value is not conform")
+            showerror("Error", "The frequency value is not conform")
+        if attenuate < 0 or attenuate > 1000000:
+            logger.critical("Error, The attenuate value is not conform")
+            showerror("Error", "The attenuate value is not conform")
         if sf < 6 or sf > 12:
             logger.critical("Error, The symbol rate value is not conform")
             showerror("Error", "The symbol rate value is not conform")
+        if bw < 0 or bw > 10000000:
+            logger.critical("Error, The band with value is not conform")
+            showerror("Error", "The band with value is not conform")
         else:
             if is_killed == 0:
                 is_killed = 1
-                Threadibts(frequency, sf, attenuate, number_frames, ip).start()
+                Threadibts(frequency, sf, attenuate, number_frames, bw, ip).start()
             else:
                 logger.info("The smiq program is already running")
     except:
@@ -94,7 +113,7 @@ def lunch_safety(frequency, sf, attenuate, number_frames, ip):
         showerror("Error", "One or more of the values are not a number")
 
 
-def reset_all(frequency, sf, attenuate, number_frames):
+def reset_all(frequency, sf, attenuate, number_frames, bw):
     number_frames.delete(0, 20)
     number_frames.insert(0, 10)
     frequency.delete(0, 20)
@@ -103,17 +122,20 @@ def reset_all(frequency, sf, attenuate, number_frames):
     attenuate.insert(0, 0)
     sf.delete(0, 20)
     sf.insert(0, 7)
+    bw.delete(0, 20)
+    bw.insert(0, 125)
 
 
 class Threadibts(threading.Thread):
 
-    def __init__(self, frequency, sf, attenuate, number_frames, ip):
+    def __init__(self, frequency, sf, attenuate, number_frames, bw, ip):
         threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
         # additional data added to the class
         self.frequency = str(frequency / 1000000)  # Number of sent frames
         self.sf = str(sf)
         self.attenuate = str(attenuate)
         self.number_frames = str(number_frames)
+        self.bw = str(bw)
         self.ip = ip
 
     def run(self):
@@ -129,25 +151,27 @@ class Threadibts(threading.Thread):
         logger.debug("Successfully connected to", ip_address)
 
         cmd = "/user/libloragw2-utils_5.1.0-klk9-3-ga23e25f_FTK_Tx/send_pkt -d " \
-              "/dev/slot/1/spidev0 -f " + self.frequency + ":1:1 -a 0 -b 125 -s " + self.sf + "-c 1 -r 8 -z 20 -t 20 " \
-                                                                                              "-x " + \
+              "/dev/slot/1/spidev0 -f " + self.frequency + ":1:1 -a 0 -b " + self.bw + " -s " + self.sf + "-c 1 -r 8 " \
+                                                                                                          "-z 20 -t " \
+                                                                                                          "20 " \
+                                                                                                          "-x " + \
               self.number_frames + " --atten " + self.attenuate
 
         stdin, stdout, stderr = ssh.exec_command(cmd, get_pty=True)
 
-        while (1):
+        while 1:
             wah = stdout.readline()
             logger.info(wah)
             if wah[3:5] == "27":
                 logger.debug("The iBTS is ready")
                 break
         wah1 = 0
-        while wah1 != int(self.number_frames):
+        while wah1 != "%d" % float(self.number_frames):
             a = stdout.read(1)
             if a == b'X':
                 wah1 = wah1 + len(a)
             else:
                 pass
-        logger.info(f"{self.number_frames} frames have been sent at -{int(self.attenuate)/4} dB")
+        logger.info(f"{self.number_frames} frames have been sent at -{int(self.attenuate) / 4} dB")
         ssh.close()
         is_killed = 0
