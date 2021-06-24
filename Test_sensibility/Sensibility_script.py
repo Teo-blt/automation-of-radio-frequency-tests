@@ -19,7 +19,7 @@ import time
 THE_COLOR = "#E76145"
 
 
-class Thread_sensibility(threading.Thread):
+class Threadsensibility(threading.Thread):
 
     def __init__(self, ip_address, ip, port_test):
         threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
@@ -28,6 +28,14 @@ class Thread_sensibility(threading.Thread):
         self.ip = ip
         self.port_test = port_test
         self.attenuate = 0  # 0.25dB par pas
+        self.number_frames = 0
+        self.frequency = 0
+        self.attenuate = 0
+        self.sf = 0
+        self.step = 0
+        self.offset = 0
+        self.test = 0
+        self.bw = 0
 
     def run(self):
         for i in range(0, 10):
@@ -54,7 +62,7 @@ class Thread_sensibility(threading.Thread):
                     logger.debug("The iZepto is ready")
                     break
 
-            if i==0:
+            if i == 0:
                 self.lunch_ibts()
             else:
                 self.attenuate = float(self.attenuate) + self.step
@@ -137,37 +145,44 @@ class Thread_sensibility(threading.Thread):
         offset.grid(row=5, column=1, ipadx=0, ipady=0, padx=0, pady=0)
         offset.insert(0, 60)
 
+        bw_label = Label(entry_frame, text="Band with :")
+        bw_label.grid(row=6, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+        bw = Entry(entry_frame, cursor="right_ptr")
+        bw.grid(row=6, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+        bw.insert(0, 125)
+
         test_label = Label(entry_frame, text="Number of test")
-        test_label.grid(row=6, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+        test_label.grid(row=7, column=0, ipadx=0, ipady=0, padx=0, pady=0)
         test = Entry(entry_frame, cursor="right_ptr")
-        test.grid(row=6, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+        test.grid(row=7, column=1, ipadx=0, ipady=0, padx=0, pady=0)
         test.insert(0, 10)
 
         reset_button = tk.Button(entry_frame, text="Reset",
                                  borderwidth=8, background=THE_COLOR,
                                  activebackground="green", cursor="right_ptr", overrelief="sunken",
                                  command=lambda: [self.reset_all(frequency, sf, attenuate,
-                                                                 number_frames, step, offset, test)])
+                                                                 number_frames, step, offset, test, bw)])
         reset_button.grid(row=7, column=0, ipadx=0, ipady=0, padx=0, pady=0)
 
         start_button = tk.Button(scale_frame, text="Start",
                                  borderwidth=8, background=THE_COLOR,
                                  activebackground="green", cursor="right_ptr", overrelief="sunken",
                                  command=lambda: [self.lunch_safety(frequency, sf, attenuate, number_frames,
-                                                                    step, offset, test, new_window_main_graphic)])
+                                                                    step, offset, test, bw, new_window_main_graphic)])
         start_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
         new_window_main_graphic.mainloop()
 
-    def lunch_safety(self, frequency, sf, attenuate, number_frames, step, offset, test, new_window_main_graphic):
+    def lunch_safety(self, frequency, sf, attenuate, number_frames, step, offset, test, bw, new_window_main_graphic):
         global is_killed
         try:  # to chek if the values are integer
-            number_frames = int(number_frames.get())
-            frequency = int(frequency.get())
-            attenuate = int(attenuate.get())
-            sf = int(sf.get())
-            step = int(step.get())
-            offset = int(offset.get())
-            test = int(test.get())
+            number_frames = float(number_frames.get())
+            frequency = float(frequency.get())
+            attenuate = float(attenuate.get())
+            sf = float(sf.get())
+            step = float(step.get())
+            offset = float(offset.get())
+            test = float(test.get())
+            bw = float(bw.get())
             #  to chek if the values are conform
             if number_frames < 0 or number_frames > 1000000:
                 logger.critical("Error, The number frames value is not conform")
@@ -190,21 +205,25 @@ class Thread_sensibility(threading.Thread):
             if test < 0 or test > 10000000:
                 logger.critical("Error, The test value is not conform")
                 showerror("Error", "The test value is not conform")
+            if bw < 0 or bw > 10000000:
+                logger.critical("Error, The band with value is not conform")
+                showerror("Error", "The band with value is not conform")
             else:
                 new_window_main_graphic.destroy()
-                self.number_frames = str(number_frames)
-                self.frequency = str(frequency / 1000000)
-                self.attenuate = str(attenuate)
-                self.sf = str(sf)
-                self.step = int(step)
-                self.offset = str(offset)
-                self.test = int(test)
+                self.number_frames = number_frames
+                self.frequency = frequency / 1000000
+                self.attenuate = attenuate
+                self.sf = sf
+                self.step = step
+                self.offset = offset
+                self.test = test
+                self.bw = bw
                 self.ready_ibts()
         except:
             logger.critical("Error, One or more of the values are not a number")
             showerror("Error", "One or more of the values are not a number")
 
-    def reset_all(self, frequency, sf, attenuate, number_frames, step, offset, test):
+    def reset_all(self, frequency, sf, attenuate, number_frames, step, offset, test, bw):
         number_frames.delete(0, 20)
         number_frames.insert(0, 100)
         frequency.delete(0, 20)
@@ -219,6 +238,8 @@ class Thread_sensibility(threading.Thread):
         offset.insert(0, 60)
         test.delete(0, 20)
         test.insert(0, 10)
+        bw.delete(0, 20)
+        bw.insert(0, 125)
 
     def write_doc(self, text):
         sensibility_result = open("Report_sensibility.txt", 'a')
@@ -237,9 +258,12 @@ class Thread_sensibility(threading.Thread):
         ssh2.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh2.connect(hostname=self.ip_address, username=username, password=password)
         cmd = "/user/libloragw2-utils_5.1.0-klk9-3-ga23e25f_FTK_Tx/send_pkt -d " \
-              "/dev/slot/1/spidev0 -f " + self.frequency + ":1:1 -a 0 -b 125 -s " + self.sf + "-c 1 -r 8 -z 20 -t 20 " \
-                                                                                              "-x " + \
-              self.number_frames + " --atten " + str(self.attenuate)
+              "/dev/slot/1/spidev0 -f " + str(self.frequency) + ":1:1 -a 0 -b " + str(self.bw) + " -s " + str(
+            self.sf) + "-c 1 -r 8 " \
+                       "-z 20 -t " \
+                       "20 " \
+                       "-x " + \
+              str(self.number_frames) + " --atten " + str(self.attenuate)
 
         stdin, stdout, stderr = ssh2.exec_command(cmd, get_pty=True)
 

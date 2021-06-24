@@ -34,32 +34,32 @@ def sensibility_test_menu(self, port, ip_address, carte_ip_address):
     start_test_button = tk.Button(ibts_scale_frame, text="Ignition of the card",
                                   borderwidth=8, background=THE_COLOR,
                                   activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                  command=lambda: [run(iBTS_entry.get(), iZepto_entry.get(),
+                                  command=lambda: [run(i_bts_entry.get(), i_zepto_entry.get(),
                                                        climate_chamber_entry.get(), self, number)])
     start_test_button.pack(padx=0, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
     place = scanner_ibts_frame
 
-    iBTS_label = Label(place, text="Transmitter IP address:")
-    iBTS_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-    iBTS_entry = Entry(place)
-    iBTS_entry.pack(padx=0, pady=10, expand=False, fill="none", side=TOP)
-    iBTS_entry.insert(0, ip_address)
+    i_bts_label = Label(place, text="Transmitter IP address:")
+    i_bts_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+    i_bts_entry = Entry(place)
+    i_bts_entry.pack(padx=0, pady=10, expand=False, fill="none", side=TOP)
+    i_bts_entry.insert(0, ip_address)
 
-    iZepto_label = Label(place, text="Receiver IP address:")
-    iZepto_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-    iZepto_entry = Entry(place)
-    iZepto_entry.pack(padx=0, pady=10, expand=False, fill="none", side=TOP)
-    iZepto_entry.insert(0, carte_ip_address)
+    i_zepto_label = Label(place, text="Receiver IP address:")
+    i_zepto_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+    i_zepto_entry = Entry(place)
+    i_zepto_entry.pack(padx=0, pady=10, expand=False, fill="none", side=TOP)
+    i_zepto_entry.insert(0, carte_ip_address)
 
     climate_chamber_label = Label(place, text="Select your climate chamber port com :")
     climate_chamber_entry = Entry(place)
     climate_chamber_entry.insert(0, port)
 
-    Add_climate_chamber = tk.Button(place, text="Add climate chamber",
+    add_climate_chamber = tk.Button(place, text="Add climate chamber",
                                     borderwidth=8, background=THE_COLOR,
                                     activebackground="green", cursor="right_ptr", overrelief="sunken",
                                     command=lambda: [change()])
-    Add_climate_chamber.pack(padx=0, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
+    add_climate_chamber.pack(padx=0, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
 
     climate_chamber_label = Label(place, text="Select your climate chamber port com :")
     climate_chamber_entry = Entry(place)
@@ -74,7 +74,7 @@ def sensibility_test_menu(self, port, ip_address, carte_ip_address):
     def change():
         global number
         number = 1
-        Add_climate_chamber.forget(),
+        add_climate_chamber.forget(),
         climate_chamber_label.pack(padx=0, pady=10, expand=False,
                                    fill="none", side=TOP),
         climate_chamber_entry.pack(padx=0, pady=0, expand=False,
@@ -138,7 +138,7 @@ def three_methods_run_together(ip_address, ip, port_test, self):
     func_c(port_test)
     if validation == 3:
         # self.destroy()
-        Sensibility_script.Thread_sensibility(ip_address, ip, port_test).run()
+        Sensibility_script.Threadsensibility(ip_address, ip, port_test).run()
     else:
         logger.warning("Please check your data")
 
@@ -148,8 +148,8 @@ def two_methods_run_together(ip_address, ip, self):
     func_a(ip_address)
     func_b(ip)
     if validation == 2:
-        #self.destroy()
-        Sensibility_script.Thread_sensibility(ip_address, ip, -1).run()
+        # self.destroy()
+        Sensibility_script.Threadsensibility(ip_address, ip, -1).run()
     else:
         logger.warning("Please check your data")
 

@@ -54,7 +54,7 @@ class Application(Tk):
             "Signal generator",
             "IBTS",
             "Izepto"
-                    ], state="readonly")
+        ], state="readonly")
 
         def chose(e, i=choose_measuring_tool_combobox):
             return validate(e, i)
@@ -114,8 +114,7 @@ class Application(Tk):
             showerror("Error", "You must select a valid instrument")
         elif choice == 0:
             self.create_new_window("Sensibility test")  # Call the clear function to clean all the window
-            self.Sensibility_test()  # Open generator
-
+            self.sensibility_test()  # Open generator
 
     def create_new_window(self, window_title: str):
         """
@@ -145,7 +144,7 @@ class Application(Tk):
         self.geometry(WINDOW_SIZE)  # set window size
         Menu_Izepto.izepto_menu(self, self._carte_ip_address)
 
-    def Sensibility_test(self):  # The Sensibility test menu
+    def sensibility_test(self):  # The Sensibility test menu
         self.geometry(WINDOW_SIZE)  # set window size
         Menu_Sensibility_test.sensibility_test_menu(self, self._port, self._ip_address, self._carte_ip_address)
 

@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from loguru import logger
 
+
 def draw_graph():
     try:
         data = pd.read_csv('test.txt', sep='\s+', header=None)

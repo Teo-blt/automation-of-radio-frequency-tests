@@ -97,7 +97,6 @@ def live_graph(self):  # The function live_graph crate a new window with a graph
 
 
 def main_graphic_climatic_chamber(self, port):
-
     global color_button
 
     def state_graph(state):
@@ -386,7 +385,7 @@ def main_graphic_climatic_chamber(self, port):
                                                                          0, 0, auto_scale_frame, 0,
                                                                          stair_cycle,
                                                                          step_auto_stair_scale_frame_scale.get(),
-                                                                         temperature_end_auto_stair_scale_frame_scale.get(),
+                                                                         temperature_end_auto_stair.get(),
                                                                          ani,
                                                                          ani2, state_graph).start(), state_graph(0)])
     start_auto_stair_scale_frame_button.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
@@ -416,19 +415,19 @@ def main_graphic_climatic_chamber(self, port):
                                                label='Duration of the plateau (H)', state="active")
     temperature_duration_h_stair_scale.grid(row=1, column=2, ipadx=30, ipady=10, padx=30, pady=0)
     temperature_duration_h_stair_scale.set(1)
-    temperature_end_auto_stair_scale_frame_scale = Scale(auto_stair_scale_frame, orient='vertical',
-                                                         troughcolor=THE_COLOR, from_=80, to=-40,
-                                                         resolution=1, tickinterval=20, length=100,
-                                                         command=lambda x: [create_stair()],
-                                                         label='Temperature end (°C)', state="active", relief="flat")
-    temperature_end_auto_stair_scale_frame_scale.grid(row=1, column=3, ipadx=10, ipady=10, padx=30, pady=0)
-    temperature_end_auto_stair_scale_frame_scale.set(1)
+    temperature_end_auto_stair = Scale(auto_stair_scale_frame, orient='vertical',
+                                       troughcolor=THE_COLOR, from_=80, to=-40,
+                                       resolution=1, tickinterval=20, length=100,
+                                       command=lambda x: [create_stair()],
+                                       label='Temperature end (°C)', state="active", relief="flat")
+    temperature_end_auto_stair.grid(row=1, column=3, ipadx=10, ipady=10, padx=30, pady=0)
+    temperature_end_auto_stair.set(1)
 
     def create_stair():
         simulation_graphic_stair(
             step_auto_stair_scale_frame_scale.get(),
             temperature_start_stair_scale.get(),
-            temperature_end_auto_stair_scale_frame_scale.get(),
+            temperature_end_auto_stair.get(),
             temperature_duration_h_stair_scale.get(),
             auto_stair_scale_frame)
 
