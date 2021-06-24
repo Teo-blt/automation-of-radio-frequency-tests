@@ -106,64 +106,70 @@ class Threadsensibility(threading.Thread):
         scale_frame.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
         scale_frame.config(background='#fafafa')
 
-        entry_frame = LabelFrame(scale_frame, text="Entry settings")
-        entry_frame.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
+        transmitter_frame = LabelFrame(scale_frame, text="Transmitter settings")
+        transmitter_frame.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
 
-        number_frames_label = Label(entry_frame, text="Number of sent frames :")
+        test_frame = LabelFrame(scale_frame, text="Test settings")
+        test_frame.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
+
+        attenuation_frame = LabelFrame(scale_frame, text="Attenuation settings")
+        attenuation_frame.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
+
+        number_frames_label = Label(transmitter_frame, text="Number of sent frames :")
         number_frames_label.grid(row=0, column=0, ipadx=0, ipady=0, padx=0, pady=0)
-        number_frames = Entry(entry_frame, cursor="right_ptr")
+        number_frames = Entry(transmitter_frame, cursor="right_ptr")
         number_frames.grid(row=0, column=1, ipadx=0, ipady=0, padx=0, pady=0)
         number_frames.insert(0, 100)
 
-        frequency_label = Label(entry_frame, text="frequency channel :")
+        frequency_label = Label(transmitter_frame, text="frequency channel :")
         frequency_label.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
-        frequency = Entry(entry_frame, cursor="right_ptr")
+        frequency = Entry(transmitter_frame, cursor="right_ptr")
         frequency.grid(row=1, column=1, ipadx=0, ipady=0, padx=0, pady=0)
         frequency.insert(0, 867300000)
 
-        sf_label = Label(entry_frame, text="Spreading factor 7 to 12:")
+        sf_label = Label(transmitter_frame, text="Spreading factor 7 to 12:")
         sf_label.grid(row=2, column=0, ipadx=0, ipady=0, padx=0, pady=0)
-        sf = Entry(entry_frame, cursor="right_ptr")
+        sf = Entry(transmitter_frame, cursor="right_ptr")
         sf.grid(row=2, column=1, ipadx=0, ipady=0, padx=0, pady=0)
         sf.insert(0, 7)
 
-        attenuate_label = Label(entry_frame, text="Quarter dB attenuation start :")
-        attenuate_label.grid(row=3, column=0, ipadx=0, ipady=0, padx=0, pady=0)
-        attenuate = Entry(entry_frame, cursor="right_ptr")
-        attenuate.grid(row=3, column=1, ipadx=0, ipady=0, padx=0, pady=0)
-        attenuate.insert(0, 280)
-
-        step_label = Label(entry_frame, text="Step of quarter dB attenuation :")
-        step_label.grid(row=4, column=0, ipadx=0, ipady=0, padx=0, pady=0)
-        step = Entry(entry_frame, cursor="right_ptr")
-        step.grid(row=4, column=1, ipadx=0, ipady=0, padx=0, pady=0)
-        step.insert(0, 4)
-
-        offset_label = Label(entry_frame, text="Offset dB :")
-        offset_label.grid(row=5, column=0, ipadx=0, ipady=0, padx=0, pady=0)
-        offset = Entry(entry_frame, cursor="right_ptr")
-        offset.grid(row=5, column=1, ipadx=0, ipady=0, padx=0, pady=0)
-        offset.insert(0, 60)
-
-        bw_label = Label(entry_frame, text="Band with :")
-        bw_label.grid(row=6, column=0, ipadx=0, ipady=0, padx=0, pady=0)
-        bw = Entry(entry_frame, cursor="right_ptr")
-        bw.grid(row=6, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+        bw_label = Label(transmitter_frame, text="band width:")
+        bw_label.grid(row=3, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+        bw = Entry(transmitter_frame, cursor="right_ptr")
+        bw.grid(row=3, column=1, ipadx=0, ipady=0, padx=0, pady=0)
         bw.insert(0, 125)
 
-        test_label = Label(entry_frame, text="Number of test")
-        test_label.grid(row=7, column=0, ipadx=0, ipady=0, padx=0, pady=0)
-        test = Entry(entry_frame, cursor="right_ptr")
-        test.grid(row=7, column=1, ipadx=0, ipady=0, padx=0, pady=0)
-        test.insert(0, 10)
+        attenuate_label = Label(attenuation_frame, text="Quarter dB attenuation start :")
+        attenuate_label.grid(row=0, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+        attenuate = Entry(attenuation_frame, cursor="right_ptr")
+        attenuate.grid(row=0, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+        attenuate.insert(0, 280)
 
-        power_label = Label(entry_frame, text="Power of the transmitter in dBm")
-        power_label.grid(row=8, column=0, ipadx=0, ipady=0, padx=0, pady=0)
-        power = Entry(entry_frame, cursor="right_ptr")
-        power.grid(row=8, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+        power_label = Label(attenuation_frame, text="Power of the transmitter in dBm")
+        power_label.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+        power = Entry(attenuation_frame, cursor="right_ptr")
+        power.grid(row=1, column=1, ipadx=0, ipady=0, padx=0, pady=0)
         power.insert(0, 5)
 
-        reset_button = tk.Button(entry_frame, text="Reset",
+        step_label = Label(test_frame, text="Step of quarter dB attenuation :")
+        step_label.grid(row=0, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+        step = Entry(test_frame, cursor="right_ptr")
+        step.grid(row=0, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+        step.insert(0, 4)
+
+        offset_label = Label(test_frame, text="Offset dB :")
+        offset_label.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+        offset = Entry(test_frame, cursor="right_ptr")
+        offset.grid(row=1, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+        offset.insert(0, 60)
+
+        test_label = Label(test_frame, text="Number of test")
+        test_label.grid(row=2, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+        test = Entry(test_frame, cursor="right_ptr")
+        test.grid(row=2, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+        test.insert(0, 10)
+
+        reset_button = tk.Button(transmitter_frame, text="Reset",
                                  borderwidth=8, background=THE_COLOR,
                                  activebackground="green", cursor="right_ptr", overrelief="sunken",
                                  command=lambda: [self.reset_all(frequency, sf, attenuate,
@@ -215,8 +221,8 @@ class Threadsensibility(threading.Thread):
                 logger.critical("Error, The test value is not conform")
                 showerror("Error", "The test value is not conform")
             if bw < 0 or bw > 10000000:
-                logger.critical("Error, The band with value is not conform")
-                showerror("Error", "The band with value is not conform")
+                logger.critical("Error, The band width value is not conform")
+                showerror("Error", "The band width value is not conform")
             if power < 0 or power > 10000000:
                 logger.critical("Error, The power value is not conform")
                 showerror("Error", "The power value is not conform")
