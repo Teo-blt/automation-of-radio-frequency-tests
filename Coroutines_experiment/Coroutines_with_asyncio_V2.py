@@ -92,7 +92,7 @@ class Thread(threading.Thread):
             logger.info("################################################")
             logger.info("Start of Test")
             self.time_start = time.time()  # Collect the time of the beginning of the test
-            # self.timer = 1 / 60  # For the test, it reduce the time of waiting to 1 min
+            self.timer = 1 / 60  # For the test, it reduce the time of waiting to 1 min
             asyncio.run(self.several_methods_run_together())
 
     async def wait_temperature_reach_consign(self, timer):
@@ -234,7 +234,7 @@ class Thread(threading.Thread):
             return [number, number3]  # Return the actual temperature and the actual order at the same time to
             # allow the program to call read only once every 5 seconds, it's time saving (because of the time sleep)
         except:
-            logger.error("too fast, please wait")  # protect the application if the user
+            # logger.error("too fast, please wait")  # protect the application if the user
             # make a request the same time than the programme
             return [0, 0]  # In case of an error, this function will return [0,0], This will NOT affect the graph
 
