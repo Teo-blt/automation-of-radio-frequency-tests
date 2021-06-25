@@ -39,9 +39,9 @@ class Threadsensibility(threading.Thread):
         self.bw = 0
 
     def run(self):
-        self.lunch_ibts()
+        self.launch_ibts()
         if self.port_test != -1:
-            print("port test")
+            self.launch_climatic_chamber()
         for i in range(0, int(self.test)):
             if i == 0:
                 sensibility_result = open("Report_sensibility.txt", 'w+')
@@ -108,11 +108,65 @@ class Threadsensibility(threading.Thread):
                 self.write_doc("fin")
                 break
 
-    def lunch_ibts(self):
-        new_window_main_graphic = Tk()
-        new_window_main_graphic.title("Signal generator settings")
+    def launch_climatic_chamber(self):
+        print("a")
+        new_window_climatic_chamber = Tk()
+        new_window_climatic_chamber.title("climatic chamber settings")
 
-        settings_frame = LabelFrame(new_window_main_graphic, text="Settings")
+        settings_frame = LabelFrame(new_window_climatic_chamber, text="Settings")
+        settings_frame.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+        settings_frame.config(background='#fafafa')
+
+        auto_stair_scale_frame = LabelFrame(settings_frame, bd=0)  # , text="auto_scale_frame"
+        auto_stair_scale_frame.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
+        auto_stair_scale_frame.config(background='#fafafa')
+
+        start_auto_stair_scale_frame_button = tk.Button(auto_stair_scale_frame, text="Start",
+                                                        borderwidth=8, background=THE_COLOR,
+                                                        activebackground="green", cursor="right_ptr",
+                                                        overrelief="sunken",
+                                                        command=lambda: [])
+        start_auto_stair_scale_frame_button.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
+        off_auto_stair_scale_frame_button = tk.Button(auto_stair_scale_frame, text="Stop",
+                                                      borderwidth=8, background=THE_COLOR,
+                                                      activebackground="green", cursor="right_ptr", overrelief="sunken",
+                                                      command=lambda: [])
+        off_auto_stair_scale_frame_button.grid(row=0, column=2, ipadx=40, ipady=20, padx=20, pady=20)
+        step_auto_stair_scale_frame_scale = Scale(auto_stair_scale_frame, orient='vertical', troughcolor=THE_COLOR,
+                                                  from_=120, to=1,
+                                                  resolution=1, tickinterval=20, length=100,
+                                                  label='Step (°C)', state="active",
+                                                  command=lambda x: [])
+        step_auto_stair_scale_frame_scale.grid(row=1, column=0, ipadx=10, ipady=10, padx=30, pady=0)
+        step_auto_stair_scale_frame_scale.set(1)
+        temperature_start_stair_scale = Scale(auto_stair_scale_frame, orient='vertical',
+                                              troughcolor=THE_COLOR, from_=80, to=-40,
+                                              resolution=1, tickinterval=20, length=100,
+                                              command=lambda x: [],
+                                              label='Temperature start (°c)', state="active")
+        temperature_start_stair_scale.grid(row=1, column=1, ipadx=10, ipady=10, padx=30, pady=0)
+        temperature_start_stair_scale.set(-1)
+        temperature_duration_h_stair_scale = Scale(auto_stair_scale_frame, orient='horizontal',
+                                                   troughcolor=THE_COLOR, from_=1, to=20,
+                                                   resolution=1, tickinterval=4, length=100,
+                                                   command=lambda x: [],
+                                                   label='Duration of the plateau (H)', state="active")
+        temperature_duration_h_stair_scale.grid(row=1, column=2, ipadx=30, ipady=10, padx=30, pady=0)
+        temperature_duration_h_stair_scale.set(1)
+        temperature_end_auto_stair = Scale(auto_stair_scale_frame, orient='vertical',
+                                           troughcolor=THE_COLOR, from_=80, to=-40,
+                                           resolution=1, tickinterval=20, length=100,
+                                           command=lambda x: [],
+                                           label='Temperature end (°C)', state="active", relief="flat")
+        temperature_end_auto_stair.grid(row=1, column=3, ipadx=10, ipady=10, padx=30, pady=0)
+        temperature_end_auto_stair.set(1)
+
+        new_window_climatic_chamber.mainloop()
+    def launch_ibts(self):
+        new_window_ibts = Tk()
+        new_window_ibts.title("Signal generator settings")
+
+        settings_frame = LabelFrame(new_window_ibts, text="Settings")
         settings_frame.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
         settings_frame.config(background='#fafafa')
 
@@ -195,9 +249,9 @@ class Threadsensibility(threading.Thread):
                                  activebackground="green", cursor="right_ptr", overrelief="sunken",
                                  command=lambda: [self.lunch_safety(frequency, sf, attenuate, number_frames,
                                                                     step, offset, test, bw, power,
-                                                                    new_window_main_graphic)])
+                                                                    new_window_ibts)])
         start_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
-        new_window_main_graphic.mainloop()
+        new_window_ibts.mainloop()
 
     def lunch_safety(self, frequency, sf, attenuate, number_frames, step, offset, test, bw, power,
                      new_window_main_graphic):
