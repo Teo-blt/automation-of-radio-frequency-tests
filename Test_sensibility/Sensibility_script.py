@@ -10,11 +10,13 @@
 import sys
 import paramiko
 import threading
-from tkinter import *
-import tkinter as tk
-from loguru import logger
-from tkinter.messagebox import *
 import time
+from matplotlib.figure import Figure
+import tkinter as tk
+from tkinter import *
+from tkinter.messagebox import *
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from loguru import logger
 
 # =============================================================================
 THE_COLOR = "#E76145"
@@ -109,7 +111,6 @@ class Threadsensibility(threading.Thread):
                 break
 
     def launch_climatic_chamber(self):
-        print("a")
         new_window_climatic_chamber = Tk()
         new_window_climatic_chamber.title("climatic chamber settings")
 
@@ -127,41 +128,37 @@ class Threadsensibility(threading.Thread):
                                                         overrelief="sunken",
                                                         command=lambda: [])
         start_auto_stair_scale_frame_button.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
-        off_auto_stair_scale_frame_button = tk.Button(auto_stair_scale_frame, text="Stop",
-                                                      borderwidth=8, background=THE_COLOR,
-                                                      activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                                      command=lambda: [])
-        off_auto_stair_scale_frame_button.grid(row=0, column=2, ipadx=40, ipady=20, padx=20, pady=20)
         step_auto_stair_scale_frame_scale = Scale(auto_stair_scale_frame, orient='vertical', troughcolor=THE_COLOR,
                                                   from_=120, to=1,
                                                   resolution=1, tickinterval=20, length=100,
                                                   label='Step (°C)', state="active",
-                                                  command=lambda x: [])
+                                                  command=lambda x: [create_stair()])
         step_auto_stair_scale_frame_scale.grid(row=1, column=0, ipadx=10, ipady=10, padx=30, pady=0)
         step_auto_stair_scale_frame_scale.set(1)
         temperature_start_stair_scale = Scale(auto_stair_scale_frame, orient='vertical',
                                               troughcolor=THE_COLOR, from_=80, to=-40,
                                               resolution=1, tickinterval=20, length=100,
-                                              command=lambda x: [],
+                                              command=lambda x: [create_stair()],
                                               label='Temperature start (°c)', state="active")
         temperature_start_stair_scale.grid(row=1, column=1, ipadx=10, ipady=10, padx=30, pady=0)
         temperature_start_stair_scale.set(-1)
-        temperature_duration_h_stair_scale = Scale(auto_stair_scale_frame, orient='horizontal',
-                                                   troughcolor=THE_COLOR, from_=1, to=20,
-                                                   resolution=1, tickinterval=4, length=100,
-                                                   command=lambda x: [],
-                                                   label='Duration of the plateau (H)', state="active")
-        temperature_duration_h_stair_scale.grid(row=1, column=2, ipadx=30, ipady=10, padx=30, pady=0)
-        temperature_duration_h_stair_scale.set(1)
         temperature_end_auto_stair = Scale(auto_stair_scale_frame, orient='vertical',
                                            troughcolor=THE_COLOR, from_=80, to=-40,
                                            resolution=1, tickinterval=20, length=100,
-                                           command=lambda x: [],
+                                           command=lambda x: [create_stair()],
                                            label='Temperature end (°C)', state="active", relief="flat")
         temperature_end_auto_stair.grid(row=1, column=3, ipadx=10, ipady=10, padx=30, pady=0)
         temperature_end_auto_stair.set(1)
 
+        def create_stair():
+            simulation_graphic_stair(
+                step_auto_stair_scale_frame_scale.get(),
+                temperature_start_stair_scale.get(),
+                temperature_end_auto_stair.get(),
+                auto_stair_scale_frame)
+
         new_window_climatic_chamber.mainloop()
+
     def launch_ibts(self):
         new_window_ibts = Tk()
         new_window_ibts.title("Signal generator settings")
@@ -372,3 +369,42 @@ class Threadsensibility(threading.Thread):
                 pass
         logger.debug("All frames send")
         ssh2.close()
+
+def simulation_graphic_stair(step, temp_start, temp_end, window):
+    root = LabelFrame(window, bd=0)
+    root.grid(column=0, row=2, columnspan=6, rowspan=4)
+    my_draw_7_frame_2 = LabelFrame(root)
+    my_draw_7_frame_2.pack()
+    my_draw_7_frame_1 = LabelFrame(root)
+    my_draw_7_frame_1.pack(side=BOTTOM)
+    data = {0: 0}
+    var = 0
+    temp_duration = 2
+    if temp_start == temp_end:
+        for i in range(0, temp_duration):
+            data[i] = temp_start
+    else:
+        if temp_end < temp_start:
+            step = -step
+        while abs(temp_start - temp_end) >= abs(step):
+            for i in range(var, temp_duration + var):
+                data[i] = temp_start
+            var = var + temp_duration
+            temp_start = temp_start + step
+        for i in range(var, temp_duration + var):
+            data[i] = temp_start
+        if temp_start == temp_end:
+            pass
+        else:
+            var = var + temp_duration
+            for i in range(var, temp_duration + var):
+                data[i] = temp_end
+
+    names = list(data.keys())
+    values = list(data.values())
+    fig = Figure(figsize=(5, 3), dpi=100)
+    fig.add_subplot().plot(names, values)
+    fig.legend(["°C/hour"])
+    canvas = FigureCanvasTkAgg(fig, master=my_draw_7_frame_1)
+    canvas.draw()
+    canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
