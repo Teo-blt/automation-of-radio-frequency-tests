@@ -7,6 +7,7 @@
 # =============================================================================
 """The Module Has Been Build for the automation of radio frequency tests in python language"""
 # =============================================================================
+import sys
 import paramiko
 import threading
 from tkinter import *
@@ -39,6 +40,8 @@ class Threadsensibility(threading.Thread):
 
     def run(self):
         self.lunch_ibts()
+        if self.port_test != -1:
+            print("port test")
         for i in range(0, int(self.test)):
             if i == 0:
                 sensibility_result = open("Report_sensibility.txt", 'w+')
@@ -59,6 +62,10 @@ class Threadsensibility(threading.Thread):
             while 1:
                 wah = stdout.readline()
                 #  logger.info(wah)
+                if wah[0:5] == "ERROR":
+                    logger.critical("Failed to start the concentrator")
+                    logger.critical("Please restart the Izepto")
+                    sys.exit()
                 if wah[19:22] == "EUI":
                     logger.debug("The iZepto is ready")
                     break
@@ -70,7 +77,7 @@ class Threadsensibility(threading.Thread):
             time.sleep(1)
             ssh.close()
             a = stdout.readlines()
-            number = (len(a) / 4)
+            number = round((len(a) / 4))
 
             logger.debug("---------------------------------")
             if int(self.test) == 1000:
@@ -276,8 +283,8 @@ class Threadsensibility(threading.Thread):
 
     def write_json(self, attenuation_db, packet_lost, power_out):
         outfile = open('test.txt', 'a')
-        power_in = power_out - attenuation_db
-        outfile.write(str(power_in) + ' ' + str(packet_lost) + '\n')
+        power_in = round(power_out - attenuation_db)
+        outfile.write(str(power_in) + ' ' + str(round(packet_lost)) + '\n')
         outfile.close()
 
     def ready_ibts(self):

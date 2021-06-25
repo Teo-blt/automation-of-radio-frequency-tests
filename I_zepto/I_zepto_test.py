@@ -11,7 +11,7 @@ import paramiko
 import threading
 from loguru import logger
 import time
-
+import sys
 # =============================================================================
 
 def lunch_izepto(ip):
@@ -40,7 +40,10 @@ class Threadizepto(threading.Thread):
 
         while (1):
             wah = stdout.readline()
-            logger.info(wah)
+            if wah[0:5] == "ERROR":
+                logger.critical("Failed to start the concentrator")
+                logger.critical("Please restart the Izepto")
+                sys.exit()
             if wah[19:22] == "EUI":
                 logger.debug("The iZepto is ready")
                 break
