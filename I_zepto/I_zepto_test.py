@@ -42,6 +42,8 @@ class Threadizepto(threading.Thread):
             if wah[0:5] == "ERROR":
                 logger.critical("Failed to start the concentrator")
                 logger.critical("Please restart the Izepto")
+                self.ssh.exec_command("reboot", get_pty=True)
+                logger.info("Izepto rebooting, it may take few minutes")
 
             if wah[19:22] == "EUI":
                 logger.debug("The iZepto is ready")

@@ -7,7 +7,6 @@
 # =============================================================================
 """The Module Has Been Build for the automation of radio frequency tests in python language"""
 # =============================================================================
-import sys
 import paramiko
 import threading
 import time
@@ -50,6 +49,11 @@ class Threadsensibility(threading.Thread):
         self.t_start = 0
         self.t_end = 0
         self.temperature = 0
+        self.temp = 0
+        self.temp2 = 0
+        self.VALUE_STABILISATION = 0
+        self.power = 0
+        self.a = IntVar()
 
     def run(self):
         sensibility_result = open("Report_sensibility.txt", 'w+')
@@ -105,8 +109,8 @@ class Threadsensibility(threading.Thread):
     def read(self, the_port):
         try:  # This try allow the program to survive in a rare case where the climatic
             # chamber don't have enough time to answer back
-            self._port = the_port
-            vt.port = self._port
+            self.port_test = the_port
+            vt.port = self.port_test
             try:
                 vt.open()
             except:
@@ -146,7 +150,8 @@ class Threadsensibility(threading.Thread):
                 if wah[0:5] == "ERROR":
                     logger.critical("Failed to start the concentrator")
                     logger.critical("Please restart the Izepto")
-                    sys.exit()
+                    ssh.exec_command("reboot", get_pty=True)
+                    logger.info("Izepto rebooting, it may take few minutes")
                 if wah[19:22] == "EUI":
                     logger.debug("The iZepto is ready")
                     break
@@ -236,6 +241,32 @@ class Threadsensibility(threading.Thread):
                                            label='Temperature end (°C)', state="active", relief="flat")
         temperature_end_auto_stair.grid(row=1, column=3, ipadx=10, ipady=10, padx=30, pady=0)
         temperature_end_auto_stair.set(1)
+
+        def outdoor_settings():
+            step_auto_stair_scale_frame_scale.set(20)
+            temperature_start_stair_scale.set(-40)
+            temperature_end_auto_stair.set(80)
+
+        def indoor_settings():
+            step_auto_stair_scale_frame_scale.set(20)
+            temperature_start_stair_scale.set(-20)
+            temperature_end_auto_stair.set(40)
+
+        outdoor_settings_radiobutton = tk.Radiobutton(auto_stair_scale_frame, text="Start with high temp",
+                                                      variable=self.a, value=0, cursor="right_ptr",
+                                                      indicatoron=0, command=lambda: [outdoor_settings()],
+                                                      background=THE_COLOR,
+                                                      activebackground="green",
+                                                      bd=8, selectcolor="green", overrelief="sunken")
+        outdoor_settings_radiobutton.grid(row=2, column=0, ipadx=10, ipady=10, padx=0, pady=0)
+        indoor_settings_radiobutton = tk.Radiobutton(auto_stair_scale_frame, text="Start with low temp",
+                                                     variable=self.a, value=1, cursor="right_ptr",
+                                                     indicatoron=0, command=lambda: [indoor_settings()],
+                                                     background=THE_COLOR,
+                                                     activebackground="green",
+                                                     bd=8, selectcolor="green", overrelief="sunken")
+        indoor_settings_radiobutton.grid(row=3, column=0, ipadx=10, ipady=10, padx=0, pady=0)
+        indoor_settings_radiobutton.invoke()
 
         def create_stair():
             simulation_graphic_stair(
@@ -466,7 +497,7 @@ class Threadsensibility(threading.Thread):
 
 def simulation_graphic_stair(step, temp_start, temp_end, window):
     root = LabelFrame(window, bd=0)
-    root.grid(column=0, row=2, columnspan=6, rowspan=4)
+    root.grid(column=1, row=2, columnspan=6, rowspan=4)
     my_draw_7_frame_2 = LabelFrame(root)
     my_draw_7_frame_2.pack()
     my_draw_7_frame_1 = LabelFrame(root)
