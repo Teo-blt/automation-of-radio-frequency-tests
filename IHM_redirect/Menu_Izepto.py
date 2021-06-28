@@ -23,14 +23,21 @@ global status
 def izepto_menu(self, ip_address):
     scanner_ibts_frame = LabelFrame(self, text="Detection of Izepto")
     scanner_ibts_frame.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
-    ibts_scale_frame = LabelFrame(self, text="Start the test")
-    ibts_scale_frame.grid(row=0, column=3, ipadx=0, ipady=0, padx=0, pady=0)
-    start_test_button = tk.Button(ibts_scale_frame, text="Ignition of the card",
+    izepto_scale_frame = LabelFrame(self, text="Start the test")
+    izepto_scale_frame.grid(row=0, column=3, ipadx=0, ipady=0, padx=0, pady=0)
+    reboot_scale_frame = LabelFrame(self, text="reboot_izepto")
+    reboot_scale_frame.grid(row=1, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+    start_test_button = tk.Button(izepto_scale_frame, text="Ignition of the card",
                                   borderwidth=8, background=THE_COLOR,
                                   activebackground="green", cursor="right_ptr", overrelief="sunken",
                                   command=lambda: [call_graph_izepto(ip_address, port_com_frame_entry,
                                                                      visual_color_button_sg, izepto_info_label)])
     start_test_button.pack(padx=0, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
+    reboot_button = tk.Button(reboot_scale_frame, text="Reboot the card",
+                                  borderwidth=8, background=THE_COLOR,
+                                  activebackground="green", cursor="right_ptr", overrelief="sunken",
+                                  command=lambda: [reboot(port_com_frame_entry)])
+    reboot_button.pack(padx=0, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
     place = scanner_ibts_frame
     scanner_port_com_frame_label = Label(place, text="Select your IP address:")
     scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
@@ -64,6 +71,20 @@ def visual_function(visual_color_button, s):
         visual_color_button.config(text="The connection status is : offline", bg="red")
     else:
         visual_color_button.config(text="The connection status is : online", bg="light green")
+
+def reboot(port_com_frame_entry):
+    ip_address = port_com_frame_entry.get()
+    username = "root"
+    password = "root"
+    try:
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(hostname=ip_address, username=username, password=password)
+        cmd = "reboot"
+        ssh.exec_command(cmd, get_pty=True)
+        logger.info("Izepto rebooting, it may take few minutes")
+    except:
+        logger.error("Invalid ip adress")
 
 
 def try_izepto_connection(port_com_frame_entry, port_com_frame_entry_name, visual_color_button_sg):

@@ -17,9 +17,16 @@ from tkinter import *
 from tkinter.messagebox import *
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from loguru import logger
+import serial
 
 # =============================================================================
 THE_COLOR = "#E76145"
+CLIMATIC_CHAMBER_STOP = b"$00E 0000.0 0000.0 0000.0 0000.0 0000.0 0000000000000000\n\r"
+ON = b"$00E %06.1f 0000.0 0000.0 0000.0 0000.0 0101000000000000\n\r"
+SERIAL_SPEED = 9600
+SERIAL_TIMEOUT = 5
+WRITE_TIMEOUT = 5
+vt = serial.Serial()
 
 
 class Threadsensibility(threading.Thread):
@@ -39,19 +46,91 @@ class Threadsensibility(threading.Thread):
         self.offset = 0
         self.test = 0
         self.bw = 0
+        self.step = 0
+        self.t_start = 0
+        self.t_end = 0
+        self.temperature = 0
 
     def run(self):
+        sensibility_result = open("Report_sensibility.txt", 'w+')
+        sensibility_result.close()
+        outfile = open('test.txt', 'w+')
+        outfile.close()
+        self.write_doc("Sensitivity measurement iZepto")
+        self.write_doc("Sensitivity measurement iBTS")
         self.launch_ibts()
+
         if self.port_test != -1:
             self.launch_climatic_chamber()
+            vt.port = self.port_test
+            try:
+                vt.open()
+            except:
+                pass
+            self.temperature = self.t_start
+            vt.write(ON % self.temperature)
+            [self.temp, self.temp2] = self.read(self.port_test)
+            self.write_doc("################################################\n")
+            self.write_doc("Start of Test")
+            logger.debug("################################################")
+            logger.debug("Start of Test")
+            self.wait_temperature_reach_consign()
+            self.script()
+            vt.write(CLIMATIC_CHAMBER_STOP)
+        else:
+            self.script()
+
+    def wait_temperature_reach_consign(self):
+        while abs(self.temp - self.temperature) >= 0.2 or self.VALUE_STABILISATION <= 120:
+            # The maximal difference between the actual temperature and the order must be less than 0.2
+            # (if we use a maximal difference of 0 it's take too much time to stabilize) AND the VALUE_STABILISATION
+            # must be bigger than 120
+            time.sleep(5)
+            [self.temp, self.temp2] = self.read(self.port_test)  # Reed the value thanks to the reed function
+            logger.info("#################################")  # show the values to the user
+            logger.info(f"The actual temperature is : {self.temp}")
+            logger.info("The actual order is : {}".format(self.temp2))
+            if abs(self.temp - self.temperature) < 0.2:  # If the maximal difference between the actual temperature
+                # and the order is less than 0.2, launch the countdown.
+                logger.info("The climate chamber is stabilized since {} seconds of the "
+                            "120 request ".format(self.VALUE_STABILISATION))
+                self.VALUE_STABILISATION = self.VALUE_STABILISATION + 5  # Because the loop cycle every 5 seconds, we
+                # add 5 to the VALUE_STABILISATION
+            else:  # If the maximal difference between the actual temperature and the order is 0.2 or more we
+                # reset the VALUE_STABILISATION
+                self.VALUE_STABILISATION = 0
+        logger.info(f"The climate chamber is stabilized with success")
+        self.write_doc(f"The climate chamber is stabilized with success")
+
+    def read(self, the_port):
+        try:  # This try allow the program to survive in a rare case where the climatic
+            # chamber don't have enough time to answer back
+            self._port = the_port
+            vt.port = self._port
+            try:
+                vt.open()
+            except:
+                pass
+            vt.write(b"$00I\n\r")  # prepare the climatic chamber to receive information
+            time.sleep(0.2)  # A pause that freeze the entire program
+            # TODO find a better way to wait maybe asyncio.sleep(5) ?
+            received_frame = vt.read_all().decode('utf-8')  # Decipher the frame that was send by the climatic
+            # chamber
+            word = received_frame.split(" ")  # Split the decipher the frame that was send by the climatic chamber
+            strings = str(word[1])
+            number = float(strings)  # Collect the actual temperature of the climatic chamber
+            strings2 = str(word[0])
+            number2 = strings2[-6:]
+            number3 = float(number2)  # Collect the actual order of the climatic chamber
+            return [number, number3]  # Return the actual temperature and the actual order at the same time to
+            # allow the program to call read only once every 5 seconds, it's time saving (because of the time sleep)
+        except:
+            # logger.error("too fast, please wait")  # protect the application if the user
+            # make a request the same time than the programme
+            return [0, 0]  # In case of an error, this function will return [0,0], This will NOT affect the graph
+
+    def script(self):
         for i in range(0, int(self.test)):
-            if i == 0:
-                sensibility_result = open("Report_sensibility.txt", 'w+')
-                sensibility_result.close()
-                outfile = open('test.txt', 'w+')
-                outfile.close()
-                self.write_doc("Sensitivity measurement iZepto")
-                self.write_doc("Sensitivity measurement iBTS")
             username = "root"
             password = "root"
             ssh = paramiko.SSHClient()
@@ -126,8 +205,16 @@ class Threadsensibility(threading.Thread):
                                                         borderwidth=8, background=THE_COLOR,
                                                         activebackground="green", cursor="right_ptr",
                                                         overrelief="sunken",
-                                                        command=lambda: [])
-        start_auto_stair_scale_frame_button.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
+                                                        command=lambda: [self.lunch_safety_climatic_chamber(
+                                                            step_auto_stair_scale_frame_scale.get(),
+                                                            temperature_start_stair_scale.get(),
+                                                            temperature_end_auto_stair.get(),
+                                                            new_window_climatic_chamber)])
+        start_auto_stair_scale_frame_button.grid(row=0, column=0, ipadx=40, ipady=20, padx=0, pady=0)
+        auto_stair_label = tk.Label(auto_stair_scale_frame, text="The sensibility tests will take place during the "
+                                                                 "flat area", bg="white", font="arial",
+                                    fg="black", relief="groove")
+        auto_stair_label.grid(row=0, column=1, columnspan=4, ipadx=40, ipady=20, padx=0, pady=0)
         step_auto_stair_scale_frame_scale = Scale(auto_stair_scale_frame, orient='vertical', troughcolor=THE_COLOR,
                                                   from_=120, to=1,
                                                   resolution=1, tickinterval=20, length=100,
@@ -158,6 +245,12 @@ class Threadsensibility(threading.Thread):
                 auto_stair_scale_frame)
 
         new_window_climatic_chamber.mainloop()
+
+    def lunch_safety_climatic_chamber(self, step, t_start, t_end, window):
+        window.destroy()
+        self.step = step
+        self.t_start = t_start
+        self.t_end = t_end
 
     def launch_ibts(self):
         new_window_ibts = Tk()
@@ -244,14 +337,14 @@ class Threadsensibility(threading.Thread):
         start_button = tk.Button(scale_frame, text="Start",
                                  borderwidth=8, background=THE_COLOR,
                                  activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                 command=lambda: [self.lunch_safety(frequency, sf, attenuate, number_frames,
-                                                                    step, offset, test, bw, power,
-                                                                    new_window_ibts)])
+                                 command=lambda: [self.lunch_safety_ibts(frequency, sf, attenuate, number_frames,
+                                                                         step, offset, test, bw, power,
+                                                                         new_window_ibts)])
         start_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
         new_window_ibts.mainloop()
 
-    def lunch_safety(self, frequency, sf, attenuate, number_frames, step, offset, test, bw, power,
-                     new_window_main_graphic):
+    def lunch_safety_ibts(self, frequency, sf, attenuate, number_frames, step, offset, test, bw, power,
+                          new_window_main_graphic):
         global is_killed
         try:  # to chek if the values are integer
             number_frames = float(number_frames.get())
@@ -369,6 +462,7 @@ class Threadsensibility(threading.Thread):
                 pass
         logger.debug("All frames send")
         ssh2.close()
+
 
 def simulation_graphic_stair(step, temp_start, temp_end, window):
     root = LabelFrame(window, bd=0)

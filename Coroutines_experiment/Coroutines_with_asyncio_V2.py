@@ -135,6 +135,8 @@ class Thread(threading.Thread):
         return 1  # without a return, the while loop will run continuously.
 
     async def do_something_else(self):
+        for i in range(0 ,100):
+            print(i)
         pass  # The function is no more use, but in case of...
 
     async def several_methods_run_together(self):
