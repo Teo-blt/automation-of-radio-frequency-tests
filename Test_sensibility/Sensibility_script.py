@@ -30,7 +30,7 @@ vt = serial.Serial()
 
 class Threadsensibility(threading.Thread):
 
-    def __init__(self, ip_address, ip, port_test):
+    def __init__(self, ip_address, ip, port_test, window):
         threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
         # additional data added to the class
         self.ip_address = ip_address
@@ -41,11 +41,11 @@ class Threadsensibility(threading.Thread):
         self.frequency = 0
         self.attenuate = 0
         self.sf = 0
-        self.step = 0
+        self.step_attenuate = 0
         self.offset = 0
         self.test = 0
         self.bw = 0
-        self.step = 0
+        self.step_temp = 0
         self.t_start = 0
         self.t_end = 0
         self.temperature = 0
@@ -54,6 +54,10 @@ class Threadsensibility(threading.Thread):
         self.VALUE_STABILISATION = 0
         self.power = 0
         self.a = IntVar()
+        self.climate_chamber_test = 0
+        self.window = window
+        self.climate_chamber_num = 0
+        self.channel = 0
 
     def run(self):
         sensibility_result = open("Report_sensibility.txt", 'w+')
@@ -74,10 +78,20 @@ class Threadsensibility(threading.Thread):
             self.temperature = self.t_start
             vt.write(ON % self.temperature)
             [self.temp, self.temp2] = self.read(self.port_test)
-            self.write_doc("################################################\n")
+            while abs(self.temperature - self.t_end) >= abs(self.step_temp):
+                self.write_doc(f"Start of Test temperature {self.climate_chamber_test}")
+                self.write_doc("Start of Test")
+                logger.debug("################################################")
+                logger.debug(f"Start of Test temperature {self.climate_chamber_test}")
+                self.wait_temperature_reach_consign()
+                self.script()
+                self.temperature = self.temperature + self.step_temp
+                self.climate_chamber_test = self.climate_chamber_test + 1
+            self.write_doc(f"Start of Test temperature {self.climate_chamber_test}")
             self.write_doc("Start of Test")
             logger.debug("################################################")
-            logger.debug("Start of Test")
+            logger.debug(f"Start of Test temperature {self.climate_chamber_test}")
+            self.temperature = self.t_end
             self.wait_temperature_reach_consign()
             self.script()
             vt.write(CLIMATIC_CHAMBER_STOP)
@@ -149,16 +163,35 @@ class Threadsensibility(threading.Thread):
                 #  logger.info(wah)
                 if wah[0:5] == "ERROR":
                     logger.critical("Failed to start the concentrator")
-                    logger.critical("Please restart the Izepto")
                     ssh.exec_command("reboot", get_pty=True)
-                    logger.info("Izepto rebooting, it may take few minutes")
+                    logger.critical("The Izepto is rebooting, please standby")
+                    for p in range(0, 20):
+                        logger.info("Izepto rebooting, it may take few minutes")
+                        time.sleep(5)
+
+                    username = "root"
+                    password = "root"
+                    ssh = paramiko.SSHClient()
+                    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+                    ssh.connect(hostname=self.ip, username=username, password=password)
+                    cmd = "./lora_pkt_fwd -c global_conf.json.sx1250.EU868"
+                    cmd2 = "cd /user/libsx1302-utils_V1.0.5-klk1-dirty"
+                    stdin, stdout, stderr = ssh.exec_command(cmd2 + "\n" + cmd, get_pty=True)
+                    while 1:
+                        wah = stdout.readline()
+                        #  logger.info(wah)
+                        if wah[0:5] == "ERROR":
+                            logger.critical("Failed to start the concentrator twice")
+                        if wah[19:22] == "EUI":
+                            logger.debug("The iZepto is ready")
+                            break
                 if wah[19:22] == "EUI":
                     logger.debug("The iZepto is ready")
                     break
             if i == 0:
                 self.ready_ibts()
             else:
-                self.attenuate = float(self.attenuate) + self.step
+                self.attenuate = float(self.attenuate) + self.step_attenuate
                 self.ready_ibts()
             time.sleep(1)
             ssh.close()
@@ -188,10 +221,12 @@ class Threadsensibility(threading.Thread):
             self.write_doc(f"you received {number} frames")
             self.write_doc(f"The rate is : {result}%")
             self.write_doc("---------------------------------")
-            self.write_json(round(float(self.attenuate) / 4 + int(self.offset), 1), 100 - round(result, 1), self.power)
+            self.write_json(round(float(self.attenuate) / 4 + int(self.offset), 1), 100 - round(result, 1), self.power
+                            , self.climate_chamber_num, self.channel)
             if round(result, 1) == 0:
                 logger.debug("fin")
                 self.write_doc("fin")
+                # self.window.destroy()
                 break
 
     def launch_climatic_chamber(self):
@@ -249,17 +284,17 @@ class Threadsensibility(threading.Thread):
 
         def indoor_settings():
             step_auto_stair_scale_frame_scale.set(20)
-            temperature_start_stair_scale.set(-20)
-            temperature_end_auto_stair.set(40)
+            temperature_start_stair_scale.set(0)
+            temperature_end_auto_stair.set(55)
 
-        outdoor_settings_radiobutton = tk.Radiobutton(auto_stair_scale_frame, text="Start with high temp",
+        outdoor_settings_radiobutton = tk.Radiobutton(auto_stair_scale_frame, text="Outdoor settings",
                                                       variable=self.a, value=0, cursor="right_ptr",
                                                       indicatoron=0, command=lambda: [outdoor_settings()],
                                                       background=THE_COLOR,
                                                       activebackground="green",
                                                       bd=8, selectcolor="green", overrelief="sunken")
         outdoor_settings_radiobutton.grid(row=2, column=0, ipadx=10, ipady=10, padx=0, pady=0)
-        indoor_settings_radiobutton = tk.Radiobutton(auto_stair_scale_frame, text="Start with low temp",
+        indoor_settings_radiobutton = tk.Radiobutton(auto_stair_scale_frame, text="Indoor settings",
                                                      variable=self.a, value=1, cursor="right_ptr",
                                                      indicatoron=0, command=lambda: [indoor_settings()],
                                                      background=THE_COLOR,
@@ -279,7 +314,7 @@ class Threadsensibility(threading.Thread):
 
     def lunch_safety_climatic_chamber(self, step, t_start, t_end, window):
         window.destroy()
-        self.step = step
+        self.step_temp = step
         self.t_start = t_start
         self.t_end = t_end
 
@@ -424,7 +459,7 @@ class Threadsensibility(threading.Thread):
                 self.frequency = frequency / 1000000
                 self.attenuate = attenuate
                 self.sf = sf
-                self.step = step
+                self.step_attenuate = step
                 self.offset = offset
                 self.test = test
                 self.bw = bw
@@ -456,10 +491,11 @@ class Threadsensibility(threading.Thread):
         sensibility_result.write(str(text) + "\n")
         sensibility_result.close()
 
-    def write_json(self, attenuation_db, packet_lost, power_out):
+    def write_json(self, attenuation_db, packet_lost, power_out, climate_chamber_num, channel):
         outfile = open('test.txt', 'a')
         power_in = round(power_out - attenuation_db)
-        outfile.write(str(power_in) + ' ' + str(round(packet_lost)) + '\n')
+        outfile.write(str(power_in) + ' ' + str(round(packet_lost)) + ' ' + str(climate_chamber_num)
+                      + ' ' + str(channel) + '\n')
         outfile.close()
 
     def ready_ibts(self):
