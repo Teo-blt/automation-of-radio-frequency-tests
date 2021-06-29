@@ -36,8 +36,8 @@ def draw_graph():
         plt.plot(x2, y2, 'y', marker=",")
         plt.plot(x3, y3, 'g', marker=",")
 
-        plt.xlabel("bla 1")
-        plt.ylabel("bla 2")
+        plt.xlabel("Power at the entrance of the receiver in dBm")
+        plt.ylabel("% of packet lost")
         plt.title("Graphical representation of sensitivity test results")
         plt.show()
 
