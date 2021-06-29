@@ -53,51 +53,72 @@ class Threadsensibility(threading.Thread):
         self.temp2 = 0
         self.VALUE_STABILISATION = 0
         self.power = 0
-        self.a = IntVar()
+        self.a = 0
         self.window = window
         self.climate_chamber_num = 0
-        self.channel = 0
-        self.b = IntVar()
+        self.b = 0
         self.value_mono_multi = 0
+        self.attenuate_storage = 0
+        self.frequency_label = 0
+        self.frequency_entry = 0
+        self.name_file = 'test1.txt'
 
     def run(self):
         sensibility_result = open("Report_sensibility.txt", 'w+')
         sensibility_result.close()
-        outfile = open('test.txt', 'w+')
+        outfile = open(self.name_file, 'w+')
         outfile.close()
         self.write_doc("Sensitivity measurement iZepto")
         self.write_doc("Sensitivity measurement iBTS")
         self.launch_ibts()
-
-        if self.port_test != -1:
-            self.launch_climatic_chamber()
-            vt.port = self.port_test
-            try:
-                vt.open()
-            except:
+        if self.value_mono_multi:
+            if self.port_test != -1:
                 pass
-            self.temperature = self.t_start
-            vt.write(ON % self.temperature)
-            [self.temp, self.temp2] = self.read(self.port_test)
-            while abs(self.temperature - self.t_end) >= abs(self.step_temp):
-                self.write_doc(f"Start of Test temperature {self.climate_chamber_num}")
-                self.write_doc("Start of Test")
-                logger.debug("################################################")
-                logger.debug(f"Start of Test temperature {self.climate_chamber_num}")
-                self.wait_temperature_reach_consign()
+            else:
+                self.value_mono_multi = 0
+                for p in range(0, 8):
+                    logger.debug(f"Channel number: {self.value_mono_multi} of 8, frequency: {round(self.frequency, 1)}")
+                    self.write_doc(f"Channel number: {self.value_mono_multi} of 8, frequency: "
+                                   f"{round(self.frequency, 1)}")
+                    self.attenuate = self.attenuate_storage
+                    self.script()
+                    self.frequency = self.frequency + 0.2
+                    self.value_mono_multi = self.value_mono_multi + 1
+                logger.debug(f"fin test")
+                self.write_doc(f"fin test")
+        else:
+            if self.port_test != -1:
+                self.climate_chamber_script()
+            else:
                 self.script()
-                self.temperature = self.temperature + self.step_temp
-                self.climate_chamber_num = self.climate_chamber_num + 1
+
+    def climate_chamber_script(self):
+        self.launch_climatic_chamber()
+        vt.port = self.port_test
+        try:
+            vt.open()
+        except:
+            pass
+        self.temperature = self.t_start
+        vt.write(ON % self.temperature)
+        [self.temp, self.temp2] = self.read(self.port_test)
+        while abs(self.temperature - self.t_end) >= abs(self.step_temp):
             self.write_doc(f"Start of Test temperature {self.climate_chamber_num}")
             self.write_doc("Start of Test")
             logger.debug("################################################")
             logger.debug(f"Start of Test temperature {self.climate_chamber_num}")
-            self.temperature = self.t_end
             self.wait_temperature_reach_consign()
             self.script()
-            vt.write(CLIMATIC_CHAMBER_STOP)
-        else:
-            self.script()
+            self.temperature = self.temperature + self.step_temp
+            self.climate_chamber_num = self.climate_chamber_num + 1
+        self.write_doc(f"Start of Test temperature {self.climate_chamber_num}")
+        self.write_doc("Start of Test")
+        logger.debug("################################################")
+        logger.debug(f"Start of Test temperature {self.climate_chamber_num}")
+        self.temperature = self.t_end
+        self.wait_temperature_reach_consign()
+        self.script()
+        vt.write(CLIMATIC_CHAMBER_STOP)
 
     def wait_temperature_reach_consign(self):
         while abs(self.temp - self.temperature) >= 0.2 or self.VALUE_STABILISATION <= 120:
@@ -194,7 +215,7 @@ class Threadsensibility(threading.Thread):
 
             logger.debug("---------------------------------")
             if int(self.test) == 1000:
-                logger.debug(f"Test {i} of ∞")
+                logger.debug(f"Test {i} of ∞ of channel number: {self.value_mono_multi}")
             else:
                 logger.debug(f"Test {i} of {self.test}")
             logger.debug(
@@ -207,7 +228,7 @@ class Threadsensibility(threading.Thread):
 
             self.write_doc("---------------------------------")
             if int(self.test) == 1000:
-                self.write_doc(f"Test {i} of inf")
+                self.write_doc(f"Test {i} of inf of channel number: {self.value_mono_multi}")
             else:
                 self.write_doc(f"Test {i} of {self.test}")
             self.write_doc(
@@ -219,8 +240,8 @@ class Threadsensibility(threading.Thread):
             self.write_json(round(float(self.attenuate) / 4 + int(self.offset), 1), 100 - round(result, 1),
                             self.power)
             if round(result, 1) == 0:
-                logger.debug("fin")
-                self.write_doc("fin")
+                logger.debug(f"fin channel number: {self.value_mono_multi}")
+                self.write_doc(f"fin channel number: {self.value_mono_multi}")
                 # self.window.destroy()
                 break
 
@@ -315,6 +336,14 @@ class Threadsensibility(threading.Thread):
 
     def value_change(self, a):
         self.value_mono_multi = a
+        if a:
+            self.frequency_entry.delete(0, 20)
+            self.frequency_entry.insert(0, 867100000)
+            self.frequency_entry.config(state='readonly')
+        else:
+            self.frequency_entry.config(state='normal')
+
+
 
     def launch_ibts(self):
         new_window_ibts = Tk()
@@ -373,11 +402,12 @@ class Threadsensibility(threading.Thread):
         number_frames.grid(row=0, column=1, ipadx=0, ipady=0, padx=0, pady=0)
         number_frames.insert(0, 100)
 
-        frequency_label = Label(packet_frame, text="frequency channel :")
-        frequency_label.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
-        frequency = Entry(packet_frame, cursor="right_ptr")
-        frequency.grid(row=1, column=1, ipadx=0, ipady=0, padx=0, pady=0)
-        frequency.insert(0, 867300000)
+        self.frequency_label = Label(packet_frame, text="frequency channel :")
+        self.frequency_label.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+        self.frequency_entry = Entry(packet_frame, cursor="right_ptr")
+        self.frequency_entry.grid(row=1, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+        self.frequency_entry.insert(0, 867100000)
+
 
         sf_label = Label(packet_frame, text="Spreading factor 7 to 12:")
         sf_label.grid(row=2, column=0, ipadx=0, ipady=0, padx=0, pady=0)
@@ -409,14 +439,15 @@ class Threadsensibility(threading.Thread):
         reset_button = tk.Button(scale_frame, text="Reset",
                                  borderwidth=8, background=THE_COLOR,
                                  activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                 command=lambda: [self.reset_all(frequency, sf, attenuate,
+                                 command=lambda: [self.reset_all(self.frequency_entry, sf, attenuate,
                                                                  number_frames, step, offset, test, bw)])
         reset_button.pack(padx=0, pady=0, expand=True, fill="both", side=BOTTOM)
 
         start_button = tk.Button(scale_frame, text="Start",
                                  borderwidth=8, background=THE_COLOR,
                                  activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                 command=lambda: [self.lunch_safety_ibts(frequency, sf, attenuate, number_frames,
+                                 command=lambda: [self.lunch_safety_ibts(self.frequency_entry, sf, attenuate,
+                                                                         number_frames,
                                                                          step, offset, test, bw, power,
                                                                          new_window_ibts)])
         start_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
@@ -471,6 +502,7 @@ class Threadsensibility(threading.Thread):
                 self.number_frames = number_frames
                 self.frequency = frequency / 1000000
                 self.attenuate = attenuate
+                self.attenuate_storage = attenuate
                 self.sf = sf
                 self.step_attenuate = step
                 self.offset = offset
@@ -485,7 +517,7 @@ class Threadsensibility(threading.Thread):
         number_frames.delete(0, 20)
         number_frames.insert(0, 100)
         frequency.delete(0, 20)
-        frequency.insert(0, 867300000)
+        frequency.insert(0, 867100000)
         attenuate.delete(0, 20)
         attenuate.insert(0, 280)
         sf.delete(0, 20)
@@ -505,10 +537,10 @@ class Threadsensibility(threading.Thread):
         sensibility_result.close()
 
     def write_json(self, attenuation_db, packet_lost, power_out):
-        outfile = open('test.txt', 'a')
+        outfile = open(self.name_file, 'a')
         power_in = round(power_out - attenuation_db)
         outfile.write(str(power_in) + ' ' + str(round(packet_lost)) + ' ' + str(self.climate_chamber_num)
-                      + ' ' + str(self.channel) + '\n')
+                      + ' ' + str(self.value_mono_multi) + '\n')
         outfile.close()
 
     def ready_ibts(self):
