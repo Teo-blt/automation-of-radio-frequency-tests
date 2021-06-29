@@ -54,10 +54,11 @@ class Threadsensibility(threading.Thread):
         self.VALUE_STABILISATION = 0
         self.power = 0
         self.a = IntVar()
-        self.climate_chamber_test = 0
         self.window = window
         self.climate_chamber_num = 0
         self.channel = 0
+        self.b = IntVar()
+        self.value_mono_multi = 0
 
     def run(self):
         sensibility_result = open("Report_sensibility.txt", 'w+')
@@ -79,18 +80,18 @@ class Threadsensibility(threading.Thread):
             vt.write(ON % self.temperature)
             [self.temp, self.temp2] = self.read(self.port_test)
             while abs(self.temperature - self.t_end) >= abs(self.step_temp):
-                self.write_doc(f"Start of Test temperature {self.climate_chamber_test}")
+                self.write_doc(f"Start of Test temperature {self.climate_chamber_num}")
                 self.write_doc("Start of Test")
                 logger.debug("################################################")
-                logger.debug(f"Start of Test temperature {self.climate_chamber_test}")
+                logger.debug(f"Start of Test temperature {self.climate_chamber_num}")
                 self.wait_temperature_reach_consign()
                 self.script()
                 self.temperature = self.temperature + self.step_temp
-                self.climate_chamber_test = self.climate_chamber_test + 1
-            self.write_doc(f"Start of Test temperature {self.climate_chamber_test}")
+                self.climate_chamber_num = self.climate_chamber_num + 1
+            self.write_doc(f"Start of Test temperature {self.climate_chamber_num}")
             self.write_doc("Start of Test")
             logger.debug("################################################")
-            logger.debug(f"Start of Test temperature {self.climate_chamber_test}")
+            logger.debug(f"Start of Test temperature {self.climate_chamber_num}")
             self.temperature = self.t_end
             self.wait_temperature_reach_consign()
             self.script()
@@ -157,7 +158,6 @@ class Threadsensibility(threading.Thread):
             cmd = "./lora_pkt_fwd -c global_conf.json.sx1250.EU868"
             cmd2 = "cd /user/libsx1302-utils_V1.0.5-klk1-dirty"
             stdin, stdout, stderr = ssh.exec_command(cmd2 + "\n" + cmd, get_pty=True)
-
             while 1:
                 wah = stdout.readline()
                 #  logger.info(wah)
@@ -165,10 +165,9 @@ class Threadsensibility(threading.Thread):
                     logger.critical("Failed to start the concentrator")
                     ssh.exec_command("reboot", get_pty=True)
                     logger.critical("The Izepto is rebooting, please standby")
-                    for p in range(0, 20):
+                    for t in range(0, 10):
                         logger.info("Izepto rebooting, it may take few minutes")
                         time.sleep(5)
-
                     username = "root"
                     password = "root"
                     ssh = paramiko.SSHClient()
@@ -177,14 +176,9 @@ class Threadsensibility(threading.Thread):
                     cmd = "./lora_pkt_fwd -c global_conf.json.sx1250.EU868"
                     cmd2 = "cd /user/libsx1302-utils_V1.0.5-klk1-dirty"
                     stdin, stdout, stderr = ssh.exec_command(cmd2 + "\n" + cmd, get_pty=True)
-                    while 1:
-                        wah = stdout.readline()
-                        #  logger.info(wah)
-                        if wah[0:5] == "ERROR":
-                            logger.critical("Failed to start the concentrator twice")
-                        if wah[19:22] == "EUI":
-                            logger.debug("The iZepto is ready")
-                            break
+                    if wah[19:22] == "EUI":
+                        logger.debug("The iZepto is ready")
+                        break
                 if wah[19:22] == "EUI":
                     logger.debug("The iZepto is ready")
                     break
@@ -203,7 +197,8 @@ class Threadsensibility(threading.Thread):
                 logger.debug(f"Test {i} of ∞")
             else:
                 logger.debug(f"Test {i} of {self.test}")
-            logger.debug(f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
+            logger.debug(
+                f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
             logger.debug(f"you send {self.number_frames} frames")
             logger.debug(f"you received {number} frames")
             result = (number / int(self.number_frames)) * 100
@@ -221,8 +216,8 @@ class Threadsensibility(threading.Thread):
             self.write_doc(f"you received {number} frames")
             self.write_doc(f"The rate is : {result}%")
             self.write_doc("---------------------------------")
-            self.write_json(round(float(self.attenuate) / 4 + int(self.offset), 1), 100 - round(result, 1), self.power
-                            , self.climate_chamber_num, self.channel)
+            self.write_json(round(float(self.attenuate) / 4 + int(self.offset), 1), 100 - round(result, 1),
+                            self.power)
             if round(result, 1) == 0:
                 logger.debug("fin")
                 self.write_doc("fin")
@@ -318,6 +313,9 @@ class Threadsensibility(threading.Thread):
         self.t_start = t_start
         self.t_end = t_end
 
+    def value_change(self, a):
+        self.value_mono_multi = a
+
     def launch_ibts(self):
         new_window_ibts = Tk()
         new_window_ibts.title("Signal generator settings")
@@ -392,6 +390,21 @@ class Threadsensibility(threading.Thread):
         bw = Entry(packet_frame, cursor="right_ptr")
         bw.grid(row=3, column=1, ipadx=0, ipady=0, padx=0, pady=0)
         bw.insert(0, 125)
+        channel_mono_radiobutton = tk.Radiobutton(packet_frame, text="Mono channel",
+                                                  variable=self.b, value=0, cursor="right_ptr",
+                                                  indicatoron=0, command=lambda: [self.value_change(0)],
+                                                  background=THE_COLOR,
+                                                  activebackground="green",
+                                                  bd=8, selectcolor="green", overrelief="sunken")
+        channel_mono_radiobutton.grid(row=4, column=0, ipadx=10, ipady=10, padx=0, pady=0)
+        channel_multi_radiobutton = tk.Radiobutton(packet_frame, text="Multi channel",
+                                                   variable=self.b, value=1, cursor="right_ptr",
+                                                   indicatoron=0, command=lambda: [self.value_change(1)],
+                                                   background=THE_COLOR,
+                                                   activebackground="green",
+                                                   bd=8, selectcolor="green", overrelief="sunken")
+        channel_multi_radiobutton.grid(row=4, column=1, ipadx=10, ipady=10, padx=0, pady=0)
+        channel_mono_radiobutton.invoke()
 
         reset_button = tk.Button(scale_frame, text="Reset",
                                  borderwidth=8, background=THE_COLOR,
@@ -491,11 +504,11 @@ class Threadsensibility(threading.Thread):
         sensibility_result.write(str(text) + "\n")
         sensibility_result.close()
 
-    def write_json(self, attenuation_db, packet_lost, power_out, climate_chamber_num, channel):
+    def write_json(self, attenuation_db, packet_lost, power_out):
         outfile = open('test.txt', 'a')
         power_in = round(power_out - attenuation_db)
-        outfile.write(str(power_in) + ' ' + str(round(packet_lost)) + ' ' + str(climate_chamber_num)
-                      + ' ' + str(channel) + '\n')
+        outfile.write(str(power_in) + ' ' + str(round(packet_lost)) + ' ' + str(self.climate_chamber_num)
+                      + ' ' + str(self.channel) + '\n')
         outfile.close()
 
     def ready_ibts(self):
