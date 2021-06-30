@@ -126,7 +126,7 @@ class Thread(threading.Thread):
             [self.temp, self.temp2] = self.read(self._port)  # Reed the value thanks to the reed function
             logger.info("#################################")  # show the values to the user
             logger.info(f"The actual temperature is : {self.temp}")
-            logger.info("The actual order is : {}".format(self.temp2))
+            logger.info(f"The actual order is : {self.temp2}")
             b = time.localtime(abs((self.time_start_min + (timer * 3600)) - time.time()))  # Show useful values
             # of time for the user
             c = time.localtime(self.time_start_min + (timer * 3600))

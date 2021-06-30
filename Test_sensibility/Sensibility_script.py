@@ -87,7 +87,9 @@ class Threadsensibility(threading.Thread):
                     self.write_doc("Start of Test")
                     logger.debug("################################################")
                     logger.debug(f"Start of Test temperature {self.climate_chamber_num}")
+                    vt.write(ON % self.temperature)
                     self.wait_temperature_reach_consign()
+                    self.temperature = self.temperature + self.step_temp
                     for p in range(0, 8):
                         logger.debug(
                             f"Channel number: {self.value_mono_multi} of 8, frequency: {round(self.frequency, 1)}")
@@ -142,6 +144,7 @@ class Threadsensibility(threading.Thread):
             self.write_doc("Start of Test")
             logger.debug("################################################")
             logger.debug(f"Start of Test temperature {self.climate_chamber_num}")
+            vt.write(ON % self.temperature)
             self.wait_temperature_reach_consign()
             self.script()
             self.temperature = self.temperature + self.step_temp
@@ -164,7 +167,7 @@ class Threadsensibility(threading.Thread):
             [self.temp, self.temp2] = self.read(self.port_test)  # Reed the value thanks to the reed function
             logger.info("#################################")  # show the values to the user
             logger.info(f"The actual temperature is : {self.temp}")
-            logger.info("The actual order is : {}".format(self.temp2))
+            logger.info(f"The actual order is : {self.temp2}")
             if abs(self.temp - self.temperature) < 0.2:  # If the maximal difference between the actual temperature
                 # and the order is less than 0.2, launch the countdown.
                 logger.info("The climate chamber is stabilized since {} seconds of the "
