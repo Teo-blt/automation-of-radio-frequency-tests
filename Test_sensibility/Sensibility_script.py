@@ -101,7 +101,6 @@ class Threadsensibility(threading.Thread):
                         self.value_mono_multi = self.value_mono_multi + 1
                     logger.debug(f"fin test")
                     self.write_doc(f"fin test")
-                    self.temperature = self.temperature + self.step_temp
                     self.climate_chamber_num = self.climate_chamber_num + 1
                 self.write_doc(f"Start of Test temperature {self.climate_chamber_num}")
                 self.write_doc("Start of Test")
@@ -159,6 +158,8 @@ class Threadsensibility(threading.Thread):
         vt.write(CLIMATIC_CHAMBER_STOP)
 
     def wait_temperature_reach_consign(self):
+        print(self.temp)
+        print(self.temperature)
         while abs(self.temp - self.temperature) >= 0.2 or self.VALUE_STABILISATION <= 120:
             # The maximal difference between the actual temperature and the order must be less than 0.2
             # (if we use a maximal difference of 0 it's take too much time to stabilize) AND the VALUE_STABILISATION
