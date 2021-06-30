@@ -59,8 +59,7 @@ class Threadsensibility(threading.Thread):
         self.b = 0
         self.value_mono_multi = 0
         self.attenuate_storage = 0
-        self.frequency_label = 0
-        self.frequency_entry = 0
+        self.frequency_entry = tk.Entry
         self.name_file = 'test1.txt'
 
     def run(self):
@@ -73,7 +72,43 @@ class Threadsensibility(threading.Thread):
         self.launch_ibts()
         if self.value_mono_multi:
             if self.port_test != -1:
-                pass
+                self.value_mono_multi = 0
+                self.launch_climatic_chamber()
+                vt.port = self.port_test
+                try:
+                    vt.open()
+                except:
+                    pass
+                self.temperature = self.t_start
+                vt.write(ON % self.temperature)
+                [self.temp, self.temp2] = self.read(self.port_test)
+                while abs(self.temperature - self.t_end) >= abs(self.step_temp):
+                    self.write_doc(f"Start of Test temperature {self.climate_chamber_num}")
+                    self.write_doc("Start of Test")
+                    logger.debug("################################################")
+                    logger.debug(f"Start of Test temperature {self.climate_chamber_num}")
+                    self.wait_temperature_reach_consign()
+                    for p in range(0, 8):
+                        logger.debug(
+                            f"Channel number: {self.value_mono_multi} of 8, frequency: {round(self.frequency, 1)}")
+                        self.write_doc(f"Channel number: {self.value_mono_multi} of 8, frequency: "
+                                       f"{round(self.frequency, 1)}")
+                        self.attenuate = self.attenuate_storage
+                        self.script()
+                        self.frequency = self.frequency + 0.2
+                        self.value_mono_multi = self.value_mono_multi + 1
+                    logger.debug(f"fin test")
+                    self.write_doc(f"fin test")
+                    self.temperature = self.temperature + self.step_temp
+                    self.climate_chamber_num = self.climate_chamber_num + 1
+                self.write_doc(f"Start of Test temperature {self.climate_chamber_num}")
+                self.write_doc("Start of Test")
+                logger.debug("################################################")
+                logger.debug(f"Start of Test temperature {self.climate_chamber_num}")
+                self.temperature = self.t_end
+                self.wait_temperature_reach_consign()
+                self.script()
+                vt.write(CLIMATIC_CHAMBER_STOP)
             else:
                 self.value_mono_multi = 0
                 for p in range(0, 8):
@@ -402,8 +437,8 @@ class Threadsensibility(threading.Thread):
         number_frames.grid(row=0, column=1, ipadx=0, ipady=0, padx=0, pady=0)
         number_frames.insert(0, 100)
 
-        self.frequency_label = Label(packet_frame, text="frequency channel :")
-        self.frequency_label.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+        frequency_label = Label(packet_frame, text="frequency channel :")
+        frequency_label.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
         self.frequency_entry = Entry(packet_frame, cursor="right_ptr")
         self.frequency_entry.grid(row=1, column=1, ipadx=0, ipady=0, padx=0, pady=0)
         self.frequency_entry.insert(0, 867100000)
