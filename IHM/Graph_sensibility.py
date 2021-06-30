@@ -5,19 +5,21 @@ from loguru import logger
 
 def draw_graph():
     try:
-        data = pd.read_csv('test.txt', sep='\s+', header=None)
+        data = pd.read_csv('void.txt', sep='\s+', header=None)
         data = pd.DataFrame(data)
+
         X = {}
         Y = {}
+        numbers_of_channel = (data[3][len(data) - 1]) + 1
+        number_of_temp = (data[2][len(data) - 1]) + 1
         t = 0
         while t != len(data):
             if t != 0:
                 t = t + 1
-            try:
-                type(X[data[3][t]])
-            except:
-                X[data[3][t]] = {}
-                Y[data[3][t]] = {}
+            else:
+                for i in range(0, number_of_temp):
+                    X[i] = {}
+                    Y[i] = {}
             X[data[2][t]][data[3][t]] = [data[0][t]]
             Y[data[2][t]][data[3][t]] = [data[1][t]]
             try:
@@ -27,10 +29,9 @@ def draw_graph():
                     t = t + 1
             except:
                 break
-
         color = {0: 'b', 1: 'r', 2: 'g', 3: 'y', 4: 'c', 5: 'lime', 6: 'black', 7: 'pink'}
-        for m in range(0, 8):
-            for n in range(0, 8):
+        for m in range(0, number_of_temp):
+            for n in range(0, numbers_of_channel):
                 plt.plot(X[m][n], Y[m][n], color[m], marker=",")
 
         plt.xlabel("Power at the entrance of the receiver in dBm")
