@@ -38,30 +38,35 @@ write_json(21, 20, 1, 1)
 write_json(22, 39, 1, 1)
 write_json(23, 49, 1, 1)
 write_json(24, 56, 1, 1)
-data = pd.read_csv('test.txt', sep='\s+', header=None)
+data = pd.read_csv('void.txt', sep='\s+', header=None)
 data = pd.DataFrame(data)
 
-x = {}
-y = {}
-i = 0
+X = {}
+Y = {}
 
-while i != len(data):
-    if i != 0:
-        i = i + 1
-    x[data[3][i]] = ([data[0][i]])
-    y[data[3][i]] = ([data[1][i]])
+t = 0
+while t != len(data):
+    if t != 0:
+        t = t + 1
     try:
-        while data[3][i] == data[3][i + 1]:
-            x[data[3][i]] = x[data[3][i]] + [data[0][i + 1]]
-            y[data[3][i]] = y[data[3][i]] + [data[1][i + 1]]
-            i = i + 1
+        type(X[data[3][t]])
+    except:
+        X[data[3][t]] = {}
+        Y[data[3][t]] = {}
+    X[data[2][t]][data[3][t]] = [data[0][t]]
+    Y[data[2][t]][data[3][t]] = [data[1][t]]
+    try:
+        while data[3][t] == data[3][t + 1]:
+            X[data[2][t]][data[3][t]] = X[data[2][t]][data[3][t]] + [data[0][t + 1]]
+            Y[data[2][t]][data[3][t]] = Y[data[2][t]][data[3][t]] + [data[1][t + 1]]
+            t = t + 1
     except:
         break
 
-print('fini')
 color = {0: 'b', 1: 'r', 2: 'g', 3: 'y', 4: 'c', 5: 'lime', 6: 'black', 7: 'pink'}
-for m in range(0, 8):
-    plt.plot(x[m], y[m], color[m], marker=",")
+for m in range(0, 2):
+    for n in range(0, 2):
+        plt.plot(X[m][n], Y[m][n], color[m], marker=",")
 
 plt.xlabel("Power at the entrance of the receiver in dBm")
 plt.ylabel("% of packet lost")
