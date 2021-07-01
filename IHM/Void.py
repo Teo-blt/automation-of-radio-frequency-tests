@@ -79,8 +79,9 @@ while t != len(data):
         break
 color = {0: 'b', 1: 'r', 2: 'g', 3: 'y', 4: 'c', 5: 'lime', 6: 'black', 7: 'pink'}
 for m in range(0, number_of_temp):
+    marker = "$" + str(m) + "$"
     for n in range(0, numbers_of_channel):
-        plt.plot(X[m][n], Y[m][n], color[m], marker=",")
+        plt.plot(X[m][n], Y[m][n], color[n], marker=marker)
 
 plt.xlabel("Power at the entrance of the receiver in dBm")
 plt.ylabel("% of packet lost")
