@@ -95,8 +95,9 @@ class Threadsensibility(threading.Thread):
                     self.temperature = self.temperature + self.step_temp
                     for p in range(0, self.number_channel):
                         logger.debug(
-                            f"Channel number: {self.value_mono_multi} of 8, frequency: {round(self.frequency, 1)}")
-                        self.write_doc(f"Channel number: {self.value_mono_multi} of 8, frequency: "
+                            f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, frequency: {round(self.frequency, 1)}")
+                        self.write_doc(f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}"
+                                       f", frequency: "
                                        f"{round(self.frequency, 1)}")
                         self.script()
                         self.frequency = self.frequency + 0.2
@@ -115,8 +116,9 @@ class Threadsensibility(threading.Thread):
                 self.wait_temperature_reach_consign()
                 for p in range(0, self.number_channel):
                     logger.debug(
-                        f"Channel number: {self.value_mono_multi} of 8, frequency: {round(self.frequency, 1)}")
-                    self.write_doc(f"Channel number: {self.value_mono_multi} of 8, frequency: "
+                        f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, frequency:"
+                        f" {round(self.frequency, 1)}")
+                    self.write_doc(f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, frequency: "
                                    f"{round(self.frequency, 1)}")
                     self.script()
                     self.frequency = self.frequency + 0.2
@@ -126,8 +128,9 @@ class Threadsensibility(threading.Thread):
             else:
                 self.value_mono_multi = 0
                 for p in range(0, self.number_channel):
-                    logger.debug(f"Channel number: {self.value_mono_multi} of 8, frequency: {round(self.frequency, 1)}")
-                    self.write_doc(f"Channel number: {self.value_mono_multi} of 8, frequency: "
+                    logger.debug(f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, "
+                                 f"frequency: {round(self.frequency, 1)}")
+                    self.write_doc(f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, frequency: "
                                    f"{round(self.frequency, 1)}")
                     self.attenuate = self.attenuate_storage
                     self.script()
@@ -172,7 +175,7 @@ class Threadsensibility(threading.Thread):
         vt.write(CLIMATIC_CHAMBER_STOP)
 
     def wait_temperature_reach_consign(self):
-        while abs(self.temp - self.temperature) >= 0.2 or self.VALUE_STABILISATION <= 5:
+        while abs(self.temp - self.temperature) >= 0.2 or self.VALUE_STABILISATION <= 120:
             # The maximal difference between the actual temperature and the order must be less than 0.2
             # (if we use a maximal difference of 0 it's take too much time to stabilize) AND the VALUE_STABILISATION
             # must be bigger than 120
@@ -292,8 +295,8 @@ class Threadsensibility(threading.Thread):
             self.write_json(round(float(self.attenuate) / 4 + int(self.offset), 1), 100 - round(result, 1),
                             self.power)
             if round(result, 1) == 0:
-                logger.debug(f"fin channel number: {self.value_mono_multi}")
-                self.write_doc(f"fin channel number: {self.value_mono_multi}")
+                logger.debug(f"fin channel number: {self.value_mono_multi}\n")
+                self.write_doc(f"fin channel number: {self.value_mono_multi}\n")
                 # self.window.destroy()
                 break
 
