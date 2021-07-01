@@ -26,6 +26,21 @@ write_json(-126, 18, 0, 2)
 write_json(-127, 74, 0, 2)
 write_json(-128, 84, 0, 2)
 
+write_json(-125, 15, 1, 0)
+write_json(-126, 67, 1, 0)
+write_json(-127, 80, 1, 0)
+write_json(-128, 95, 1, 0)
+
+write_json(-125, 4, 1, 1)
+write_json(-126, 15, 1, 1)
+write_json(-127, 35, 1, 1)
+write_json(-128, 93, 1, 1)
+
+write_json(-125, 28, 1, 2)
+write_json(-126, 48, 1, 2)
+write_json(-127, 52, 1, 2)
+write_json(-128, 68, 1, 2)
+
 data = pd.read_csv('void.txt', sep='\s+', header=None)
 data = pd.DataFrame(data)
 
@@ -54,21 +69,31 @@ color = {0: 'b', 1: 'r', 2: 'g', 3: 'y', 4: 'c', 5: 'lime', 6: 'black', 7: 'pink
 for m in range(0, number_of_temp):
     marker = "$" + str(m) + "$"
     for n in range(0, numbers_of_channel):
-        plt.plot(X[m][n], Y[m][n], color[n], marker=marker)
+        pass
+        #plt.plot(X[m][n], Y[m][n], color[n], marker=marker)
 
 plt.xlabel("Power at the entrance of the receiver in dBm")
 plt.ylabel("% of packet lost")
 plt.title("Graphical representation of sensitivity test results")
-plt.show()
+#plt.show()
 x = 0
 y = 0
-for y in range(0, numbers_of_channel):
-    more_than_50 = 0
-    while Y[x][y][more_than_50] <= 50:
-        more_than_50 += 1
-    delta_y = abs(X[x][y][more_than_50 - 1] - X[x][y][more_than_50])
-    delta_x = abs(Y[x][y][more_than_50 - 1] - Y[x][y][more_than_50])
-    delta = -(delta_x / delta_y)
-    a = Y[0][0][0] - (delta * X[0][0][0])
-    value = (50 - a) / delta
-    print(f"channel {y}, f({value}) = 50%")
+G = {}
+for x in range(0, number_of_temp):
+    for y in range(0, numbers_of_channel):
+        more_than_50 = 0
+        while Y[x][y][more_than_50] <= 50:
+            more_than_50 += 1
+        delta_y = abs(X[x][y][more_than_50 - 1] - X[x][y][more_than_50])
+        delta_x = abs(Y[x][y][more_than_50 - 1] - Y[x][y][more_than_50])
+        delta = -(delta_x / delta_y)
+        a = Y[0][0][0] - (delta * X[0][0][0])
+        value = (50 - a) / delta
+        G[x][y] = value
+
+print(G)
+plt.plot(G.keys(), G.values(), color='r', marker=' ')
+plt.xlabel("Number of channel")
+plt.ylabel("Power at the entrance of the receiver in dBm")
+plt.title("Graphical representation of sensitivity test results for 50% of packet lost")
+plt.show()
