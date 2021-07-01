@@ -5,6 +5,9 @@ from loguru import logger
 
 def draw_graph():
     try:
+        freq = ['867.1']
+        freq_step = 0.2
+
         data = pd.read_csv('void.txt', sep='\s+', header=None)
         data = pd.DataFrame(data)
 
@@ -33,12 +36,40 @@ def draw_graph():
         for m in range(0, number_of_temp):
             marker = "$" + str(m) + "$"
             for n in range(0, numbers_of_channel):
-                plt.plot(X[m][n], Y[m][n], color[n], marker=marker)
+                pass
+                # plt.plot(X[m][n], Y[m][n], color[n], marker=marker)
 
         plt.xlabel("Power at the entrance of the receiver in dBm")
         plt.ylabel("% of packet lost")
         plt.title("Graphical representation of sensitivity test results")
-        plt.show()
+        # plt.show()
+        x = 0
+        y = 0
+        G = {}
 
+        for r in range(0, numbers_of_channel):
+            G[r] = {}
+            if r != 0:
+                freq = freq + [str(round(float(freq[r - 1]) + freq_step, 1))]
+
+        for x in range(0, number_of_temp):
+            for y in range(0, numbers_of_channel):
+                more_than_50 = 0
+                while Y[x][y][more_than_50] <= 50:
+                    more_than_50 += 1
+                delta_y = abs(X[x][y][more_than_50 - 1] - X[x][y][more_than_50])
+                delta_x = abs(Y[x][y][more_than_50 - 1] - Y[x][y][more_than_50])
+                delta = -(delta_x / delta_y)
+                a = Y[0][0][0] - (delta * X[0][0][0])
+                value = (50 - a) / delta
+                G[x][y] = value
+
+        for s in range(0, number_of_temp):
+            plt.plot(freq, G[s].values(), "o-", color=color[s], label=str(s * 10) + "°C")
+        plt.xlabel("Channel frequency")
+        plt.ylabel("Power at the entrance of the receiver in dBm")
+        plt.title("Graphical representation of sensitivity test results for 50% of packet lost")
+        plt.legend()
+        plt.show()
     except:
         logger.critical("Error no data available in test.txt")

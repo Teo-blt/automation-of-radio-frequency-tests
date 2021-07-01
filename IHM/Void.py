@@ -71,6 +71,9 @@ write_json(-126, 14, 1, 5)
 write_json(-127, 34, 1, 5)
 write_json(-128, 84, 1, 5)
 
+freq = ['867.1']
+freq_step = 0.2
+
 data = pd.read_csv('void.txt', sep='\s+', header=None)
 data = pd.DataFrame(data)
 
@@ -109,11 +112,11 @@ plt.title("Graphical representation of sensitivity test results")
 x = 0
 y = 0
 G = {}
-freq = ['867.1']
+
 for r in range(0, numbers_of_channel):
     G[r] = {}
     if r != 0:
-        freq = freq + [str(round(float(freq[r - 1]) + 0.2, 1))]
+        freq = freq + [str(round(float(freq[r - 1]) + freq_step, 1))]
 
 for x in range(0, number_of_temp):
     for y in range(0, numbers_of_channel):
