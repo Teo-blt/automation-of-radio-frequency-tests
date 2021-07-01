@@ -5,8 +5,10 @@ from loguru import logger
 
 def draw_graph():
     try:
-        freq = ['867.1']
+        freq_start = ['867.1']
         freq_step = 0.2
+        temp_start = 28
+        temp_step = -20
 
         data = pd.read_csv('void.txt', sep='\s+', header=None)
         data = pd.DataFrame(data)
@@ -50,7 +52,7 @@ def draw_graph():
         for r in range(0, numbers_of_channel):
             G[r] = {}
             if r != 0:
-                freq = freq + [str(round(float(freq[r - 1]) + freq_step, 1))]
+                freq_start = freq_start + [str(round(float(freq_start[r - 1]) + freq_step, 1))]
 
         for x in range(0, number_of_temp):
             for y in range(0, numbers_of_channel):
@@ -63,9 +65,12 @@ def draw_graph():
                 a = Y[0][0][0] - (delta * X[0][0][0])
                 value = (50 - a) / delta
                 G[x][y] = value
-
+        j = 0
         for s in range(0, number_of_temp):
-            plt.plot(freq, G[s].values(), "o-", color=color[s], label=str(s * 10) + "°C")
+            if j > 7:
+                j = 0
+            plt.plot(freq_start, G[s].values(), "o-", color=color[j], label=str(temp_start + s * temp_step) + "°C")
+            j += 1
         plt.xlabel("Channel frequency")
         plt.ylabel("Power at the entrance of the receiver in dBm")
         plt.title("Graphical representation of sensitivity test results for 50% of packet lost")

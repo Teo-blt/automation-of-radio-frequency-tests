@@ -1,78 +1,10 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-
-def write_json(power, frames, etuve, chanel):
-    outfile = open('void.txt', 'a')
-    outfile.write(str(power) + ' ' + str(frames) + ' ' + str(etuve) + ' ' + str(chanel) + '\n')
-    outfile.close()
-
-
-outfile = open('void.txt', 'w+')
-outfile.close()
-
-write_json(-125, 20, 0, 0)
-write_json(-126, 41, 0, 0)
-write_json(-127, 82, 0, 0)
-write_json(-128, 95, 0, 0)
-
-write_json(-125, 19, 0, 1)
-write_json(-126, 40, 0, 1)
-write_json(-127, 87, 0, 1)
-write_json(-128, 90, 0, 1)
-
-write_json(-125, 7, 0, 2)
-write_json(-126, 18, 0, 2)
-write_json(-127, 74, 0, 2)
-write_json(-128, 84, 0, 2)
-
-write_json(-125, 19, 0, 3)
-write_json(-126, 39, 0, 3)
-write_json(-127, 78, 0, 3)
-write_json(-128, 90, 0, 3)
-
-write_json(-125, 21, 0, 4)
-write_json(-126, 42, 0, 4)
-write_json(-127, 90, 0, 4)
-write_json(-128, 100, 0, 4)
-
-write_json(-125, 1, 0, 5)
-write_json(-126, 20, 0, 5)
-write_json(-127, 67, 0, 5)
-write_json(-128, 80, 0, 5)
-
-write_json(-125, 15, 1, 0)
-write_json(-126, 67, 1, 0)
-write_json(-127, 80, 1, 0)
-write_json(-128, 95, 1, 0)
-
-write_json(-125, 4, 1, 1)
-write_json(-126, 15, 1, 1)
-write_json(-127, 35, 1, 1)
-write_json(-128, 93, 1, 1)
-
-write_json(-125, 3, 1, 2)
-write_json(-126, 32, 1, 2)
-write_json(-127, 64, 1, 2)
-write_json(-128, 99, 1, 2)
-
-write_json(-125, 15, 1, 3)
-write_json(-126, 48, 1, 3)
-write_json(-127, 74, 1, 3)
-write_json(-128, 98, 1, 3)
-
-write_json(-125, 13, 1, 4)
-write_json(-126, 25, 1, 4)
-write_json(-127, 55, 1, 4)
-write_json(-128, 73, 1, 4)
-
-write_json(-125, 0, 1, 5)
-write_json(-126, 14, 1, 5)
-write_json(-127, 34, 1, 5)
-write_json(-128, 84, 1, 5)
-
 freq = ['867.1']
 freq_step = 0.2
+temp_start = 28
+temp_step = -20
 
 data = pd.read_csv('void.txt', sep='\s+', header=None)
 data = pd.DataFrame(data)
@@ -129,9 +61,12 @@ for x in range(0, number_of_temp):
         a = Y[0][0][0] - (delta * X[0][0][0])
         value = (50 - a) / delta
         G[x][y] = value
-
+j = 0
 for s in range(0, number_of_temp):
-    plt.plot(freq, G[s].values(), "o-", color=color[s],  label=str(s*10) + "°C")
+    if j > 7:
+        j = 0
+    plt.plot(freq, G[s].values(), "o-", color=color[j],  label=str(temp_start + s * temp_step) + "°C")
+    j += 1
 plt.xlabel("Channel frequency")
 plt.ylabel("Power at the entrance of the receiver in dBm")
 plt.title("Graphical representation of sensitivity test results for 50% of packet lost")
