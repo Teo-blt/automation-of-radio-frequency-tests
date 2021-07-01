@@ -26,6 +26,21 @@ write_json(-126, 18, 0, 2)
 write_json(-127, 74, 0, 2)
 write_json(-128, 84, 0, 2)
 
+write_json(-125, 19, 0, 3)
+write_json(-126, 39, 0, 3)
+write_json(-127, 78, 0, 3)
+write_json(-128, 90, 0, 3)
+
+write_json(-125, 21, 0, 4)
+write_json(-126, 42, 0, 4)
+write_json(-127, 90, 0, 4)
+write_json(-128, 100, 0, 4)
+
+write_json(-125, 1, 0, 5)
+write_json(-126, 20, 0, 5)
+write_json(-127, 67, 0, 5)
+write_json(-128, 80, 0, 5)
+
 write_json(-125, 15, 1, 0)
 write_json(-126, 67, 1, 0)
 write_json(-127, 80, 1, 0)
@@ -40,6 +55,21 @@ write_json(-125, 3, 1, 2)
 write_json(-126, 32, 1, 2)
 write_json(-127, 64, 1, 2)
 write_json(-128, 99, 1, 2)
+
+write_json(-125, 15, 1, 3)
+write_json(-126, 48, 1, 3)
+write_json(-127, 74, 1, 3)
+write_json(-128, 98, 1, 3)
+
+write_json(-125, 13, 1, 4)
+write_json(-126, 25, 1, 4)
+write_json(-127, 55, 1, 4)
+write_json(-128, 73, 1, 4)
+
+write_json(-125, 0, 1, 5)
+write_json(-126, 14, 1, 5)
+write_json(-127, 34, 1, 5)
+write_json(-128, 84, 1, 5)
 
 data = pd.read_csv('void.txt', sep='\s+', header=None)
 data = pd.DataFrame(data)
@@ -79,9 +109,11 @@ plt.title("Graphical representation of sensitivity test results")
 x = 0
 y = 0
 G = {}
-
+freq = ['867.1']
 for r in range(0, numbers_of_channel):
     G[r] = {}
+    if r != 0:
+        freq = freq + [str(round(float(freq[r - 1]) + 0.2, 1))]
 
 for x in range(0, number_of_temp):
     for y in range(0, numbers_of_channel):
@@ -96,8 +128,8 @@ for x in range(0, number_of_temp):
         G[x][y] = value
 
 for s in range(0, number_of_temp):
-    plt.plot(G[s].keys(), G[s].values(), "o-", color=color[s],  label="temp " + str(s))
-plt.xlabel("Channel number")
+    plt.plot(freq, G[s].values(), "o-", color=color[s],  label=str(s*10) + "°C")
+plt.xlabel("Channel frequency")
 plt.ylabel("Power at the entrance of the receiver in dBm")
 plt.title("Graphical representation of sensitivity test results for 50% of packet lost")
 plt.legend()
