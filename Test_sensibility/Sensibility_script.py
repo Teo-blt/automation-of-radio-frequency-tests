@@ -61,6 +61,7 @@ class Threadsensibility(threading.Thread):
         self.attenuate_storage = 0
         self.frequency_entry = tk.Entry
         self.name_file = 'test1.txt'
+        self.frequency_storage = 0
 
     def run(self):
         sensibility_result = open("Report_sensibility.txt", 'w+')
@@ -72,7 +73,6 @@ class Threadsensibility(threading.Thread):
         self.launch_ibts()
         if self.value_mono_multi:
             if self.port_test != -1:
-                self.value_mono_multi = 0
                 self.launch_climatic_chamber()
                 vt.port = self.port_test
                 try:
@@ -83,6 +83,8 @@ class Threadsensibility(threading.Thread):
                 vt.write(ON % self.temperature)
                 [self.temp, self.temp2] = self.read(self.port_test)
                 while abs(self.temperature - self.t_end) >= abs(self.step_temp):
+                    self.value_mono_multi = 0
+                    self.frequency = self.frequency_storage
                     self.write_doc(f"Start of Test temperature {self.climate_chamber_num}")
                     self.write_doc("Start of Test")
                     logger.debug("################################################")
@@ -107,6 +109,7 @@ class Threadsensibility(threading.Thread):
                 logger.debug("################################################")
                 logger.debug(f"Start of Test temperature {self.climate_chamber_num}")
                 self.temperature = self.t_end
+                vt.write(ON % self.temperature)
                 self.wait_temperature_reach_consign()
                 self.script()
                 vt.write(CLIMATIC_CHAMBER_STOP)
@@ -153,13 +156,12 @@ class Threadsensibility(threading.Thread):
         logger.debug("################################################")
         logger.debug(f"Start of Test temperature {self.climate_chamber_num}")
         self.temperature = self.t_end
+        vt.write(ON % self.temperature)
         self.wait_temperature_reach_consign()
         self.script()
         vt.write(CLIMATIC_CHAMBER_STOP)
 
     def wait_temperature_reach_consign(self):
-        print(self.temp)
-        print(self.temperature)
         while abs(self.temp - self.temperature) >= 0.2 or self.VALUE_STABILISATION <= 120:
             # The maximal difference between the actual temperature and the order must be less than 0.2
             # (if we use a maximal difference of 0 it's take too much time to stabilize) AND the VALUE_STABILISATION
@@ -540,6 +542,7 @@ class Threadsensibility(threading.Thread):
                 new_window_main_graphic.destroy()
                 self.number_frames = number_frames
                 self.frequency = frequency / 1000000
+                self.frequency_storage = frequency / 1000000
                 self.attenuate = attenuate
                 self.attenuate_storage = attenuate
                 self.sf = sf
