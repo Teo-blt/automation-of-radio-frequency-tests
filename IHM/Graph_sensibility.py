@@ -69,7 +69,7 @@ def draw_graph():
         for s in range(0, number_of_temp):
             if j > 7:
                 j = 0
-            plt.plot(freq_start, G[s].values(), "o-", color=color[j], label=str(temp_start + s * temp_step) + "°C")
+            plt.plot(freq_start, G[s].values(), "o-", color=color[j], label=str(data[0][s]) + "°C")
             j += 1
         plt.xlabel("Channel frequency")
         plt.ylabel("Power at the entrance of the receiver in dBm")
