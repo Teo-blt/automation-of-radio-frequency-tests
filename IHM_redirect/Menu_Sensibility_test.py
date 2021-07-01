@@ -18,6 +18,8 @@ from IHM import Graph_sensibility
 
 # =============================================================================
 THE_COLOR = "#E76145"
+global launch_safety
+launch_safety = 0
 global validation
 validation = 0
 
@@ -155,7 +157,12 @@ def two_methods_run_together(ip_address, ip, self):
 
 
 def run(ip_address, ip, port_test, self, number):
-    if number:
-        three_methods_run_together(ip_address, ip, port_test, self)
+    global launch_safety
+    if launch_safety == 1:
+        logger.critical("Error, the programme is already running")
     else:
-        two_methods_run_together(ip_address, ip, self)
+        launch_safety = 1
+        if number:
+            three_methods_run_together(ip_address, ip, port_test, self)
+        else:
+            two_methods_run_together(ip_address, ip, self)

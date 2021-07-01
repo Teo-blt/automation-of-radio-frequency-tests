@@ -92,7 +92,7 @@ class Threadsensibility(threading.Thread):
                     vt.write(ON % self.temperature)
                     self.wait_temperature_reach_consign()
                     self.temperature = self.temperature + self.step_temp
-                    for p in range(0, 8):
+                    for p in range(0, 7):
                         logger.debug(
                             f"Channel number: {self.value_mono_multi} of 8, frequency: {round(self.frequency, 1)}")
                         self.write_doc(f"Channel number: {self.value_mono_multi} of 8, frequency: "
@@ -104,6 +104,9 @@ class Threadsensibility(threading.Thread):
                     logger.debug(f"fin test")
                     self.write_doc(f"fin test")
                     self.climate_chamber_num = self.climate_chamber_num + 1
+                    print(self.temperature)
+                    print(self.t_end)
+                    print(self.step_temp)
                 self.write_doc(f"Start of Test temperature {self.climate_chamber_num}")
                 self.write_doc("Start of Test")
                 logger.debug("################################################")
@@ -112,10 +115,11 @@ class Threadsensibility(threading.Thread):
                 vt.write(ON % self.temperature)
                 self.wait_temperature_reach_consign()
                 self.script()
+                logger.debug("End test climatic chamber")
                 vt.write(CLIMATIC_CHAMBER_STOP)
             else:
                 self.value_mono_multi = 0
-                for p in range(0, 8):
+                for p in range(0, 7):
                     logger.debug(f"Channel number: {self.value_mono_multi} of 8, frequency: {round(self.frequency, 1)}")
                     self.write_doc(f"Channel number: {self.value_mono_multi} of 8, frequency: "
                                    f"{round(self.frequency, 1)}")
@@ -162,7 +166,7 @@ class Threadsensibility(threading.Thread):
         vt.write(CLIMATIC_CHAMBER_STOP)
 
     def wait_temperature_reach_consign(self):
-        while abs(self.temp - self.temperature) >= 0.2 or self.VALUE_STABILISATION <= 120:
+        while abs(self.temp - self.temperature) >= 0.2 or self.VALUE_STABILISATION <= 5:
             # The maximal difference between the actual temperature and the order must be less than 0.2
             # (if we use a maximal difference of 0 it's take too much time to stabilize) AND the VALUE_STABILISATION
             # must be bigger than 120
@@ -370,10 +374,16 @@ class Threadsensibility(threading.Thread):
         new_window_climatic_chamber.mainloop()
 
     def lunch_safety_climatic_chamber(self, step, t_start, t_end, window):
-        window.destroy()
-        self.step_temp = step
         self.t_start = t_start
         self.t_end = t_end
+        if self.t_start == self.t_end:
+            logger.critical("Error temperature_start = temperature_end")
+        else:
+            window.destroy()
+            if self.t_start > self.t_end:
+                self.step_temp = -step
+            else:
+                self.step_temp = step
 
     def value_change(self, a):
         self.value_mono_multi = a
@@ -383,8 +393,6 @@ class Threadsensibility(threading.Thread):
             self.frequency_entry.config(state='readonly')
         else:
             self.frequency_entry.config(state='normal')
-
-
 
     def launch_ibts(self):
         new_window_ibts = Tk()
@@ -448,7 +456,6 @@ class Threadsensibility(threading.Thread):
         self.frequency_entry = Entry(packet_frame, cursor="right_ptr")
         self.frequency_entry.grid(row=1, column=1, ipadx=0, ipady=0, padx=0, pady=0)
         self.frequency_entry.insert(0, 867100000)
-
 
         sf_label = Label(packet_frame, text="Spreading factor 7 to 12:")
         sf_label.grid(row=2, column=0, ipadx=0, ipady=0, padx=0, pady=0)
