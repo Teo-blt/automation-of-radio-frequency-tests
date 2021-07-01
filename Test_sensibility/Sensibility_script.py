@@ -60,8 +60,9 @@ class Threadsensibility(threading.Thread):
         self.value_mono_multi = 0
         self.attenuate_storage = 0
         self.frequency_entry = tk.Entry
-        self.name_file = 'test1.txt'
+        self.name_file = 'test.txt'
         self.frequency_storage = 0
+        self.number_channel = 8
 
     def run(self):
         sensibility_result = open("Report_sensibility.txt", 'w+')
@@ -92,34 +93,39 @@ class Threadsensibility(threading.Thread):
                     vt.write(ON % self.temperature)
                     self.wait_temperature_reach_consign()
                     self.temperature = self.temperature + self.step_temp
-                    for p in range(0, 7):
+                    for p in range(0, self.number_channel):
                         logger.debug(
                             f"Channel number: {self.value_mono_multi} of 8, frequency: {round(self.frequency, 1)}")
                         self.write_doc(f"Channel number: {self.value_mono_multi} of 8, frequency: "
                                        f"{round(self.frequency, 1)}")
-                        self.attenuate = self.attenuate_storage
                         self.script()
                         self.frequency = self.frequency + 0.2
                         self.value_mono_multi = self.value_mono_multi + 1
                     logger.debug(f"fin test")
                     self.write_doc(f"fin test")
                     self.climate_chamber_num = self.climate_chamber_num + 1
-                    print(self.temperature)
-                    print(self.t_end)
-                    print(self.step_temp)
+                self.value_mono_multi = 0
                 self.write_doc(f"Start of Test temperature {self.climate_chamber_num}")
                 self.write_doc("Start of Test")
                 logger.debug("################################################")
                 logger.debug(f"Start of Test temperature {self.climate_chamber_num}")
+                self.frequency = self.frequency_storage
                 self.temperature = self.t_end
                 vt.write(ON % self.temperature)
                 self.wait_temperature_reach_consign()
-                self.script()
+                for p in range(0, self.number_channel):
+                    logger.debug(
+                        f"Channel number: {self.value_mono_multi} of 8, frequency: {round(self.frequency, 1)}")
+                    self.write_doc(f"Channel number: {self.value_mono_multi} of 8, frequency: "
+                                   f"{round(self.frequency, 1)}")
+                    self.script()
+                    self.frequency = self.frequency + 0.2
+                    self.value_mono_multi = self.value_mono_multi + 1
                 logger.debug("End test climatic chamber")
                 vt.write(CLIMATIC_CHAMBER_STOP)
             else:
                 self.value_mono_multi = 0
-                for p in range(0, 7):
+                for p in range(0, self.number_channel):
                     logger.debug(f"Channel number: {self.value_mono_multi} of 8, frequency: {round(self.frequency, 1)}")
                     self.write_doc(f"Channel number: {self.value_mono_multi} of 8, frequency: "
                                    f"{round(self.frequency, 1)}")
@@ -249,6 +255,7 @@ class Threadsensibility(threading.Thread):
                     logger.debug("The iZepto is ready")
                     break
             if i == 0:
+                self.attenuate = self.attenuate_storage
                 self.ready_ibts()
             else:
                 self.attenuate = float(self.attenuate) + self.step_attenuate
@@ -280,7 +287,7 @@ class Threadsensibility(threading.Thread):
                 f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
             self.write_doc(f"you send {self.number_frames} frames")
             self.write_doc(f"you received {number} frames")
-            self.write_doc(f"The rate is : {result}%")
+            self.write_doc(f"The rate is : {round(result,1)}%")
             self.write_doc("---------------------------------")
             self.write_json(round(float(self.attenuate) / 4 + int(self.offset), 1), 100 - round(result, 1),
                             self.power)
