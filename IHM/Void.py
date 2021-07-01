@@ -36,10 +36,10 @@ write_json(-126, 15, 1, 1)
 write_json(-127, 35, 1, 1)
 write_json(-128, 93, 1, 1)
 
-write_json(-125, 28, 1, 2)
-write_json(-126, 48, 1, 2)
-write_json(-127, 52, 1, 2)
-write_json(-128, 68, 1, 2)
+write_json(-125, 3, 1, 2)
+write_json(-126, 32, 1, 2)
+write_json(-127, 64, 1, 2)
+write_json(-128, 99, 1, 2)
 
 data = pd.read_csv('void.txt', sep='\s+', header=None)
 data = pd.DataFrame(data)
@@ -79,6 +79,10 @@ plt.title("Graphical representation of sensitivity test results")
 x = 0
 y = 0
 G = {}
+
+for r in range(0, numbers_of_channel):
+    G[r] = {}
+
 for x in range(0, number_of_temp):
     for y in range(0, numbers_of_channel):
         more_than_50 = 0
@@ -91,9 +95,10 @@ for x in range(0, number_of_temp):
         value = (50 - a) / delta
         G[x][y] = value
 
-print(G)
-plt.plot(G.keys(), G.values(), color='r', marker=' ')
-plt.xlabel("Number of channel")
+for s in range(0, number_of_temp):
+    plt.plot(G[s].keys(), G[s].values(), "o-", color=color[s],  label="temp " + str(s))
+plt.xlabel("Channel number")
 plt.ylabel("Power at the entrance of the receiver in dBm")
 plt.title("Graphical representation of sensitivity test results for 50% of packet lost")
+plt.legend()
 plt.show()
