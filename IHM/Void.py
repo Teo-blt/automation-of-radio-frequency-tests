@@ -11,47 +11,20 @@ def write_json(power, frames, etuve, chanel):
 outfile = open('void.txt', 'w+')
 outfile.close()
 
-write_json(1, 10, 0, 0)
-write_json(2, 16, 0, 0)
-write_json(3, 20, 0, 0)
-write_json(4, 39, 0, 0)
-write_json(5, 49, 0, 0)
-write_json(6, 56, 0, 0)
+write_json(-125, 20, 0, 0)
+write_json(-126, 41, 0, 0)
+write_json(-127, 82, 0, 0)
+write_json(-128, 95, 0, 0)
 
-write_json(7, 10, 0, 1)
-write_json(8, 16, 0, 1)
-write_json(9, 20, 0, 1)
-write_json(10, 39, 0, 1)
-write_json(11, 49, 0, 1)
-write_json(12, 56, 0, 1)
+write_json(-125, 19, 0, 1)
+write_json(-126, 40, 0, 1)
+write_json(-127, 87, 0, 1)
+write_json(-128, 90, 0, 1)
 
-write_json(13, 10, 1, 0)
-write_json(14, 16, 1, 0)
-write_json(15, 20, 1, 0)
-write_json(16, 39, 1, 0)
-write_json(17, 49, 1, 0)
-write_json(18, 56, 1, 0)
-
-write_json(19, 10, 1, 1)
-write_json(20, 16, 1, 1)
-write_json(21, 20, 1, 1)
-write_json(22, 39, 1, 1)
-write_json(23, 49, 1, 1)
-write_json(24, 56, 1, 1)
-
-write_json(25, 10, 2, 0)
-write_json(26, 16, 2, 0)
-write_json(27, 20, 2, 0)
-write_json(28, 39, 2, 0)
-write_json(29, 49, 2, 0)
-write_json(30, 56, 2, 0)
-
-write_json(31, 10, 2, 1)
-write_json(32, 16, 2, 1)
-write_json(33, 20, 2, 1)
-write_json(34, 39, 2, 1)
-write_json(35, 49, 2, 1)
-write_json(36, 56, 2, 1)
+write_json(-125, 7, 0, 2)
+write_json(-126, 18, 0, 2)
+write_json(-127, 74, 0, 2)
+write_json(-128, 84, 0, 2)
 
 data = pd.read_csv('void.txt', sep='\s+', header=None)
 data = pd.DataFrame(data)
@@ -59,7 +32,7 @@ data = pd.DataFrame(data)
 X = {}
 Y = {}
 numbers_of_channel = (data[3][len(data) - 1]) + 1
-number_of_temp = (data[2][len(data)-1]) + 1
+number_of_temp = (data[2][len(data) - 1]) + 1
 t = 0
 while t != len(data):
     if t != 0:
@@ -87,3 +60,15 @@ plt.xlabel("Power at the entrance of the receiver in dBm")
 plt.ylabel("% of packet lost")
 plt.title("Graphical representation of sensitivity test results")
 plt.show()
+x = 0
+y = 0
+for y in range(0, numbers_of_channel):
+    more_than_50 = 0
+    while Y[x][y][more_than_50] <= 50:
+        more_than_50 += 1
+    delta_y = abs(X[x][y][more_than_50 - 1] - X[x][y][more_than_50])
+    delta_x = abs(Y[x][y][more_than_50 - 1] - Y[x][y][more_than_50])
+    delta = -(delta_x / delta_y)
+    a = Y[0][0][0] - (delta * X[0][0][0])
+    value = (50 - a) / delta
+    print(f"channel {y}, f({value}) = 50%")
