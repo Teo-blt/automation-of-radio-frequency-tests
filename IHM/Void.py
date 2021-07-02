@@ -3,10 +3,10 @@ import matplotlib.pyplot as plt
 
 freq = ['867.1']
 freq_step = 0.2
-temp_start = 28
-temp_step = -20
+temp_start = 0
+temp_step = 20
 
-data = pd.read_csv('void.txt', sep='\s+', header=None)
+data = pd.read_csv('data.txt', sep='\s+', header=None)
 data = pd.DataFrame(data)
 
 X = {}
@@ -65,7 +65,7 @@ j = 0
 for s in range(0, number_of_temp):
     if j > 7:
         j = 0
-    plt.plot(freq, G[s].values(), "o-", color=color[j],  label=str(temp_start + s * temp_step) + "°C")
+    plt.plot(freq, G[s].values(), "o-", color=color[j],  label=str(data[0][s]) + "°C")
     j += 1
 plt.xlabel("Channel frequency")
 plt.ylabel("Power at the entrance of the receiver in dBm")

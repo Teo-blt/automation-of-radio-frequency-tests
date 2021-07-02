@@ -623,7 +623,7 @@ class Threadsensibility(threading.Thread):
         outfile = open(self.name_file, 'a')
         power_in = round(power_out - attenuation_db)
         outfile.write(str(power_in) + ' ' + str(round(packet_lost)) + ' ' + str(self.climate_chamber_num)
-                      + ' ' + str(self.value_mono_multi) + '\n')
+                      + ' ' + str(self.value_mono_multi) + ' ' + str(self.temperature) + '\n')
         outfile.close()
 
     def ready_ibts(self):
