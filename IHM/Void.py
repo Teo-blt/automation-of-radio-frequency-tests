@@ -60,10 +60,10 @@ for x in range(0, number_of_temp):
         if Y[x][y][more_than_50] == 50:
             G[x][y] = X[x][y][more_than_50]
         else:
-            delta_y = abs(X[x][y][more_than_50 - 1] - X[x][y][more_than_50])
+            delta_y = round(abs(X[x][y][more_than_50 - 1] - X[x][y][more_than_50]), 10)
             delta_x = abs(Y[x][y][more_than_50 - 1] - Y[x][y][more_than_50])
             delta = -(delta_x / delta_y)
-            a = Y[0][0][0] - (delta * X[0][0][0])
+            a = Y[x][y][more_than_50] - (delta * X[x][y][more_than_50])
             value = (50 - a) / delta
             G[x][y] = value
 j = 0
