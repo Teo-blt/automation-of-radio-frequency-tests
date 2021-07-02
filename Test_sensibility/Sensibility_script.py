@@ -415,6 +415,8 @@ class Threadsensibility(threading.Thread):
             logger.critical("Error, The time wait value is not conform")
             showerror("Error", "The time wait value is not conform")
         else:
+            if time_temp_wait == 0:
+                time_temp_wait = 0.015
             self.time_temp_wait = (60 * time_temp_wait)
         if self.t_start == self.t_end:
             logger.critical("Error temperature_start = temperature_end")
