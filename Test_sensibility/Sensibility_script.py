@@ -90,9 +90,11 @@ class Threadsensibility(threading.Thread):
                     self.value_mono_multi = 0
                     self.frequency = self.frequency_storage
                     self.write_doc("################################################")
-                    self.write_doc(f"Start of Test temperature {self.climate_chamber_num} : {self.temperature}°C")
+                    self.write_doc(f"Start of Test temperature {self.climate_chamber_num} : {self.temperature} degree "
+                                   f"Celsius")
                     logger.debug("################################################")
-                    logger.debug(f"Start of Test temperature {self.climate_chamber_num}: {self.temperature}°C")
+                    logger.debug(f"Start of Test temperature {self.climate_chamber_num}: {self.temperature} degree "
+                                 f"Celsius")
                     vt.write(ON % self.temperature)
                     self.wait_temperature_reach_consign()
                     self.temperature = self.temperature + self.step_temp
