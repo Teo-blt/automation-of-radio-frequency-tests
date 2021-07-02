@@ -5,20 +5,22 @@ from loguru import logger
 
 def draw_graph():
     try:
-        freq_start = ['867.1']
+        freq = ['867.1']
         freq_step = 0.2
-        temp_start = 28
-        temp_step = -20
 
-        data = pd.read_csv('void.txt', sep='\s+', header=None)
+        data = pd.read_csv('data.txt', sep='\s+', header=None)
         data = pd.DataFrame(data)
-
+        temp = {0: data[4][0]}
         X = {}
         Y = {}
         numbers_of_channel = (data[3][len(data) - 1]) + 1
         number_of_temp = (data[2][len(data) - 1]) + 1
         t = 0
+        d = 0
         while t != len(data):
+            if data[4][t] > temp[d]:
+                d += 1
+                temp[d] = data[4][t]
             if t != 0:
                 t = t + 1
             else:
@@ -52,7 +54,7 @@ def draw_graph():
         for r in range(0, numbers_of_channel):
             G[r] = {}
             if r != 0:
-                freq_start = freq_start + [str(round(float(freq_start[r - 1]) + freq_step, 1))]
+                freq = freq + [str(round(float(freq[r - 1]) + freq_step, 1))]
 
         for x in range(0, number_of_temp):
             for y in range(0, numbers_of_channel):
@@ -69,7 +71,7 @@ def draw_graph():
         for s in range(0, number_of_temp):
             if j > 7:
                 j = 0
-            plt.plot(freq_start, G[s].values(), "o-", color=color[j], label=str(data[0][s]) + "°C")
+            plt.plot(freq, G[s].values(), "o-", color=color[j], label=str(temp[s]) + "°C")
             j += 1
         plt.xlabel("Channel frequency")
         plt.ylabel("Power at the entrance of the receiver in dBm")
