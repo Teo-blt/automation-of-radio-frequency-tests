@@ -621,7 +621,7 @@ class Threadsensibility(threading.Thread):
 
     def write_json(self, attenuation_db, packet_lost, power_out):
         outfile = open(self.name_file, 'a')
-        power_in = round(power_out - attenuation_db)
+        power_in = round(power_out - attenuation_db, 2)
         outfile.write(str(power_in) + ' ' + str(round(packet_lost)) + ' ' + str(self.climate_chamber_num)
                       + ' ' + str(self.value_mono_multi) + ' ' + str(self.temperature) + '\n')
         outfile.close()
