@@ -108,24 +108,27 @@ class Threadsensibility(threading.Thread):
                     logger.debug(f"fin test")
                     self.write_doc(f"fin test")
                     self.climate_chamber_num = self.climate_chamber_num + 1
-                self.value_mono_multi = 0
-                self.write_doc(f"Start of Test temperature {self.climate_chamber_num}")
-                self.write_doc("Start of Test")
-                logger.debug("################################################")
-                logger.debug(f"Start of Test temperature {self.climate_chamber_num}")
-                self.frequency = self.frequency_storage
-                self.temperature = self.t_end
-                vt.write(ON % self.temperature)
-                self.wait_temperature_reach_consign()
-                for p in range(0, self.number_channel):
-                    logger.debug(
-                        f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, frequency:"
-                        f" {round(self.frequency, 1)}")
-                    self.write_doc(f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, frequency: "
-                                   f"{round(self.frequency, 1)}")
-                    self.script()
-                    self.frequency = self.frequency + 0.2
-                    self.value_mono_multi = self.value_mono_multi + 1
+                for u in range(0, 2):
+                    if u != 0:
+                        self.temperature = self.t_end
+                    self.value_mono_multi = 0
+                    self.write_doc(f"Start of Test temperature {self.climate_chamber_num}")
+                    self.write_doc("Start of Test")
+                    logger.debug("################################################")
+                    logger.debug(f"Start of Test temperature {self.climate_chamber_num}")
+                    self.frequency = self.frequency_storage
+                    self.temperature = self.t_end
+                    vt.write(ON % self.temperature)
+                    self.wait_temperature_reach_consign()
+                    for p in range(0, self.number_channel):
+                        logger.debug(
+                            f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, frequency:"
+                            f" {round(self.frequency, 1)}")
+                        self.write_doc(f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, frequency: "
+                                       f"{round(self.frequency, 1)}")
+                        self.script()
+                        self.frequency = self.frequency + 0.2
+                        self.value_mono_multi = self.value_mono_multi + 1
                 logger.debug("End test climatic chamber")
                 vt.write(CLIMATIC_CHAMBER_STOP)
             else:
