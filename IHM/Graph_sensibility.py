@@ -167,6 +167,3 @@ def draw_graph_after(value, graph_type, window):
             plt.show()
     except:
         logger.critical("Error no data available in test.txt")
-
-
-draw_graph()
