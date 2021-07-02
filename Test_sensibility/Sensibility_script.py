@@ -404,12 +404,12 @@ class Threadsensibility(threading.Thread):
     def lunch_safety_climatic_chamber(self, step, t_start, t_end, time_temp_wait, window):
         self.t_start = t_start
         self.t_end = t_end
-        time_temp_wait = int(time_temp_wait.get())
+        time_temp_wait = float(time_temp_wait)
         if time_temp_wait < 0 or time_temp_wait > 1000000:
             logger.critical("Error, The time wait value is not conform")
             showerror("Error", "The time wait value is not conform")
         else:
-            self.time_temp_wait = (2 * time_temp_wait)
+            self.time_temp_wait = (60 * time_temp_wait)
         if self.t_start == self.t_end:
             logger.critical("Error temperature_start = temperature_end")
         else:
