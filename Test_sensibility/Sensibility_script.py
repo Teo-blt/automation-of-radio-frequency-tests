@@ -109,10 +109,12 @@ class Threadsensibility(threading.Thread):
                         self.value_mono_multi = self.value_mono_multi + 1
                     logger.debug(f"fin test")
                     self.write_doc(f"fin test")
+                    self.temperature_storage += self.step_temp
                     self.climate_chamber_num = self.climate_chamber_num + 1
                 for u in range(0, 2):
                     if u != 0:
                         self.temperature = self.t_end
+                        self.temperature_storage = self.t_end
                     self.value_mono_multi = 0
                     self.write_doc(f"Start of Test temperature {self.climate_chamber_num}")
                     self.write_doc("Start of Test")
@@ -160,6 +162,7 @@ class Threadsensibility(threading.Thread):
         except:
             pass
         self.temperature = self.t_start
+        self.temperature_storage = self.t_start
         vt.write(ON % self.temperature)
         [self.temp, self.temp2] = self.read(self.port_test)
         while abs(self.temperature - self.t_end) >= abs(self.step_temp):
@@ -170,17 +173,25 @@ class Threadsensibility(threading.Thread):
             vt.write(ON % self.temperature)
             self.wait_temperature_reach_consign()
             self.script()
-            self.temperature = self.temperature + self.step_temp
+            self.temperature += self.step_temp
+            self.temperature_storage += self.step_temp
             self.climate_chamber_num = self.climate_chamber_num + 1
-        self.write_doc(f"Start of Test temperature {self.climate_chamber_num}")
-        self.write_doc("Start of Test")
-        logger.debug("################################################")
-        logger.debug(f"Start of Test temperature {self.climate_chamber_num}")
-        self.temperature = self.t_end
-        vt.write(ON % self.temperature)
-        self.wait_temperature_reach_consign()
-        self.script()
+        for u in range(0, 2):
+            if u != 0:
+                self.temperature = self.t_end
+                self.temperature_storage = self.t_end
+            self.write_doc(f"Start of Test temperature {self.climate_chamber_num}")
+            self.write_doc("Start of Test")
+            logger.debug("################################################")
+            logger.debug(f"Start of Test temperature {self.climate_chamber_num}")
+            vt.write(ON % self.temperature)
+            self.wait_temperature_reach_consign()
+            self.script()
+        logger.debug("End test climatic chamber")
         vt.write(CLIMATIC_CHAMBER_STOP)
+
+
+
 
     def wait_temperature_reach_consign(self):
         while abs(self.temp - self.temperature) >= 0.2 or self.VALUE_STABILISATION <= self.time_temp_wait:
@@ -299,7 +310,7 @@ class Threadsensibility(threading.Thread):
 
             self.write_doc("---------------------------------")
             if int(self.test) == 1000:
-                self.write_doc(f"Test {i} of inf of channel number: {self.value_mono_multi}")
+                self.write_doc(f"Test {i} of infinity of channel number: {self.value_mono_multi}")
             else:
                 self.write_doc(f"Test {i} of {self.test}")
             self.write_doc(
@@ -310,7 +321,6 @@ class Threadsensibility(threading.Thread):
             self.write_doc("---------------------------------")
             self.write_json(round(float(self.attenuate) / 4 + int(self.offset), 2), 100 - round(result, 2),
                             self.power)
-            self.temperature_storage += self.step_temp
             if round(result, 1) == 0:
                 logger.debug(f"fin channel number: {self.value_mono_multi}\n")
                 self.write_doc(f"fin channel number: {self.value_mono_multi}\n")
