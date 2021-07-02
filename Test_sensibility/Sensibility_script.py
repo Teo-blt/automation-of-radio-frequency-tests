@@ -306,7 +306,7 @@ class Threadsensibility(threading.Thread):
             self.write_doc(f"you received {number} frames")
             self.write_doc(f"The rate is : {round(result, 1)}%")
             self.write_doc("---------------------------------")
-            self.write_json(round(float(self.attenuate) / 4 + int(self.offset), 1), 100 - round(result, 1),
+            self.write_json(round(float(self.attenuate) / 4 + int(self.offset), 2), 100 - round(result, 2),
                             self.power)
             self.temperature_storage += self.step_temp
             if round(result, 1) == 0:
