@@ -64,6 +64,7 @@ class Threadsensibility(threading.Thread):
         self.frequency_storage = 0
         self.number_channel = 8
         self.time_temp_wait = 120
+        self.temperature_storage = 0
 
     def run(self):
         sensibility_result = open("Report_sensibility.txt", 'w+')
@@ -82,15 +83,16 @@ class Threadsensibility(threading.Thread):
                 except:
                     pass
                 self.temperature = self.t_start
+                self.temperature_storage = self.t_start
                 vt.write(ON % self.temperature)
                 [self.temp, self.temp2] = self.read(self.port_test)
                 while abs(self.temperature - self.t_end) >= abs(self.step_temp):
                     self.value_mono_multi = 0
                     self.frequency = self.frequency_storage
-                    self.write_doc(f"Start of Test temperature {self.climate_chamber_num}")
-                    self.write_doc("Start of Test")
+                    self.write_doc("################################################")
+                    self.write_doc(f"Start of Test temperature {self.climate_chamber_num} : {self.temperature}°C")
                     logger.debug("################################################")
-                    logger.debug(f"Start of Test temperature {self.climate_chamber_num}")
+                    logger.debug(f"Start of Test temperature {self.climate_chamber_num}: {self.temperature}°C")
                     vt.write(ON % self.temperature)
                     self.wait_temperature_reach_consign()
                     self.temperature = self.temperature + self.step_temp
@@ -187,8 +189,8 @@ class Threadsensibility(threading.Thread):
             logger.info(f"The actual order is : {self.temp2}")
             if abs(self.temp - self.temperature) < 0.2:  # If the maximal difference between the actual temperature
                 # and the order is less than 0.2, launch the countdown.
-                logger.info("The climate chamber is stabilized since {} seconds of the "
-                            "120 request ".format(self.VALUE_STABILISATION))
+                logger.info(f"The climate chamber is stabilized since {self.VALUE_STABILISATION} seconds of the "
+                            f"{self.time_temp_wait} request")
                 self.VALUE_STABILISATION = self.VALUE_STABILISATION + 5  # Because the loop cycle every 5 seconds, we
                 # add 5 to the VALUE_STABILISATION
             else:  # If the maximal difference between the actual temperature and the order is 0.2 or more we
@@ -303,6 +305,7 @@ class Threadsensibility(threading.Thread):
             self.write_doc("---------------------------------")
             self.write_json(round(float(self.attenuate) / 4 + int(self.offset), 1), 100 - round(result, 1),
                             self.power)
+            self.temperature_storage += self.step_temp
             if round(result, 1) == 0:
                 logger.debug(f"fin channel number: {self.value_mono_multi}\n")
                 self.write_doc(f"fin channel number: {self.value_mono_multi}\n")
@@ -623,7 +626,7 @@ class Threadsensibility(threading.Thread):
         outfile = open(self.name_file, 'a')
         power_in = round(power_out - attenuation_db, 2)
         outfile.write(str(power_in) + ' ' + str(round(packet_lost)) + ' ' + str(self.climate_chamber_num)
-                      + ' ' + str(self.value_mono_multi) + ' ' + str(self.temperature) + '\n')
+                      + ' ' + str(self.value_mono_multi) + ' ' + str(self.temperature_storage) + '\n')
         outfile.close()
 
     def ready_ibts(self):
