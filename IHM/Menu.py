@@ -8,7 +8,6 @@
 """The Module Has Been Build for the automation of radio frequency tests"""
 # =============================================================================
 # Imports
-import tkinter as tk
 from tkinter import *
 from tkinter import ttk
 from tkinter.messagebox import *
@@ -43,10 +42,10 @@ class Application(Tk):
         instrument_choose_combobox = LabelFrame(self, text="Choice of instrument")
         instrument_choose_combobox.grid(row=0, column=0, ipadx=40, ipady=20, padx=0, pady=0)
 
-        settings_label = tk.Label(instrument_choose_combobox, text="Settings", font="arial", fg="black")
+        settings_label = Label(instrument_choose_combobox, text="Settings", font="arial", fg="black")
         settings_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
 
-        label_top = tk.Label(instrument_choose_combobox, text="Choose your measuring tool")
+        label_top = Label(instrument_choose_combobox, text="Choose your measuring tool")
         label_top.pack(expand=False, fill="none", side=TOP)
 
         choose_measuring_tool_combobox = ttk.Combobox(instrument_choose_combobox, values=[
@@ -74,10 +73,10 @@ class Application(Tk):
         scenario_choose_combobox = LabelFrame(self, text="Choice of scenario")
         scenario_choose_combobox.grid(row=1, column=0, ipadx=40, ipady=20, padx=0, pady=0)
 
-        settings_label = tk.Label(scenario_choose_combobox, text="Settings", font="arial", fg="black")
+        settings_label = Label(scenario_choose_combobox, text="Settings", font="arial", fg="black")
         settings_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
 
-        label_top = tk.Label(scenario_choose_combobox, text="Choose your scenario")
+        label_top = Label(scenario_choose_combobox, text="Choose your scenario")
         label_top.pack(expand=False, fill="none", side=TOP)
 
         choose_scenario_combobox = ttk.Combobox(scenario_choose_combobox, values=[

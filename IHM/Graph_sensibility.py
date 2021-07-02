@@ -12,7 +12,10 @@ import matplotlib.pyplot as plt
 from loguru import logger
 from tkinter import *
 from tkinter import ttk
+
 # =============================================================================
+THE_COLOR = "#E76145"
+
 
 def draw_graph():
     window_graph_data = Tk()
@@ -20,6 +23,9 @@ def draw_graph():
     settings_frame = LabelFrame(window_graph_data, text="Settings")
     settings_frame.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
     settings_frame.config(background='#fafafa')
+    label_top = Label(settings_frame, text="Choose your packet rate")
+    label_top.pack(expand=False, fill="none", side=TOP)
+
     choose_packet_rate_combobox = ttk.Combobox(settings_frame, values=[
         "10%",  # The list of measuring tool
         "20%",
@@ -35,21 +41,56 @@ def draw_graph():
     def chose(e, i=choose_packet_rate_combobox):
         return validate(e, i)
 
-    def validate(e, choose_packet_rate_combobox):
-        window_graph_data.destroy()
-        draw_graph_after(choose_packet_rate_combobox.current())
+    def validate(e, bla):
+        draw_graph_after(bla.get(), 1, window_graph_data)
 
     choose_packet_rate_combobox.bind("<<ComboboxSelected>>", chose)
-    choose_packet_rate_combobox.pack(padx=50, pady=0, expand=False, fill="x", side=TOP)
+    choose_packet_rate_combobox.set("-Choose your packet-")
+    temp_label = Label(settings_frame, text="Number of the temperature :")
+    temp = Entry(settings_frame, cursor="right_ptr")
+    temp.insert(0, 0)
+    send_button = Button(settings_frame, text="Send",
+                         borderwidth=8, background=THE_COLOR,
+                         activebackground="green", cursor="right_ptr", overrelief="sunken",
+                         command=lambda: [draw_graph_after(temp.get(), 0, window_graph_data)])
 
-def draw_graph_after(choose_measuring_tool_combobox):
+    a = IntVar()
+    sensibility_radiobutton = Radiobutton(settings_frame, text="Choose temp",
+                                          variable=a, value=0, cursor="right_ptr",
+                                          indicatoron=0, command=lambda: [choose_packet_rate_combobox.forget(),
+                                                                          temp_label.pack(expand=False, fill="none",
+                                                                                          side=TOP),
+                                                                          temp.pack(expand=False, fill="none",
+                                                                                    side=TOP),
+                                                                          send_button.pack(padx=10, pady=10, ipadx=10,
+                                                                                           ipady=10, expand=False,
+                                                                                           fill="none", side=TOP)],
+                                          background=THE_COLOR,
+                                          activebackground="green",
+                                          bd=8, selectcolor="green", overrelief="sunken")
+    sensibility_radiobutton.pack(expand=False, fill="none", side=TOP)
+    sensibility_choose_radiobutton = Radiobutton(settings_frame, text="Choose sensibility",
+                                                 variable=a, value=1, cursor="right_ptr",
+                                                 indicatoron=0, command=lambda: [
+            choose_packet_rate_combobox.pack(padx=50, pady=0, expand=True, fill="both", side=TOP), temp.forget(),
+            temp_label.forget(), send_button.forget()],
+                                                 background=THE_COLOR,
+                                                 activebackground="green",
+                                                 bd=8, selectcolor="green", overrelief="sunken")
+    sensibility_choose_radiobutton.pack(expand=False, fill="none", side=TOP)
+    sensibility_choose_radiobutton.invoke()
+
+    window_graph_data.mainloop()
+
+
+def draw_graph_after(value, graph_type, window):
+    window.destroy()
     try:
         color = {0: 'b', 1: 'r', 2: 'g', 3: 'y', 4: 'c', 5: 'lime', 6: 'black', 7: 'pink'}
         freq = ['867.1']
         freq_step = 0.2
-        paket_rate = 50
-        print(choose_measuring_tool_combobox)
-        graph_type = 1
+        paket_rate = int(value[:2])
+
 
         data = pd.read_csv('data.txt', sep='\s+', header=None)
         data = pd.DataFrame(data)
@@ -83,7 +124,7 @@ def draw_graph_after(choose_measuring_tool_combobox):
             for m in range(0, number_of_temp):
                 marker = "$" + str(m) + "$"
                 for n in range(0, numbers_of_channel):
-                        plt.plot(X[m][n], Y[m][n], color[n], marker=marker)
+                    plt.plot(X[m][n], Y[m][n], color[n], marker=marker)
             plt.xlabel("Power at the entrance of the receiver in dBm")
             plt.ylabel("% of packet lost")
             plt.title("Graphical representation of sensitivity test results")
@@ -126,3 +167,6 @@ def draw_graph_after(choose_measuring_tool_combobox):
             plt.show()
     except:
         logger.critical("Error no data available in test.txt")
+
+
+draw_graph()
