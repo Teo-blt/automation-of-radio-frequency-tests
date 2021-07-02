@@ -3,18 +3,20 @@ import matplotlib.pyplot as plt
 
 freq = ['867.1']
 freq_step = 0.2
-temp_start = 0
-temp_step = 20
 
 data = pd.read_csv('data.txt', sep='\s+', header=None)
 data = pd.DataFrame(data)
-
+temp = {0: data[4][0]}
 X = {}
 Y = {}
 numbers_of_channel = (data[3][len(data) - 1]) + 1
 number_of_temp = (data[2][len(data) - 1]) + 1
 t = 0
+d = 0
 while t != len(data):
+    if data[4][t] > temp[d]:
+        d += 1
+        temp[d] = data[4][t]
     if t != 0:
         t = t + 1
     else:
@@ -35,12 +37,12 @@ for m in range(0, number_of_temp):
     marker = "$" + str(m) + "$"
     for n in range(0, numbers_of_channel):
         pass
-        #plt.plot(X[m][n], Y[m][n], color[n], marker=marker)
+        # plt.plot(X[m][n], Y[m][n], color[n], marker=marker)
 
 plt.xlabel("Power at the entrance of the receiver in dBm")
 plt.ylabel("% of packet lost")
 plt.title("Graphical representation of sensitivity test results")
-#plt.show()
+# plt.show()
 x = 0
 y = 0
 G = {}
@@ -65,7 +67,7 @@ j = 0
 for s in range(0, number_of_temp):
     if j > 7:
         j = 0
-    plt.plot(freq, G[s].values(), "o-", color=color[j],  label=str(data[0][s]) + "°C")
+    plt.plot(freq, G[s].values(), "o-", color=color[j], label=str(temp[s]) + "°C")
     j += 1
 plt.xlabel("Channel frequency")
 plt.ylabel("Power at the entrance of the receiver in dBm")
