@@ -63,6 +63,7 @@ class Threadsensibility(threading.Thread):
         self.name_file = 'test.txt'
         self.frequency_storage = 0
         self.number_channel = 8
+        self.time_temp_wait = 120
 
     def run(self):
         sensibility_result = open("Report_sensibility.txt", 'w+')
@@ -175,7 +176,7 @@ class Threadsensibility(threading.Thread):
         vt.write(CLIMATIC_CHAMBER_STOP)
 
     def wait_temperature_reach_consign(self):
-        while abs(self.temp - self.temperature) >= 0.2 or self.VALUE_STABILISATION <= 120:
+        while abs(self.temp - self.temperature) >= 0.2 or self.VALUE_STABILISATION <= self.time_temp_wait:
             # The maximal difference between the actual temperature and the order must be less than 0.2
             # (if we use a maximal difference of 0 it's take too much time to stabilize) AND the VALUE_STABILISATION
             # must be bigger than 120
@@ -237,9 +238,15 @@ class Threadsensibility(threading.Thread):
                 wah = stdout.readline()
                 #  logger.info(wah)
                 if wah[0:5] == "ERROR":
+                    logger.critical("---------------------------------")
                     logger.critical("Failed to start the concentrator")
-                    ssh.exec_command("reboot", get_pty=True)
                     logger.critical("The Izepto is rebooting, please standby")
+                    logger.critical("---------------------------------")
+                    self.write_doc("---------------------------------")
+                    self.write_doc("Failed to start the concentrator")
+                    self.write_doc("The Izepto is rebooting, please standby")
+                    self.write_doc("---------------------------------")
+                    ssh.exec_command("reboot", get_pty=True)
                     for t in range(0, 10):
                         logger.info("Izepto rebooting, it may take few minutes")
                         time.sleep(5)
@@ -253,6 +260,8 @@ class Threadsensibility(threading.Thread):
                     stdin, stdout, stderr = ssh.exec_command(cmd2 + "\n" + cmd, get_pty=True)
                     if wah[19:22] == "EUI":
                         logger.debug("The iZepto is ready")
+                        logger.debug("The reboot is completed")
+                        self.write_doc("The reboot is completed")
                         break
                 if wah[19:22] == "EUI":
                     logger.debug("The iZepto is ready")
@@ -290,7 +299,7 @@ class Threadsensibility(threading.Thread):
                 f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
             self.write_doc(f"you send {self.number_frames} frames")
             self.write_doc(f"you received {number} frames")
-            self.write_doc(f"The rate is : {round(result,1)}%")
+            self.write_doc(f"The rate is : {round(result, 1)}%")
             self.write_doc("---------------------------------")
             self.write_json(round(float(self.attenuate) / 4 + int(self.offset), 1), 100 - round(result, 1),
                             self.power)
@@ -320,6 +329,7 @@ class Threadsensibility(threading.Thread):
                                                             step_auto_stair_scale_frame_scale.get(),
                                                             temperature_start_stair_scale.get(),
                                                             temperature_end_auto_stair.get(),
+                                                            time_temp_wait.get(),
                                                             new_window_climatic_chamber)])
         start_auto_stair_scale_frame_button.grid(row=0, column=0, ipadx=40, ipady=20, padx=0, pady=0)
         auto_stair_label = tk.Label(auto_stair_scale_frame, text="The sensibility tests will take place during the "
@@ -373,6 +383,14 @@ class Threadsensibility(threading.Thread):
                                                      bd=8, selectcolor="green", overrelief="sunken")
         indoor_settings_radiobutton.grid(row=3, column=0, ipadx=10, ipady=10, padx=0, pady=0)
         indoor_settings_radiobutton.invoke()
+        time_frame = LabelFrame(auto_stair_scale_frame, bd=0)  # , text="auto_scale_frame"
+        time_frame.grid(row=4, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+        time_frame.config(background='#fafafa')
+        time_temp_wait_label = Label(time_frame, text="Time to wait at the temperature in minutes :")
+        time_temp_wait_label.pack()
+        time_temp_wait = Entry(time_frame, cursor="right_ptr")
+        time_temp_wait.pack()
+        time_temp_wait.insert(0, 2)
 
         def create_stair():
             simulation_graphic_stair(
@@ -383,9 +401,15 @@ class Threadsensibility(threading.Thread):
 
         new_window_climatic_chamber.mainloop()
 
-    def lunch_safety_climatic_chamber(self, step, t_start, t_end, window):
+    def lunch_safety_climatic_chamber(self, step, t_start, t_end, time_temp_wait, window):
         self.t_start = t_start
         self.t_end = t_end
+        time_temp_wait = int(time_temp_wait.get())
+        if time_temp_wait < 0 or time_temp_wait > 1000000:
+            logger.critical("Error, The time wait value is not conform")
+            showerror("Error", "The time wait value is not conform")
+        else:
+            self.time_temp_wait = (2 * time_temp_wait)
         if self.t_start == self.t_end:
             logger.critical("Error temperature_start = temperature_end")
         else:
