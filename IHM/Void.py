@@ -57,24 +57,27 @@ for r in range(0, numbers_of_channel):
 for x in range(0, number_of_temp):
     for y in range(0, numbers_of_channel):
         more_than_paket_rate = 0
-        while Y[x][y][more_than_paket_rate] < paket_rate:
-            more_than_paket_rate += 1
-        if Y[x][y][more_than_paket_rate] == paket_rate:
-            G[x][y] = X[x][y][more_than_paket_rate]
-        else:
-            delta_y = round(abs(X[x][y][more_than_paket_rate - 1] - X[x][y][more_than_paket_rate]), 10)
-            delta_x = abs(Y[x][y][more_than_paket_rate - 1] - Y[x][y][more_than_paket_rate])
-            delta = -(delta_x / delta_y)
-            a = Y[x][y][more_than_paket_rate] - (delta * X[x][y][more_than_paket_rate])
-            value = (50 - a) / delta
-            G[x][y] = value
+        try:
+            while Y[x][y][more_than_paket_rate] < paket_rate:
+                more_than_paket_rate += 1
+            if Y[x][y][more_than_paket_rate] == paket_rate:
+                G[x][y] = X[x][y][more_than_paket_rate]
+            else:
+                delta_y = round(abs(X[x][y][more_than_paket_rate - 1] - X[x][y][more_than_paket_rate]), 10)
+                delta_x = abs(Y[x][y][more_than_paket_rate - 1] - Y[x][y][more_than_paket_rate])
+                delta = -(delta_x / delta_y)
+                a = Y[x][y][more_than_paket_rate] - (delta * X[x][y][more_than_paket_rate])
+                value = (50 - a) / delta
+                G[x][y] = value
+        except:
+            pass
 
 if graph_type == 1:
     j = 0
     for s in range(0, number_of_temp):
         if j > 7:
             j = 0
-        plt.plot(freq, G[s].values(), "o-", color=color[j], label=str(temp[s]) + "°C")
+        plt.plot(freq[0:len(G[s].values())], G[s].values(), "o-", color=color[j], label=str(temp[s]) + "°C")
         j += 1
     plt.xlabel("Channel frequency")
     plt.ylabel("Power at the entrance of the receiver in dBm")
