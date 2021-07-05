@@ -122,7 +122,7 @@ class Threadsensibility(threading.Thread):
                     self.write_doc("Start of Test")
                     logger.debug("################################################")
                     logger.debug(f"Start of Test temperature {self.climate_chamber_num}: {self.temperature} degree "
-                                   f"Celsius")
+                                 f"Celsius")
                     self.frequency = self.frequency_storage
                     vt.write(ON % self.temperature)
                     self.wait_temperature_reach_consign()
@@ -130,13 +130,15 @@ class Threadsensibility(threading.Thread):
                         logger.debug(
                             f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, frequency:"
                             f" {round(self.frequency, 1)}")
-                        self.write_doc(f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, frequency: "
-                                       f"{round(self.frequency, 1)}")
+                        self.write_doc(
+                            f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, frequency: "
+                            f"{round(self.frequency, 1)}")
                         self.script()
                         self.frequency = self.frequency + 0.2
                         self.value_mono_multi = self.value_mono_multi + 1
                 logger.debug("End test climatic chamber")
                 vt.write(CLIMATIC_CHAMBER_STOP)
+                sys.exit()
             else:
                 self.value_mono_multi = 0
                 for p in range(0, self.number_channel):
@@ -191,9 +193,6 @@ class Threadsensibility(threading.Thread):
             self.script()
         logger.debug("End test climatic chamber")
         vt.write(CLIMATIC_CHAMBER_STOP)
-
-
-
 
     def wait_temperature_reach_consign(self):
         while abs(self.temp - self.temperature) >= 0.2 or self.VALUE_STABILISATION <= self.time_temp_wait:
