@@ -35,6 +35,7 @@ while t != len(data):
             t = t + 1
     except:
         break
+
 if graph_type == 0:
     for m in range(0, number_of_temp):
         marker = "$" + str(m) + "$"
@@ -49,6 +50,7 @@ if graph_type == 0:
 x = 0
 y = 0
 G = {}
+
 for r in range(0, numbers_of_channel):
     G[r] = {}
     if r != 0:
@@ -71,7 +73,6 @@ for x in range(0, number_of_temp):
                 G[x][y] = value
         except:
             pass
-
 if graph_type == 1:
     j = 0
     for s in range(0, number_of_temp):
