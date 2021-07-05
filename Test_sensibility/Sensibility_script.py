@@ -67,28 +67,29 @@ class Threadsensibility(threading.Thread):
         self.temperature_storage = 0
 
     def run(self):
-        sensibility_result = open("Report_sensibility.txt", 'w+')
+        sensibility_result = open("Report_sensibility.txt", 'w+')  # preparation of the txt files
         sensibility_result.close()
         outfile = open(self.name_file, 'w+')
         outfile.close()
         self.write_doc("Sensitivity measurement iZepto")
         self.write_doc("Sensitivity measurement iBTS")
         self.launch_ibts()
-        if self.value_mono_multi:
-            if self.port_test != -1:
+        if self.value_mono_multi:  # to choose between the multi channel mode or the mono channel mode, True = Multi
+            if self.port_test != -1:  # to choose il the climate chamber need to be used
                 self.launch_climatic_chamber()
                 vt.port = self.port_test
                 try:
-                    vt.open()
+                    vt.open()  # in case of the climate chamber port is not open
                 except:
                     pass
                 self.temperature = self.t_start
-                self.temperature_storage = self.t_start
-                vt.write(ON % self.temperature)
-                [self.temp, self.temp2] = self.read(self.port_test)
+                self.temperature_storage = self.t_start  # a variable to store the start temperature
+                vt.write(ON % self.temperature)  # ignite the climate chamber at the starting temperature
+                [self.temp, self.temp2] = self.read(self.port_test)  # use the function reed to obtain the
+                # temperature and the order of the climatic chamber
                 while abs(self.temperature - self.t_end) >= abs(self.step_temp):
                     self.value_mono_multi = 0
-                    self.frequency = self.frequency_storage
+                    self.frequency = self.frequency_storage  # a variable to store the start frequency
                     self.write_doc("################################################")
                     self.write_doc(f"Start of Test temperature {self.climate_chamber_num} : {self.temperature} degree "
                                    f"Celsius")
@@ -96,23 +97,25 @@ class Threadsensibility(threading.Thread):
                     logger.debug(f"Start of Test temperature {self.climate_chamber_num}: {self.temperature} degree "
                                  f"Celsius")
                     vt.write(ON % self.temperature)
-                    self.wait_temperature_reach_consign()
-                    self.temperature = self.temperature + self.step_temp
-                    for p in range(0, self.number_channel):
-                        logger.debug(
-                            f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, frequency: {round(self.frequency, 1)}")
-                        self.write_doc(f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}"
-                                       f", frequency: "
-                                       f"{round(self.frequency, 1)}")
-                        self.script()
-                        self.frequency = self.frequency + 0.2
-                        self.value_mono_multi = self.value_mono_multi + 1
+                    self.wait_temperature_reach_consign()  # use the function wait_temperature_reach_consign to
+                    # reach and stabilize a the consigne
+                    self.temperature = self.temperature + self.step_temp  # The value of the temperature increase of
+                    # the step temperature value
+                    for p in range(0, self.number_channel):  # stay in the boucle until the 8 channel are tested
+                        logger.debug(f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, frequency:"
+                                     f" {round(self.frequency, 1)}")
+                        self.write_doc(f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, "
+                                       f"frequency: {round(self.frequency, 1)}")
+                        self.script()  # use the script function to test one channel
+                        self.frequency = self.frequency + 0.2   # The value of the frequency increase of the step
+                        # frequency value
+                        self.value_mono_multi = self.value_mono_multi + 1  # to count the number of channel tested
                     logger.debug(f"fin test")
                     self.write_doc(f"fin test")
                     self.temperature_storage += self.step_temp
                     self.climate_chamber_num = self.climate_chamber_num + 1
-                for u in range(0, 2):
-                    if u != 0:
+                for u in range(0, 2):  # 2 cycles to end the programme at the right temperature
+                    if u != 0:  # activate at the last turn
                         self.temperature = self.t_end
                         self.temperature_storage = self.t_end
                         self.climate_chamber_num = self.climate_chamber_num + 1
@@ -139,7 +142,7 @@ class Threadsensibility(threading.Thread):
                 logger.debug("End test climatic chamber")
                 vt.write(CLIMATIC_CHAMBER_STOP)
                 sys.exit()
-            else:
+            else:  # if the climate chamber don't need to be used
                 self.value_mono_multi = 0
                 for p in range(0, self.number_channel):
                     logger.debug(f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, "
@@ -152,13 +155,13 @@ class Threadsensibility(threading.Thread):
                     self.value_mono_multi = self.value_mono_multi + 1
                 logger.debug(f"fin test")
                 self.write_doc(f"fin test")
-        else:
-            if self.port_test != -1:
+        else:  # if the user need to test only one channel
+            if self.port_test != -1:  # if he need the climate chamber
                 self.climate_chamber_script()
             else:
                 self.script()
 
-    def climate_chamber_script(self):
+    def climate_chamber_script(self):  # script + control of the climate chamber
         self.launch_climatic_chamber()
         vt.port = self.port_test
         try:
@@ -245,20 +248,19 @@ class Threadsensibility(threading.Thread):
             # make a request the same time than the programme
             return [0, 0]  # In case of an error, this function will return [0,0], This will NOT affect the graph
 
-    def script(self):
-        for i in range(0, int(self.test)):
+    def script(self):  # The script to test one channel
+        for i in range(0, int(self.test)):  # number of test, generally infinity
             username = "root"
             password = "root"
-            ssh = paramiko.SSHClient()
+            ssh = paramiko.SSHClient()  # initialisation de la liaison SSH
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             ssh.connect(hostname=self.ip, username=username, password=password)
             cmd = "./lora_pkt_fwd -c global_conf.json.sx1250.EU868"
             cmd2 = "cd /user/libsx1302-utils_V1.0.5-klk1-dirty"
             stdin, stdout, stderr = ssh.exec_command(cmd2 + "\n" + cmd, get_pty=True)
             while 1:
-                wah = stdout.readline()
-                #  logger.info(wah)
-                if wah[0:5] == "ERROR":
+                response = stdout.readline()
+                if response[0:5] == "ERROR":
                     logger.critical("---------------------------------")
                     logger.critical("Failed to start the concentrator")
                     logger.critical("The Izepto is rebooting, please standby")
@@ -279,25 +281,25 @@ class Threadsensibility(threading.Thread):
                     cmd = "./lora_pkt_fwd -c global_conf.json.sx1250.EU868"
                     cmd2 = "cd /user/libsx1302-utils_V1.0.5-klk1-dirty"
                     stdin, stdout, stderr = ssh.exec_command(cmd2 + "\n" + cmd, get_pty=True)
-                    if wah[19:22] == "EUI":
+                    if response[19:22] == "EUI":
                         logger.debug("The iZepto is ready")
                         logger.debug("The reboot is completed")
                         self.write_doc("The reboot is completed")
                         break
-                if wah[19:22] == "EUI":
+                if response[19:22] == "EUI":
                     logger.debug("The iZepto is ready")
                     break
             if i == 0:
                 self.attenuate = self.attenuate_storage
-                self.ready_ibts()
+                self.ready_ibts()  # lunch the initialisation of the IBTS
             else:
-                self.attenuate = float(self.attenuate) + self.step_attenuate
+                self.attenuate = float(self.attenuate) + self.step_attenuate # The value of the attenuate increase of
+                # the step attenuate value
                 self.ready_ibts()
-            time.sleep(1)
+            time.sleep(1)  # 1 second of safety after that the ready_ibts function is completed
             ssh.close()
             a = stdout.readlines()
             number = round((len(a) / 4))
-
             logger.debug("---------------------------------")
             if int(self.test) == 1000:
                 logger.debug(f"Test {i} of ∞ of channel number: {self.value_mono_multi}")
@@ -330,7 +332,7 @@ class Threadsensibility(threading.Thread):
                 # self.window.destroy()
                 break
 
-    def launch_climatic_chamber(self):
+    def launch_climatic_chamber(self):  # settings menu of the IBTS
         new_window_climatic_chamber = Tk()
         new_window_climatic_chamber.title("climatic chamber settings")
 
@@ -422,7 +424,8 @@ class Threadsensibility(threading.Thread):
 
         new_window_climatic_chamber.mainloop()
 
-    def lunch_safety_climatic_chamber(self, step, t_start, t_end, time_temp_wait, window):
+    def lunch_safety_climatic_chamber(self, step, t_start, t_end, time_temp_wait, window):  # a function to chek if all
+        # the values are correct
         self.t_start = t_start
         self.t_end = t_end
         time_temp_wait = float(time_temp_wait)
@@ -451,7 +454,7 @@ class Threadsensibility(threading.Thread):
         else:
             self.frequency_entry.config(state='normal')
 
-    def launch_ibts(self):
+    def launch_ibts(self):  # lunch the IBTS settings menu
         new_window_ibts = Tk()
         new_window_ibts.title("Signal generator settings")
 
@@ -559,7 +562,7 @@ class Threadsensibility(threading.Thread):
         new_window_ibts.mainloop()
 
     def lunch_safety_ibts(self, frequency, sf, attenuate, number_frames, step, offset, test, bw, power,
-                          new_window_main_graphic):
+                          new_window_main_graphic):  # a function to chek if all the values are correct
         global is_killed
         try:  # to chek if the values are integer
             number_frames = float(number_frames.get())
