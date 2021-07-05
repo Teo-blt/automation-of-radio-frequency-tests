@@ -97,8 +97,8 @@ def draw_graph_after(value, graph_type, window):
         temp = {0: data[4][0]}
         X = {}
         Y = {}
-        numbers_of_channel = (data[3][len(data) - 1]) + 1
-        number_of_temp = (data[2][len(data) - 1]) + 1
+        numbers_of_channel = max(data[3]) + 1
+        number_of_temp = max(data[2]) + 1
         t = 0
         d = 0
         while t != len(data):

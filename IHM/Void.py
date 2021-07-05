@@ -5,15 +5,15 @@ color = {0: 'b', 1: 'r', 2: 'g', 3: 'y', 4: 'c', 5: 'lime', 6: 'black', 7: 'pink
 freq = ['867.1']
 freq_step = 0.2
 paket_rate = 50
-graph_type = 0
+graph_type = 1
 
 data = pd.read_csv('data.txt', sep='\s+', header=None)
 data = pd.DataFrame(data)
 temp = {0: data[4][0]}
 X = {}
 Y = {}
-numbers_of_channel = (data[3][len(data) - 1]) + 1
-number_of_temp = (data[2][len(data) - 1]) + 1
+numbers_of_channel = max(data[3]) + 1
+number_of_temp = max(data[2]) + 1
 t = 0
 d = 0
 while t != len(data):

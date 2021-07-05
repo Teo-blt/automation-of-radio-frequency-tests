@@ -115,6 +115,7 @@ class Threadsensibility(threading.Thread):
                     if u != 0:
                         self.temperature = self.t_end
                         self.temperature_storage = self.t_end
+                        self.climate_chamber_num = self.climate_chamber_num + 1
                     self.value_mono_multi = 0
                     self.write_doc(f"Start of Test temperature {self.climate_chamber_num}")
                     self.write_doc("Start of Test")
