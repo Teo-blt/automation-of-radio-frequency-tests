@@ -6,8 +6,9 @@ freq = ['867.1']
 freq_step = 0.2
 paket_rate = 50
 graph_type = 1
+file_name = 'data2.txt'
 
-data = pd.read_csv('data.txt', sep='\s+', header=None)
+data = pd.read_csv(file_name, sep='\s+', header=None)
 data = pd.DataFrame(data)
 temp = {0: data[4][0]}
 X = {}

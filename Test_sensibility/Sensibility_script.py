@@ -117,12 +117,13 @@ class Threadsensibility(threading.Thread):
                         self.temperature_storage = self.t_end
                         self.climate_chamber_num = self.climate_chamber_num + 1
                     self.value_mono_multi = 0
-                    self.write_doc(f"Start of Test temperature {self.climate_chamber_num}")
+                    self.write_doc(f"Start of Test temperature {self.climate_chamber_num}: {self.temperature} degree "
+                                   f"Celsius")
                     self.write_doc("Start of Test")
                     logger.debug("################################################")
-                    logger.debug(f"Start of Test temperature {self.climate_chamber_num}")
+                    logger.debug(f"Start of Test temperature {self.climate_chamber_num}: {self.temperature} degree "
+                                   f"Celsius")
                     self.frequency = self.frequency_storage
-                    self.temperature = self.t_end
                     vt.write(ON % self.temperature)
                     self.wait_temperature_reach_consign()
                     for p in range(0, self.number_channel):
@@ -214,7 +215,9 @@ class Threadsensibility(threading.Thread):
                 # reset the VALUE_STABILISATION
                 self.VALUE_STABILISATION = 0
         logger.info(f"The climate chamber is stabilized with success")
+        logger.info("#################################")
         self.write_doc(f"The climate chamber is stabilized with success")
+        self.write_doc("#################################")
 
     def read(self, the_port):
         try:  # This try allow the program to survive in a rare case where the climatic
