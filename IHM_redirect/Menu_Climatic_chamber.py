@@ -132,7 +132,7 @@ def change_port(combobox_scanner, visual_color_button):
         status = 1
         visual_function(visual_color_button, 0)
     except:
-        logger.critical(f"The port [{port_test}] is not link to the climate chamber")
+        logger.critical(f"The port [{port}] is not link to the climate chamber")
         status = 0
         visual_function(visual_color_button, 1)
 

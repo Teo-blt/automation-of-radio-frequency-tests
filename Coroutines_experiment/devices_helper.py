@@ -1,7 +1,7 @@
 import serial
 from loguru import logger
-from Climate_chamber_control.Climate_chamber import SERIAL_SPEED
 import pyvisa as visa
+import sys
 
 
 def open_port(new_port):
@@ -28,7 +28,7 @@ def scan_all_ports():
     for i in range(0, 30):
         test = ('COM' + str(i))
         try:
-            serial.Serial(test, SERIAL_SPEED, timeout=1, writeTimeout=1)
+            serial.Serial(test, 9600, timeout=1, writeTimeout=1)
             data[a] = i
             a = a + 1
         except:
