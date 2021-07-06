@@ -50,7 +50,7 @@ class Application(Tk):
 
         choose_measuring_tool_combobox = ttk.Combobox(instrument_choose_combobox, values=[
             "Climatic chamber",  # The list of measuring tool
-            "Signal generator",
+            "SMIQ",
             "IBTS",
             "Izepto"
         ], state="readonly")
@@ -99,7 +99,7 @@ class Application(Tk):
             self.create_new_window("Climatic chamber")  # Call the clear function to clean all the window
             self.climatic_chamber_widget()  # Open Climatic chamber
         elif choice == 1:
-            self.create_new_window("Signal generator")  # Call the clear function to clean all the window
+            self.create_new_window("SMIQ")  # Call the clear function to clean all the window
             self.sg()  # Open generator
         elif choice == 2:
             self.create_new_window("IBTS")  # Call the clear function to clean all the window

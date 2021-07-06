@@ -41,7 +41,7 @@ def lunch_ibts(ip):
     number_frames.grid(row=0, column=1, ipadx=0, ipady=0, padx=0, pady=0)
     number_frames.insert(0, 10)
 
-    frequency_label = Label(entry_frame, text="frequency channel :")
+    frequency_label = Label(entry_frame, text="Frequency channel :")
     frequency_label.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
     frequency = Entry(entry_frame, cursor="right_ptr")
     frequency.grid(row=1, column=1, ipadx=0, ipady=0, padx=0, pady=0)
@@ -53,7 +53,7 @@ def lunch_ibts(ip):
     sf.grid(row=2, column=1, ipadx=0, ipady=0, padx=0, pady=0)
     sf.insert(0, 7)
 
-    attenuate_label = Label(entry_frame, text="quarter dB attenuation :")
+    attenuate_label = Label(entry_frame, text="Quarter dB attenuation :")
     attenuate_label.grid(row=3, column=0, ipadx=0, ipady=0, padx=0, pady=0)
     attenuate = Entry(entry_frame, cursor="right_ptr")
     attenuate.grid(row=3, column=1, ipadx=0, ipady=0, padx=0, pady=0)

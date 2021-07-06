@@ -45,7 +45,7 @@ def sg_menu(self, self_port):
     Manual_connection_gpib_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
     gpib_entry = Entry(Manual_connection)
     gpib_entry.pack(padx=0, pady=10, expand=False, fill="none", side=TOP)
-    radiobutton_smiq_old = tk.Radiobutton(radiobutton_frame, text="Old GPIB",
+    radiobutton_smiq_old = tk.Radiobutton(radiobutton_frame, text="GPIB USB",
                                           variable=a, value=0, cursor="right_ptr",
                                           indicatoron=0, command=lambda: [change_version(a.get()),
                                                                           com_entry.forget(),
@@ -54,7 +54,7 @@ def sg_menu(self, self_port):
                                           activebackground="green",
                                           bd=8, selectcolor="green", overrelief="sunken")
     radiobutton_smiq_old.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
-    radiobutton_smiq_new = tk.Radiobutton(radiobutton_frame, text="New GPIB",
+    radiobutton_smiq_new = tk.Radiobutton(radiobutton_frame, text="GPIB USB-C",
                                           variable=a, value=1, cursor="right_ptr",
                                           indicatoron=0, command=lambda: [change_version(a.get()),
                                                                           Manual_connection_port_label.pack(padx=0,
@@ -91,7 +91,7 @@ def manual_launch(gpib, port):
             word = ans[0]
             logger.debug(f"The connection was correctly established")
         except:
-            logger.critical(f"The port [{port_com1}] or the GPIB {gpib} is not link to the climate chamber")
+            logger.critical(f"The port [{port_com1}] or the GPIB {gpib} is not connected")
     else:
         try:
             rm = visa.ResourceManager()
@@ -100,4 +100,4 @@ def manual_launch(gpib, port):
             status = 1
             logger.debug("The connection was correctly established")
         except:
-            logger.critical(f"The GPIB {port} is not link to the climate chamber")
+            logger.critical(f"The GPIB {port} is not connected")
