@@ -652,7 +652,7 @@ class Threadsensibility(threading.Thread):
                       + ' ' + str(self.value_mono_multi) + ' ' + str(self.temperature_storage) + '\n')
         outfile.close()
 
-    def ready_ibts(self):
+    def ready_ibts(self):  # initialise the IBTS
         username = "root"
         password = "root"
         ssh2 = paramiko.SSHClient()
@@ -669,23 +669,23 @@ class Threadsensibility(threading.Thread):
         stdin, stdout, stderr = ssh2.exec_command(cmd, get_pty=True)
 
         while 1:
-            wah = stdout.readline()
-            #  logger.info(wah)
-            if wah[3:5] == "27":
+            read_value = stdout.readline()
+            #  logger.info(read_value)
+            if read_value[3:5] == "27":
                 logger.debug("The iBTS is ready")
                 break
-        wah1 = 0
-        while wah1 != int("%d" % int(self.number_frames)):
+        read_value_2 = 0
+        while read_value_2 != int("%d" % int(self.number_frames)):
             a = stdout.read(1)
             if a == b'X':
-                wah1 = wah1 + len(a)
+                read_value_2 = read_value_2 + len(a)
             else:
                 pass
         logger.debug("All frames send")
         ssh2.close()
 
 
-def simulation_graphic_stair(step, temp_start, temp_end, window):
+def simulation_graphic_stair(step, temp_start, temp_end, window):  # create the simulation graph
     root = LabelFrame(window, bd=0)
     root.grid(column=1, row=2, columnspan=6, rowspan=4)
     my_draw_7_frame_2 = LabelFrame(root)
