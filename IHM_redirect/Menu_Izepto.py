@@ -12,7 +12,7 @@ from tkinter import *
 from tkinter.messagebox import *
 from loguru import logger
 import paramiko
-from I_zepto import I_zepto_test
+from IHM_piloting.I_zepto import I_zepto_test
 
 # =============================================================================
 THE_COLOR = "#E76145"

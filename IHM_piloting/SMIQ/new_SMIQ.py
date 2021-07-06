@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+# !/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # =============================================================================
 # Created By  : Bulteau Téo
@@ -7,7 +7,7 @@
 # =============================================================================
 """The Module Has Been Build for the automation of radio frequency tests in python language"""
 # =============================================================================
-import pyvisa as visa
+import serial
 import time
 import threading
 from tkinter import *
@@ -122,7 +122,7 @@ def lunch_safety(number_frames, measurement_channel, gpib_port, sensitivity_leve
         else:
             if is_killed == 0:
                 is_killed = 1
-                Threadsmiq(number_frames, measurement_channel, gpib_port,sensitivity_level,
+                Threadsmiq(number_frames, measurement_channel, sensitivity_level, gpib_port,
                            freq_dev, bit_rate).start()
             else:
                 logger.info("The smiq program is already running")
@@ -171,21 +171,19 @@ class Threadsmiq(threading.Thread):
         self._kill = 0  # to kill the thread
 
     def run(self):
-        smiq_result = open("Report_SMIQ.txt", 'w+')
-        smiq_result.close()
         global is_killed
-        sys.path.append('P:\\e2b\\hardware\\Scripts_auto\\Python\\lib')
-        rm = visa.ResourceManager()
-        smiq_send = rm.open_resource("GPIB0" + '::' + str(self.gpib_port) + '::INSTR')
-        smiq_send.write('*RST')
-        logger.info(smiq_send.query('*IDN?'))
-        smiq_send.write('OUTP:STAT OFF')  # RF Output OFF
-        smiq_send.write('SOUR:DM:STAT ON')  # Digital Modulation ON
-        smiq_send.write('SOUR:DM:SOUR DLIST')  # Source selection
-        smiq_send.write("SOUR:DM:DLIST:SEL 'T1_TEST'")  # 169_N2
-        smiq_send.write('SOUR:DM:SEQ SINGLE')  # AUTO | RETRigger | AAUTo | ARETrigger | SINGle
+        ser = serial.Serial("COM18", 9600, timeout=0.5)
+        ser.write('++addr 25\n'.encode())
+        ser.write('*RST\n'.encode())
+        ser.write("*IDN?\r".encode())
+        logger.info(ser.readlines(ser.write(('++read\n'.encode()))))
+        ser.write('OUTP:STAT OFF\n'.encode())  # RF Output OFF
+        ser.write('SOUR:DM:STAT ON\n'.encode())  # Digital Modulation ON
+        ser.write('SOUR:DM:SOUR DLIST\n'.encode())  # Source selection
+        ser.write("SOUR:DM:DLIST:SEL 'T1_TEST\n'".encode())  # 169_N2
+        ser.write('SOUR:DM:SEQ SINGLE\n'.encode())  # AUTO | RETRigger | AAUTo | ARETrigger | SINGle
         # Rectangle filter mandatory for WM4800 !
-        smiq_send.write('SOUR:DM:FILT:TYPE RECT')
+        ser.write('SOUR:DM:FILT:TYPE RECT\n'.encode())
         # SCOSine | COSine | GAUSs | LGAuss | BESS1 | BESS2 | IS95 | EIS95 | APCO |
         # TETRa | WCDMa | RECTangle | SPHase | USER
 
@@ -197,7 +195,7 @@ class Threadsmiq(threading.Thread):
         rssi_average = -999
 
         # Result folder
-        result_path = "C:/Users/labo/PycharmProjects/automation-of-radio-frequency-tests/SMIQ"
+        result_path = "/IHM_piloting/SMIQ"
         result_path += '\\Sensi'
 
         ################################################
@@ -219,28 +217,28 @@ class Threadsmiq(threading.Thread):
             bit_rate = mod[2]
             sensitivity_level = mod[4]
 
-            self.write_doc("Report_SMIQ")
-            self.write_doc("Sensitivity measurement")
-            self.write_doc("EN300 220-1 v3.1.1")
-            self.write_doc("Time; Channel frequency; Signal Level; Nb frame sent; PER")
+            csv_result = open("Report_SMIQ", 'w+')
+            csv_result.write("Sensitivity measurement\n")
+            csv_result.write("EN300 220-1 v3.1.1\n")
+            csv_result.write("Time; Channel frequency; Signal Level; Nb frame sent; PER\n\n")
 
             for freq in self.channel_list:
 
                 # Configure sending device modulation
-                smiq_send.write('SOUR:DM:FORM FSK2')  # FSK2 / GFSK
-                smiq_send.write('SOUR:DM:SRATe %d Hz' % bit_rate)  # symbol rate 1kHz to 7 MHz /
+                ser.write('SOUR:DM:FORM FSK2\n'.encode())  # FSK2 / GFSK
+                ser.write(('SOUR:DM:SRATe ' + str(bit_rate) + ' Hz\n').encode())  # symbol rate 1kHz to 7 MHz /
                 # Set rate BEFORE deviation
-                smiq_send.write('SOUR:DM:FSK:DEV %d' % freq_dev)  # frequency deviation 100 Hz to 2.5 MHz
-                smiq_send.write('SOUR:FREQ:MODE CW')  # Set mode to fixed frequency
-                smiq_send.write('SOUR:FREQ:CW %d' % int(freq))  # Set channel frequency
+                ser.write(('SOUR:DM:FSK:DEV ' + str(freq_dev) + '\n').encode())  # frequency deviation 100 Hz to 2.5 MHz
+                ser.write('SOUR:FREQ:MODE CW\n'.encode())  # Set mode to fixed frequency
+                ser.write(('SOUR:FREQ:CW ' + str(freq) + '\n').encode())  # Set channel frequency
                 # smiq_send.write('SOUR:DM:FILT:TYPE RECTangle')
                 # SCOSine | COSine | GAUSs | LGAuss | BESS1 | BESS2 | IS95 |
                 # EIS95 | APCO | TETRa | WCDMa | RECTangle | SPHase | USER
 
-                smiq_send.write('SOUR:FREQ:MODE CW')  # Set mode to fixed frequency
-                smiq_send.write('OUTP:STAT ON')  # RF Output ON
+                ser.write('SOUR:FREQ:MODE CW\n'.encode())  # Set mode to fixed frequency
+                ser.write('OUTP:STAT ON\n'.encode())  # RF Output ON
 
-                smiq_send.write('SOUR:POW:MODE FIX')  # Set power to "Fixed" mode
+                ser.write('SOUR:POW:MODE FIX\n'.encode())  # Set power to "Fixed" mode
 
                 sensitivity_steps = list(range(sensitivity_level - 4, sensitivity_level + 11, 1))
                 sensitivity_steps = sensitivity_steps + list(range(sensitivity_level + 11, sensitivity_level + 21, 2))
@@ -250,7 +248,7 @@ class Threadsmiq(threading.Thread):
 
                 for signal_level in sensitivity_steps:
 
-                    smiq_send.write('POW %d' % signal_level)
+                    ser.write(('POW ' + str(signal_level) + '\n').encode())
                     # Set output power level at Theoretical sensitivity + 3dB
 
                     # Set product in reception
@@ -265,7 +263,7 @@ class Threadsmiq(threading.Thread):
                         # Send 1 frame
                         logger.info('===========')
                         logger.info(f' Sending frame {i + 1}/{self.nb_frame}...')
-                        smiq_send.write('TRIG:DM:IMM')  # Send 1 trigger event
+                        ser.write('TRIG:DM:IMM\n'.encode())  # Send 1 trigger event
                         nb_frame_sent = nb_frame_sent + 1
                         time.sleep(1)
                         # Check frame reception
@@ -278,7 +276,7 @@ class Threadsmiq(threading.Thread):
                             print(f'Frame {i + 1}/{nb_frame} received !')
                             nb_frame_received = nb_frame_received + 1
                             rssi.append(int(received_frame[received_frame.find('RSSI') + 5:received_frame.find(',')]))
-                        
+
                     if nb_frame_received > 0:
                         rssi_average = sum(rssi) / len(rssi)
                     """
@@ -300,10 +298,12 @@ class Threadsmiq(threading.Thread):
                     logger.info(f'Number of frames sent : {nb_frame_sent}')
                     logger.info(f'Percentage of loose {per * 100}%')
                     logger.info(f'Rssi average : {rssi_average}\n')
-                    self.write_doc(res_str)
+                    csv_result.write(res_str)
                     if not is_killed:
                         break
                     time.sleep(self.wait_measure)
+
+            csv_result.close()
 
         time_stop = time.time()
         logger.info("################################################")
@@ -311,8 +311,3 @@ class Threadsmiq(threading.Thread):
         a = time.localtime(time_stop - time_start)
         logger.info(f'Test duration : {a[3] - 1}H{a[4]} and {a[5]} second(s)')
         # DUT.close()
-
-    def write_doc(self, text):
-        smiq_result = open("Report_SMIQ.txt", 'a')
-        smiq_result.write(str(text) + "\n")
-        smiq_result.close()

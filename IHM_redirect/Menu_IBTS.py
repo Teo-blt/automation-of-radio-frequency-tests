@@ -11,7 +11,7 @@ import tkinter as tk
 from tkinter import *
 from tkinter.messagebox import *
 from loguru import logger
-from SSH import Test_SSH
+from IHM_piloting.SSH import Test_SSH
 import paramiko
 
 # =============================================================================

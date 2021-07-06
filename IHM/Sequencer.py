@@ -11,8 +11,8 @@ import tkinter as tk
 from tkinter import *
 import tkinter
 import tkinter.messagebox
-from EA import Button_jump
-import EA.Button_jump
+from IHM_piloting.EA import Button_jump
+import IHM_piloting.EA.Button_jump
 
 # =============================================================================
 THE_COLOR = "#E76145"
@@ -67,7 +67,7 @@ def sequencer(self):
     menu_base.add_cascade(label='Remove', menu=submenu_2, underline=0)
     """
     sequencer_add_label.bind("<Button-1>", show_menu)
-    sequencer_label.bind("<Button-2>", EA.Button_jump.play)
+    sequencer_label.bind("<Button-2>", IHM_piloting.EA.Button_jump.play)
 
     menu_box = tkinter.Menu(self, tearoff=0)
     menu_box.add_command(label="Delete ", command=lambda: [delete_box(box)])

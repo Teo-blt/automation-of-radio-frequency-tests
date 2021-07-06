@@ -15,7 +15,7 @@ from tkinter.messagebox import *
 from loguru import logger
 from IHM import Graphic
 import serial
-from Coroutines_experiment.devices_helper import scan_all_ports
+from IHM_piloting.Coroutines_experiment.devices_helper import scan_all_ports
 
 # =============================================================================
 ON = b"$00E %06.1f 0000.0 0000.0 0000.0 0000.0 0101000000000000\n\r"

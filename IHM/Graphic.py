@@ -20,7 +20,7 @@ import matplotlib.animation as animation
 from matplotlib import style
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from loguru import logger
-from Coroutines_experiment import Coroutines_with_asyncio_V2
+from IHM_piloting.Coroutines_experiment import Coroutines_with_asyncio_V2
 
 # =============================================================================
 VARIABLE = Coroutines_with_asyncio_V2
