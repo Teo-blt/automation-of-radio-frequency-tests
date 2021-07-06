@@ -1,7 +1,6 @@
 import serial
 from loguru import logger
 import pyvisa as visa
-import sys
 
 
 def open_port(new_port):
