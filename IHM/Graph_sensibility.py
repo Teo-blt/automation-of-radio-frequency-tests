@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 from loguru import logger
 from tkinter import *
 from tkinter import ttk
+from tkinter import filedialog
 
 # =============================================================================
 THE_COLOR = "#E76145"
@@ -20,12 +21,22 @@ THE_COLOR = "#E76145"
 def draw_graph():
     window_graph_data = Tk()
     window_graph_data.title("Graph data settings")
-    window_graph_data.geometry("300x300")
+    #  window_graph_data.geometry("300x300")
     settings_frame = LabelFrame(window_graph_data, text="Settings")
     settings_frame.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
     settings_frame.config(background='#fafafa')
     label_top = Label(settings_frame, text="Choose your packet rate")
     label_top.pack(expand=False, fill="none", side=TOP)
+    file_name_label = Label(settings_frame, text="File name :")
+    file_name_label.pack(expand=False, fill="none", side=TOP),
+    file_entry = Entry(settings_frame, cursor="right_ptr")
+    file_entry.pack(expand=False, fill="none", side=TOP)
+    file_entry.insert(0, 'test.txt')
+    import_file_button = Button(settings_frame, text="Import file",
+                                borderwidth=8, background=THE_COLOR,
+                                activebackground="green", cursor="right_ptr", overrelief="sunken",
+                                command=lambda: [uploadaction(file_entry)])
+    import_file_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
 
     choose_packet_rate_combobox = ttk.Combobox(settings_frame, values=[
         "10%",  # The list of measuring tool
@@ -45,16 +56,16 @@ def draw_graph():
     def validate(e, bla):
         verification(bla.get(), 1, window_graph_data, file_entry.get())
 
+    def uploadaction(file_entry):
+        filename = filedialog.askopenfilename(filetypes=[("text files", ".txt")])
+        file_entry.delete(0, 20)
+        file_entry.insert(0, filename)
+
     choose_packet_rate_combobox.bind("<<ComboboxSelected>>", chose)
     choose_packet_rate_combobox.set("-Choose your packet-")
     temp_label = Label(settings_frame, text="Number of the temperature :")
     temp = Entry(settings_frame, cursor="right_ptr")
     temp.insert(0, 0)
-    file_name_label = Label(settings_frame, text="File name :")
-    file_name_label.pack(expand=False, fill="none", side=TOP),
-    file_entry = Entry(settings_frame, cursor="right_ptr")
-    file_entry.pack(expand=False, fill="none", side=TOP)
-    file_entry.insert(0, 'test.txt')
     send_button = Button(settings_frame, text="Send",
                          borderwidth=8, background=THE_COLOR,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
@@ -99,12 +110,10 @@ def verification(value, graph_type, window, file_name):
     if graph_type == 1:
         draw_graph_after(value, 1, window, file_name)
     else:
-        if value < 0 or value > int(max(data[2]) + 1):
-            logger.critical(f"Error, there is only {max(data[2]) + 1} temperature")
+        if value < 0 or value > int(max(data[2])):
+            logger.critical(f"Error, there is only {max(data[2])} temperature")
         else:
             draw_graph_after(value, 0, window, file_name)
-
-
 
 
 def draw_graph_after(value, graph_type, window, name):
@@ -151,7 +160,7 @@ def draw_graph_after(value, graph_type, window, name):
             break
     if graph_type == 0:
         for m in range(value, value + 1):
-            #marker = "$" + str(m) + "$"
+            # marker = "$" + str(m) + "$"
             marker = ","
             for n in range(0, numbers_of_channel):
                 plt.plot(X[m][n], Y[m][n], color[n], marker=marker)

@@ -9,10 +9,11 @@
 # =============================================================================
 import tkinter as tk
 from tkinter import *
-from loguru import logger
-import serial
-import pyvisa as visa
+from tkinter.messagebox import *
 
+import pyvisa as visa
+import serial
+from loguru import logger
 # =============================================================================
 THE_COLOR = "#E76145"
 global status
@@ -31,7 +32,6 @@ def sg_menu(self, self_port):
     a = IntVar()
     scanner_gpib_frame = LabelFrame(self, text="Detection of GPIB")
     scanner_gpib_frame.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
-    place = scanner_gpib_frame
     radiobutton_frame = LabelFrame(scanner_gpib_frame)
     radiobutton_frame.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
     Manual_connection = LabelFrame(self, text="Manual connection")
@@ -56,10 +56,15 @@ def sg_menu(self, self_port):
     radiobutton_smiq_old.pack(padx=0, pady=0, expand=False, fill="none", side=LEFT)
     radiobutton_smiq_new = tk.Radiobutton(radiobutton_frame, text="GPIB USB-C",
                                           variable=a, value=1, cursor="right_ptr",
-                                          indicatoron=0, command=lambda: [change_version(a.get()),
-                                                                          Manual_connection_port_label.pack(padx=0,
-                                                                        pady=0, expand=False, fill="none", side=TOP), com_entry.pack(padx=0, pady=0, expand=False,
-                                                                                         fill="none", side=TOP)],
+                                          indicatoron=0,
+                                          command=lambda: [change_version(a.get()),
+                                                           Manual_connection_port_label.pack(padx=0,
+                                                                                             pady=0,
+                                                                                             expand=False,
+                                                                                             fill="none",
+                                                                                             side=TOP),
+                                                           com_entry.pack(padx=0, pady=0, expand=False,
+                                                                          fill="none", side=TOP)],
                                           background=THE_COLOR,
                                           activebackground="green",
                                           bd=8, selectcolor="green", overrelief="sunken")
@@ -69,8 +74,6 @@ def sg_menu(self, self_port):
     com_entry.insert(0, self_port)
     radiobutton_smiq_new.select()
     radiobutton_smiq_new.invoke()
-
-
 
 
 def change_version(a):
@@ -91,7 +94,10 @@ def manual_launch(gpib, port):
             word = ans[0]
             logger.debug(f"The connection was correctly established")
         except:
-            logger.critical(f"The port [{port_com1}] or the GPIB {gpib} is not connected")
+            if askyesno("Warning", "The connection status is : offline\n Do you still want to continue ?"):
+                pass
+            else:
+                logger.critical(f"The port [{port_com1}] or the GPIB {gpib} is not connected")
     else:
         try:
             rm = visa.ResourceManager()
@@ -100,4 +106,7 @@ def manual_launch(gpib, port):
             status = 1
             logger.debug("The connection was correctly established")
         except:
-            logger.critical(f"The GPIB {port} is not connected")
+            if askyesno("Warning", "The connection status is : offline\n Do you still want to continue ?"):
+                pass
+            else:
+                logger.critical(f"The GPIB {port} is not connected")
