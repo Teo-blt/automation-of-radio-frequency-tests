@@ -11,12 +11,7 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter.messagebox import *
-from IHM_redirect import Menu_Izepto
-from IHM_redirect import Menu_IBTS
-from IHM_redirect import Menu_SMIQ
 from IHM_redirect import Menu_Climatic_chamber
-from IHM_redirect import Menu_Sensibility_test
-from Data_files import Configuration_file_management
 
 # ============================================================================
 
@@ -94,6 +89,7 @@ class Application(Tk):
         choose_scenario_combobox.pack(padx=50, pady=0, expand=False, fill="x", side=TOP)
 
     def configuration_menu(self):
+        from Data_files import Configuration_file_management
         configuration_menu_button = Button(self, text="Order file", borderwidth=8, background=THE_COLOR,
                                            cursor="right_ptr",
                                            overrelief="sunken",
@@ -137,10 +133,12 @@ class Application(Tk):
         #  Sequencer.sequencer(self) not use anymore
 
     def sg(self):  # The signal generator menu
+        from IHM_redirect import Menu_SMIQ
         self.geometry(WINDOW_SIZE)  # set window size
         Menu_SMIQ.sg_menu(self, self._gpib_port)
 
     def ibts(self):  # The IBTS menu
+        from IHM_redirect import Menu_IBTS
         self.geometry(WINDOW_SIZE)  # set window size
         Menu_IBTS.ibts_menu(self, self._ip_address)
 
@@ -149,10 +147,12 @@ class Application(Tk):
         Menu_Climatic_chamber.start_climatic_chamber(self, self._port)
 
     def carte_izepto(self):  # The Izepto menu
+        from IHM_redirect import Menu_Izepto
         self.geometry(WINDOW_SIZE)  # set window size
         Menu_Izepto.izepto_menu(self, self._carte_ip_address)
 
     def sensibility_test(self):  # The Sensibility test menu
+        from IHM_redirect import Menu_Sensibility_test
         self.geometry(WINDOW_SIZE)  # set window size
         Menu_Sensibility_test.sensibility_test_menu(self, self._port, self._ip_address, self._carte_ip_address)
 
