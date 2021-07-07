@@ -66,8 +66,11 @@ class Threadsensibility(threading.Thread):
         self.time_temp_wait = 120
         self.temperature_storage = 0
         self.config_file = "Orders.txt"
+        self.number_error = 0
+        self.time_start = 0
 
     def run(self):
+        self.time_start = time.time()
         sensibility_result = open("Report_sensibility.txt", 'w+')  # preparation of the txt files
         sensibility_result.close()
         outfile = open(self.data_file, 'w+')
@@ -140,7 +143,7 @@ class Threadsensibility(threading.Thread):
                         self.script()
                         self.frequency = self.frequency + 0.2
                         self.value_mono_multi = self.value_mono_multi + 1
-                logger.debug("End test climatic chamber")
+                self.end_programme()
                 vt.write(CLIMATIC_CHAMBER_STOP)
                 sys.exit()
             else:  # if the climate chamber don't need to be used
@@ -154,13 +157,13 @@ class Threadsensibility(threading.Thread):
                     self.script()
                     self.frequency = self.frequency + 0.2
                     self.value_mono_multi = self.value_mono_multi + 1
-                logger.debug(f"fin test")
-                self.write_doc(f"fin test")
+                self.end_programme()
         else:  # if the user need to test only one channel
             if self.port_test != -1:  # if he need the climate chamber
                 self.climate_chamber_script()
             else:
                 self.script()
+                self.end_programme()
 
     def climate_chamber_script(self):  # script + control of the climate chamber
         self.launch_climatic_chamber()
@@ -195,8 +198,9 @@ class Threadsensibility(threading.Thread):
             vt.write(ON % self.temperature)
             self.wait_temperature_reach_consign()
             self.script()
-        logger.debug("End test climatic chamber")
+        self.end_programme()
         vt.write(CLIMATIC_CHAMBER_STOP)
+        sys.exit()
 
     def wait_temperature_reach_consign(self):
         while abs(self.temp - self.temperature) >= 0.2 or self.VALUE_STABILISATION <= self.time_temp_wait:
@@ -262,6 +266,7 @@ class Threadsensibility(threading.Thread):
             while 1:
                 response = stdout.readline()
                 if response[0:5] == "ERROR":
+                    self.number_error += 1
                     logger.critical("---------------------------------")
                     logger.critical("Failed to start the concentrator")
                     logger.critical("The Izepto is rebooting, please standby")
@@ -688,6 +693,14 @@ class Threadsensibility(threading.Thread):
         logger.debug("All frames send")
         ssh2.close()
 
+    def end_programme(self):
+        logger.debug("End test")
+        logger.debug(f"Number of fail of the Izepto: {self.number_error}")
+        b = time.localtime(time.time() - self.time_start)  # Total time of the test
+        logger.info(f'Test duration: {b[3] - 1}H{b[4]}min and {b[5]} second(s)')
+        self.write_doc("End test")
+        self.write_doc(f"Number of fail of the Izepto: {self.number_error}")
+        self.write_doc(f'Test duration: {b[3] - 1}H{b[4]}min and {b[5]} second(s)')
 
 def simulation_graphic_stair(step, temp_start, temp_end, window):  # create the simulation graph
     root = LabelFrame(window, bd=0)
