@@ -9,6 +9,7 @@
 # =============================================================================
 from loguru import logger
 from tkinter import *
+import sys
 
 # =============================================================================
 THE_COLOR = "#E76145"
@@ -28,6 +29,13 @@ def menu():
                                        command=lambda: [file_execution(str(configuration_file.get())),
                                                         window_graph_data.destroy()])
     configuration_menu_button.grid(row=2, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+    reset_label = Label(window_graph_data, text="Reset The configuration file")
+    reset_label.grid(row=3, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+    reset_button = Button(window_graph_data, text="Reset", borderwidth=8, background=THE_COLOR,
+                          cursor="right_ptr",
+                          overrelief="sunken",
+                          command=lambda: [file_reset()])
+    reset_button.grid(row=4, column=0, ipadx=0, ipady=0, padx=0, pady=0)
 
 
 def file_execution(file_name):
@@ -41,3 +49,14 @@ def file_execution(file_name):
     for n in range(0, 2 * p, 2):
         logger.info(f"The command of the {donnees[n]} is: {donnees[n + 1]}")
     file.close()
+
+
+def file_reset():
+    file = open((sys.path[1]) + f"\\Data_files\\Orders.txt", "w+")
+    file2 = open((sys.path[1]) + f"\\Data_files\\Orders_secure_save.txt", "r")
+    for line in file2:
+        file.write(str(line.rstrip('\n\r').split("=")[0] + "="))
+        file.write(str(line.rstrip('\n\r').split("=")[1] + "\n"))
+    file.close()
+    file2.close()
+    logger.info('Reset completed')
