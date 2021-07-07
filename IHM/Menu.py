@@ -16,6 +16,7 @@ from IHM_redirect import Menu_IBTS
 from IHM_redirect import Menu_SMIQ
 from IHM_redirect import Menu_Climatic_chamber
 from IHM_redirect import Menu_Sensibility_test
+from Data_files import Configuration_file_management
 
 # ============================================================================
 
@@ -92,6 +93,13 @@ class Application(Tk):
         choose_scenario_combobox.set(value)
         choose_scenario_combobox.pack(padx=50, pady=0, expand=False, fill="x", side=TOP)
 
+    def configuration_menu(self):
+        configuration_menu_button = Button(self, text="Order file", borderwidth=8, background=THE_COLOR,
+                                           cursor="right_ptr",
+                                           overrelief="sunken",
+                                           command=lambda: [Configuration_file_management.menu()])
+        configuration_menu_button.grid(row=4, column=4, ipadx=0, ipady=0, padx=0, pady=0)
+
     def interface(self, choice):  # This function open other functions after the choice of the user
         if choice == -1:
             showerror("Error", "You must select a valid instrument")
@@ -125,6 +133,7 @@ class Application(Tk):
         self.title(window_title + " menu")
         self.create_choose_measuring_tool_combobox(window_title)
         self.create_choose_scenario_combobox(window_title)
+        self.configuration_menu()
         #  Sequencer.sequencer(self) not use anymore
 
     def sg(self):  # The signal generator menu
