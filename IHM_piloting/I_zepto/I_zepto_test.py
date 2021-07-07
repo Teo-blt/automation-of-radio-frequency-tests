@@ -11,6 +11,7 @@ import paramiko
 import threading
 from loguru import logger
 import time
+import sys
 # =============================================================================
 
 def lunch_izepto(ip):
@@ -23,6 +24,7 @@ class Threadizepto(threading.Thread):
         threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
         # additional data added to the class
         self.ip = ip
+        self.file_name = "Orders.txt"
 
     def run(self):
         izepto_result = open("Report_iZepto.txt", 'w+')
@@ -33,9 +35,9 @@ class Threadizepto(threading.Thread):
         self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         self.ssh.connect(hostname=self.ip, username=username, password=password)
         logger.debug(f"Successfully connected to {self.ip}")
-        cmd = "./lora_pkt_fwd -c global_conf.json.sx1250.EU868"
-        cmd2 = "cd /user/libsx1302-utils_V1.0.5-klk1-dirty"
-        stdin, stdout, stderr = self.ssh.exec_command(cmd2 + "\n" + cmd, get_pty=True)
+
+        cmd = self.file_execution(self.file_name)
+        stdin, stdout, stderr = self.ssh.exec_command(cmd, get_pty=True)
 
         while (1):
             wah = stdout.readline()
@@ -61,3 +63,14 @@ class Threadizepto(threading.Thread):
         izepto_result = open("Report_iZepto.txt", 'a')
         izepto_result.write(str(text) + "\n")
         izepto_result.close()
+
+
+    def file_execution(self, file_name):
+        file = open((sys.path[1]) + f"\\Data_files\\{file_name}", "r")
+        donnees = []
+        p = 0
+        for line in file:
+            donnees = donnees + line.rstrip('\n\r').split("=")
+            p += 1
+        file.close()
+        return(donnees[3])

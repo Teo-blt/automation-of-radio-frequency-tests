@@ -60,16 +60,17 @@ class Threadsensibility(threading.Thread):
         self.value_mono_multi = 0
         self.attenuate_storage = 0
         self.frequency_entry = tk.Entry
-        self.name_file = 'test.txt'
+        self.data_file = 'test.txt'
         self.frequency_storage = 0
         self.number_channel = 8
         self.time_temp_wait = 120
         self.temperature_storage = 0
+        self.config_file = "Orders.txt"
 
     def run(self):
         sensibility_result = open("Report_sensibility.txt", 'w+')  # preparation of the txt files
         sensibility_result.close()
-        outfile = open(self.name_file, 'w+')
+        outfile = open(self.data_file, 'w+')
         outfile.close()
         self.write_doc("Sensitivity measurement iZepto")
         self.write_doc("Sensitivity measurement iBTS")
@@ -646,7 +647,7 @@ class Threadsensibility(threading.Thread):
         sensibility_result.close()
 
     def write_json(self, attenuation_db, packet_lost, power_out):
-        outfile = open(self.name_file, 'a')
+        outfile = open(self.data_file, 'a')
         power_in = round(power_out - attenuation_db, 2)
         outfile.write(str(power_in) + ' ' + str(round(packet_lost)) + ' ' + str(self.climate_chamber_num)
                       + ' ' + str(self.value_mono_multi) + ' ' + str(self.temperature_storage) + '\n')
@@ -658,6 +659,7 @@ class Threadsensibility(threading.Thread):
         ssh2 = paramiko.SSHClient()
         ssh2.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh2.connect(hostname=self.ip_address, username=username, password=password)
+        """
         cmd = "/user/libloragw2-utils_5.1.0-klk9-3-ga23e25f_FTK_Tx/send_pkt -d " \
               "/dev/slot/1/spidev0 -f " + str(self.frequency) + ":1:1 -a 0 -b " + str(self.bw) + " -s " + str(
             self.sf) + "-c 1 -r 8 " \
@@ -665,6 +667,8 @@ class Threadsensibility(threading.Thread):
                        "20 " \
                        "-x " + \
               str(self.number_frames) + " --atten " + str(self.attenuate)
+        """
+        cmd = file_execution(self.config_file)
 
         stdin, stdout, stderr = ssh2.exec_command(cmd, get_pty=True)
 
@@ -723,3 +727,13 @@ def simulation_graphic_stair(step, temp_start, temp_end, window):  # create the 
     canvas = FigureCanvasTkAgg(fig, master=my_draw_7_frame_1)
     canvas.draw()
     canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
+
+def file_execution(file_name):
+    file = open((sys.path[1]) + f"\\Data_files\\{file_name}", "r")
+    donnees = []
+    p = 0
+    for line in file:
+        donnees = donnees + line.rstrip('\n\r').split("=")
+        p += 1
+    file.close()
+    return(donnees[1])

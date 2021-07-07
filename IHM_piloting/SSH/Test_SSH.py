@@ -137,6 +137,7 @@ class Threadibts(threading.Thread):
         self.number_frames = str(number_frames)
         self.bw = str(bw)
         self.ip = ip
+        self.file_name = "Orders.txt"
 
     def run(self):
         global is_killed
@@ -149,13 +150,7 @@ class Threadibts(threading.Thread):
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(hostname=ip_address, username=username, password=password)
         logger.debug("Successfully connected to", ip_address)
-
-        cmd = "/user/libloragw2-utils_5.1.0-klk9-3-ga23e25f_FTK_Tx/send_pkt -d " \
-              "/dev/slot/1/spidev0 -f " + self.frequency + ":1:1 -a 0 -b " + self.bw + " -s " + self.sf + "-c 1 -r 8 " \
-                                                                                                          "-z 20 -t " \
-                                                                                                          "20 " \
-                                                                                                          "-x " + \
-              self.number_frames + " --atten " + self.attenuate
+        cmd = self.file_execution(self.file_name)
 
         stdin, stdout, stderr = ssh.exec_command(cmd, get_pty=True)
 
@@ -175,3 +170,13 @@ class Threadibts(threading.Thread):
         logger.info(f"{self.number_frames} frames have been sent at -{int(self.attenuate) / 4} dB")
         ssh.close()
         is_killed = 0
+
+    def file_execution(self, file_name):
+        file = open((sys.path[1]) + f"\\Data_files\\{file_name}", "r")
+        donnees = []
+        p = 0
+        for line in file:
+            donnees = donnees + line.rstrip('\n\r').split("=")
+            p += 1
+        file.close()
+        return(donnees[1])
