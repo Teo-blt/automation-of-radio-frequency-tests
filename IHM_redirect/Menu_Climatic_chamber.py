@@ -66,7 +66,6 @@ def start_climatic_chamber(self, port_give):
     combobox_scanner.bind("<<ComboboxSelected>>", automatic_1)
     scale_climatic_chamber(self, visual_color_button)
     try_climate_chamber(port, visual_color_button)
-    write_climate_chamber_scan(combobox_scanner)
 
 
 def visual_function(visual_color_button, s):
