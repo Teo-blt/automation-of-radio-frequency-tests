@@ -138,8 +138,8 @@ def change_port(combobox_scanner, visual_color_button):
 
 def scale_climatic_chamber(self, visual_color_button):  # creation of two vey important buttons, Live draw example,
     # a live draw (not used because the user can easily break it),
-    # and Start the test, witch allow the user to enter in the management test area
-    climatic_chamber_scale_frame = LabelFrame(self, text="Start the test")
+    # and Start the test_number, witch allow the user to enter in the management test_number area
+    climatic_chamber_scale_frame = LabelFrame(self, text="Start the test_number")
     climatic_chamber_scale_frame.grid(row=0, column=3, ipadx=0, ipady=0, padx=0, pady=0)
 
     start_test_button = tk.Button(climatic_chamber_scale_frame, text="Start",

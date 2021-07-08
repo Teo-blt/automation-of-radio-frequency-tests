@@ -570,7 +570,7 @@ def simulation_graphic_cycle(temperature_min, temperature_max,
         names = list(data.keys())
         values = list(data.values())
         fig = Figure(figsize=(5, 3), dpi=100)
-        fig.add_subplot().plot(names, values, label='test')
+        fig.add_subplot().plot(names, values, label='test_number')
         if number_of_cycles == 21:
             fig.legend(["∞ Infinite Mode ∞"])
         else:

@@ -36,7 +36,7 @@ class Threadizepto(threading.Thread):
         self.ssh.connect(hostname=self.ip, username=username, password=password)
         logger.debug(f"Successfully connected to {self.ip}")
 
-        cmd = self.file_execution(self.file_name)
+        cmd = self.file_execution(self.file_name, 3) + "\n" + self.file_execution(self.file_name, 5)
         stdin, stdout, stderr = self.ssh.exec_command(cmd, get_pty=True)
 
         while (1):
@@ -64,8 +64,7 @@ class Threadizepto(threading.Thread):
         izepto_result.write(str(text) + "\n")
         izepto_result.close()
 
-
-    def file_execution(self, file_name):
+    def file_execution(self, file_name, n):
         file = open((sys.path[1]) + f"\\Data_files\\{file_name}", "r")
         donnees = []
         p = 0
@@ -73,4 +72,4 @@ class Threadizepto(threading.Thread):
             donnees = donnees + line.rstrip('\n\r').split("=")
             p += 1
         file.close()
-        return(donnees[3])
+        return (donnees[n])

@@ -150,9 +150,12 @@ class Threadibts(threading.Thread):
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(hostname=ip_address, username=username, password=password)
         logger.debug("Successfully connected to", ip_address)
-        cmd = self.file_execution(self.file_name)
 
-        stdin, stdout, stderr = ssh.exec_command(cmd, get_pty=True)
+        cmd = self.file_execution("Orders.txt", 1).split(",")
+        order = (cmd[0] + self.frequency + cmd[2] + self.bw + cmd[4] + self.sf + cmd[6] + self.number_frames + cmd[8]
+                 + self.attenuate)
+
+        stdin, stdout, stderr = ssh.exec_command(order, get_pty=True)
 
         while 1:
             wah = stdout.readline()
@@ -161,17 +164,17 @@ class Threadibts(threading.Thread):
                 logger.debug("The iBTS is ready")
                 break
         wah1 = 0
-        while wah1 != "%d" % float(self.number_frames):
+        while wah1 != int("%d" % float(self.number_frames)):
             a = stdout.read(1)
             if a == b'X':
                 wah1 = wah1 + len(a)
             else:
                 pass
-        logger.info(f"{self.number_frames} frames have been sent at -{int(self.attenuate) / 4} dB")
+        logger.info(f"{self.number_frames} frames have been sent at -{float(self.attenuate) / 4} dB")
         ssh.close()
         is_killed = 0
 
-    def file_execution(self, file_name):
+    def file_execution(self, file_name, n):
         file = open((sys.path[1]) + f"\\Data_files\\{file_name}", "r")
         donnees = []
         p = 0
@@ -179,4 +182,4 @@ class Threadibts(threading.Thread):
             donnees = donnees + line.rstrip('\n\r').split("=")
             p += 1
         file.close()
-        return(donnees[1])
+        return (donnees[n])

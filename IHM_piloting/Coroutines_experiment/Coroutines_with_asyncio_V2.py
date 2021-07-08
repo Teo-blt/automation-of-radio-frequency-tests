@@ -91,8 +91,8 @@ class Thread(threading.Thread):
             self.csv_result.write("Start of Test")
             logger.info("################################################")
             logger.info("Start of Test")
-            self.time_start = time.time()  # Collect the time of the beginning of the test
-            self.timer = 1 / 60  # For the test, it reduce the time of waiting to 1 min
+            self.time_start = time.time()  # Collect the time of the beginning of the test_number
+            self.timer = 1 / 60  # For the test_number, it reduce the time of waiting to 1 min
             asyncio.run(self.several_methods_run_together())
 
     async def wait_temperature_reach_consign(self, timer):
@@ -198,7 +198,7 @@ class Thread(threading.Thread):
         time_stop = time.time()
         logger.info("################################################")
         logger.info("End of Test")
-        b = time.localtime(time_stop - self.time_start)  # Total time of the test
+        b = time.localtime(time_stop - self.time_start)  # Total time of the test_number
         logger.info(f'Test duration: {b[3] - 1}H{b[4]}min and {b[5]} second(s)')  # some useful information for the user
         self.csv_result.write("\n################################################")
         self.csv_result.write("\nEnd of Test")

@@ -29,7 +29,7 @@ def sensibility_test_menu(self, port, ip_address, carte_ip_address):
     number = 0
     scanner_ibts_frame = LabelFrame(self, text="Sensibility Menu")
     scanner_ibts_frame.grid(row=0, column=1, ipadx=10, ipady=10, padx=0, pady=0)
-    ibts_scale_frame = LabelFrame(self, text="Start the test")
+    ibts_scale_frame = LabelFrame(self, text="Start the test_number")
     ibts_scale_frame.grid(row=0, column=3, ipadx=0, ipady=0, padx=0, pady=0)
     make_a_graph = LabelFrame(self, text="Make a graph")
     make_a_graph.grid(row=1, column=1, ipadx=0, ipady=0, padx=0, pady=0)

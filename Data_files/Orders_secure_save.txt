@@ -1,2 +1,3 @@
-IBTS = "/user/libloragw2-utils_5.1.0-klk9-3-ga23e25f_FTK_Tx/send_pkt -d /dev/slot/1/spidev0 -f " + str(self.frequency) + ":1:1 -a 0 -b " + str(self.bw) + " -s " + str(self.sf) + "-c 1 -r 8 -z 20 -t 20 -x " + str(self.number_frames) + " --atten " + str(self.attenuate)
-Izepto = "./lora_pkt_fwd -c global_conf.json.sx1250.EU868" + "\n" + "cd /user/libsx1302-utils_V1.0.5-klk1-dirty"
+IBTS = /user/libloragw2-utils_5.1.0-klk9-3-ga23e25f_FTK_Tx/send_pkt -d /dev/slot/1/spidev0 -f ,[frequency],:1:1 -a 0 -b ,[bw], -s ,[sf], -c 1 -r 8 -z 20 -t 20 -x ,[number_frames], --atten ,[attenuate]
+Izepto directory = cd /user/libsx1302-utils_V1.0.5-klk1-dirty
+Izepto order = ./lora_pkt_fwd -c global_conf.json.sx1250.EU868
