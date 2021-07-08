@@ -76,7 +76,7 @@ class Application(Tk):
         label_top.pack(expand=False, fill="none", side=TOP)
 
         choose_scenario_combobox = ttk.Combobox(scenario_choose_combobox, values=[
-            "Sensibility test_number"], state="readonly")  # The list of measuring tool
+            "Sensibility test"], state="readonly")  # The list of measuring tool
 
         def chose(e, i=choose_scenario_combobox):
             return validate(e, i)
@@ -116,7 +116,7 @@ class Application(Tk):
         if choice == -1:
             showerror("Error", "You must select a valid instrument")
         elif choice == 0:
-            self.create_new_window("Sensibility test_number")  # Call the clear function to clean all the window
+            self.create_new_window("Sensibility test")  # Call the clear function to clean all the window
             self.sensibility_test()  # Open generator
 
     def create_new_window(self, window_title: str):
@@ -151,7 +151,7 @@ class Application(Tk):
         self.geometry(WINDOW_SIZE)  # set window size
         Menu_Izepto.izepto_menu(self, self._carte_ip_address)
 
-    def sensibility_test(self):  # The Sensibility test_number menu
+    def sensibility_test(self):  # The Sensibility test menu
         from IHM_redirect import Menu_Sensibility_test
         self.geometry(WINDOW_SIZE)  # set window size
         Menu_Sensibility_test.sensibility_test_menu(self, self._port, self._ip_address, self._carte_ip_address)

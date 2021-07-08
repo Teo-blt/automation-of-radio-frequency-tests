@@ -113,8 +113,8 @@ class Mythread(threading.Thread):
                 b = time.localtime(time.time())
                 c = time.localtime(self.time_start_min + (timer * 3600))
                 logger.info("The actual time is {} hours and {} minutes".format(b[3], b[4]))
-                logger.info("The test_number started at {} hours and {} minutes".format(a[3], a[4]))
-                logger.info("The test_number finish in {} hours and {} minutes".format(c[3], c[4]))
+                logger.info("The test started at {} hours and {} minutes".format(a[3], a[4]))
+                logger.info("The test finish in {} hours and {} minutes".format(c[3], c[4]))
                 if time.time() < self.time_start_min + (timer * 3600):
                     self.root.after(5000, lambda: self.loop(order, timer))  # => loop after 5 secondes
                 else:

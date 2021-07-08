@@ -23,7 +23,7 @@ global status
 def izepto_menu(self, ip_address):
     scanner_ibts_frame = LabelFrame(self, text="Detection of Izepto")
     scanner_ibts_frame.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
-    izepto_scale_frame = LabelFrame(self, text="Start the test_number")
+    izepto_scale_frame = LabelFrame(self, text="Start the test")
     izepto_scale_frame.grid(row=0, column=3, ipadx=0, ipady=0, padx=0, pady=0)
     reboot_scale_frame = LabelFrame(self, text="reboot_izepto")
     reboot_scale_frame.grid(row=1, column=1, ipadx=0, ipady=0, padx=0, pady=0)

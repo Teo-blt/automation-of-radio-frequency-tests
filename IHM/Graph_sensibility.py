@@ -31,7 +31,7 @@ def draw_graph():
     file_name_label.pack(expand=False, fill="none", side=TOP),
     file_entry = Entry(settings_frame, cursor="right_ptr")
     file_entry.pack(expand=False, fill="none", side=TOP)
-    file_entry.insert(0, 'test_number.txt')
+    file_entry.insert(0, 'test.txt')
     import_file_button = Button(settings_frame, text="Import file",
                                 borderwidth=8, background=THE_COLOR,
                                 activebackground="green", cursor="right_ptr", overrelief="sunken",
@@ -166,7 +166,7 @@ def draw_graph_after(value, graph_type, window, name):
                 plt.plot(X[m][n], Y[m][n], color[n], marker=marker)
         plt.xlabel("Power at the entrance of the receiver in dBm")
         plt.ylabel("% of packet lost")
-        plt.title(f"Graphical representation of sensitivity test_number results for temperature of {temp[m]}°C")
+        plt.title(f"Graphical representation of sensitivity test results for temperature of {temp[m]}°C")
         plt.show()
 
     G = {}
@@ -199,6 +199,6 @@ def draw_graph_after(value, graph_type, window, name):
             j += 1
         plt.xlabel("Channel frequency")
         plt.ylabel("Power at the entrance of the receiver in dBm")
-        plt.title(f"Graphical representation of sensitivity test_number results for {paket_rate}% of packet lost")
+        plt.title(f"Graphical representation of sensitivity test results for {paket_rate}% of packet lost")
         plt.legend()
         plt.show()

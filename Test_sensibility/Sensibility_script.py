@@ -43,7 +43,7 @@ class Threadsensibility(threading.Thread):
         self.sf = 0
         self.step_attenuate = 0
         self.offset = 0
-        self.test_number = 0
+        self.test = 0
         self.bw = 0
         self.step_temp = 0
         self.t_start = 0
@@ -110,12 +110,12 @@ class Threadsensibility(threading.Thread):
                                      f" {round(self.frequency, 1)}")
                         self.write_doc(f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, "
                                        f"frequency: {round(self.frequency, 1)}")
-                        self.script()  # use the script function to test_number one channel
+                        self.script()  # use the script function to test one channel
                         self.frequency = self.frequency + 0.2  # The value of the frequency increase of the step
                         # frequency value
                         self.value_mono_multi = self.value_mono_multi + 1  # to count the number of channel tested
-                    logger.debug(f"fin test_number")
-                    self.write_doc(f"fin test_number")
+                    logger.debug(f"fin test")
+                    self.write_doc(f"fin test")
                     self.temperature_storage += self.step_temp
                     self.climate_chamber_num = self.climate_chamber_num + 1
                 for u in range(0, 2):  # 2 cycles to end the programme at the right temperature
@@ -158,7 +158,7 @@ class Threadsensibility(threading.Thread):
                     self.frequency = self.frequency + 0.2
                     self.value_mono_multi = self.value_mono_multi + 1
                 self.end_programme()
-        else:  # if the user need to test_number only one channel
+        else:  # if the user need to test only one channel
             if self.port_test != -1:  # if he need the climate chamber
                 self.climate_chamber_script()
             else:
@@ -253,8 +253,8 @@ class Threadsensibility(threading.Thread):
             # make a request the same time than the programme
             return [0, 0]  # In case of an error, this function will return [0,0], This will NOT affect the graph
 
-    def script(self):  # The script to test_number one channel
-        for i in range(0, int(self.test_number)):  # number of test_number, generally infinity
+    def script(self):  # The script to test one channel
+        for i in range(0, int(self.test)):  # number of test, generally infinity
             username = "root"
             password = "root"
             ssh = paramiko.SSHClient()  # initialisation de la liaison SSH
@@ -305,10 +305,10 @@ class Threadsensibility(threading.Thread):
             a = stdout.readlines()
             number = round((len(a) / 4))
             logger.debug("---------------------------------")
-            if int(self.test_number) == 1000:
+            if int(self.test) == 1000:
                 logger.debug(f"Test {i} of ∞ of channel number: {self.value_mono_multi}")
             else:
-                logger.debug(f"Test {i} of {self.test_number}")
+                logger.debug(f"Test {i} of {self.test}")
             logger.debug(
                 f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
             logger.debug(f"you send {self.number_frames} frames")
@@ -318,10 +318,10 @@ class Threadsensibility(threading.Thread):
             logger.debug("---------------------------------")
 
             self.write_doc("---------------------------------")
-            if int(self.test_number) == 1000:
+            if int(self.test) == 1000:
                 self.write_doc(f"Test {i} of infinity of channel number: {self.value_mono_multi}")
             else:
-                self.write_doc(f"Test {i} of {self.test_number}")
+                self.write_doc(f"Test {i} of {self.test}")
             self.write_doc(
                 f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
             self.write_doc(f"you send {self.number_frames} frames")
@@ -565,7 +565,6 @@ class Threadsensibility(threading.Thread):
         start_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
         new_window_ibts.mainloop()
 
-
     def lunch_safety_ibts(self, frequency, sf, attenuate, number_frames, step, offset, test, bw, power,
                           new_window_main_graphic):  # a function to chek if all the values are correct
         global is_killed
@@ -602,8 +601,8 @@ class Threadsensibility(threading.Thread):
                 if test == -1:
                     test = 1000
                 else:
-                    logger.critical("Error, The test_number value is not conform")
-                    showerror("Error", "The test_number value is not conform")
+                    logger.critical("Error, The test value is not conform")
+                    showerror("Error", "The test value is not conform")
             if bw < 0 or bw > 10000000:
                 logger.critical("Error, The band width value is not conform")
                 showerror("Error", "The band width value is not conform")
@@ -620,7 +619,7 @@ class Threadsensibility(threading.Thread):
                 self.sf = sf
                 self.step_attenuate = step
                 self.offset = offset
-                self.test_number = test
+                self.test = test
                 self.bw = bw
                 self.power = power
         except:
@@ -686,11 +685,11 @@ class Threadsensibility(threading.Thread):
         ssh2.close()
 
     def end_programme(self):
-        logger.debug("End test_number")
+        logger.debug("End test")
         logger.debug(f"Number of fail of the Izepto: {self.number_error}")
-        b = time.localtime(time.time() - self.time_start)  # Total time of the test_number
+        b = time.localtime(time.time() - self.time_start)  # Total time of the test
         logger.info(f'Test duration: {b[3] - 1}H{b[4]}min and {b[5]} second(s)')
-        self.write_doc("End test_number")
+        self.write_doc("End test")
         self.write_doc(f"Number of fail of the Izepto: {self.number_error}")
         self.write_doc(f'Test duration: {b[3] - 1}H{b[4]}min and {b[5]} second(s)')
 
@@ -743,4 +742,4 @@ def file_execution(file_name, n):
         donnees = donnees + line.rstrip('\n\r').split("=")
         p += 1
     file.close()
-    return (donnees[n])
+    return donnees[n]
