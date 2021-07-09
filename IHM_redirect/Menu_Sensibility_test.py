@@ -83,9 +83,8 @@ def sensibility_test_menu(self, port, ip_address, carte_ip_address):
                                    fill="none", side=TOP)
 
 
-def func_a(ip_address):
+def func_ibts(ip_address):
     # ip_address = "192.168.4.228"
-    global validation
     try:
         username = "root"
         password = "root"
@@ -93,15 +92,13 @@ def func_a(ip_address):
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(hostname=ip_address, username=username, password=password)
         logger.info(f"Successfully connected to {ip_address}")
-        validation = validation + 1
-        return ssh
+        return 0
     except:
         logger.critical(f"Impossible to connected to {ip_address}")
 
 
-def func_b(ip):
+def func_izepto(ip):
     # ip = "192.168.120.1"
-    global validation
     try:
         username = "root"
         password = "root"
@@ -109,15 +106,13 @@ def func_b(ip):
         ssh2.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh2.connect(hostname=ip, username=username, password=password)
         logger.info(f"Successfully connected to {ip}")
-        validation = validation + 1
-        return ssh2
+        return 0
     except:
         logger.critical(f"Impossible to connected to {ip}")
 
 
-def func_c(port_test):
+def func_climate_chamber(port_test):
     # port_test = "COM11"
-    global validation
     try:
         wah = serial.Serial(port_test, 9600, timeout=5, writeTimeout=5)
         wah.write(b"$00I\n\r")
@@ -127,18 +122,17 @@ def func_c(port_test):
         strings = str(word[1])
         number = float(strings)
         logger.info(f"Successfully connected to {port_test}")
-        validation = validation + 1
-        return wah
+        return 0
     except:
         logger.critical(f"Impossible to connected to {port_test}")
 
 
 def three_methods_run_together(ip_address, ip, port_test, self):
-    global validation
-    func_a(ip_address)
-    func_b(ip)
-    func_c(port_test)
-    if validation == 3:
+    if func_ibts(ip_address) == 0:
+        func_izepto(ip)
+    if func_izepto(ip) == 0:
+        func_climate_chamber(port_test)
+    if func_climate_chamber(port_test) == 0:
         #self.destroy()
         Sensibility_script.Threadsensibility(ip_address, ip, port_test, self).start()
     else:
@@ -146,10 +140,9 @@ def three_methods_run_together(ip_address, ip, port_test, self):
 
 
 def two_methods_run_together(ip_address, ip, self):
-    global validation
-    func_a(ip_address)
-    func_b(ip)
-    if validation == 2:
+    if func_ibts(ip_address) == 0:
+        func_izepto(ip)
+    if func_izepto(ip) == 0:
         #self.destroy()
         Sensibility_script.Threadsensibility(ip_address, ip, -1, self).start()
     else:
