@@ -68,6 +68,7 @@ class Threadsensibility(threading.Thread):
         self.config_file = "Orders.txt"
         self.number_error = 0
         self.time_start = 0
+        self.number_launch = 0
 
     def run(self):
         self.time_start = time.time()
@@ -292,6 +293,7 @@ class Threadsensibility(threading.Thread):
                         break
                 if response[19:22] == "EUI":
                     logger.debug("The iZepto is ready")
+                    self.number_launch += 1
                     break
             if i == 0:
                 self.attenuate = self.attenuate_storage
@@ -653,7 +655,8 @@ class Threadsensibility(threading.Thread):
         outfile = open(self.data_file, 'a')
         power_in = round(power_out - attenuation_db, 2)
         outfile.write(str(power_in) + ' ' + str(round(packet_lost)) + ' ' + str(self.climate_chamber_num)
-                      + ' ' + str(self.value_mono_multi) + ' ' + str(self.temperature_storage) + '\n')
+                      + ' ' + str(self.value_mono_multi) + ' ' + str(self.temperature_storage) +
+                      ' ' + str(round(self.sf)) + ' ' + str(round(self.bw)) + '\n')
         outfile.close()
 
     def ready_ibts(self):  # initialise the IBTS
@@ -686,10 +689,12 @@ class Threadsensibility(threading.Thread):
 
     def end_programme(self):
         logger.debug("End test")
+        logger.debug(f"Number of launch of the Izepto: {self.number_launch}")
         logger.debug(f"Number of fail of the Izepto: {self.number_error}")
         b = time.localtime(time.time() - self.time_start)  # Total time of the test
         logger.info(f'Test duration: {b[3] - 1}H{b[4]}min and {b[5]} second(s)')
         self.write_doc("End test")
+        self.write_doc(f"Number of launch of the Izepto: {self.number_launch}")
         self.write_doc(f"Number of fail of the Izepto: {self.number_error}")
         self.write_doc(f'Test duration: {b[3] - 1}H{b[4]}min and {b[5]} second(s)')
 

@@ -132,6 +132,14 @@ def draw_graph_after(value, graph_type, window, name):
     data = pd.read_csv(file_name, sep='\s+', header=None)
     data = pd.DataFrame(data)
     temp = {0: data[4][0]}
+    try:
+        sf = data[5][0]
+    except:
+        sf = "Na"
+    try:
+        bw = data[6][0]
+    except:
+        bw = "Na"
     m = 0
     X = {}
     Y = {}
@@ -166,7 +174,8 @@ def draw_graph_after(value, graph_type, window, name):
                 plt.plot(X[m][n], Y[m][n], color[n], marker=marker)
         plt.xlabel("Power at the entrance of the receiver in dBm")
         plt.ylabel("% of packet lost")
-        plt.title(f"Graphical representation of sensitivity test results for temperature of {temp[m]}°C")
+        plt.title(f"Graphical representation of sensitivity test results for temperature of {temp[m]}°C\n"
+                  f"Spreading factor: {sf}, Band width: {bw}")
         plt.show()
 
     G = {}
@@ -178,9 +187,12 @@ def draw_graph_after(value, graph_type, window, name):
     for x in range(0, number_of_temp):
         for y in range(0, numbers_of_channel):
             more_than_paket_rate = 0
-            while Y[x][y][more_than_paket_rate] < paket_rate:
+            while Y[x][y][more_than_paket_rate] < paket_rate or Y[x][y][more_than_paket_rate + 1] < paket_rate:
+                if Y[x][y][more_than_paket_rate + 1] == 100:
+                    break
                 more_than_paket_rate += 1
-            if Y[x][y][more_than_paket_rate] == paket_rate:
+
+            if Y[x][y][more_than_paket_rate] == paket_rate and Y[x][y][more_than_paket_rate + 1] < paket_rate:
                 G[x][y] = X[x][y][more_than_paket_rate]
             else:
                 delta_y = round(abs(X[x][y][more_than_paket_rate - 1] - X[x][y][more_than_paket_rate]), 10)
@@ -199,6 +211,7 @@ def draw_graph_after(value, graph_type, window, name):
             j += 1
         plt.xlabel("Channel frequency")
         plt.ylabel("Power at the entrance of the receiver in dBm")
-        plt.title(f"Graphical representation of sensitivity test results for {paket_rate}% of packet lost")
+        plt.title(f"Graphical representation of sensitivity test results for {paket_rate}% of packet lost\n"
+                  f"Spreading factor: {sf}, Band width: {bw}")
         plt.legend()
         plt.show()
