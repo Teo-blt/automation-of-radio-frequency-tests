@@ -84,7 +84,7 @@ def reboot(port_com_frame_entry):
         ssh.exec_command(cmd, get_pty=True)
         logger.info("Izepto rebooting, it may take few minutes")
     except:
-        logger.error("Invalid ip adress")
+        logger.error("Invalid ip_izepto adress")
 
 
 def try_izepto_connection(port_com_frame_entry, port_com_frame_entry_name, visual_color_button_sg):

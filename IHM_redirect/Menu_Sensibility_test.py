@@ -20,11 +20,9 @@ from IHM import Graph_sensibility
 THE_COLOR = "#E76145"
 global launch_safety
 launch_safety = 0
-global validation
-validation = 0
 
 
-def sensibility_test_menu(self, port, ip_address, carte_ip_address):
+def sensibility_test_menu(self, port, ip_ibts, ip_izepto):
     global number
     number = 0
     scanner_ibts_frame = LabelFrame(self, text="Sensibility Menu")
@@ -45,13 +43,13 @@ def sensibility_test_menu(self, port, ip_address, carte_ip_address):
     i_bts_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
     i_bts_entry = Entry(place)
     i_bts_entry.pack(padx=0, pady=10, expand=False, fill="none", side=TOP)
-    i_bts_entry.insert(0, ip_address)
+    i_bts_entry.insert(0, ip_ibts)
 
     i_zepto_label = Label(place, text="Receiver IP address:")
     i_zepto_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
     i_zepto_entry = Entry(place)
     i_zepto_entry.pack(padx=0, pady=10, expand=False, fill="none", side=TOP)
-    i_zepto_entry.insert(0, carte_ip_address)
+    i_zepto_entry.insert(0, ip_izepto)
 
     climate_chamber_label = Label(place, text="Select your climate chamber port com :")
     climate_chamber_entry = Entry(place)
@@ -83,32 +81,32 @@ def sensibility_test_menu(self, port, ip_address, carte_ip_address):
                                    fill="none", side=TOP)
 
 
-def func_ibts(ip_address):
-    # ip_address = "192.168.4.228"
+def func_ibts(ip_ibts):
+    # ip_ibts = "192.168.4.228"
     try:
         username = "root"
         password = "root"
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(hostname=ip_address, username=username, password=password)
-        logger.info(f"Successfully connected to {ip_address}")
+        ssh.connect(hostname=ip_ibts, username=username, password=password)
+        logger.info(f"Successfully connected to {ip_ibts}")
         return 0
     except:
-        logger.critical(f"Impossible to connected to {ip_address}")
+        logger.critical(f"Impossible to connected to {ip_ibts}")
 
 
-def func_izepto(ip):
-    # ip = "192.168.120.1"
+def func_izepto(ip_izepto):
+    # ip_izepto = "192.168.120.1"
     try:
         username = "root"
         password = "root"
         ssh2 = paramiko.SSHClient()
         ssh2.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh2.connect(hostname=ip, username=username, password=password)
-        logger.info(f"Successfully connected to {ip}")
+        ssh2.connect(hostname=ip_izepto, username=username, password=password)
+        logger.info(f"Successfully connected to {ip_izepto}")
         return 0
     except:
-        logger.critical(f"Impossible to connected to {ip}")
+        logger.critical(f"Impossible to connected to {ip_izepto}")
 
 
 def func_climate_chamber(port_test):
@@ -127,35 +125,35 @@ def func_climate_chamber(port_test):
         logger.critical(f"Impossible to connected to {port_test}")
 
 
-def three_methods_run_together(ip_address, ip, port_test, self):
-    if func_ibts(ip_address) == 0:
-        func_izepto(ip)
-    if func_izepto(ip) == 0:
+def three_methods_run_together(ip_ibts, ip_izepto, port_test, self):
+    if func_ibts(ip_ibts) == 0:
+        func_izepto(ip_izepto)
+    if func_izepto(ip_izepto) == 0:
         func_climate_chamber(port_test)
     if func_climate_chamber(port_test) == 0:
         #self.destroy()
-        Sensibility_script.Threadsensibility(ip_address, ip, port_test, self).start()
+        Sensibility_script.Threadsensibility(ip_ibts, ip_izepto, port_test, self).start()
     else:
         logger.warning("Please check your data")
 
 
-def two_methods_run_together(ip_address, ip, self):
-    if func_ibts(ip_address) == 0:
-        func_izepto(ip)
-    if func_izepto(ip) == 0:
+def two_methods_run_together(ip_ibts, ip_izepto, self):
+    if func_ibts(ip_ibts) == 0:
+        func_izepto(ip_izepto)
+    if func_izepto(ip_izepto) == 0:
         #self.destroy()
-        Sensibility_script.Threadsensibility(ip_address, ip, -1, self).start()
+        Sensibility_script.Threadsensibility(ip_ibts, ip_izepto, -1, self).start()
     else:
         logger.warning("Please check your data")
 
 
-def run(ip_address, ip, port_test, self, number):
+def run(ip_ibts, ip_izepto, port_test, self, number):
     global launch_safety
     if launch_safety == 1:
         logger.critical("Error, the programme is already running")
     else:
         launch_safety = 1
         if number:
-            three_methods_run_together(ip_address, ip, port_test, self)
+            three_methods_run_together(ip_ibts, ip_izepto, port_test, self)
         else:
-            two_methods_run_together(ip_address, ip, self)
+            two_methods_run_together(ip_ibts, ip_izepto, self)
