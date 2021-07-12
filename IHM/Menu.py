@@ -17,7 +17,7 @@ from IHM_redirect import Menu_Climatic_chamber
 
 LOBBY_WINDOW_SIZE = "700x200"
 WINDOW_SIZE = "1200x500"
-THE_COLOR = "#E76145"
+THE_COLOR = "blue" #"#E76145"
 
 
 class Application(Tk):
