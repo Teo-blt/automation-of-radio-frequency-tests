@@ -58,7 +58,7 @@ def draw_graph():
 
     def uploadaction(file_entry):
         filename = filedialog.askopenfilename(filetypes=[("text files", ".txt")])
-        file_entry.delete(0, 20)
+        file_entry.delete(0, 2000)
         file_entry.insert(0, filename)
 
     choose_packet_rate_combobox.bind("<<ComboboxSelected>>", chose)
@@ -107,6 +107,7 @@ def verification(value, graph_type, window, file_name):
         data = pd.DataFrame(data)
     except:
         logger.critical(f"The file name {file_name} is invalid")
+
     if graph_type == 1:
         draw_graph_after(value, 1, window, file_name)
     else:
@@ -122,7 +123,7 @@ def draw_graph_after(value, graph_type, window, name):
     except:
         pass
     color = {0: 'b', 1: 'r', 2: 'g', 3: 'y', 4: 'c', 5: 'lime', 6: 'black', 7: 'pink'}
-    freq = ['867.1']
+
     freq_step = 0.2
     if graph_type == 1:
         paket_rate = int(value[:2])
@@ -181,32 +182,35 @@ def draw_graph_after(value, graph_type, window, name):
     G = {}
     for r in range(0, numbers_of_channel):
         G[r] = {}
-        if r != 0:
-            freq = freq + [str(round(float(freq[r - 1]) + freq_step, 1))]
 
     for x in range(0, number_of_temp):
         for y in range(0, numbers_of_channel):
             more_than_paket_rate = 0
-            while Y[x][y][more_than_paket_rate] < paket_rate or Y[x][y][more_than_paket_rate + 1] < paket_rate:
-                if Y[x][y][more_than_paket_rate + 1] == 100:
-                    break
-                more_than_paket_rate += 1
+            try:
+                while Y[x][y][more_than_paket_rate] < paket_rate or Y[x][y][more_than_paket_rate + 1] < paket_rate:
+                    more_than_paket_rate += 1
 
-            if Y[x][y][more_than_paket_rate] == paket_rate and Y[x][y][more_than_paket_rate + 1] < paket_rate:
-                G[x][y] = X[x][y][more_than_paket_rate]
-            else:
-                delta_y = round(abs(X[x][y][more_than_paket_rate - 1] - X[x][y][more_than_paket_rate]), 10)
-                delta_x = abs(Y[x][y][more_than_paket_rate - 1] - Y[x][y][more_than_paket_rate])
-                delta = -(delta_x / delta_y)
-                a = Y[x][y][more_than_paket_rate] - (delta * X[x][y][more_than_paket_rate])
-                value = (50 - a) / delta
-                G[x][y] = value
+                if Y[x][y][more_than_paket_rate] == paket_rate and Y[x][y][more_than_paket_rate + 1] < paket_rate:
+                    G[x][y] = X[x][y][more_than_paket_rate]
+                else:
+                    delta_y = round(abs(X[x][y][more_than_paket_rate - 1] - X[x][y][more_than_paket_rate]), 10)
+                    delta_x = abs(Y[x][y][more_than_paket_rate - 1] - Y[x][y][more_than_paket_rate])
+                    delta = -(delta_x / delta_y)
+                    a = Y[x][y][more_than_paket_rate] - (delta * X[x][y][more_than_paket_rate])
+                    value = (50 - a) / delta
+                    G[x][y] = value
+            except:
+                break
 
     if graph_type == 1:
         j = 0
         for s in range(0, number_of_temp):
             if j > 7:
                 j = 0
+            freq = ['867.1']
+            for r in range(0, len(G[s].values())):
+                if r != 0:
+                    freq = freq + [str(round(float(freq[r - 1]) + freq_step, 1))]
             plt.plot(freq, G[s].values(), "o-", color=color[j], label=str(temp[s]) + "°C")
             j += 1
         plt.xlabel("Channel frequency")
