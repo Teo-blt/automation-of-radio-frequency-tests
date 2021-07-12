@@ -17,7 +17,7 @@ from IHM_redirect import Menu_Climatic_chamber
 
 LOBBY_WINDOW_SIZE = "700x200"
 WINDOW_SIZE = "1200x500"
-THE_COLOR = "blue" #"#E76145"
+THE_COLOR = "#E76145"
 
 
 class Application(Tk):
@@ -28,7 +28,7 @@ class Application(Tk):
         self._ip_address = "192.168.4.228"
         self.status = 0
         self.interface(0)
-        self._carte_ip_address = "192.168.120.1"
+        self._carte_ip_address = "192.168.4.183"
 
     def create_choose_measuring_tool_combobox(self, value: str):
         """

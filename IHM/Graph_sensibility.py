@@ -149,7 +149,7 @@ def draw_graph_after(value, graph_type, window, name):
     t = 0
     d = 0
     while t != len(data):
-        if data[4][t] > temp[d]:
+        if data[4][t] != temp[d]:
             d += 1
             temp[d] = data[4][t]
         if t != 0:
