@@ -11,7 +11,6 @@ import paramiko
 import threading
 import time
 from matplotlib.figure import Figure
-import tkinter as tk
 from tkinter import *
 from tkinter.messagebox import *
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -59,8 +58,8 @@ class Threadsensibility(threading.Thread):
         self.b = 0
         self.value_mono_multi = 0
         self.attenuate_storage = 0
-        self.frequency_entry = tk.Entry
-        self.data_file = 'test.txt'
+        self.frequency_entry = Entry
+        self.data_file = 'Sensibility.txt'
         self.frequency_storage = 0
         self.number_channel = 8
         self.time_temp_wait = 120
@@ -330,7 +329,7 @@ class Threadsensibility(threading.Thread):
             self.write_doc(f"you received {number} frames")
             self.write_doc(f"The rate is : {round(result, 1)}%")
             self.write_doc("---------------------------------")
-            self.write_json(round(float(self.attenuate) / 4 + int(self.offset), 2), 100 - round(result, 2),
+            self.write_data(round(float(self.attenuate) / 4 + int(self.offset), 2), 100 - round(result, 2),
                             self.power)
             if round(result, 1) == 0:
                 logger.debug(f"fin channel number: {self.value_mono_multi}\n")
@@ -350,7 +349,7 @@ class Threadsensibility(threading.Thread):
         auto_stair_scale_frame.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
         auto_stair_scale_frame.config(background='#fafafa')
 
-        start_auto_stair_scale_frame_button = tk.Button(auto_stair_scale_frame, text="Start",
+        start_auto_stair_scale_frame_button = Button(auto_stair_scale_frame, text="Start",
                                                         borderwidth=8, background=THE_COLOR,
                                                         activebackground="green", cursor="right_ptr",
                                                         overrelief="sunken",
@@ -361,7 +360,7 @@ class Threadsensibility(threading.Thread):
                                                             time_temp_wait.get(),
                                                             new_window_climatic_chamber)])
         start_auto_stair_scale_frame_button.grid(row=0, column=0, ipadx=40, ipady=20, padx=0, pady=0)
-        auto_stair_label = tk.Label(auto_stair_scale_frame, text="The sensibility tests will take place during the "
+        auto_stair_label = Label(auto_stair_scale_frame, text="The sensibility tests will take place during the "
                                                                  "flat area", bg="white", font="arial",
                                     fg="black", relief="groove")
         auto_stair_label.grid(row=0, column=1, columnspan=4, ipadx=40, ipady=20, padx=0, pady=0)
@@ -397,14 +396,14 @@ class Threadsensibility(threading.Thread):
             temperature_start_stair_scale.set(0)
             temperature_end_auto_stair.set(55)
 
-        outdoor_settings_radiobutton = tk.Radiobutton(auto_stair_scale_frame, text="Outdoor settings",
+        outdoor_settings_radiobutton = Radiobutton(auto_stair_scale_frame, text="Outdoor settings",
                                                       variable=self.a, value=0, cursor="right_ptr",
                                                       indicatoron=0, command=lambda: [outdoor_settings()],
                                                       background=THE_COLOR,
                                                       activebackground="green",
                                                       bd=8, selectcolor="green", overrelief="sunken")
         outdoor_settings_radiobutton.grid(row=2, column=0, ipadx=10, ipady=10, padx=0, pady=0)
-        indoor_settings_radiobutton = tk.Radiobutton(auto_stair_scale_frame, text="Indoor settings",
+        indoor_settings_radiobutton = Radiobutton(auto_stair_scale_frame, text="Indoor settings",
                                                      variable=self.a, value=1, cursor="right_ptr",
                                                      indicatoron=0, command=lambda: [indoor_settings()],
                                                      background=THE_COLOR,
@@ -534,14 +533,14 @@ class Threadsensibility(threading.Thread):
         bw = Entry(packet_frame, cursor="right_ptr")
         bw.grid(row=3, column=1, ipadx=0, ipady=0, padx=0, pady=0)
         bw.insert(0, 125)
-        channel_mono_radiobutton = tk.Radiobutton(packet_frame, text="Mono channel",
+        channel_mono_radiobutton = Radiobutton(packet_frame, text="Mono channel",
                                                   variable=self.b, value=0, cursor="right_ptr",
                                                   indicatoron=0, command=lambda: [self.value_change(0)],
                                                   background=THE_COLOR,
                                                   activebackground="green",
                                                   bd=8, selectcolor="green", overrelief="sunken")
         channel_mono_radiobutton.grid(row=4, column=0, ipadx=10, ipady=10, padx=0, pady=0)
-        channel_multi_radiobutton = tk.Radiobutton(packet_frame, text="Multi channel",
+        channel_multi_radiobutton = Radiobutton(packet_frame, text="Multi channel",
                                                    variable=self.b, value=1, cursor="right_ptr",
                                                    indicatoron=0, command=lambda: [self.value_change(1)],
                                                    background=THE_COLOR,
@@ -550,14 +549,14 @@ class Threadsensibility(threading.Thread):
         channel_multi_radiobutton.grid(row=4, column=1, ipadx=10, ipady=10, padx=0, pady=0)
         channel_mono_radiobutton.invoke()
 
-        reset_button = tk.Button(scale_frame, text="Reset",
+        reset_button = Button(scale_frame, text="Reset",
                                  borderwidth=8, background=THE_COLOR,
                                  activebackground="green", cursor="right_ptr", overrelief="sunken",
                                  command=lambda: [self.reset_all(self.frequency_entry, sf, attenuate,
                                                                  number_frames, step, offset, test, bw)])
         reset_button.pack(padx=0, pady=0, expand=True, fill="both", side=BOTTOM)
 
-        start_button = tk.Button(scale_frame, text="Start",
+        start_button = Button(scale_frame, text="Start",
                                  borderwidth=8, background=THE_COLOR,
                                  activebackground="green", cursor="right_ptr", overrelief="sunken",
                                  command=lambda: [self.lunch_safety_ibts(self.frequency_entry, sf, attenuate,
@@ -651,7 +650,7 @@ class Threadsensibility(threading.Thread):
         sensibility_result.write(str(text) + "\n")
         sensibility_result.close()
 
-    def write_json(self, attenuation_db, packet_lost, power_out):
+    def write_data(self, attenuation_db, packet_lost, power_out):
         outfile = open(self.data_file, 'a')
         power_in = round(power_out - attenuation_db, 2)
         outfile.write(str(power_in) + ' ' + str(round(packet_lost)) + ' ' + str(self.climate_chamber_num)

@@ -32,7 +32,7 @@ def filter_test_menu(self, ip_izepto):
     start_test_button = tk.Button(ibts_scale_frame, text="Ignition of the card",
                                   borderwidth=8, background=THE_COLOR,
                                   activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                  command=lambda: [i_zepto_entry.get(), self, number])
+                                  command=lambda: [run(i_zepto_entry.get())])
     start_test_button.pack(padx=0, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
     place = scanner_ibts_frame
 
