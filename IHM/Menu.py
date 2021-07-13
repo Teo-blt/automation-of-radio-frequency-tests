@@ -46,7 +46,6 @@ class Application(Tk):
 
         choose_measuring_tool_combobox = ttk.Combobox(instrument_choose_combobox, values=[
             "Climatic chamber",  # The list of measuring tool
-            "SMIQ",
             "IBTS",
             "Izepto"
         ], state="readonly")
@@ -76,7 +75,9 @@ class Application(Tk):
         label_top.pack(expand=False, fill="none", side=TOP)
 
         choose_scenario_combobox = ttk.Combobox(scenario_choose_combobox, values=[
-            "Sensibility test"], state="readonly")  # The list of measuring tool
+            "Sensibility test",
+            "Filter test"
+        ], state="readonly")  # The list of measuring tool
 
         def chose(e, i=choose_scenario_combobox):
             return validate(e, i)
@@ -103,14 +104,17 @@ class Application(Tk):
             self.create_new_window("Climatic chamber")  # Call the clear function to clean all the window
             self.climatic_chamber_widget()  # Open Climatic chamber
         elif choice == 1:
-            self.create_new_window("SMIQ")  # Call the clear function to clean all the window
-            self.sg()  # Open generator
-        elif choice == 2:
             self.create_new_window("IBTS")  # Call the clear function to clean all the window
             self.ibts()  # Open generator
-        elif choice == 3:
+        elif choice == 2:
             self.create_new_window("Izepto")  # Call the clear function to clean all the window
             self.carte_izepto()  # Open generator
+        """
+        elif choice == 1:
+            self.create_new_window("SMIQ")  # Call the clear function to clean all the window
+            self.sg()  # Open generator
+        """
+
 
     def interface_2(self, choice):  # This function open other functions after the choice of the user
         if choice == -1:
@@ -118,6 +122,9 @@ class Application(Tk):
         elif choice == 0:
             self.create_new_window("Sensibility test")  # Call the clear function to clean all the window
             self.sensibility_test()  # Open generator
+        elif choice == 1:
+            self.create_new_window("Filter test")  # Call the clear function to clean all the window
+            self.filter_test()  # Open generator
 
     def create_new_window(self, window_title: str):
         """
@@ -155,6 +162,11 @@ class Application(Tk):
         from IHM_redirect import Menu_Sensibility_test
         self.geometry(WINDOW_SIZE)  # set window size
         Menu_Sensibility_test.sensibility_test_menu(self, self._port, self._ip_address, self._carte_ip_address)
+
+    def filter_test(self):  # The Sensibility test menu
+        from IHM_redirect import Menu_Filter_test
+        self.geometry(WINDOW_SIZE)  # set window size
+        Menu_Filter_test.filter_test_menu(self, self._carte_ip_address)
 
 
 Application().mainloop()

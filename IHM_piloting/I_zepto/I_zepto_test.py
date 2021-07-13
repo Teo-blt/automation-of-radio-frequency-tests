@@ -12,6 +12,8 @@ import threading
 from loguru import logger
 import time
 import sys
+
+
 # =============================================================================
 
 def lunch_izepto(ip):
@@ -39,7 +41,7 @@ class Threadizepto(threading.Thread):
         cmd = self.file_execution(self.file_name, 3) + "\n" + self.file_execution(self.file_name, 5)
         stdin, stdout, stderr = self.ssh.exec_command(cmd, get_pty=True)
 
-        while (1):
+        while 1:
             wah = stdout.readline()
             if wah[0:5] == "ERROR":
                 logger.critical("Failed to start the concentrator")
@@ -56,7 +58,7 @@ class Threadizepto(threading.Thread):
         time.sleep(20)
         self.ssh.close()
         a = stdout.readlines()
-        number = ((len(a) + 1)/4)
+        number = ((len(a) + 1) / 4)
         print(number)
 
     def write_doc(self, text):
@@ -72,4 +74,4 @@ class Threadizepto(threading.Thread):
             donnees = donnees + line.rstrip('\n\r').split("=")
             p += 1
         file.close()
-        return (donnees[n])
+        return donnees[n]

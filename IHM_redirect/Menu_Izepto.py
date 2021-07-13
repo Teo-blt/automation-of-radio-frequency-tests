@@ -63,7 +63,9 @@ def izepto_menu(self, ip_address):
     izepto_info_label = Button(place, text="The Izepto card is not ready", disabledforeground="black",
                                bg="red", state="disabled")
     izepto_info_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
-    visual_function(visual_color_button_sg, 1)
+    try_izepto_connection(port_com_frame_entry,
+                          port_com_frame_entry_name,
+                          visual_color_button_sg)
 
 
 def visual_function(visual_color_button, s):
