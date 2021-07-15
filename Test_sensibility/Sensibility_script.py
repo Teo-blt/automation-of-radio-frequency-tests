@@ -42,7 +42,6 @@ class Threadsensibility(threading.Thread):
         self.sf = 0
         self.step_attenuate = 0
         self.offset = 0
-        self.test = 0
         self.bw = 0
         self.step_temp = 0
         self.t_start = 0
@@ -254,7 +253,7 @@ class Threadsensibility(threading.Thread):
             return [0, 0]  # In case of an error, this function will return [0,0], This will NOT affect the graph
 
     def script(self):  # The script to test one channel
-        for i in range(0, int(self.test)):  # number of test, generally infinity
+        for i in range(0, 1000):  # number of test, generally infinity
             username = "root"
             password = "root"
             ssh = paramiko.SSHClient()  # initialisation de la liaison SSH
@@ -306,10 +305,7 @@ class Threadsensibility(threading.Thread):
             a = stdout.readlines()
             number = round((len(a) / 4))
             logger.debug("---------------------------------")
-            if int(self.test) == 1000:
-                logger.debug(f"Test {i} of ∞ of channel number: {self.value_mono_multi}")
-            else:
-                logger.debug(f"Test {i} of {self.test}")
+            logger.debug(f"Test {i} of ∞ of channel number: {self.value_mono_multi}")
             logger.debug(
                 f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
             logger.debug(f"you send {self.number_frames} frames")
@@ -319,10 +315,7 @@ class Threadsensibility(threading.Thread):
             logger.debug("---------------------------------")
 
             self.write_doc("---------------------------------")
-            if int(self.test) == 1000:
-                self.write_doc(f"Test {i} of infinity of channel number: {self.value_mono_multi}")
-            else:
-                self.write_doc(f"Test {i} of {self.test}")
+            self.write_doc(f"Test {i} of infinity of channel number: {self.value_mono_multi}")
             self.write_doc(
                 f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
             self.write_doc(f"you send {self.number_frames} frames")
@@ -480,12 +473,6 @@ class Threadsensibility(threading.Thread):
         packet_frame = LabelFrame(scale_frame, text="Packet settings")
         packet_frame.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
 
-        test_label = Label(test_frame, text="Number of tests")
-        test_label.grid(row=0, column=0, ipadx=0, ipady=0, padx=0, pady=0)
-        test = Entry(test_frame, cursor="right_ptr")
-        test.grid(row=0, column=1, ipadx=0, ipady=0, padx=0, pady=0)
-        test.insert(0, -1)
-
         attenuate_label = Label(test_frame, text="Quarter dB attenuation start :")
         attenuate_label.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
         attenuate = Entry(test_frame, cursor="right_ptr")
@@ -553,7 +540,7 @@ class Threadsensibility(threading.Thread):
                                  borderwidth=8, background=THE_COLOR,
                                  activebackground="green", cursor="right_ptr", overrelief="sunken",
                                  command=lambda: [self.reset_all(self.frequency_entry, sf, attenuate,
-                                                                 number_frames, step, offset, test, bw)])
+                                                                 number_frames, step, offset, bw)])
         reset_button.pack(padx=0, pady=0, expand=True, fill="both", side=BOTTOM)
 
         start_button = Button(scale_frame, text="Start",
@@ -561,12 +548,12 @@ class Threadsensibility(threading.Thread):
                                  activebackground="green", cursor="right_ptr", overrelief="sunken",
                                  command=lambda: [self.lunch_safety_ibts(self.frequency_entry, sf, attenuate,
                                                                          number_frames,
-                                                                         step, offset, test, bw, power,
+                                                                         step, offset, bw, power,
                                                                          new_window_ibts)])
         start_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
         new_window_ibts.mainloop()
 
-    def lunch_safety_ibts(self, frequency, sf, attenuate, number_frames, step, offset, test, bw, power,
+    def lunch_safety_ibts(self, frequency, sf, attenuate, number_frames, step, offset, bw, power,
                           new_window_main_graphic):  # a function to chek if all the values are correct
         global is_killed
         try:  # to chek if the values are integer
@@ -576,7 +563,6 @@ class Threadsensibility(threading.Thread):
             sf = float(sf.get())
             step = float(step.get())
             offset = float(offset.get())
-            test = float(test.get())
             bw = float(bw.get())
             power = float(power.get())
             #  to chek if the values are conform
@@ -598,12 +584,6 @@ class Threadsensibility(threading.Thread):
             if offset < 0 or offset > 10000000:
                 logger.critical("Error, The offset value is not conform")
                 showerror("Error", "The offset value is not conform")
-            if test < 0 or test > 10000000:
-                if test == -1:
-                    test = 1000
-                else:
-                    logger.critical("Error, The test value is not conform")
-                    showerror("Error", "The test value is not conform")
             if bw < 0 or bw > 10000000:
                 logger.critical("Error, The band width value is not conform")
                 showerror("Error", "The band width value is not conform")
@@ -620,14 +600,13 @@ class Threadsensibility(threading.Thread):
                 self.sf = sf
                 self.step_attenuate = step
                 self.offset = offset
-                self.test = test
                 self.bw = bw
                 self.power = power
         except:
             logger.critical("Error, One or more of the values are not a number")
             showerror("Error", "One or more of the values are not a number")
 
-    def reset_all(self, frequency, sf, attenuate, number_frames, step, offset, test, bw):
+    def reset_all(self, frequency, sf, attenuate, number_frames, step, offset, bw):
         number_frames.delete(0, 20)
         number_frames.insert(0, 100)
         frequency.delete(0, 20)
@@ -640,8 +619,6 @@ class Threadsensibility(threading.Thread):
         step.insert(0, 4)
         offset.delete(0, 20)
         offset.insert(0, 60)
-        test.delete(0, 20)
-        test.insert(0, -1)
         bw.delete(0, 20)
         bw.insert(0, 125)
 

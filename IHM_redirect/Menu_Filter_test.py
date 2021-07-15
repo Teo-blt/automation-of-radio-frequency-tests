@@ -20,7 +20,7 @@ global launch_safety
 launch_safety = 0
 
 
-def filter_test_menu(self, ip_izepto):
+def filter_test_menu(self, ip_izepto, ip_ibts):
     global number
     number = 0
     scanner_ibts_frame = LabelFrame(self, text="Sensibility Menu")
@@ -32,9 +32,15 @@ def filter_test_menu(self, ip_izepto):
     start_test_button = tk.Button(ibts_scale_frame, text="Ignition of the card",
                                   borderwidth=8, background=THE_COLOR,
                                   activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                  command=lambda: [run(i_zepto_entry.get())])
+                                  command=lambda: [run(i_bts_entry.get(), i_zepto_entry.get())])
     start_test_button.pack(padx=0, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
     place = scanner_ibts_frame
+
+    i_bts_label = Label(place, text="Transmitter IP address:")
+    i_bts_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+    i_bts_entry = Entry(place)
+    i_bts_entry.pack(padx=0, pady=10, expand=False, fill="none", side=TOP)
+    i_bts_entry.insert(0, ip_ibts)
 
     i_zepto_label = Label(place, text="Receiver IP address:")
     i_zepto_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
@@ -62,15 +68,29 @@ def func_izepto(ip_izepto):
     except:
         logger.critical(f"Impossible to connected to {ip_izepto}")
 
+def func_ibts(ip_ibts):
+    # ip_ibts = "192.168.4.228"
+    try:
+        username = "root"
+        password = "root"
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(hostname=ip_ibts, username=username, password=password)
+        logger.info(f"Successfully connected to {ip_ibts}")
+        return 0
+    except:
+        logger.critical(f"Impossible to connected to {ip_ibts}")
 
-def run(ip_izepto):
+
+def run(ip_ibts, ip_izepto):
     global launch_safety
     if launch_safety == 1:
         logger.critical("Error, the programme is already running")
     else:
         launch_safety = 1
         if func_izepto(ip_izepto) == 0:
-            # self.destroy()
-            Filter_script.Threadfilter(ip_izepto).start()
+            if func_ibts(ip_ibts) == 0:
+                # self.destroy()
+                Filter_script.Threadfilter(ip_izepto, ip_ibts).start()
         else:
             logger.warning("Please check your data")

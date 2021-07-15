@@ -166,7 +166,7 @@ class Application(Tk):
     def filter_test(self):  # The Sensibility test menu
         from IHM_redirect import Menu_Filter_test
         self.geometry(WINDOW_SIZE)  # set window size
-        Menu_Filter_test.filter_test_menu(self, self._carte_ip_address)
+        Menu_Filter_test.filter_test_menu(self, self._carte_ip_address, self._ip_address)
 
 
 Application().mainloop()

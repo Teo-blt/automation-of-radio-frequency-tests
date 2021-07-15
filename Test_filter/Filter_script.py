@@ -38,14 +38,13 @@ class Threadfilter(threading.Thread):
         self.ip_ibts = ip_ibts
         self.original_value = 867500000
         self.value = 855000000
-        self.test = 0
-        self.frequency = 0
         self.number_error = 0
         self.config_file = 0
         self.number_launch = 0
         self.time_start = 0
         self.data_file = 'filter.txt'
         self.config_file = "Orders.txt"
+        self.attenuate = 0
 
     def run(self):
         self.time_start = time.time()
@@ -56,9 +55,13 @@ class Threadfilter(threading.Thread):
         write_doc("Sensitivity measurement iZepto")
         write_doc("Sensitivity measurement iBTS")
         self.launch_ibts()
+        self.change_value()
+        self.script()
         while self.value < 880200000:
             self.change_value()
+            self.script()
             self.value += 200000
+        self.end_programme()
 
     def read_original_value(self):
         username = "root"
@@ -69,7 +72,7 @@ class Threadfilter(threading.Thread):
         cmd = "sed -n 6p /etc/lorad/zepto/EU868-FR.json"
         stdin, stdout, stderr = ssh.exec_command(cmd, get_pty=True)
         wah = stdout.readline()
-        self.original_value = wah
+        self.original_value = wah[11:20]
 
     def change_value(self):
         self.read_original_value()
@@ -78,12 +81,11 @@ class Threadfilter(threading.Thread):
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(hostname=self.ip_izepto, username=username, password=password)
-        logger.debug(f"Successfully connected to {self.ip_izepto}")
         cmd = "sed -i '6 s/" + str(self.original_value) + "/" + str(self.value) + "/' /etc/lorad/zepto/EU868-FR.json"
         ssh.exec_command(cmd, get_pty=True)
 
     def script(self):  # The script to test one channel
-        for i in range(0, int(self.test)):  # number of test, generally infinity
+        for i in range(0, 1000):  # number of test, generally infinity
             username = "root"
             password = "root"
             ssh = paramiko.SSHClient()  # initialisation de la liaison SSH
@@ -135,12 +137,10 @@ class Threadfilter(threading.Thread):
             a = stdout.readlines()
             number = round((len(a) / 4))
             logger.debug("---------------------------------")
-            if int(self.test) == 1000:
-                logger.debug(f"Test {i} of ∞ of channel number: {self.value_mono_multi}")
-            else:
-                logger.debug(f"Test {i} of {self.test}")
+            logger.debug(f"Test {i} of ∞ of channel number: {self.value_mono_multi}")
             logger.debug(
                 f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
+            logger.debug(f"The frequency is {self.value} Hz")
             logger.debug(f"you send {self.number_frames} frames")
             logger.debug(f"you received {number} frames")
             result = (number / int(self.number_frames)) * 100
@@ -148,12 +148,10 @@ class Threadfilter(threading.Thread):
             logger.debug("---------------------------------")
 
             write_doc("---------------------------------")
-            if int(self.test) == 1000:
-                write_doc(f"Test {i} of infinity of channel number: {self.value_mono_multi}")
-            else:
-                write_doc(f"Test {i} of {self.test}")
+            write_doc(f"Test {i} of infinity of channel number: {self.value_mono_multi}")
             write_doc(
                 f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
+            write_doc(f"The frequency is {self.value} Hz")
             write_doc(f"you send {self.number_frames} frames")
             write_doc(f"you received {number} frames")
             write_doc(f"The rate is : {round(result, 1)}%")
@@ -187,17 +185,11 @@ class Threadfilter(threading.Thread):
         packet_frame = LabelFrame(scale_frame, text="Packet settings")
         packet_frame.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
 
-        test_label = Label(test_frame, text="Number of tests")
-        test_label.grid(row=0, column=0, ipadx=0, ipady=0, padx=0, pady=0)
-        test = Entry(test_frame, cursor="right_ptr")
-        test.grid(row=0, column=1, ipadx=0, ipady=0, padx=0, pady=0)
-        test.insert(0, -1)
-
         attenuate_label = Label(test_frame, text="Quarter dB attenuation start :")
         attenuate_label.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
         attenuate = Entry(test_frame, cursor="right_ptr")
         attenuate.grid(row=1, column=1, ipadx=0, ipady=0, padx=0, pady=0)
-        attenuate.insert(0, 280)
+        attenuate.insert(0, 260)
 
         step_label = Label(test_frame, text="Step of quarter dB attenuation :")
         step_label.grid(row=2, column=0, ipadx=0, ipady=0, padx=0, pady=0)
@@ -223,12 +215,6 @@ class Threadfilter(threading.Thread):
         number_frames.grid(row=0, column=1, ipadx=0, ipady=0, padx=0, pady=0)
         number_frames.insert(0, 100)
 
-        frequency_label = Label(packet_frame, text="frequency channel :")
-        frequency_label.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
-        self.frequency_entry = Entry(packet_frame, cursor="right_ptr")
-        self.frequency_entry.grid(row=1, column=1, ipadx=0, ipady=0, padx=0, pady=0)
-        self.frequency_entry.insert(0, 867100000)
-
         sf_label = Label(packet_frame, text="Spreading factor 7 to 12:")
         sf_label.grid(row=2, column=0, ipadx=0, ipady=0, padx=0, pady=0)
         sf = Entry(packet_frame, cursor="right_ptr")
@@ -243,58 +229,45 @@ class Threadfilter(threading.Thread):
         reset_button = Button(scale_frame, text="Reset",
                               borderwidth=8, background=THE_COLOR,
                               activebackground="green", cursor="right_ptr", overrelief="sunken",
-                              command=lambda: [self.reset_all(self.frequency_entry, sf, attenuate,
-                                                              number_frames, step, offset, test, bw)])
+                              command=lambda: [reset_all(sf, attenuate, number_frames, step, offset, bw)])
         reset_button.pack(padx=0, pady=0, expand=True, fill="both", side=BOTTOM)
 
         start_button = Button(scale_frame, text="Start",
                               borderwidth=8, background=THE_COLOR,
                               activebackground="green", cursor="right_ptr", overrelief="sunken",
-                              command=lambda: [self.lunch_safety_ibts(self.frequency_entry, sf, attenuate,
+                              command=lambda: [self.lunch_safety_ibts(sf, attenuate,
                                                                       number_frames,
-                                                                      step, offset, test, bw, power,
+                                                                      step, offset, bw, power,
                                                                       new_window_ibts)])
         start_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
         new_window_ibts.mainloop()
 
-    def lunch_safety_ibts(self, frequency, sf, attenuate, number_frames, step, offset, test, bw, power,
+    def lunch_safety_ibts(self, sf, attenuate, number_frames, step, offset, bw, power,
                           new_window_main_graphic):  # a function to chek if all the values are correct
-        global is_killed
         try:  # to chek if the values are integer
             number_frames = float(number_frames.get())
-            frequency = float(frequency.get())
             attenuate = float(attenuate.get())
             sf = float(sf.get())
             step = float(step.get())
             offset = float(offset.get())
-            test = float(test.get())
             bw = float(bw.get())
             power = float(power.get())
             #  to chek if the values are conform
             if number_frames < 0 or number_frames > 1000000:
                 logger.critical("Error, The number frames value is not conform")
                 showerror("Error", "The number frames value is not conform")
-            if frequency < 0 or frequency > 10000000000:
-                logger.critical("Error, The frequency value is not conform")
-                showerror("Error", "The frequency value is not conform")
             if attenuate < 0 or attenuate > 1000000:
                 logger.critical("Error, The attenuate value is not conform")
                 showerror("Error", "The attenuate value is not conform")
             if sf < 6 or sf > 12:
                 logger.critical("Error, The symbol rate value is not conform")
                 showerror("Error", "The symbol rate value is not conform")
-            if step < 0 or step > 10000000:
+            if step < 1 or step > 10000000:
                 logger.critical("Error, The step value is not conform")
                 showerror("Error", "The step value is not conform")
             if offset < 0 or offset > 10000000:
                 logger.critical("Error, The offset value is not conform")
                 showerror("Error", "The offset value is not conform")
-            if test < 0 or test > 10000000:
-                if test == -1:
-                    test = 1000
-                else:
-                    logger.critical("Error, The test value is not conform")
-                    showerror("Error", "The test value is not conform")
             if bw < 0 or bw > 10000000:
                 logger.critical("Error, The band width value is not conform")
                 showerror("Error", "The band width value is not conform")
@@ -304,37 +277,16 @@ class Threadfilter(threading.Thread):
             else:
                 new_window_main_graphic.destroy()
                 self.number_frames = number_frames
-                self.frequency = frequency / 1000000
-                self.frequency_storage = frequency / 1000000
                 self.attenuate = attenuate
                 self.attenuate_storage = attenuate
                 self.sf = sf
                 self.step_attenuate = step
                 self.offset = offset
-                self.test = test
                 self.bw = bw
                 self.power = power
         except:
             logger.critical("Error, One or more of the values are not a number")
             showerror("Error", "One or more of the values are not a number")
-
-    def reset_all(self, frequency, sf, attenuate, number_frames, step, offset, test, bw):
-        number_frames.delete(0, 20)
-        number_frames.insert(0, 100)
-        frequency.delete(0, 20)
-        frequency.insert(0, 867100000)
-        attenuate.delete(0, 20)
-        attenuate.insert(0, 280)
-        sf.delete(0, 20)
-        sf.insert(0, 7)
-        step.delete(0, 20)
-        step.insert(0, 4)
-        offset.delete(0, 20)
-        offset.insert(0, 60)
-        test.delete(0, 20)
-        test.insert(0, -1)
-        bw.delete(0, 20)
-        bw.insert(0, 125)
 
     def ready_ibts(self):  # initialise the IBTS
         username = "root"
@@ -342,9 +294,8 @@ class Threadfilter(threading.Thread):
         ssh2 = paramiko.SSHClient()
         ssh2.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh2.connect(hostname=self.ip_ibts, username=username, password=password)
-
         cmd = file_execution(self.config_file, 1).split(",")
-        order = (cmd[0] + str(self.frequency) + cmd[2] + str(self.bw) + cmd[4] + str(self.sf) + cmd[6] +
+        order = (cmd[0] + str(self.value / 1000000) + cmd[2] + str(self.bw) + cmd[4] + str(self.sf) + cmd[6] +
                  str(self.number_frames) + cmd[8] + str(self.attenuate))
         stdin, stdout, stderr = ssh2.exec_command(order, get_pty=True)
 
@@ -369,8 +320,19 @@ class Threadfilter(threading.Thread):
         power_in = round(power_out - attenuation_db, 2)
         outfile.write(str(power_in) + ' ' + str(round(packet_lost)) + ' ' + str(self.climate_chamber_num)
                       + ' ' + str(self.value_mono_multi) + ' ' + str(self.temperature_storage) +
-                      ' ' + str(round(self.sf)) + ' ' + str(round(self.bw)) + '\n')
+                      ' ' + str(round(self.sf)) + ' ' + str(round(self.bw)) + ' ' + str(self.value)  + '\n')
         outfile.close()
+
+    def end_programme(self):
+        logger.debug("End test")
+        logger.debug(f"Number of launch of the Izepto: {self.number_launch}")
+        logger.debug(f"Number of fail of the Izepto: {self.number_error}")
+        b = time.localtime(time.time() - self.time_start)  # Total time of the test
+        logger.info(f'Test duration: {b[3] - 1}H{b[4]}min and {b[5]} second(s)')
+        write_doc("End test")
+        write_doc(f"Number of launch of the Izepto: {self.number_launch}")
+        write_doc(f"Number of fail of the Izepto: {self.number_error}")
+        write_doc(f'Test duration: {b[3] - 1}H{b[4]}min and {b[5]} second(s)')
 
 
 def file_execution(file_name, n):
@@ -388,3 +350,18 @@ def write_doc(text):
     sensibility_result = open("Report_sensibility.txt", 'a')
     sensibility_result.write(str(text) + "\n")
     sensibility_result.close()
+
+
+def reset_all(sf, attenuate, number_frames, step, offset, bw):
+    number_frames.delete(0, 20)
+    number_frames.insert(0, 100)
+    attenuate.delete(0, 20)
+    attenuate.insert(0, 280)
+    sf.delete(0, 20)
+    sf.insert(0, 7)
+    step.delete(0, 20)
+    step.insert(0, 4)
+    offset.delete(0, 20)
+    offset.insert(0, 60)
+    bw.delete(0, 20)
+    bw.insert(0, 125)
