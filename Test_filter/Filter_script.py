@@ -11,7 +11,6 @@ import paramiko
 from loguru import logger
 import threading
 import time
-import sys
 from tkinter.messagebox import *
 from tkinter import *
 
@@ -31,9 +30,7 @@ class Threadfilter(threading.Thread):
         self.power = 0
         self.number_frames = 0
         self.offset = 0
-        self.value_mono_multi = 0
-        self.step_attenuate = 0
-        self.attenuate_storage = 0
+        self.step_attenuate = 80
         self.ip_izepto = ip_izepto
         self.ip_ibts = ip_ibts
         self.original_value = 867500000
@@ -44,7 +41,9 @@ class Threadfilter(threading.Thread):
         self.time_start = 0
         self.data_file = 'filter.txt'
         self.config_file = "Orders.txt"
+        self.frequency_step = 200000
         self.attenuate = 0
+        self.stopping = 0
 
     def run(self):
         self.time_start = time.time()
@@ -55,12 +54,14 @@ class Threadfilter(threading.Thread):
         write_doc("Sensitivity measurement iZepto")
         write_doc("Sensitivity measurement iBTS")
         self.launch_ibts()
-        self.change_value()
-        self.script()
-        while self.value < 880200000:
+        while self.value < 880000001:
             self.change_value()
+            self.step_attenuate = 80
+            self.attenuate = 0
             self.script()
-            self.value += 200000
+            if self.stopping == 1:
+                break
+            self.value += self.frequency_step
         self.end_programme()
 
     def read_original_value(self):
@@ -125,44 +126,85 @@ class Threadfilter(threading.Thread):
                     logger.debug("The iZepto is ready")
                     self.number_launch += 1
                     break
-            if i == 0:
-                self.attenuate = self.attenuate_storage
-                self.ready_ibts()  # lunch the initialisation of the IBTS
-            else:
-                self.attenuate = float(self.attenuate) + self.step_attenuate  # The value of the attenuate increase of
-                # the step attenuate value
-                self.ready_ibts()
+
+            self.ready_ibts()
             time.sleep(1)  # 1 second of safety after that the ready_ibts function is completed
             ssh.close()
             a = stdout.readlines()
             number = round((len(a) / 4))
-            logger.debug("---------------------------------")
-            logger.debug(f"Test {i} of ∞ of channel number: {self.value_mono_multi}")
-            logger.debug(
-                f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
-            logger.debug(f"The frequency is {self.value} Hz")
-            logger.debug(f"you send {self.number_frames} frames")
-            logger.debug(f"you received {number} frames")
             result = (number / int(self.number_frames)) * 100
-            logger.debug(f"The rate is : {round(result, 1)}%")
-            logger.debug("---------------------------------")
+            if round(result, 1) == 100 or self.step_attenuate == 1:
+                logger.debug("---------------------------------")
+                logger.debug(f"Test {i} of ∞")
+                logger.debug(
+                    f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
+                logger.debug(f"The frequency is {self.value} Hz")
+                logger.debug(f"you send {self.number_frames} frames")
+                logger.debug(f"you received {number} frames")
+                logger.debug(f"The rate is : {round(result, 1)}%")
+                logger.debug("---------------------------------")
 
-            write_doc("---------------------------------")
-            write_doc(f"Test {i} of infinity of channel number: {self.value_mono_multi}")
-            write_doc(
-                f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
-            write_doc(f"The frequency is {self.value} Hz")
-            write_doc(f"you send {self.number_frames} frames")
-            write_doc(f"you received {number} frames")
-            write_doc(f"The rate is : {round(result, 1)}%")
-            write_doc("---------------------------------")
-            self.write_data(round(float(self.attenuate) / 4 + int(self.offset), 2), 100 - round(result, 2),
-                            self.power)
-            if round(result, 1) == 0:
-                logger.debug(f"fin channel number: {self.value_mono_multi}\n")
-                write_doc(f"fin channel number: {self.value_mono_multi}\n")
-                # self.window.destroy()
+                write_doc("---------------------------------")
+                write_doc(f"Test {i} of infinity")
+                write_doc(
+                    f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
+                write_doc(f"The frequency is {self.value} Hz")
+                write_doc(f"you send {self.number_frames} frames")
+                write_doc(f"you received {number} frames")
+                write_doc(f"The rate is : {round(result, 1)}%")
+                write_doc("---------------------------------")
+                self.write_data(round(float(self.attenuate) / 4 + int(self.offset), 2), 100 - round(result, 2),
+                                self.power)
+                self.attenuate = float(self.attenuate) + self.step_attenuate  # The value of the frequency_step
+                # increase of the step frequency_step value
+                if round(result, 1) == 0:
+                    # self.window.destroy()
+                    break
+
+            elif round(result, 1) == 0 and self.attenuate == 0:
+                logger.debug("---------------------------------")
+                logger.debug(f"Test {i} of ∞")
+                logger.debug(f"The frequency {self.value} is too far away from the filter, stepping forward...")
+                logger.debug("---------------------------------")
+                write_doc("---------------------------------")
+                write_doc(f"Test {i} of infinity")
+                write_doc(f"The frequency {self.value} is too far away from the filter, stepping forward...")
+                write_doc("---------------------------------")
                 break
+            elif round(result, 1) == 0 and self.attenuate == 0 and self.value > self.original_value:
+                logger.debug("---------------------------------")
+                logger.debug(f"Test {i} of ∞")
+                logger.debug(f"The frequency {self.value} is too far away from the filter, stopping...")
+                logger.debug("---------------------------------")
+                write_doc("---------------------------------")
+                write_doc(f"Test {i} of infinity")
+                write_doc(f"The frequency {self.value} is too far away from the filter, stopping...")
+                write_doc("---------------------------------")
+                self.stopping = 1
+                break
+            else:
+                logger.debug("---------------------------------")
+                logger.debug(f"Test {i} of ∞")
+                logger.debug(f"The attenuation -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB is too "
+                             f"high, stepping back...")
+                logger.debug("---------------------------------")
+                write_doc("---------------------------------")
+                write_doc(f"Test {i} of infinity")
+                write_doc(
+                    f"The attenuation -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB is too high, "
+                    f"stepping back...")
+                write_doc("---------------------------------")
+                self.attenuate = float(self.attenuate) - self.step_attenuate
+                if self.step_attenuate >= 20:
+                    self.step_attenuate = self.step_attenuate / 2
+                    self.attenuate = float(self.attenuate) + self.step_attenuate
+                else:
+                    if self.step_attenuate == 4:
+                        self.step_attenuate = 1
+                        self.attenuate = float(self.attenuate) + self.step_attenuate
+                    else:
+                        self.step_attenuate = 4
+                        self.attenuate = float(self.attenuate) + self.step_attenuate
 
     def launch_ibts(self):  # lunch the IBTS settings menu
         new_window_ibts = Tk()
@@ -185,17 +227,23 @@ class Threadfilter(threading.Thread):
         packet_frame = LabelFrame(scale_frame, text="Packet settings")
         packet_frame.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
 
-        attenuate_label = Label(test_frame, text="Quarter dB attenuation start :")
-        attenuate_label.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
-        attenuate = Entry(test_frame, cursor="right_ptr")
-        attenuate.grid(row=1, column=1, ipadx=0, ipady=0, padx=0, pady=0)
-        attenuate.insert(0, 260)
+        frequency_label = Label(test_frame, text="Start frequency Hz :")
+        frequency_label.grid(row=0, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+        frequency = Entry(test_frame, cursor="right_ptr")
+        frequency.grid(row=0, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+        frequency.insert(0, 867500000)
 
-        step_label = Label(test_frame, text="Step of quarter dB attenuation :")
-        step_label.grid(row=2, column=0, ipadx=0, ipady=0, padx=0, pady=0)
-        step = Entry(test_frame, cursor="right_ptr")
-        step.grid(row=2, column=1, ipadx=0, ipady=0, padx=0, pady=0)
-        step.insert(0, 4)
+        frequency_step_label = Label(test_frame, text="Frequency step Hz :")
+        frequency_step_label.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+        frequency_step = Entry(test_frame, cursor="right_ptr")
+        frequency_step.grid(row=1, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+        frequency_step.insert(0, 200000)
+
+        attenuate_label = Label(test_frame, text="Quarter dB attenuation start :")
+        attenuate_label.grid(row=2, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+        attenuate = Entry(test_frame, cursor="right_ptr")
+        attenuate.grid(row=2, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+        attenuate.insert(0, 0)
 
         power_label = Label(transmitter_frame, text="Power of the transmitter in dBm")
         power_label.grid(row=0, column=0, ipadx=0, ipady=0, padx=0, pady=0)
@@ -229,40 +277,42 @@ class Threadfilter(threading.Thread):
         reset_button = Button(scale_frame, text="Reset",
                               borderwidth=8, background=THE_COLOR,
                               activebackground="green", cursor="right_ptr", overrelief="sunken",
-                              command=lambda: [reset_all(sf, attenuate, number_frames, step, offset, bw)])
+                              command=lambda: [reset_all(sf, frequency_step, number_frames, attenuate, offset, bw,
+                                                         frequency)])
         reset_button.pack(padx=0, pady=0, expand=True, fill="both", side=BOTTOM)
 
         start_button = Button(scale_frame, text="Start",
                               borderwidth=8, background=THE_COLOR,
                               activebackground="green", cursor="right_ptr", overrelief="sunken",
-                              command=lambda: [self.lunch_safety_ibts(sf, attenuate,
+                              command=lambda: [self.lunch_safety_ibts(sf, frequency_step,
                                                                       number_frames,
-                                                                      step, offset, bw, power,
+                                                                      attenuate, offset, bw, power, frequency,
                                                                       new_window_ibts)])
         start_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
         new_window_ibts.mainloop()
 
-    def lunch_safety_ibts(self, sf, attenuate, number_frames, step, offset, bw, power,
+    def lunch_safety_ibts(self, sf, frequency_step, number_frames, attenuate, offset, bw, power, frequency,
                           new_window_main_graphic):  # a function to chek if all the values are correct
         try:  # to chek if the values are integer
             number_frames = float(number_frames.get())
-            attenuate = float(attenuate.get())
+            frequency_step = int(frequency_step.get())
             sf = float(sf.get())
-            step = float(step.get())
+            attenuate = float(attenuate.get())
             offset = float(offset.get())
             bw = float(bw.get())
             power = float(power.get())
+            frequency = float(frequency.get())
             #  to chek if the values are conform
             if number_frames < 0 or number_frames > 1000000:
                 logger.critical("Error, The number frames value is not conform")
                 showerror("Error", "The number frames value is not conform")
-            if attenuate < 0 or attenuate > 1000000:
-                logger.critical("Error, The attenuate value is not conform")
-                showerror("Error", "The attenuate value is not conform")
+            if frequency_step < 200000 or frequency_step > 1000000:
+                logger.critical("Error, The frequency_step value is not conform")
+                showerror("Error", "The frequency_step value is not conform")
             if sf < 6 or sf > 12:
                 logger.critical("Error, The symbol rate value is not conform")
                 showerror("Error", "The symbol rate value is not conform")
-            if step < 1 or step > 10000000:
+            if attenuate < 0 or attenuate > 10000000:
                 logger.critical("Error, The step value is not conform")
                 showerror("Error", "The step value is not conform")
             if offset < 0 or offset > 10000000:
@@ -274,13 +324,16 @@ class Threadfilter(threading.Thread):
             if power < 0 or power > 10000000:
                 logger.critical("Error, The power value is not conform")
                 showerror("Error", "The power value is not conform")
+            if frequency < 855000000 or frequency > 880000000:
+                logger.critical("Error, The frequency value is not conform")
+                showerror("Error", "The frequency value is not conform")
             else:
                 new_window_main_graphic.destroy()
                 self.number_frames = number_frames
-                self.attenuate = attenuate
-                self.attenuate_storage = attenuate
+                self.value = frequency
+                self.frequency_step = frequency_step
                 self.sf = sf
-                self.step_attenuate = step
+                self.attenuate = attenuate
                 self.offset = offset
                 self.bw = bw
                 self.power = power
@@ -301,6 +354,7 @@ class Threadfilter(threading.Thread):
 
         while 1:
             read_value = stdout.readline()
+            write_doc(read_value)
             #  logger.info(read_value)
             if read_value[3:5] == "27":
                 logger.debug("The iBTS is ready")
@@ -319,8 +373,8 @@ class Threadfilter(threading.Thread):
         outfile = open(self.data_file, 'a')
         power_in = round(power_out - attenuation_db, 2)
         outfile.write(str(power_in) + ' ' + str(round(packet_lost)) + ' ' + str(self.climate_chamber_num)
-                      + ' ' + str(self.value_mono_multi) + ' ' + str(self.temperature_storage) +
-                      ' ' + str(round(self.sf)) + ' ' + str(round(self.bw)) + ' ' + str(self.value)  + '\n')
+                      + ' ' + str(self.temperature_storage) +
+                      ' ' + str(round(self.sf)) + ' ' + str(round(self.bw)) + ' ' + str(self.value) + '\n')
         outfile.close()
 
     def end_programme(self):
@@ -347,12 +401,12 @@ def file_execution(file_name, n):
 
 
 def write_doc(text):
-    sensibility_result = open("Report_sensibility.txt", 'a')
+    sensibility_result = open("Report_filter.txt", 'a')
     sensibility_result.write(str(text) + "\n")
     sensibility_result.close()
 
 
-def reset_all(sf, attenuate, number_frames, step, offset, bw):
+def reset_all(sf, attenuate, number_frames, step, offset, bw ,frequency):
     number_frames.delete(0, 20)
     number_frames.insert(0, 100)
     attenuate.delete(0, 20)
@@ -365,3 +419,5 @@ def reset_all(sf, attenuate, number_frames, step, offset, bw):
     offset.insert(0, 60)
     bw.delete(0, 20)
     bw.insert(0, 125)
+    frequency.delete(0, 20)
+    frequency.insert(0, 855000000)

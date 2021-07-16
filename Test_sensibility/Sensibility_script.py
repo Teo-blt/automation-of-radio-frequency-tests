@@ -57,7 +57,6 @@ class Threadsensibility(threading.Thread):
         self.b = 0
         self.value_mono_multi = 0
         self.attenuate_storage = 0
-        self.frequency_entry = Entry
         self.data_file = 'Sensibility.txt'
         self.frequency_storage = 0
         self.number_channel = 8
@@ -74,8 +73,8 @@ class Threadsensibility(threading.Thread):
         sensibility_result.close()
         outfile = open(self.data_file, 'w+')
         outfile.close()
-        self.write_doc("Sensitivity measurement iZepto")
-        self.write_doc("Sensitivity measurement iBTS")
+        write_doc("Sensitivity measurement iZepto")
+        write_doc("Sensitivity measurement iBTS")
         self.launch_ibts()
         if self.value_mono_multi:  # to choose between the multi channel mode or the mono channel mode, True = Multi
             if self.port_test != -1:  # to choose il the climate chamber need to be used
@@ -93,9 +92,9 @@ class Threadsensibility(threading.Thread):
                 while abs(self.temperature - self.t_end) > abs(self.step_temp):
                     self.value_mono_multi = 0
                     self.frequency = self.frequency_storage  # a variable to store the start frequency
-                    self.write_doc("################################################")
-                    self.write_doc(f"Start of Test temperature {self.climate_chamber_num} : {self.temperature} degree "
-                                   f"Celsius")
+                    write_doc("################################################")
+                    write_doc(f"Start of Test temperature {self.climate_chamber_num} : {self.temperature} degree "
+                              f"Celsius")
                     logger.debug("################################################")
                     logger.debug(f"Start of Test temperature {self.climate_chamber_num}: {self.temperature} degree "
                                  f"Celsius")
@@ -107,14 +106,14 @@ class Threadsensibility(threading.Thread):
                     for p in range(0, self.number_channel):  # stay in the boucle until the 8 channel are tested
                         logger.debug(f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, frequency:"
                                      f" {round(self.frequency, 1)}")
-                        self.write_doc(f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, "
-                                       f"frequency: {round(self.frequency, 1)}")
+                        write_doc(f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, "
+                                  f"frequency: {round(self.frequency, 1)}")
                         self.script()  # use the script function to test one channel
                         self.frequency = self.frequency + 0.2  # The value of the frequency increase of the step
                         # frequency value
                         self.value_mono_multi = self.value_mono_multi + 1  # to count the number of channel tested
                     logger.debug(f"fin test")
-                    self.write_doc(f"fin test")
+                    write_doc(f"fin test")
                     self.temperature_storage += self.step_temp
                     self.climate_chamber_num = self.climate_chamber_num + 1
                 for u in range(0, 2):  # 2 cycles to end the programme at the right temperature
@@ -123,9 +122,9 @@ class Threadsensibility(threading.Thread):
                         self.temperature_storage = self.t_end
                         self.climate_chamber_num = self.climate_chamber_num + 1
                     self.value_mono_multi = 0
-                    self.write_doc(f"Start of Test temperature {self.climate_chamber_num}: {self.temperature} degree "
-                                   f"Celsius")
-                    self.write_doc("Start of Test")
+                    write_doc(f"Start of Test temperature {self.climate_chamber_num}: {self.temperature} degree "
+                              f"Celsius")
+                    write_doc("Start of Test")
                     logger.debug("################################################")
                     logger.debug(f"Start of Test temperature {self.climate_chamber_num}: {self.temperature} degree "
                                  f"Celsius")
@@ -136,7 +135,7 @@ class Threadsensibility(threading.Thread):
                         logger.debug(
                             f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, frequency:"
                             f" {round(self.frequency, 1)}")
-                        self.write_doc(
+                        write_doc(
                             f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, frequency: "
                             f"{round(self.frequency, 1)}")
                         self.script()
@@ -150,8 +149,8 @@ class Threadsensibility(threading.Thread):
                 for p in range(0, self.number_channel):
                     logger.debug(f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, "
                                  f"frequency: {round(self.frequency, 1)}")
-                    self.write_doc(f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, frequency: "
-                                   f"{round(self.frequency, 1)}")
+                    write_doc(f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, frequency: "
+                              f"{round(self.frequency, 1)}")
                     self.attenuate = self.attenuate_storage
                     self.script()
                     self.frequency = self.frequency + 0.2
@@ -176,8 +175,8 @@ class Threadsensibility(threading.Thread):
         vt.write(ON % self.temperature)
         [self.temp, self.temp2] = self.read(self.port_test)
         while abs(self.temperature - self.t_end) >= abs(self.step_temp):
-            self.write_doc(f"Start of Test temperature {self.climate_chamber_num}")
-            self.write_doc("Start of Test")
+            write_doc(f"Start of Test temperature {self.climate_chamber_num}")
+            write_doc("Start of Test")
             logger.debug("################################################")
             logger.debug(f"Start of Test temperature {self.climate_chamber_num}")
             vt.write(ON % self.temperature)
@@ -190,8 +189,8 @@ class Threadsensibility(threading.Thread):
             if u != 0:
                 self.temperature = self.t_end
                 self.temperature_storage = self.t_end
-            self.write_doc(f"Start of Test temperature {self.climate_chamber_num}")
-            self.write_doc("Start of Test")
+            write_doc(f"Start of Test temperature {self.climate_chamber_num}")
+            write_doc("Start of Test")
             logger.debug("################################################")
             logger.debug(f"Start of Test temperature {self.climate_chamber_num}")
             vt.write(ON % self.temperature)
@@ -222,8 +221,8 @@ class Threadsensibility(threading.Thread):
                 self.VALUE_STABILISATION = 0
         logger.info(f"The climate chamber is stabilized with success")
         logger.info("#################################")
-        self.write_doc(f"The climate chamber is stabilized with success")
-        self.write_doc("#################################")
+        write_doc(f"The climate chamber is stabilized with success")
+        write_doc("#################################")
 
     def read(self, the_port):
         try:  # This try allow the program to survive in a rare case where the climatic
@@ -269,10 +268,10 @@ class Threadsensibility(threading.Thread):
                     logger.critical("Failed to start the concentrator")
                     logger.critical("The Izepto is rebooting, please standby")
                     logger.critical("---------------------------------")
-                    self.write_doc("---------------------------------")
-                    self.write_doc("Failed to start the concentrator")
-                    self.write_doc("The Izepto is rebooting, please standby")
-                    self.write_doc("---------------------------------")
+                    write_doc("---------------------------------")
+                    write_doc("Failed to start the concentrator")
+                    write_doc("The Izepto is rebooting, please standby")
+                    write_doc("---------------------------------")
                     ssh.exec_command("reboot", get_pty=True)
                     for t in range(0, 10):
                         logger.info("Izepto rebooting, it may take few minutes")
@@ -287,7 +286,7 @@ class Threadsensibility(threading.Thread):
                     if response[19:22] == "EUI":
                         logger.debug("The iZepto is ready")
                         logger.debug("The reboot is completed")
-                        self.write_doc("The reboot is completed")
+                        write_doc("The reboot is completed")
                         break
                 if response[19:22] == "EUI":
                     logger.debug("The iZepto is ready")
@@ -297,36 +296,36 @@ class Threadsensibility(threading.Thread):
                 self.attenuate = self.attenuate_storage
                 self.ready_ibts()  # lunch the initialisation of the IBTS
             else:
-                self.attenuate = float(self.attenuate) + self.step_attenuate  # The value of the attenuate increase of
-                # the step attenuate value
+                self.attenuate = float(self.attenuate) + self.step_attenuate  # The value of the frequency_step increase of
+                # the step frequency_step value
                 self.ready_ibts()
             time.sleep(1)  # 1 second of safety after that the ready_ibts function is completed
             ssh.close()
             a = stdout.readlines()
             number = round((len(a) / 4))
+            result = (number / int(self.number_frames)) * 100
             logger.debug("---------------------------------")
             logger.debug(f"Test {i} of ∞ of channel number: {self.value_mono_multi}")
             logger.debug(
                 f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
             logger.debug(f"you send {self.number_frames} frames")
             logger.debug(f"you received {number} frames")
-            result = (number / int(self.number_frames)) * 100
             logger.debug(f"The rate is : {round(result, 1)}%")
             logger.debug("---------------------------------")
 
-            self.write_doc("---------------------------------")
-            self.write_doc(f"Test {i} of infinity of channel number: {self.value_mono_multi}")
-            self.write_doc(
+            write_doc("---------------------------------")
+            write_doc(f"Test {i} of infinity of channel number: {self.value_mono_multi}")
+            write_doc(
                 f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
-            self.write_doc(f"you send {self.number_frames} frames")
-            self.write_doc(f"you received {number} frames")
-            self.write_doc(f"The rate is : {round(result, 1)}%")
-            self.write_doc("---------------------------------")
+            write_doc(f"you send {self.number_frames} frames")
+            write_doc(f"you received {number} frames")
+            write_doc(f"The rate is : {round(result, 1)}%")
+            write_doc("---------------------------------")
             self.write_data(round(float(self.attenuate) / 4 + int(self.offset), 2), 100 - round(result, 2),
                             self.power)
             if round(result, 1) == 0:
                 logger.debug(f"fin channel number: {self.value_mono_multi}\n")
-                self.write_doc(f"fin channel number: {self.value_mono_multi}\n")
+                write_doc(f"fin channel number: {self.value_mono_multi}\n")
                 # self.window.destroy()
                 break
 
@@ -343,19 +342,19 @@ class Threadsensibility(threading.Thread):
         auto_stair_scale_frame.config(background='#fafafa')
 
         start_auto_stair_scale_frame_button = Button(auto_stair_scale_frame, text="Start",
-                                                        borderwidth=8, background=THE_COLOR,
-                                                        activebackground="green", cursor="right_ptr",
-                                                        overrelief="sunken",
-                                                        command=lambda: [self.lunch_safety_climatic_chamber(
-                                                            step_auto_stair_scale_frame_scale.get(),
-                                                            temperature_start_stair_scale.get(),
-                                                            temperature_end_auto_stair.get(),
-                                                            time_temp_wait.get(),
-                                                            new_window_climatic_chamber)])
+                                                     borderwidth=8, background=THE_COLOR,
+                                                     activebackground="green", cursor="right_ptr",
+                                                     overrelief="sunken",
+                                                     command=lambda: [self.lunch_safety_climatic_chamber(
+                                                         step_auto_stair_scale_frame_scale.get(),
+                                                         temperature_start_stair_scale.get(),
+                                                         temperature_end_auto_stair.get(),
+                                                         time_temp_wait.get(),
+                                                         new_window_climatic_chamber)])
         start_auto_stair_scale_frame_button.grid(row=0, column=0, ipadx=40, ipady=20, padx=0, pady=0)
         auto_stair_label = Label(auto_stair_scale_frame, text="The sensibility tests will take place during the "
-                                                                 "flat area", bg="white", font="arial",
-                                    fg="black", relief="groove")
+                                                              "flat area", bg="white", font="arial",
+                                 fg="black", relief="groove")
         auto_stair_label.grid(row=0, column=1, columnspan=4, ipadx=40, ipady=20, padx=0, pady=0)
         step_auto_stair_scale_frame_scale = Scale(auto_stair_scale_frame, orient='vertical', troughcolor=THE_COLOR,
                                                   from_=120, to=1,
@@ -390,18 +389,18 @@ class Threadsensibility(threading.Thread):
             temperature_end_auto_stair.set(55)
 
         outdoor_settings_radiobutton = Radiobutton(auto_stair_scale_frame, text="Outdoor settings",
-                                                      variable=self.a, value=0, cursor="right_ptr",
-                                                      indicatoron=0, command=lambda: [outdoor_settings()],
-                                                      background=THE_COLOR,
-                                                      activebackground="green",
-                                                      bd=8, selectcolor="green", overrelief="sunken")
+                                                   variable=self.a, value=0, cursor="right_ptr",
+                                                   indicatoron=0, command=lambda: [outdoor_settings()],
+                                                   background=THE_COLOR,
+                                                   activebackground="green",
+                                                   bd=8, selectcolor="green", overrelief="sunken")
         outdoor_settings_radiobutton.grid(row=2, column=0, ipadx=10, ipady=10, padx=0, pady=0)
         indoor_settings_radiobutton = Radiobutton(auto_stair_scale_frame, text="Indoor settings",
-                                                     variable=self.a, value=1, cursor="right_ptr",
-                                                     indicatoron=0, command=lambda: [indoor_settings()],
-                                                     background=THE_COLOR,
-                                                     activebackground="green",
-                                                     bd=8, selectcolor="green", overrelief="sunken")
+                                                  variable=self.a, value=1, cursor="right_ptr",
+                                                  indicatoron=0, command=lambda: [indoor_settings()],
+                                                  background=THE_COLOR,
+                                                  activebackground="green",
+                                                  bd=8, selectcolor="green", overrelief="sunken")
         indoor_settings_radiobutton.grid(row=3, column=0, ipadx=10, ipady=10, padx=0, pady=0)
         indoor_settings_radiobutton.invoke()
         time_frame = LabelFrame(auto_stair_scale_frame, bd=0)  # , text="auto_scale_frame"
@@ -521,35 +520,35 @@ class Threadsensibility(threading.Thread):
         bw.grid(row=3, column=1, ipadx=0, ipady=0, padx=0, pady=0)
         bw.insert(0, 125)
         channel_mono_radiobutton = Radiobutton(packet_frame, text="Mono channel",
-                                                  variable=self.b, value=0, cursor="right_ptr",
-                                                  indicatoron=0, command=lambda: [self.value_change(0)],
-                                                  background=THE_COLOR,
-                                                  activebackground="green",
-                                                  bd=8, selectcolor="green", overrelief="sunken")
+                                               variable=self.b, value=0, cursor="right_ptr",
+                                               indicatoron=0, command=lambda: [self.value_change(0)],
+                                               background=THE_COLOR,
+                                               activebackground="green",
+                                               bd=8, selectcolor="green", overrelief="sunken")
         channel_mono_radiobutton.grid(row=4, column=0, ipadx=10, ipady=10, padx=0, pady=0)
         channel_multi_radiobutton = Radiobutton(packet_frame, text="Multi channel",
-                                                   variable=self.b, value=1, cursor="right_ptr",
-                                                   indicatoron=0, command=lambda: [self.value_change(1)],
-                                                   background=THE_COLOR,
-                                                   activebackground="green",
-                                                   bd=8, selectcolor="green", overrelief="sunken")
+                                                variable=self.b, value=1, cursor="right_ptr",
+                                                indicatoron=0, command=lambda: [self.value_change(1)],
+                                                background=THE_COLOR,
+                                                activebackground="green",
+                                                bd=8, selectcolor="green", overrelief="sunken")
         channel_multi_radiobutton.grid(row=4, column=1, ipadx=10, ipady=10, padx=0, pady=0)
         channel_mono_radiobutton.invoke()
 
         reset_button = Button(scale_frame, text="Reset",
-                                 borderwidth=8, background=THE_COLOR,
-                                 activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                 command=lambda: [self.reset_all(self.frequency_entry, sf, attenuate,
-                                                                 number_frames, step, offset, bw)])
+                              borderwidth=8, background=THE_COLOR,
+                              activebackground="green", cursor="right_ptr", overrelief="sunken",
+                              command=lambda: [reset_all(self.frequency_entry, sf, attenuate,
+                                                         number_frames, step, offset, bw)])
         reset_button.pack(padx=0, pady=0, expand=True, fill="both", side=BOTTOM)
 
         start_button = Button(scale_frame, text="Start",
-                                 borderwidth=8, background=THE_COLOR,
-                                 activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                 command=lambda: [self.lunch_safety_ibts(self.frequency_entry, sf, attenuate,
-                                                                         number_frames,
-                                                                         step, offset, bw, power,
-                                                                         new_window_ibts)])
+                              borderwidth=8, background=THE_COLOR,
+                              activebackground="green", cursor="right_ptr", overrelief="sunken",
+                              command=lambda: [self.lunch_safety_ibts(self.frequency_entry, sf, attenuate,
+                                                                      number_frames,
+                                                                      step, offset, bw, power,
+                                                                      new_window_ibts)])
         start_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
         new_window_ibts.mainloop()
 
@@ -573,8 +572,8 @@ class Threadsensibility(threading.Thread):
                 logger.critical("Error, The frequency value is not conform")
                 showerror("Error", "The frequency value is not conform")
             if attenuate < 0 or attenuate > 1000000:
-                logger.critical("Error, The attenuate value is not conform")
-                showerror("Error", "The attenuate value is not conform")
+                logger.critical("Error, The frequency_step value is not conform")
+                showerror("Error", "The frequency_step value is not conform")
             if sf < 6 or sf > 12:
                 logger.critical("Error, The symbol rate value is not conform")
                 showerror("Error", "The symbol rate value is not conform")
@@ -605,27 +604,6 @@ class Threadsensibility(threading.Thread):
         except:
             logger.critical("Error, One or more of the values are not a number")
             showerror("Error", "One or more of the values are not a number")
-
-    def reset_all(self, frequency, sf, attenuate, number_frames, step, offset, bw):
-        number_frames.delete(0, 20)
-        number_frames.insert(0, 100)
-        frequency.delete(0, 20)
-        frequency.insert(0, 867100000)
-        attenuate.delete(0, 20)
-        attenuate.insert(0, 280)
-        sf.delete(0, 20)
-        sf.insert(0, 7)
-        step.delete(0, 20)
-        step.insert(0, 4)
-        offset.delete(0, 20)
-        offset.insert(0, 60)
-        bw.delete(0, 20)
-        bw.insert(0, 125)
-
-    def write_doc(self, text):
-        sensibility_result = open("Report_sensibility.txt", 'a')
-        sensibility_result.write(str(text) + "\n")
-        sensibility_result.close()
 
     def write_data(self, attenuation_db, packet_lost, power_out):
         outfile = open(self.data_file, 'a')
@@ -669,10 +647,10 @@ class Threadsensibility(threading.Thread):
         logger.debug(f"Number of fail of the Izepto: {self.number_error}")
         b = time.localtime(time.time() - self.time_start)  # Total time of the test
         logger.info(f'Test duration: {b[3] - 1}H{b[4]}min and {b[5]} second(s)')
-        self.write_doc("End test")
-        self.write_doc(f"Number of launch of the Izepto: {self.number_launch}")
-        self.write_doc(f"Number of fail of the Izepto: {self.number_error}")
-        self.write_doc(f'Test duration: {b[3] - 1}H{b[4]}min and {b[5]} second(s)')
+        write_doc("End test")
+        write_doc(f"Number of launch of the Izepto: {self.number_launch}")
+        write_doc(f"Number of fail of the Izepto: {self.number_error}")
+        write_doc(f'Test duration: {b[3] - 1}H{b[4]}min and {b[5]} second(s)')
 
 
 def simulation_graphic_stair(step, temp_start, temp_end, window):  # create the simulation graph
@@ -724,3 +702,26 @@ def file_execution(file_name, n):
         p += 1
     file.close()
     return donnees[n]
+
+
+def reset_all(frequency, sf, attenuate, number_frames, step, offset, bw):
+    number_frames.delete(0, 20)
+    number_frames.insert(0, 100)
+    frequency.delete(0, 20)
+    frequency.insert(0, 867100000)
+    attenuate.delete(0, 20)
+    attenuate.insert(0, 280)
+    sf.delete(0, 20)
+    sf.insert(0, 7)
+    step.delete(0, 20)
+    step.insert(0, 4)
+    offset.delete(0, 20)
+    offset.insert(0, 60)
+    bw.delete(0, 20)
+    bw.insert(0, 125)
+
+
+def write_doc(text):
+    sensibility_result = open("Report_sensibility.txt", 'a')
+    sensibility_result.write(str(text) + "\n")
+    sensibility_result.close()

@@ -27,7 +27,7 @@ class Application(Tk):
         self._gpib_port = "25"
         self._ip_address = "192.168.4.228"
         self.status = 0
-        self.interface(0)
+        self.interface(1)
         self._carte_ip_address = "192.168.4.183"
 
     def create_choose_measuring_tool_combobox(self, value: str):
