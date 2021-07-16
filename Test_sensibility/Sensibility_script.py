@@ -568,25 +568,25 @@ class Threadsensibility(threading.Thread):
             if number_frames < 0 or number_frames > 1000000:
                 logger.critical("Error, The number frames value is not conform")
                 showerror("Error", "The number frames value is not conform")
-            if frequency < 0 or frequency > 10000000000:
+            if frequency < 800000000 or frequency > 950000000:
                 logger.critical("Error, The frequency value is not conform")
                 showerror("Error", "The frequency value is not conform")
-            if attenuate < 0 or attenuate > 1000000:
-                logger.critical("Error, The frequency_step value is not conform")
-                showerror("Error", "The frequency_step value is not conform")
+            if attenuate < 0 or attenuate > 359:
+                logger.critical("Error, The attenuate value is not conform")
+                showerror("Error", "The attenuate value is not conform")
             if sf < 6 or sf > 12:
                 logger.critical("Error, The symbol rate value is not conform")
                 showerror("Error", "The symbol rate value is not conform")
-            if step < 0 or step > 10000000:
+            if step < 0 or step > 359:
                 logger.critical("Error, The step value is not conform")
                 showerror("Error", "The step value is not conform")
-            if offset < 0 or offset > 10000000:
+            if offset < 0 or offset > 200:
                 logger.critical("Error, The offset value is not conform")
                 showerror("Error", "The offset value is not conform")
-            if bw < 0 or bw > 10000000:
+            if bw != 125 or bw != 250 or bw != 500:
                 logger.critical("Error, The band width value is not conform")
                 showerror("Error", "The band width value is not conform")
-            if power < 0 or power > 10000000:
+            if power < 0 or power > 100:
                 logger.critical("Error, The power value is not conform")
                 showerror("Error", "The power value is not conform")
             else:

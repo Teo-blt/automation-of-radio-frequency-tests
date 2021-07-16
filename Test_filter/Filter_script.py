@@ -35,7 +35,7 @@ class Threadfilter(threading.Thread):
         self.ip_ibts = ip_ibts
         self.original_value = 867500000
         self.value = 855000000
-        self.number_error = 0
+        self.number_error_izepto = 0
         self.config_file = 0
         self.number_launch = 0
         self.time_start = 0
@@ -97,7 +97,7 @@ class Threadfilter(threading.Thread):
             while 1:
                 response = stdout.readline()
                 if response[0:5] == "ERROR":
-                    self.number_error += 1
+                    self.number_error_izepto += 1
                     logger.critical("---------------------------------")
                     logger.critical("Failed to start the concentrator")
                     logger.critical("The Izepto is rebooting, please standby")
@@ -126,7 +126,6 @@ class Threadfilter(threading.Thread):
                     logger.debug("The iZepto is ready")
                     self.number_launch += 1
                     break
-
             self.ready_ibts()
             time.sleep(1)  # 1 second of safety after that the ready_ibts function is completed
             ssh.close()
@@ -135,20 +134,18 @@ class Threadfilter(threading.Thread):
             result = (number / int(self.number_frames)) * 100
             if round(result, 1) == 100 or self.step_attenuate == 1:
                 logger.debug("---------------------------------")
-                logger.debug(f"Test {i} of ∞")
+                logger.debug(f"Test {i} of ∞ of frequency {self.value} Hz")
                 logger.debug(
                     f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
-                logger.debug(f"The frequency is {self.value} Hz")
                 logger.debug(f"you send {self.number_frames} frames")
                 logger.debug(f"you received {number} frames")
                 logger.debug(f"The rate is : {round(result, 1)}%")
                 logger.debug("---------------------------------")
 
                 write_doc("---------------------------------")
-                write_doc(f"Test {i} of infinity")
+                write_doc(f"Test {i} of infinity of frequency {self.value} Hz")
                 write_doc(
                     f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
-                write_doc(f"The frequency is {self.value} Hz")
                 write_doc(f"you send {self.number_frames} frames")
                 write_doc(f"you received {number} frames")
                 write_doc(f"The rate is : {round(result, 1)}%")
@@ -161,35 +158,35 @@ class Threadfilter(threading.Thread):
                     # self.window.destroy()
                     break
 
-            elif round(result, 1) == 0 and self.attenuate == 0:
+            elif round(result, 1) == 0 and self.attenuate == 0 and self.value < 867500000:
                 logger.debug("---------------------------------")
-                logger.debug(f"Test {i} of ∞")
+                logger.debug(f"Test {i} of ∞ of frequency {self.value} Hz")
                 logger.debug(f"The frequency {self.value} is too far away from the filter, stepping forward...")
                 logger.debug("---------------------------------")
                 write_doc("---------------------------------")
-                write_doc(f"Test {i} of infinity")
+                write_doc(f"Test {i} of infinity of frequency {self.value} Hz")
                 write_doc(f"The frequency {self.value} is too far away from the filter, stepping forward...")
                 write_doc("---------------------------------")
                 break
-            elif round(result, 1) == 0 and self.attenuate == 0 and self.value > self.original_value:
+            elif round(result, 1) == 0 and self.attenuate == 0 and self.value > 867500000:
                 logger.debug("---------------------------------")
-                logger.debug(f"Test {i} of ∞")
+                logger.debug(f"Test {i} of ∞ of frequency {self.value} Hz")
                 logger.debug(f"The frequency {self.value} is too far away from the filter, stopping...")
                 logger.debug("---------------------------------")
                 write_doc("---------------------------------")
-                write_doc(f"Test {i} of infinity")
+                write_doc(f"Test {i} of infinity of frequency {self.value} Hz")
                 write_doc(f"The frequency {self.value} is too far away from the filter, stopping...")
                 write_doc("---------------------------------")
                 self.stopping = 1
                 break
             else:
                 logger.debug("---------------------------------")
-                logger.debug(f"Test {i} of ∞")
+                logger.debug(f"Test {i} of ∞ of frequency {self.value} Hz")
                 logger.debug(f"The attenuation -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB is too "
                              f"high, stepping back...")
                 logger.debug("---------------------------------")
                 write_doc("---------------------------------")
-                write_doc(f"Test {i} of infinity")
+                write_doc(f"Test {i} of infinity of frequency {self.value} Hz")
                 write_doc(
                     f"The attenuation -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB is too high, "
                     f"stepping back...")
@@ -231,7 +228,7 @@ class Threadfilter(threading.Thread):
         frequency_label.grid(row=0, column=0, ipadx=0, ipady=0, padx=0, pady=0)
         frequency = Entry(test_frame, cursor="right_ptr")
         frequency.grid(row=0, column=1, ipadx=0, ipady=0, padx=0, pady=0)
-        frequency.insert(0, 867500000)
+        frequency.insert(0, 855000000)
 
         frequency_step_label = Label(test_frame, text="Frequency step Hz :")
         frequency_step_label.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
@@ -301,7 +298,7 @@ class Threadfilter(threading.Thread):
             offset = float(offset.get())
             bw = float(bw.get())
             power = float(power.get())
-            frequency = float(frequency.get())
+            frequency = int(frequency.get())
             #  to chek if the values are conform
             if number_frames < 0 or number_frames > 1000000:
                 logger.critical("Error, The number frames value is not conform")
@@ -312,19 +309,19 @@ class Threadfilter(threading.Thread):
             if sf < 6 or sf > 12:
                 logger.critical("Error, The symbol rate value is not conform")
                 showerror("Error", "The symbol rate value is not conform")
-            if attenuate < 0 or attenuate > 10000000:
+            if attenuate < 0 or attenuate > 359:
                 logger.critical("Error, The step value is not conform")
                 showerror("Error", "The step value is not conform")
-            if offset < 0 or offset > 10000000:
+            if offset < 0 or offset > 200:
                 logger.critical("Error, The offset value is not conform")
                 showerror("Error", "The offset value is not conform")
-            if bw < 0 or bw > 10000000:
+            if bw != 125 or bw != 250 or bw != 500:
                 logger.critical("Error, The band width value is not conform")
                 showerror("Error", "The band width value is not conform")
-            if power < 0 or power > 10000000:
+            if power < 0 or power > 100:
                 logger.critical("Error, The power value is not conform")
                 showerror("Error", "The power value is not conform")
-            if frequency < 855000000 or frequency > 880000000:
+            if frequency < 800000000 or frequency > 950000000:
                 logger.critical("Error, The frequency value is not conform")
                 showerror("Error", "The frequency value is not conform")
             else:
@@ -351,7 +348,9 @@ class Threadfilter(threading.Thread):
         order = (cmd[0] + str(self.value / 1000000) + cmd[2] + str(self.bw) + cmd[4] + str(self.sf) + cmd[6] +
                  str(self.number_frames) + cmd[8] + str(self.attenuate))
         stdin, stdout, stderr = ssh2.exec_command(order, get_pty=True)
-
+        write_doc("_________________________")
+        write_doc(f"attenuate {str(self.attenuate)} ")
+        write_doc("_________________________")
         while 1:
             read_value = stdout.readline()
             write_doc(read_value)
@@ -380,12 +379,12 @@ class Threadfilter(threading.Thread):
     def end_programme(self):
         logger.debug("End test")
         logger.debug(f"Number of launch of the Izepto: {self.number_launch}")
-        logger.debug(f"Number of fail of the Izepto: {self.number_error}")
+        logger.debug(f"Number of fail of the Izepto: {self.number_error_izepto}")
         b = time.localtime(time.time() - self.time_start)  # Total time of the test
         logger.info(f'Test duration: {b[3] - 1}H{b[4]}min and {b[5]} second(s)')
         write_doc("End test")
         write_doc(f"Number of launch of the Izepto: {self.number_launch}")
-        write_doc(f"Number of fail of the Izepto: {self.number_error}")
+        write_doc(f"Number of fail of the Izepto: {self.number_error_izepto}")
         write_doc(f'Test duration: {b[3] - 1}H{b[4]}min and {b[5]} second(s)')
 
 
@@ -406,7 +405,7 @@ def write_doc(text):
     sensibility_result.close()
 
 
-def reset_all(sf, attenuate, number_frames, step, offset, bw ,frequency):
+def reset_all(sf, attenuate, number_frames, step, offset, bw, frequency):
     number_frames.delete(0, 20)
     number_frames.insert(0, 100)
     attenuate.delete(0, 20)
