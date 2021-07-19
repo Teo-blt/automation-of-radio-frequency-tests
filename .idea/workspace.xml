@@ -1,0 +1,591 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="f6ac8e62-877d-4536-8e17-8da219dbcd7b" name="Default Changelist" comment="Amélioration de la lisibilité du code&#10;&#10;- renomer ip_ibts &#10;- renomer ip_izepto">
+      <change afterPath="$PROJECT_DIR$/.idea/automation-of-radio-frequency-tests.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_23_04_2021_17_26_[Default_Changelist]/shelved.patch" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_23_04_2021_17_26_[Default_Changelist]1/shelved.patch" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_23_04_2021_17_26__Default_Changelist_.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test_sensibility/Sensibility_script.py" beforeDir="false" afterPath="$PROJECT_DIR$/Test_sensibility/Sensibility_script.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Rebase.Settings">
+    <option name="NEW_BASE" value="main" />
+  </component>
+  <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="50%" />
+      </list>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="HARD" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="ProjectId" id="1rYzHezIdi45QXRtmDmlMi5ZFJS" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$USER_HOME$/AppData/Local/Programs/Python/Python39/Scripts/pyinstaller.exe" />
+    <property name="restartRequiresConfirmation" value="false" />
+    <property name="settings.editor.selected.configurable" value="org.jetbrains.plugins.github.ui.GithubSettingsConfigurable" />
+  </component>
+  <component name="Push.Settings">
+    <force-push-targets>
+      <force-push-target remote-path="origin" branch="main" />
+    </force-push-targets>
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\tbu\Desktop\automation-of-radio-frequency-tests\IHM" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.Menu">
+    <configuration name="Configuration_file_management" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="automation-of-radio-frequency-tests" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Data_files" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="C:\Users\tbu\Desktop\automation-of-radio-frequency-tests\Data_files\Configuration_file_management.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Graph_sensibility" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="automation-of-radio-frequency-tests" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/IHM" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/IHM/Graph_sensibility.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Menu" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="automation-of-radio-frequency-tests" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/IHM" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/IHM/Menu.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Void" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="automation-of-radio-frequency-tests" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/IHM" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/IHM/Void.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="new_SMIQ" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="automation-of-radio-frequency-tests" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/SMIQ" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/SMIQ/new_SMIQ.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Python.Menu" />
+      <item itemvalue="Python.Void" />
+      <item itemvalue="Python.new_SMIQ" />
+      <item itemvalue="Python.Graph_sensibility" />
+      <item itemvalue="Python.Configuration_file_management" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.Menu" />
+        <item itemvalue="Python.Void" />
+        <item itemvalue="Python.Configuration_file_management" />
+        <item itemvalue="Python.Graph_sensibility" />
+        <item itemvalue="Python.new_SMIQ" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f6ac8e62-877d-4536-8e17-8da219dbcd7b" name="Default Changelist" comment="" />
+      <created>1619167725797</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1619167725797</updated>
+    </task>
+    <task id="LOCAL-00099" summary="validate off">
+      <created>1623152844575</created>
+      <option name="number" value="00099" />
+      <option name="presentableId" value="LOCAL-00099" />
+      <option name="project" value="LOCAL" />
+      <updated>1623152844575</updated>
+    </task>
+    <task id="LOCAL-00100" summary="validate off">
+      <created>1623153490837</created>
+      <option name="number" value="00100" />
+      <option name="presentableId" value="LOCAL-00100" />
+      <option name="project" value="LOCAL" />
+      <updated>1623153490837</updated>
+    </task>
+    <task id="LOCAL-00101" summary="validate off">
+      <created>1623153773236</created>
+      <option name="number" value="00101" />
+      <option name="presentableId" value="LOCAL-00101" />
+      <option name="project" value="LOCAL" />
+      <updated>1623153773236</updated>
+    </task>
+    <task id="LOCAL-00102" summary="validate off">
+      <created>1623155351375</created>
+      <option name="number" value="00102" />
+      <option name="presentableId" value="LOCAL-00102" />
+      <option name="project" value="LOCAL" />
+      <updated>1623155351375</updated>
+    </task>
+    <task id="LOCAL-00103" summary="indicateur graph animation">
+      <created>1623158085203</created>
+      <option name="number" value="00103" />
+      <option name="presentableId" value="LOCAL-00103" />
+      <option name="project" value="LOCAL" />
+      <updated>1623158085203</updated>
+    </task>
+    <task id="LOCAL-00104" summary="indicateur graph animation">
+      <created>1623654363735</created>
+      <option name="number" value="00104" />
+      <option name="presentableId" value="LOCAL-00104" />
+      <option name="project" value="LOCAL" />
+      <updated>1623654363736</updated>
+    </task>
+    <task id="LOCAL-00105" summary="test new gpib">
+      <created>1623744755196</created>
+      <option name="number" value="00105" />
+      <option name="presentableId" value="LOCAL-00105" />
+      <option name="project" value="LOCAL" />
+      <updated>1623744755196</updated>
+    </task>
+    <task id="LOCAL-00106" summary="test new gpib">
+      <created>1623746079550</created>
+      <option name="number" value="00106" />
+      <option name="presentableId" value="LOCAL-00106" />
+      <option name="project" value="LOCAL" />
+      <updated>1623746079550</updated>
+    </task>
+    <task id="LOCAL-00107" summary="test new gpib">
+      <created>1623747146838</created>
+      <option name="number" value="00107" />
+      <option name="presentableId" value="LOCAL-00107" />
+      <option name="project" value="LOCAL" />
+      <updated>1623747146838</updated>
+    </task>
+    <task id="LOCAL-00108" summary="test new gpib">
+      <created>1623747208023</created>
+      <option name="number" value="00108" />
+      <option name="presentableId" value="LOCAL-00108" />
+      <option name="project" value="LOCAL" />
+      <updated>1623747208023</updated>
+    </task>
+    <task id="LOCAL-00109" summary="test new gpib">
+      <created>1623748834316</created>
+      <option name="number" value="00109" />
+      <option name="presentableId" value="LOCAL-00109" />
+      <option name="project" value="LOCAL" />
+      <updated>1623748834316</updated>
+    </task>
+    <task id="LOCAL-00110" summary="test new gpib">
+      <created>1624368820814</created>
+      <option name="number" value="00110" />
+      <option name="presentableId" value="LOCAL-00110" />
+      <option name="project" value="LOCAL" />
+      <updated>1624368820814</updated>
+    </task>
+    <task id="LOCAL-00111" summary="scenario bug">
+      <created>1624524365875</created>
+      <option name="number" value="00111" />
+      <option name="presentableId" value="LOCAL-00111" />
+      <option name="project" value="LOCAL" />
+      <updated>1624524365875</updated>
+    </task>
+    <task id="LOCAL-00112" summary="scenario bug">
+      <created>1624525643590</created>
+      <option name="number" value="00112" />
+      <option name="presentableId" value="LOCAL-00112" />
+      <option name="project" value="LOCAL" />
+      <updated>1624525643590</updated>
+    </task>
+    <task id="LOCAL-00113" summary="scenario bug .2">
+      <created>1624538365905</created>
+      <option name="number" value="00113" />
+      <option name="presentableId" value="LOCAL-00113" />
+      <option name="project" value="LOCAL" />
+      <updated>1624538365905</updated>
+    </task>
+    <task id="LOCAL-00114" summary="scenario + etuve">
+      <created>1624631273008</created>
+      <option name="number" value="00114" />
+      <option name="presentableId" value="LOCAL-00114" />
+      <option name="project" value="LOCAL" />
+      <updated>1624631273008</updated>
+    </task>
+    <task id="LOCAL-00115" summary="scenario + etuve">
+      <created>1625058572362</created>
+      <option name="number" value="00115" />
+      <option name="presentableId" value="LOCAL-00115" />
+      <option name="project" value="LOCAL" />
+      <updated>1625058572362</updated>
+    </task>
+    <task id="LOCAL-00116" summary="graph ok">
+      <created>1625061989512</created>
+      <option name="number" value="00116" />
+      <option name="presentableId" value="LOCAL-00116" />
+      <option name="project" value="LOCAL" />
+      <updated>1625061989512</updated>
+    </task>
+    <task id="LOCAL-00117" summary="graph ok">
+      <created>1625124355362</created>
+      <option name="number" value="00117" />
+      <option name="presentableId" value="LOCAL-00117" />
+      <option name="project" value="LOCAL" />
+      <updated>1625124355377</updated>
+    </task>
+    <task id="LOCAL-00118" summary="graph a 50%">
+      <created>1625131492942</created>
+      <option name="number" value="00118" />
+      <option name="presentableId" value="LOCAL-00118" />
+      <option name="project" value="LOCAL" />
+      <updated>1625131492942</updated>
+    </task>
+    <task id="LOCAL-00119" summary="graph a 50%">
+      <created>1625134308314</created>
+      <option name="number" value="00119" />
+      <option name="presentableId" value="LOCAL-00119" />
+      <option name="project" value="LOCAL" />
+      <updated>1625134308314</updated>
+    </task>
+    <task id="LOCAL-00120" summary="graph a 50% done">
+      <created>1625140229451</created>
+      <option name="number" value="00120" />
+      <option name="presentableId" value="LOCAL-00120" />
+      <option name="project" value="LOCAL" />
+      <updated>1625140229451</updated>
+    </task>
+    <task id="LOCAL-00121" summary="graph a 50% done + freq name">
+      <created>1625144874837</created>
+      <option name="number" value="00121" />
+      <option name="presentableId" value="LOCAL-00121" />
+      <option name="project" value="LOCAL" />
+      <updated>1625144874837</updated>
+    </task>
+    <task id="LOCAL-00122" summary="test reel données">
+      <created>1625145823186</created>
+      <option name="number" value="00122" />
+      <option name="presentableId" value="LOCAL-00122" />
+      <option name="project" value="LOCAL" />
+      <updated>1625145823186</updated>
+    </task>
+    <task id="LOCAL-00123" summary="test donné partiel chek">
+      <created>1625146518082</created>
+      <option name="number" value="00123" />
+      <option name="presentableId" value="LOCAL-00123" />
+      <option name="project" value="LOCAL" />
+      <updated>1625146518082</updated>
+    </task>
+    <task id="LOCAL-00124" summary="donné temp ?">
+      <created>1625151644329</created>
+      <option name="number" value="00124" />
+      <option name="presentableId" value="LOCAL-00124" />
+      <option name="project" value="LOCAL" />
+      <updated>1625151644329</updated>
+    </task>
+    <task id="LOCAL-00125" summary="donné temp ?">
+      <created>1625152016754</created>
+      <option name="number" value="00125" />
+      <option name="presentableId" value="LOCAL-00125" />
+      <option name="project" value="LOCAL" />
+      <updated>1625152016754</updated>
+    </task>
+    <task id="LOCAL-00126" summary="donné temp ?">
+      <created>1625213677918</created>
+      <option name="number" value="00126" />
+      <option name="presentableId" value="LOCAL-00126" />
+      <option name="project" value="LOCAL" />
+      <updated>1625213677918</updated>
+    </task>
+    <task id="LOCAL-00127" summary="donné temp ?">
+      <created>1625216718391</created>
+      <option name="number" value="00127" />
+      <option name="presentableId" value="LOCAL-00127" />
+      <option name="project" value="LOCAL" />
+      <updated>1625216718391</updated>
+    </task>
+    <task id="LOCAL-00128" summary="donné temp ?">
+      <created>1625218199797</created>
+      <option name="number" value="00128" />
+      <option name="presentableId" value="LOCAL-00128" />
+      <option name="project" value="LOCAL" />
+      <updated>1625218199797</updated>
+    </task>
+    <task id="LOCAL-00129" summary="donné temp done">
+      <created>1625218245632</created>
+      <option name="number" value="00129" />
+      <option name="presentableId" value="LOCAL-00129" />
+      <option name="project" value="LOCAL" />
+      <updated>1625218245632</updated>
+    </task>
+    <task id="LOCAL-00130" summary="donné temp done">
+      <created>1625221449066</created>
+      <option name="number" value="00130" />
+      <option name="presentableId" value="LOCAL-00130" />
+      <option name="project" value="LOCAL" />
+      <updated>1625221449066</updated>
+    </task>
+    <task id="LOCAL-00131" summary="graph completed mais pas protéger">
+      <created>1625221564589</created>
+      <option name="number" value="00131" />
+      <option name="presentableId" value="LOCAL-00131" />
+      <option name="project" value="LOCAL" />
+      <updated>1625221564589</updated>
+    </task>
+    <task id="LOCAL-00132" summary="graph completed mais pas protéger">
+      <created>1625230312110</created>
+      <option name="number" value="00132" />
+      <option name="presentableId" value="LOCAL-00132" />
+      <option name="project" value="LOCAL" />
+      <updated>1625230312110</updated>
+    </task>
+    <task id="LOCAL-00133" summary="graph completed mais pas protéger">
+      <created>1625233635783</created>
+      <option name="number" value="00133" />
+      <option name="presentableId" value="LOCAL-00133" />
+      <option name="project" value="LOCAL" />
+      <updated>1625233635783</updated>
+    </task>
+    <task id="LOCAL-00134" summary="climate chamber num">
+      <created>1625472384702</created>
+      <option name="number" value="00134" />
+      <option name="presentableId" value="LOCAL-00134" />
+      <option name="project" value="LOCAL" />
+      <updated>1625472384702</updated>
+    </task>
+    <task id="LOCAL-00135" summary="climate chamber num">
+      <created>1625480323842</created>
+      <option name="number" value="00135" />
+      <option name="presentableId" value="LOCAL-00135" />
+      <option name="project" value="LOCAL" />
+      <updated>1625480323842</updated>
+    </task>
+    <task id="LOCAL-00136" summary="climate chamber num">
+      <created>1625485390055</created>
+      <option name="number" value="00136" />
+      <option name="presentableId" value="LOCAL-00136" />
+      <option name="project" value="LOCAL" />
+      <updated>1625485390055</updated>
+    </task>
+    <task id="LOCAL-00137" summary="destruction des dossiers inutiles">
+      <created>1625493640765</created>
+      <option name="number" value="00137" />
+      <option name="presentableId" value="LOCAL-00137" />
+      <option name="project" value="LOCAL" />
+      <updated>1625493640765</updated>
+    </task>
+    <task id="LOCAL-00138" summary="destruction des dossiers inutiles">
+      <created>1625554999978</created>
+      <option name="number" value="00138" />
+      <option name="presentableId" value="LOCAL-00138" />
+      <option name="project" value="LOCAL" />
+      <updated>1625554999978</updated>
+    </task>
+    <task id="LOCAL-00139" summary="configuration file">
+      <created>1625646989295</created>
+      <option name="number" value="00139" />
+      <option name="presentableId" value="LOCAL-00139" />
+      <option name="project" value="LOCAL" />
+      <updated>1625646989296</updated>
+    </task>
+    <task id="LOCAL-00140" summary="configuration file restauration d la sauvegarde">
+      <created>1625656992236</created>
+      <option name="number" value="00140" />
+      <option name="presentableId" value="LOCAL-00140" />
+      <option name="project" value="LOCAL" />
+      <updated>1625656992236</updated>
+    </task>
+    <task id="LOCAL-00141" summary="configuration file restauration de la sauvegarde">
+      <created>1625658290748</created>
+      <option name="number" value="00141" />
+      <option name="presentableId" value="LOCAL-00141" />
+      <option name="project" value="LOCAL" />
+      <updated>1625658290748</updated>
+    </task>
+    <task id="LOCAL-00142" summary="configuration file restauration de la sauvegarde">
+      <created>1625661210670</created>
+      <option name="number" value="00142" />
+      <option name="presentableId" value="LOCAL-00142" />
+      <option name="project" value="LOCAL" />
+      <updated>1625661210670</updated>
+    </task>
+    <task id="LOCAL-00143" summary="suppretion su scan du début">
+      <created>1625665303037</created>
+      <option name="number" value="00143" />
+      <option name="presentableId" value="LOCAL-00143" />
+      <option name="project" value="LOCAL" />
+      <updated>1625665303037</updated>
+    </task>
+    <task id="LOCAL-00144" summary="Amélioration de la lisibilité du code&#10;&#10;- Renomé les fonctions fct_a....&#10;_ enlevé la varable globale Validate">
+      <created>1625815259390</created>
+      <option name="number" value="00144" />
+      <option name="presentableId" value="LOCAL-00144" />
+      <option name="project" value="LOCAL" />
+      <updated>1625815259390</updated>
+    </task>
+    <task id="LOCAL-00145" summary="Amélioration de la lisibilité du code&#10;&#10;- renomer ip_ibts &#10;- renomer ip_izepto">
+      <created>1626077777016</created>
+      <option name="number" value="00145" />
+      <option name="presentableId" value="LOCAL-00145" />
+      <option name="project" value="LOCAL" />
+      <updated>1626077777016</updated>
+    </task>
+    <task id="LOCAL-00146" summary="création de l'excutable dans le gitlab&#10;&#10;- build/menu&#10;- dist/menu">
+      <created>1626079600421</created>
+      <option name="number" value="00146" />
+      <option name="presentableId" value="LOCAL-00146" />
+      <option name="project" value="LOCAL" />
+      <updated>1626079600421</updated>
+    </task>
+    <task id="LOCAL-00147" summary="Amélioration de la lisibilité du code&#10;&#10;- renomer ip_ibts &#10;- renomer ip_izepto">
+      <created>1626080716887</created>
+      <option name="number" value="00147" />
+      <option name="presentableId" value="LOCAL-00147" />
+      <option name="project" value="LOCAL" />
+      <updated>1626080716887</updated>
+    </task>
+    <option name="localTasksCounter" value="148" />
+    <servers />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.spec" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="menu on menu destroy done" />
+    <MESSAGE value="validate off" />
+    <MESSAGE value="indicateur graph animation" />
+    <MESSAGE value="test new gpib" />
+    <MESSAGE value="scenario bug" />
+    <MESSAGE value="scenario bug .2" />
+    <MESSAGE value="scenario + etuve" />
+    <MESSAGE value="graph ok" />
+    <MESSAGE value="graph a 50%" />
+    <MESSAGE value="graph a 50% done" />
+    <MESSAGE value="graph a 50% done + freq name" />
+    <MESSAGE value="test reel données" />
+    <MESSAGE value="test donné partiel chek" />
+    <MESSAGE value="donné temp ?" />
+    <MESSAGE value="donné temp done" />
+    <MESSAGE value="graph completed mais pas protéger" />
+    <MESSAGE value="climate chamber num" />
+    <MESSAGE value="destruction des dossiers inutiles" />
+    <MESSAGE value="configuration file" />
+    <MESSAGE value="configuration file restauration d la sauvegarde" />
+    <MESSAGE value="configuration file restauration de la sauvegarde" />
+    <MESSAGE value="suppretion su scan du début" />
+    <MESSAGE value="Amélioration de la lisibilité du code&#10;&#10;- Renomé les fonctions fct_a....&#10;_ enlevé la varable globale Validate" />
+    <MESSAGE value="création de l'excutable dans le gitlab&#10;&#10;- build/menu&#10;- dist/menu" />
+    <MESSAGE value="Amélioration de la lisibilité du code&#10;&#10;- renomer ip_ibts &#10;- renomer ip_izepto" />
+    <option name="LAST_COMMIT_MESSAGE" value="Amélioration de la lisibilité du code&#10;&#10;- renomer ip_ibts &#10;- renomer ip_izepto" />
+  </component>
+</project>
