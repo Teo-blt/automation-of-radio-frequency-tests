@@ -16,6 +16,7 @@ from tkinter.messagebox import *
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from loguru import logger
 import serial
+import sys
 
 # =============================================================================
 THE_COLOR = "#E76145"
