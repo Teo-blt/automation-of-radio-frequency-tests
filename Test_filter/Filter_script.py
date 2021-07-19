@@ -70,10 +70,10 @@ class Threadfilter(threading.Thread):
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(hostname=self.ip_izepto, username=username, password=password)
-        cmd = "sed -n 6p /etc/lorad/zepto/EU868-FR.json"
+        cmd = "sed -n 16p /user/libsx1302-utils_V1.0.5-klk1-dirty/global_conf.json.sx1250.EU868"
         stdin, stdout, stderr = ssh.exec_command(cmd, get_pty=True)
         wah = stdout.readline()
-        self.original_value = wah[11:20]
+        self.original_value = wah[19:28]
 
     def change_value(self):
         self.read_original_value()
@@ -82,7 +82,9 @@ class Threadfilter(threading.Thread):
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(hostname=self.ip_izepto, username=username, password=password)
-        cmd = "sed -i '6 s/" + str(self.original_value) + "/" + str(self.value) + "/' /etc/lorad/zepto/EU868-FR.json"
+        cmd = "sed -i '16 s/" + str(self.original_value) + "/" + str(self.value) + "/' /user/libsx1302-utils_V1.0.5" \
+                                                                                   "-klk1-dirty/global_conf.json" \
+                                                                                   ".sx1250.EU868 "
         ssh.exec_command(cmd, get_pty=True)
 
     def script(self):  # The script to test one channel
@@ -296,7 +298,7 @@ class Threadfilter(threading.Thread):
             sf = float(sf.get())
             attenuate = float(attenuate.get())
             offset = float(offset.get())
-            bw = float(bw.get())
+            bw = int(bw.get())
             power = float(power.get())
             frequency = int(frequency.get())
             #  to chek if the values are conform
@@ -315,7 +317,9 @@ class Threadfilter(threading.Thread):
             if offset < 0 or offset > 200:
                 logger.critical("Error, The offset value is not conform")
                 showerror("Error", "The offset value is not conform")
-            if bw != 125 or bw != 250 or bw != 500:
+            if bw == 125 or bw == 250 or bw == 500:
+                pass
+            else:
                 logger.critical("Error, The band width value is not conform")
                 showerror("Error", "The band width value is not conform")
             if power < 0 or power > 100:
