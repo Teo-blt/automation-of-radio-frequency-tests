@@ -31,7 +31,7 @@ def draw_graph():
     file_name_label.pack(expand=False, fill="none", side=TOP),
     file_entry = Entry(settings_frame, cursor="right_ptr")
     file_entry.pack(expand=False, fill="none", side=TOP)
-    file_entry.insert(0, 'test.txt')
+    file_entry.insert(0, 'data.txt')
     import_file_button = Button(settings_frame, text="Import file",
                                 borderwidth=8, background=THE_COLOR,
                                 activebackground="green", cursor="right_ptr", overrelief="sunken",
@@ -86,16 +86,33 @@ def draw_graph():
                                           activebackground="green",
                                           bd=8, selectcolor="green", overrelief="sunken")
     sensibility_radiobutton.pack(expand=False, fill="none", side=TOP)
-    sensibility_choose_radiobutton = Radiobutton(settings_frame, text="Choose sensibility",
-                                                 variable=a, value=1, cursor="right_ptr",
-                                                 indicatoron=0, command=lambda: [
-            choose_packet_rate_combobox.pack(padx=50, pady=0, expand=True, fill="both", side=TOP), temp.forget(),
-            temp_label.forget(), send_button.forget()],
+    sensibility_choose_radiobutton = Radiobutton(settings_frame,
+                                                 text="Choose sensibility", variable=a, value=1,
+                                                 cursor="right_ptr", indicatoron=0,
+                                                 command=lambda: [
+                                                     choose_packet_rate_combobox.pack(padx=50, pady=0, expand=True,
+                                                                                      fill="both", side=TOP),
+                                                     temp.forget(), temp_label.forget(), send_button.forget()],
                                                  background=THE_COLOR,
                                                  activebackground="green",
                                                  bd=8, selectcolor="green", overrelief="sunken")
     sensibility_choose_radiobutton.pack(expand=False, fill="none", side=TOP)
     sensibility_choose_radiobutton.invoke()
+    b = IntVar()
+    radiobutton_sensibility_graph = Radiobutton(settings_frame, text="Sensibility graph",
+                                                variable=b, value=0, cursor="right_ptr",
+                                                indicatoron=0, command=lambda: [],
+                                                background=THE_COLOR,
+                                                activebackground="green",
+                                                bd=8, selectcolor="green", overrelief="sunken")
+    radiobutton_sensibility_graph.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
+    radiobutton_filter_graph = Radiobutton(settings_frame, text="Filter graph",
+                                           variable=b, value=1, cursor="right_ptr",
+                                           indicatoron=0, command=lambda: [],
+                                           background=THE_COLOR,
+                                           activebackground="green",
+                                           bd=8, selectcolor="green", overrelief="sunken")
+    radiobutton_filter_graph.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
 
     window_graph_data.mainloop()
 
@@ -109,38 +126,35 @@ def verification(value, graph_type, window, file_name):
         logger.critical(f"The file name {file_name} is invalid")
 
     if graph_type == 1:
-        draw_graph_after(value, 1, window, file_name)
-    else:
+        draw_graph_sensibility(value, 1, file_name)
+    elif graph_type == 0:
         if value < 0 or value > int(max(data[2])):
             logger.critical(f"Error, there is only {max(data[2])} temperature")
         else:
-            draw_graph_after(value, 0, window, file_name)
+            draw_graph_sensibility(value, 0, file_name)
+    else:
+        draw_graph_filter(value, file_name)
 
 
-def draw_graph_after(value, graph_type, window, name):
+def draw_graph_sensibility(value, graph_type, name):
     try:
         plt.close()
     except:
         pass
     color = {0: 'b', 1: 'r', 2: 'g', 3: 'y', 4: 'c', 5: 'lime', 6: 'black', 7: 'pink'}
-
     freq_step = 0.2
+
     if graph_type == 1:
         paket_rate = int(value[:2])
     else:
         paket_rate = 0
+
     file_name = name
     data = pd.read_csv(file_name, sep='\s+', header=None)
     data = pd.DataFrame(data)
     temp = {0: data[4][0]}
-    try:
-        sf = data[5][0]
-    except:
-        sf = "Na"
-    try:
-        bw = data[6][0]
-    except:
-        bw = "Na"
+    sf = data[5][0]
+    bw = data[6][0]
     m = 0
     X = {}
     Y = {}
@@ -219,3 +233,14 @@ def draw_graph_after(value, graph_type, window, name):
                   f"Spreading factor: {sf}, Band width: {bw}")
         plt.legend()
         plt.show()
+
+
+def draw_graph_filter(value, name):
+    try:
+        plt.close()
+    except:
+        pass
+    file_name = name
+    data = pd.read_csv(file_name, sep='\s+', header=None)
+    data = pd.DataFrame(data)
+    print(data)

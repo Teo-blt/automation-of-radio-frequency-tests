@@ -94,8 +94,8 @@ def lunch_safety(frequency, sf, attenuate, number_frames, ip, bw):
             logger.critical("Error, The frequency value is not conform")
             showerror("Error", "The frequency value is not conform")
         if attenuate < 0 or attenuate > 1000000:
-            logger.critical("Error, The attenuate value is not conform")
-            showerror("Error", "The attenuate value is not conform")
+            logger.critical("Error, The frequency_step value is not conform")
+            showerror("Error", "The frequency_step value is not conform")
         if sf < 6 or sf > 12:
             logger.critical("Error, The symbol rate value is not conform")
             showerror("Error", "The symbol rate value is not conform")
