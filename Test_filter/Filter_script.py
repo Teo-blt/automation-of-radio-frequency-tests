@@ -134,6 +134,12 @@ class Threadfilter(threading.Thread):
             a = stdout.readlines()
             number = round((len(a) / 4))
             result = (number / int(self.number_frames)) * 100
+            write_doc("-----------------------------------")
+            write_doc(round(result, 1))
+            write_doc(self.step_attenuate)
+            write_doc(self.value)
+            write_doc(self.attenuate)
+            write_doc("-----------------------------------")
             if round(result, 1) == 100 or self.step_attenuate == 1:
                 logger.debug("---------------------------------")
                 logger.debug(f"Test {i} of ∞ of frequency {self.value} Hz")
@@ -350,11 +356,8 @@ class Threadfilter(threading.Thread):
         ssh2.connect(hostname=self.ip_ibts, username=username, password=password)
         cmd = file_execution(self.config_file, 1).split(",")
         order = (cmd[0] + str(self.value / 1000000) + cmd[2] + str(self.bw) + cmd[4] + str(self.sf) + cmd[6] +
-                 str(self.number_frames) + cmd[8] + str(self.attenuate))
+                 str(self.number_frames) + cmd[8] + str(abs(self.attenuate)))
         stdin, stdout, stderr = ssh2.exec_command(order, get_pty=True)
-        write_doc("_________________________")
-        write_doc(f"attenuate {str(self.attenuate)} ")
-        write_doc("_________________________")
         while 1:
             read_value = stdout.readline()
             write_doc(read_value)
@@ -362,6 +365,26 @@ class Threadfilter(threading.Thread):
             if read_value[3:5] == "27":
                 logger.debug("The iBTS is ready")
                 break
+            if read_value[0:5] == "ERROR":
+                self.attenuate = 0
+                for t in range(0, 10):
+                    logger.info("IBTS rebooting, it may take few minutes")
+                    time.sleep(5)
+                username = "root"
+                password = "root"
+                ssh2 = paramiko.SSHClient()
+                ssh2.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+                ssh2.connect(hostname=self.ip_ibts, username=username, password=password)
+                cmd = file_execution(self.config_file, 1).split(",")
+                order = (cmd[0] + str(self.value / 1000000) + cmd[2] + str(self.bw) + cmd[4] + str(self.sf) + cmd[6] +
+                         str(self.number_frames) + cmd[8] + str(self.attenuate))
+                stdin, stdout, stderr = ssh2.exec_command(order, get_pty=True)
+                while 1:
+                    read_value = stdout.readline()
+                    write_doc(read_value)
+                    if read_value[3:5] == "27":
+                        logger.debug("The iBTS is ready")
+                        break
         read_value_2 = 0
         while read_value_2 != int("%d" % int(self.number_frames)):
             a = stdout.read(1)
@@ -377,7 +400,8 @@ class Threadfilter(threading.Thread):
         power_in = round(power_out - attenuation_db, 2)
         outfile.write(str(power_in) + ' ' + str(round(packet_lost)) + ' ' + str(self.climate_chamber_num)
                       + ' ' + str(self.temperature_storage) +
-                      ' ' + str(round(self.sf)) + ' ' + str(round(self.bw)) + ' ' + str(self.value) + '\n')
+                      ' ' + str(round(self.sf)) + ' ' + str(round(self.bw)) + ' ' + str(self.value) + ' ' +
+                      "filter" + '\n')
         outfile.close()
 
     def end_programme(self):

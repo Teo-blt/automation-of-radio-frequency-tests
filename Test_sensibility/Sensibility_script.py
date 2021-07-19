@@ -266,10 +266,12 @@ class Threadsensibility(threading.Thread):
                 if response[0:5] == "ERROR":
                     self.number_error += 1
                     logger.critical("---------------------------------")
+                    logger.critical(response)
                     logger.critical("Failed to start the concentrator")
                     logger.critical("The Izepto is rebooting, please standby")
                     logger.critical("---------------------------------")
                     write_doc("---------------------------------")
+                    write_doc(response)
                     write_doc("Failed to start the concentrator")
                     write_doc("The Izepto is rebooting, please standby")
                     write_doc("---------------------------------")
@@ -611,7 +613,7 @@ class Threadsensibility(threading.Thread):
         power_in = round(power_out - attenuation_db, 2)
         outfile.write(str(power_in) + ' ' + str(round(packet_lost)) + ' ' + str(self.climate_chamber_num)
                       + ' ' + str(self.value_mono_multi) + ' ' + str(self.temperature_storage) +
-                      ' ' + str(round(self.sf)) + ' ' + str(round(self.bw)) + '\n')
+                      ' ' + str(round(self.sf)) + ' ' + str(round(self.bw)) + ' ' + "sensibility" + '\n')
         outfile.close()
 
     def ready_ibts(self):  # initialise the IBTS
@@ -620,17 +622,36 @@ class Threadsensibility(threading.Thread):
         ssh2 = paramiko.SSHClient()
         ssh2.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh2.connect(hostname=self.ip_address, username=username, password=password)
-
         cmd = file_execution(self.config_file, 1).split(",")
         order = (cmd[0] + str(self.frequency) + cmd[2] + str(self.bw) + cmd[4] + str(self.sf) + cmd[6] +
                  str(self.number_frames) + cmd[8] + str(self.attenuate))
         stdin, stdout, stderr = ssh2.exec_command(order, get_pty=True)
-
         while 1:
             read_value = stdout.readline()
             #  logger.info(read_value)
             if read_value[3:5] == "27":
                 logger.debug("The iBTS is ready")
+                break
+            if read_value[0:5] == "ERROR":
+                self.attenuate = 0
+                for t in range(0, 10):
+                    logger.info("IBTS rebooting, it may take few minutes")
+                    time.sleep(5)
+                username = "root"
+                password = "root"
+                ssh2 = paramiko.SSHClient()
+                ssh2.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+                ssh2.connect(hostname=self.ip_address, username=username, password=password)
+                cmd = file_execution(self.config_file, 1).split(",")
+                order = (cmd[0] + str(self.frequency) + cmd[2] + str(self.bw) + cmd[4] + str(self.sf) + cmd[6] +
+                         str(self.number_frames) + cmd[8] + str(self.attenuate))
+                stdin, stdout, stderr = ssh2.exec_command(order, get_pty=True)
+                while 1:
+                    read_value = stdout.readline()
+                    write_doc(read_value)
+                    if read_value[3:5] == "27":
+                        logger.debug("The iBTS is ready")
+                        break
                 break
         read_value_2 = 0
         while read_value_2 != int("%d" % int(self.number_frames)):

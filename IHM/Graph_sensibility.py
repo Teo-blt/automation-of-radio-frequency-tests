@@ -21,24 +21,28 @@ THE_COLOR = "#E76145"
 def draw_graph():
     window_graph_data = Tk()
     window_graph_data.title("Graph data settings")
-    #  window_graph_data.geometry("300x300")
-    settings_frame = LabelFrame(window_graph_data, text="Settings")
-    settings_frame.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
-    settings_frame.config(background='#fafafa')
-    label_top = Label(settings_frame, text="Choose your packet rate")
+    verification_frame = LabelFrame(window_graph_data)
+    verification_frame.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+    menu_frame = LabelFrame(verification_frame, text="Menu")
+    menu_frame.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+    choice_frame = LabelFrame(verification_frame, text="Choice")
+    mode_sensibility_graph = LabelFrame(verification_frame, text="Mode sensibility graph")
+    mode_filter_graph = LabelFrame(verification_frame, text="Mode filter graph")
+    info_selection = LabelFrame(verification_frame, text="Info selection")
+    label_top = Label(menu_frame, text="Choose your data file")
     label_top.pack(expand=False, fill="none", side=TOP)
-    file_name_label = Label(settings_frame, text="File name :")
+    file_name_label = Label(menu_frame, text="File name :")
     file_name_label.pack(expand=False, fill="none", side=TOP),
-    file_entry = Entry(settings_frame, cursor="right_ptr")
+    file_entry = Entry(menu_frame, cursor="right_ptr")
     file_entry.pack(expand=False, fill="none", side=TOP)
     file_entry.insert(0, 'data.txt')
-    import_file_button = Button(settings_frame, text="Import file",
+    import_file_button = Button(menu_frame, text="Import file",
                                 borderwidth=8, background=THE_COLOR,
                                 activebackground="green", cursor="right_ptr", overrelief="sunken",
                                 command=lambda: [uploadaction(file_entry)])
     import_file_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
 
-    choose_packet_rate_combobox = ttk.Combobox(settings_frame, values=[
+    choose_packet_rate_combobox = ttk.Combobox(mode_sensibility_graph, values=[
         "10%",  # The list of measuring tool
         "20%",
         "30%",
@@ -54,7 +58,7 @@ def draw_graph():
         return validate(e, i)
 
     def validate(e, bla):
-        verification(bla.get(), 1, window_graph_data, file_entry.get())
+        redirection(bla.get(), 1, file_entry.get())
 
     def uploadaction(file_entry):
         filename = filedialog.askopenfilename(filetypes=[("text files", ".txt")])
@@ -63,16 +67,16 @@ def draw_graph():
 
     choose_packet_rate_combobox.bind("<<ComboboxSelected>>", chose)
     choose_packet_rate_combobox.set("-Choose your packet-")
-    temp_label = Label(settings_frame, text="Number of the temperature :")
-    temp = Entry(settings_frame, cursor="right_ptr")
+    temp_label = Label(mode_sensibility_graph, text="Number of the temperature :")
+    temp = Entry(mode_sensibility_graph, cursor="right_ptr")
     temp.insert(0, 0)
-    send_button = Button(settings_frame, text="Send",
+    send_button = Button(mode_sensibility_graph, text="Send",
                          borderwidth=8, background=THE_COLOR,
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [verification(int(temp.get()), 0, window_graph_data, file_entry.get())])
+                         command=lambda: [redirection(int(temp.get()), 0, file_entry.get())])
 
     a = IntVar()
-    sensibility_radiobutton = Radiobutton(settings_frame, text="Choose temp",
+    sensibility_radiobutton = Radiobutton(mode_sensibility_graph, text="Choose temp",
                                           variable=a, value=0, cursor="right_ptr",
                                           indicatoron=0, command=lambda: [choose_packet_rate_combobox.forget(),
                                                                           temp_label.pack(expand=False, fill="none",
@@ -86,7 +90,7 @@ def draw_graph():
                                           activebackground="green",
                                           bd=8, selectcolor="green", overrelief="sunken")
     sensibility_radiobutton.pack(expand=False, fill="none", side=TOP)
-    sensibility_choose_radiobutton = Radiobutton(settings_frame,
+    sensibility_choose_radiobutton = Radiobutton(mode_sensibility_graph,
                                                  text="Choose sensibility", variable=a, value=1,
                                                  cursor="right_ptr", indicatoron=0,
                                                  command=lambda: [
@@ -97,34 +101,78 @@ def draw_graph():
                                                  activebackground="green",
                                                  bd=8, selectcolor="green", overrelief="sunken")
     sensibility_choose_radiobutton.pack(expand=False, fill="none", side=TOP)
-    sensibility_choose_radiobutton.invoke()
+
     b = IntVar()
-    radiobutton_sensibility_graph = Radiobutton(settings_frame, text="Sensibility graph",
+    radiobutton_sensibility_graph = Radiobutton(choice_frame, text="Sensibility graph",
                                                 variable=b, value=0, cursor="right_ptr",
-                                                indicatoron=0, command=lambda: [],
+                                                indicatoron=0, command=lambda:
+        [mode_sensibility_graph.grid(row=1, column=2, ipadx=0, ipady=0, padx=0, pady=0),
+         mode_filter_graph.grid_forget()],
                                                 background=THE_COLOR,
                                                 activebackground="green",
                                                 bd=8, selectcolor="green", overrelief="sunken")
     radiobutton_sensibility_graph.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
-    radiobutton_filter_graph = Radiobutton(settings_frame, text="Filter graph",
+    radiobutton_filter_graph = Radiobutton(choice_frame, text="Filter graph",
                                            variable=b, value=1, cursor="right_ptr",
-                                           indicatoron=0, command=lambda: [],
+                                           indicatoron=0, command=lambda:
+        [mode_filter_graph.grid(row=1, column=2, ipadx=0, ipady=0, padx=0, pady=0),
+         mode_sensibility_graph.grid_forget()],
                                            background=THE_COLOR,
                                            activebackground="green",
                                            bd=8, selectcolor="green", overrelief="sunken")
     radiobutton_filter_graph.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
 
+    info_file_name_label = Label(info_selection, text="Actual file :")
+    info_file_name_label.pack(expand=False, fill="none", side=TOP)
+    info_label = Label(info_selection, text="")
+    info_label.pack(expand=False, fill="none", side=TOP)
+    back_button = Button(info_selection, text="Back",
+                         borderwidth=8, background=THE_COLOR,
+                         activebackground="green", cursor="right_ptr", overrelief="sunken",
+                         command=lambda: [go_back()])
+    back_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
+    filter_button = Button(mode_filter_graph, text="Filter",
+                           borderwidth=8, background=THE_COLOR,
+                           activebackground="green", cursor="right_ptr", overrelief="sunken",
+                           command=lambda: [redirection(0, 2, file_entry.get())])
+    filter_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
+
+    def verification(file_name):
+        data = []
+        try:
+            data = pd.read_csv(file_name, sep='\s+', header=None)
+            data = pd.DataFrame(data)
+            choice_frame.grid(row=1, column=1, ipadx=0, ipady=0, padx=0, pady=0)
+            menu_frame.grid_forget()
+            radiobutton_sensibility_graph.invoke()
+            sensibility_choose_radiobutton.invoke()
+            info_selection.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+            info_label.config(text=file_name)
+        except:
+            logger.critical(f"The file name {file_name} is invalid")
+
+    check_button = Button(menu_frame, text="Check file",
+                          borderwidth=8, background=THE_COLOR,
+                          activebackground="green", cursor="right_ptr", overrelief="sunken",
+                          command=lambda: [verification(file_entry.get())])
+    check_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
+
+    def go_back():
+        choice_frame.grid_forget()
+        mode_sensibility_graph.grid_forget()
+        menu_frame.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+        info_selection.grid_forget()
+
     window_graph_data.mainloop()
 
 
-def verification(value, graph_type, window, file_name):
+def redirection(value, graph_type, file_name):
     data = []
     try:
         data = pd.read_csv(file_name, sep='\s+', header=None)
         data = pd.DataFrame(data)
     except:
         logger.critical(f"The file name {file_name} is invalid")
-
     if graph_type == 1:
         draw_graph_sensibility(value, 1, file_name)
     elif graph_type == 0:
@@ -133,7 +181,7 @@ def verification(value, graph_type, window, file_name):
         else:
             draw_graph_sensibility(value, 0, file_name)
     else:
-        draw_graph_filter(value, file_name)
+        draw_graph_filter(file_name)
 
 
 def draw_graph_sensibility(value, graph_type, name):
@@ -235,7 +283,7 @@ def draw_graph_sensibility(value, graph_type, name):
         plt.show()
 
 
-def draw_graph_filter(value, name):
+def draw_graph_filter(name):
     try:
         plt.close()
     except:
@@ -244,3 +292,17 @@ def draw_graph_filter(value, name):
     data = pd.read_csv(file_name, sep='\s+', header=None)
     data = pd.DataFrame(data)
     print(data)
+    p = 0
+    i = 0
+    X = {}
+    Y = {}
+    while i < len(data[0]):
+        while data[1][i] < 50:
+            i += 1
+        X[p] += data[1][i]
+        Y[p] += data[6][i]
+        p += 1
+    print("fin")
+    print(X, Y)
+
+draw_graph()
