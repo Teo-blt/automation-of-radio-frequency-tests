@@ -2,7 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fdf07519-220c-4a67-ab18-26afab89606e" name="Default Changelist" comment="préparation de la lecture des données de la caractérisation du filtre&#10;&#10;-rajout des limites de selection de valeur">
-      <change beforePath="$PROJECT_DIR$/Test_filter/Filter_script.py" beforeDir="false" afterPath="$PROJECT_DIR$/Test_filter/Filter_script.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/automation-of-radio-frequency-tests.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/automation-of-radio-frequency-tests.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Executable.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/Executable.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_23_04_2021_17_26__Default_Changelist_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_23_04_2021_17_26__Default_Changelist_.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/IHM/Graph_sensibility.py" beforeDir="false" afterPath="$PROJECT_DIR$/IHM/Graph_sensibility.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,17 +50,17 @@
       <recent name="C:\Users\labo\PycharmProjects\automation-of-radio-frequency-tests\SMIQ" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.Menu">
+  <component name="RunManager" selected="Python.Graph_sensibility (1)">
     <configuration name="Graph_sensibility (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="Automation-of-radio-frequency-tests" />
+      <module name="automation-of-radio-frequency-tests" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="" />
+      <option name="SDK_HOME" value="C:\Users\labo\AppData\Local\Programs\Python\Python37-32\python.exe" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/IHM" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/IHM/Graph_sensibility.py" />
@@ -110,15 +115,15 @@
       <method v="2" />
     </configuration>
     <configuration name="Menu" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="Automation-of-radio-frequency-tests" />
+      <module name="automation-of-radio-frequency-tests" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="" />
+      <option name="SDK_HOME" value="C:\Users\labo\AppData\Local\Programs\Python\Python37-32\python.exe" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/IHM" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/IHM/Menu.py" />
@@ -131,15 +136,15 @@
       <method v="2" />
     </configuration>
     <configuration name="Void" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="Automation-of-radio-frequency-tests" />
+      <module name="automation-of-radio-frequency-tests" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="" />
+      <option name="SDK_HOME" value="C:\Users\labo\AppData\Local\Programs\Python\Python37-32\python.exe" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/IHM" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/IHM/Void.py" />
@@ -183,9 +188,9 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.Graph_sensibility (1)" />
         <item itemvalue="Python.Menu" />
         <item itemvalue="Python.Void" />
-        <item itemvalue="Python.Graph_sensibility (1)" />
         <item itemvalue="Python.delet" />
         <item itemvalue="Python.Graph_sensibility" />
       </list>
@@ -199,13 +204,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1621242487363</updated>
-    </task>
-    <task id="LOCAL-00102" summary="reboot izepto + température pour sensi">
-      <created>1624871889257</created>
-      <option name="number" value="00102" />
-      <option name="presentableId" value="LOCAL-00102" />
-      <option name="project" value="LOCAL" />
-      <updated>1624871889257</updated>
     </task>
     <task id="LOCAL-00103" summary="reboot izepto + température pour sensi">
       <created>1624873768006</created>
@@ -543,7 +541,14 @@
       <option name="project" value="LOCAL" />
       <updated>1626445438592</updated>
     </task>
-    <option name="localTasksCounter" value="151" />
+    <task id="LOCAL-00151" summary="préparation de la lecture des données de la caractérisation du filtre&#10;&#10;-rajout des limites de selection de valeur">
+      <created>1626681598868</created>
+      <option name="number" value="00151" />
+      <option name="presentableId" value="LOCAL-00151" />
+      <option name="project" value="LOCAL" />
+      <updated>1626681598868</updated>
+    </task>
+    <option name="localTasksCounter" value="152" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

@@ -181,7 +181,7 @@ def redirection(value, graph_type, file_name):
         else:
             draw_graph_sensibility(value, 0, file_name)
     else:
-        draw_graph_filter(file_name)
+        draw_graph_filter(file_name, 50)
 
 
 def draw_graph_sensibility(value, graph_type, name):
@@ -283,7 +283,7 @@ def draw_graph_sensibility(value, graph_type, name):
         plt.show()
 
 
-def draw_graph_filter(name):
+def draw_graph_filter(name, paket_rate):
     try:
         plt.close()
     except:
@@ -291,18 +291,72 @@ def draw_graph_filter(name):
     file_name = name
     data = pd.read_csv(file_name, sep='\s+', header=None)
     data = pd.DataFrame(data)
-    print(data)
-    p = 0
+    sf = data[5][0]
+    bw = data[5][0]
+    temp = 0
     i = 0
+    p = 0
     X = {}
     Y = {}
+    Z = {}
+    G = {}
+    H = {}
     while i < len(data[0]):
-        while data[1][i] < 50:
-            i += 1
-        X[p] += data[1][i]
-        Y[p] += data[6][i]
+        X[p] = data[0][i]
+        Y[p] = data[1][i]
+        Z[p] = data[6][i]
+        i += 1
         p += 1
-    print("fin")
-    print(X, Y)
+    more_than_paket_rate = 0
+    t = 0
+    i = 1
+    j = 1
+    number_of_frequency = {0: min(data[6])}
+    while i < len(data[0]):
+        if data[6][i] != data[6][i - 1]:
+            number_of_frequency[j] = data[6][i]
+            j += 1
+            i += 1
+        else:
+            i += 1
+    b = 0
+    k = 0
+    while b < len(number_of_frequency):
+        if b == 0:
+            pass
+        else:
+            while data[6][k] != number_of_frequency[b]:
+                k += 1
+            more_than_paket_rate = k
+        try:
+            while Y[more_than_paket_rate] < paket_rate or Y[more_than_paket_rate] == 100:
+                more_than_paket_rate += 1
+            if Y[more_than_paket_rate] == paket_rate:
+                G[t] = X[more_than_paket_rate]
+                H[t] = Z[more_than_paket_rate]
+                more_than_paket_rate += 1
+                t += 1
+                b += 1
+            else:
+                delta_y = round(abs(X[more_than_paket_rate - 1] - X[more_than_paket_rate]), 10)
+                delta_x = abs(Y[more_than_paket_rate - 1] - Y[more_than_paket_rate])
+                delta = -(delta_x / delta_y)
+                a = Y[more_than_paket_rate] - (delta * X[more_than_paket_rate])
+                value = (50 - a) / delta
+                G[t] = value
+                H[t] = Z[more_than_paket_rate]
+                more_than_paket_rate += 1
+                t += 1
+                b += 1
+        except:
+            break
+    for w in range(0, len(G)):
+        plt.plot(H[w], G[w], "o-", color="red", label=str(temp) + "°C")
+    plt.xlabel("Channel frequency Hz")
+    plt.ylabel("Power at the entrance of the receiver in dBm")
+    plt.title(f"Graphical representation of sensitivity test results for {paket_rate}% of packet lost\n"
+              f"Spreading factor: {sf}, Band width: {bw}")
+    plt.show()
+
 
 draw_graph()
