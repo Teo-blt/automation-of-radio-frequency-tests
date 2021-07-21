@@ -72,7 +72,7 @@ class Threadfilter(threading.Thread):
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(hostname=self.ip_izepto, username=username, password=password)
-        cmd = "sed -n 16p /user/libsx1302-utils_V1.0.5-klk1-dirty/global_conf.json.sx1250.EU868"
+        cmd = file_execution(self.config_file, 7)
         stdin, stdout, stderr = ssh.exec_command(cmd, get_pty=True)
         wah = stdout.readline()
         self.original_value = wah[19:28]
@@ -84,10 +84,9 @@ class Threadfilter(threading.Thread):
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(hostname=self.ip_izepto, username=username, password=password)
-        cmd = "sed -i '16 s/" + str(self.original_value) + "/" + str(self.value) + "/' /user/libsx1302-utils_V1.0.5" \
-                                                                                   "-klk1-dirty/global_conf.json" \
-                                                                                   ".sx1250.EU868 "
-        ssh.exec_command(cmd, get_pty=True)
+        cmd = file_execution(self.config_file, 9).split(",")
+        order = (cmd[0] + str(self.original_value) + cmd[2] + str(self.value) + cmd[4])
+        ssh.exec_command(order, get_pty=True)
 
     def script(self):  # The script to test one channel
         for i in range(0, 1000):  # number of test, generally infinity
@@ -111,7 +110,8 @@ class Threadfilter(threading.Thread):
                     write_doc("---------------------------------")
                     write_doc("Failed to start the concentrator")
                     write_doc("The Izepto is rebooting, please standby")
-                    write_doc(self.reponse_storage_izepto)
+                    for e in range(0, len(self.reponse_storage_izepto)):
+                        write_doc(self.reponse_storage_izepto[e])
                     write_doc("---------------------------------")
                     ssh.exec_command("reboot", get_pty=True)
                     for t in range(0, 10):
@@ -396,7 +396,8 @@ class Threadfilter(threading.Thread):
                 write_doc("---------------------------------")
                 write_doc("Failed to start the Ibts")
                 write_doc("The Ibts is rebooting, please standby")
-                write_doc(self.reponse_storage_ibts)
+                for e in range(0, len(self.reponse_storage_ibts)):
+                    write_doc(self.reponse_storage_ibts[e])
                 write_doc("---------------------------------")
                 ssh2.exec_command("reboot", get_pty=True)
                 for t in range(0, 10):

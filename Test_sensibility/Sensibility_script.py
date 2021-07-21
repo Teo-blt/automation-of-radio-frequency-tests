@@ -30,11 +30,11 @@ vt = serial.Serial()
 
 class Threadsensibility(threading.Thread):
 
-    def __init__(self, ip_address, ip, port_test, window):
+    def __init__(self, ip_ibts, ip_izepto, port_test, window):
         threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
         # additional data added to the class
-        self.ip_address = ip_address
-        self.ip = ip
+        self.ip_ibts = ip_ibts
+        self.ip_izepto = ip_izepto
         self.port_test = port_test
         self.attenuate = 0  # 0.25dB par pas
         self.number_frames = 0
@@ -69,6 +69,7 @@ class Threadsensibility(threading.Thread):
         self.number_launch = 0
         self.reponse_storage_ibts = []
         self.reponse_storage_izepto = []
+        self.original_value = 0
 
     def run(self):
         self.time_start = time.time()
@@ -79,6 +80,7 @@ class Threadsensibility(threading.Thread):
         write_doc("Sensitivity measurement iZepto")
         write_doc("Sensitivity measurement iBTS")
         self.launch_ibts()
+        self.change_value()
         if self.value_mono_multi:  # to choose between the multi channel mode or the mono channel mode, True = Multi
             if self.port_test != -1:  # to choose il the climate chamber need to be used
                 self.launch_climatic_chamber()
@@ -203,6 +205,28 @@ class Threadsensibility(threading.Thread):
         vt.write(CLIMATIC_CHAMBER_STOP)
         sys.exit()
 
+    def read_original_value(self):
+        username = "root"
+        password = "root"
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(hostname=self.ip_izepto, username=username, password=password)
+        cmd = file_execution(self.config_file, 7)
+        stdin, stdout, stderr = ssh.exec_command(cmd, get_pty=True)
+        wah = stdout.readline()
+        self.original_value = wah[19:29]
+
+    def change_value(self):
+        self.read_original_value()
+        username = "root"
+        password = "root"
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(hostname=self.ip_izepto, username=username, password=password)
+        cmd = file_execution(self.config_file, 9).split(",")
+        order = (cmd[0] + str(self.original_value) + cmd[2] + str(int(self.frequency * 1000000)) + cmd[4])
+        ssh.exec_command(order, get_pty=True)
+
     def wait_temperature_reach_consign(self):
         while abs(self.temp - self.temperature) >= 0.2 or self.VALUE_STABILISATION <= self.time_temp_wait:
             # The maximal difference between the actual temperature and the order must be less than 0.2
@@ -238,7 +262,6 @@ class Threadsensibility(threading.Thread):
                 pass
             vt.write(b"$00I\n\r")  # prepare the climatic chamber to receive information
             time.sleep(0.2)  # A pause that freeze the entire program
-            # TODO find a better way to wait maybe asyncio.sleep(5) ?
             received_frame = vt.read_all().decode('utf-8')  # Decipher the frame that was send by the climatic
             # chamber
             word = received_frame.split(" ")  # Split the decipher the frame that was send by the climatic chamber
@@ -260,7 +283,7 @@ class Threadsensibility(threading.Thread):
             password = "root"
             ssh = paramiko.SSHClient()  # initialisation de la liaison SSH
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            ssh.connect(hostname=self.ip, username=username, password=password)
+            ssh.connect(hostname=self.ip_izepto, username=username, password=password)
             cmd = file_execution(self.config_file, 3) + "\n" + file_execution(self.config_file, 5)
             stdin, stdout, stderr = ssh.exec_command(cmd, get_pty=True)
             self.reponse_storage_izepto = []
@@ -278,7 +301,8 @@ class Threadsensibility(threading.Thread):
                     write_doc(response)
                     write_doc("Failed to start the concentrator")
                     write_doc("The Izepto is rebooting, please standby")
-                    write_doc(self.reponse_storage_izepto)
+                    for e in range(0, len(self.reponse_storage_izepto)):
+                        write_doc(self.reponse_storage_izepto[e])
                     write_doc("---------------------------------")
                     ssh.exec_command("reboot", get_pty=True)
                     for t in range(0, 10):
@@ -288,7 +312,7 @@ class Threadsensibility(threading.Thread):
                     password = "root"
                     ssh = paramiko.SSHClient()
                     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-                    ssh.connect(hostname=self.ip, username=username, password=password)
+                    ssh.connect(hostname=self.ip_izepto, username=username, password=password)
                     cmd = file_execution(self.config_file, 3) + "\n" + file_execution(self.config_file, 5)
                     stdin, stdout, stderr = ssh.exec_command(cmd, get_pty=True)
                     if response[19:22] == "EUI":
@@ -484,7 +508,7 @@ class Threadsensibility(threading.Thread):
         attenuate_label.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
         attenuate = Entry(test_frame, cursor="right_ptr")
         attenuate.grid(row=1, column=1, ipadx=0, ipady=0, padx=0, pady=0)
-        attenuate.insert(0, 280)
+        attenuate.insert(0, 270)
 
         step_label = Label(test_frame, text="Step of quarter dB attenuation :")
         step_label.grid(row=2, column=0, ipadx=0, ipady=0, padx=0, pady=0)
@@ -541,7 +565,7 @@ class Threadsensibility(threading.Thread):
                                                 activebackground="green",
                                                 bd=8, selectcolor="green", overrelief="sunken")
         channel_multi_radiobutton.grid(row=4, column=1, ipadx=10, ipady=10, padx=0, pady=0)
-        channel_mono_radiobutton.invoke()
+        channel_multi_radiobutton.invoke()
 
         reset_button = Button(scale_frame, text="Reset",
                               borderwidth=8, background=THE_COLOR,
@@ -565,12 +589,12 @@ class Threadsensibility(threading.Thread):
         global is_killed
         try:  # to chek if the values are integer
             number_frames = float(number_frames.get())
-            frequency = float(frequency.get())
+            frequency = int(frequency.get())
             attenuate = float(attenuate.get())
             sf = float(sf.get())
             step = float(step.get())
             offset = float(offset.get())
-            bw = float(bw.get())
+            bw = int(bw.get())
             power = float(power.get())
             #  to chek if the values are conform
             if number_frames < 0 or number_frames > 1000000:
@@ -591,9 +615,11 @@ class Threadsensibility(threading.Thread):
             if offset < 0 or offset > 200:
                 logger.critical("Error, The offset value is not conform")
                 showerror("Error", "The offset value is not conform")
-            if bw != 125 or bw != 250 or bw != 500:
-                logger.critical("Error, The band width value is not conform")
-                showerror("Error", "The band width value is not conform")
+            if bw != 125:
+                if bw != 250:
+                    if bw != 500:
+                        logger.critical("Error, The band width value is not conform")
+                        showerror("Error", "The band width value is not conform")
             if power < 0 or power > 100:
                 logger.critical("Error, The power value is not conform")
                 showerror("Error", "The power value is not conform")
@@ -626,7 +652,7 @@ class Threadsensibility(threading.Thread):
         password = "root"
         ssh2 = paramiko.SSHClient()
         ssh2.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh2.connect(hostname=self.ip_address, username=username, password=password)
+        ssh2.connect(hostname=self.ip_ibts, username=username, password=password)
         cmd = file_execution(self.config_file, 1).split(",")
         order = (cmd[0] + str(self.frequency) + cmd[2] + str(self.bw) + cmd[4] + str(self.sf) + cmd[6] +
                  str(self.number_frames) + cmd[8] + str(self.attenuate))
@@ -643,7 +669,8 @@ class Threadsensibility(threading.Thread):
                 write_doc("---------------------------------")
                 write_doc("Failed to start the Ibts")
                 write_doc("The Ibts is rebooting, please standby")
-                write_doc(self.reponse_storage_ibts)
+                for e in range(0, len(self.reponse_storage_ibts)):
+                    write_doc( self.reponse_storage_ibts[e])
                 write_doc("---------------------------------")
                 ssh2.exec_command("reboot", get_pty=True)
                 for t in range(0, 10):
@@ -653,7 +680,7 @@ class Threadsensibility(threading.Thread):
                 password = "root"
                 ssh2 = paramiko.SSHClient()
                 ssh2.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-                ssh2.connect(hostname=self.ip_address, username=username, password=password)
+                ssh2.connect(hostname=self.ip_ibts, username=username, password=password)
                 cmd = file_execution(self.config_file, 1).split(",")
                 order = (cmd[0] + str(self.frequency) + cmd[2] + str(self.bw) + cmd[4] + str(self.sf) + cmd[6] +
                          str(self.number_frames) + cmd[8] + str(self.attenuate))

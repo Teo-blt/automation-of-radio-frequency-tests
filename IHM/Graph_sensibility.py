@@ -67,13 +67,22 @@ def draw_graph():
 
     choose_packet_rate_combobox.bind("<<ComboboxSelected>>", chose)
     choose_packet_rate_combobox.set("-Choose your packet-")
+
+    choose_temp_combobox = ttk.Combobox(mode_sensibility_graph, values=["1", "2"], state="readonly")
+
+    def temp_chose(e, i=choose_temp_combobox):
+        return temp_validate(e, i)
+
+    def temp_validate(e, bla):
+        redirection(bla.get(), 0, file_entry.get())
+
+    choose_temp_combobox.bind("<<ComboboxSelected>>", temp_chose)
+    choose_temp_combobox.set("-Choose your temperature-")
+
     temp_label = Label(mode_sensibility_graph, text="Number of the temperature :")
-    temp = Entry(mode_sensibility_graph, cursor="right_ptr")
-    temp.insert(0, 0)
-    send_button = Button(mode_sensibility_graph, text="Send",
-                         borderwidth=8, background=THE_COLOR,
-                         activebackground="green", cursor="right_ptr", overrelief="sunken",
-                         command=lambda: [redirection(int(temp.get()), 0, file_entry.get())])
+
+    def change_value_temp():
+        choose_temp_combobox.config(values=["2", "3"])
 
     a = IntVar()
     sensibility_radiobutton = Radiobutton(mode_sensibility_graph, text="Choose temp",
@@ -81,11 +90,10 @@ def draw_graph():
                                           indicatoron=0, command=lambda: [choose_packet_rate_combobox.forget(),
                                                                           temp_label.pack(expand=False, fill="none",
                                                                                           side=TOP),
-                                                                          temp.pack(expand=False, fill="none",
-                                                                                    side=TOP),
-                                                                          send_button.pack(padx=10, pady=10, ipadx=10,
-                                                                                           ipady=10, expand=False,
-                                                                                           fill="none", side=TOP)],
+                                                                          choose_temp_combobox.pack(expand=False,
+                                                                                                    fill="none",
+                                                                                                    side=TOP),
+                                                                          change_value_temp()],
                                           background=THE_COLOR,
                                           activebackground="green",
                                           bd=8, selectcolor="green", overrelief="sunken")
@@ -96,7 +104,7 @@ def draw_graph():
                                                  command=lambda: [
                                                      choose_packet_rate_combobox.pack(padx=50, pady=0, expand=True,
                                                                                       fill="both", side=TOP),
-                                                     temp.forget(), temp_label.forget(), send_button.forget()],
+                                                     choose_temp_combobox.forget(), temp_label.forget()],
                                                  background=THE_COLOR,
                                                  activebackground="green",
                                                  bd=8, selectcolor="green", overrelief="sunken")
@@ -117,7 +125,7 @@ def draw_graph():
                                            indicatoron=0, command=lambda:
         [mode_filter_graph.grid(row=1, column=2, ipadx=0, ipady=0, padx=0, pady=0),
          mode_sensibility_graph.grid_forget(), filter_choose_packet_rate_combobox.pack(padx=50, pady=0, expand=True,
-                                                                                      fill="both", side=BOTTOM),
+                                                                                       fill="both", side=BOTTOM),
          filter_label.pack(expand=False, fill="none", side=TOP)],
                                            background=THE_COLOR,
                                            activebackground="green",
@@ -383,5 +391,3 @@ def draw_graph_filter(name, value):
     plt.title(f"Graphical representation of sensitivity test results for {paket_rate}% of packet lost\n"
               f"Spreading factor: {sf}, Band width: {bw}")
     plt.show()
-
-draw_graph()

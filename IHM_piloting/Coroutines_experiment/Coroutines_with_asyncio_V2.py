@@ -92,7 +92,7 @@ class Thread(threading.Thread):
             logger.info("################################################")
             logger.info("Start of Test")
             self.time_start = time.time()  # Collect the time of the beginning of the test
-            self.timer = 1 / 60  # For the test, it reduce the time of waiting to 1 min
+            #self.timer = 1 / 60  # For the test, it reduce the time of waiting to 1 min
             asyncio.run(self.several_methods_run_together())
 
     async def wait_temperature_reach_consign(self, timer):
