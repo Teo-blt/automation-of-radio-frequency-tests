@@ -59,6 +59,7 @@ class Threadsensibility(threading.Thread):
         self.value_mono_multi = 0
         self.attenuate_storage = 0
         self.data_file = 'Sensibility.txt'
+        self.report_file = "Report_sensibility.txt"
         self.frequency_storage = 0
         self.number_channel = 8
         self.time_temp_wait = 120
@@ -73,12 +74,13 @@ class Threadsensibility(threading.Thread):
 
     def run(self):
         self.time_start = time.time()
-        sensibility_result = open("Report_sensibility.txt", 'w+')  # preparation of the txt files
+        self.name_files()
+        sensibility_result = open(self.report_file, 'w+')  # preparation of the txt files
         sensibility_result.close()
         outfile = open(self.data_file, 'w+')
         outfile.close()
-        write_doc("Sensitivity measurement iZepto")
-        write_doc("Sensitivity measurement iBTS")
+        self.write_doc("Sensitivity measurement iZepto")
+        self.write_doc("Sensitivity measurement iBTS")
         self.launch_ibts()
         self.change_value()
         if self.value_mono_multi:  # to choose between the multi channel mode or the mono channel mode, True = Multi
@@ -97,8 +99,8 @@ class Threadsensibility(threading.Thread):
                 while abs(self.temperature - self.t_end) > abs(self.step_temp):
                     self.value_mono_multi = 0
                     self.frequency = self.frequency_storage  # a variable to store the start frequency
-                    write_doc("################################################")
-                    write_doc(f"Start of Test temperature {self.climate_chamber_num} : {self.temperature} degree "
+                    self.write_doc("################################################")
+                    self.write_doc(f"Start of Test temperature {self.climate_chamber_num} : {self.temperature} degree "
                               f"Celsius")
                     logger.debug("################################################")
                     logger.debug(f"Start of Test temperature {self.climate_chamber_num}: {self.temperature} degree "
@@ -111,14 +113,14 @@ class Threadsensibility(threading.Thread):
                     for p in range(0, self.number_channel):  # stay in the boucle until the 8 channel are tested
                         logger.debug(f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, frequency:"
                                      f" {round(self.frequency, 1)}")
-                        write_doc(f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, "
+                        self.write_doc(f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, "
                                   f"frequency: {round(self.frequency, 1)}")
                         self.script()  # use the script function to test one channel
                         self.frequency = self.frequency + 0.2  # The value of the frequency increase of the step
                         # frequency value
                         self.value_mono_multi = self.value_mono_multi + 1  # to count the number of channel tested
                     logger.debug(f"fin test")
-                    write_doc(f"fin test")
+                    self.write_doc(f"fin test")
                     self.temperature_storage += self.step_temp
                     self.climate_chamber_num = self.climate_chamber_num + 1
                 for u in range(0, 2):  # 2 cycles to end the programme at the right temperature
@@ -127,9 +129,9 @@ class Threadsensibility(threading.Thread):
                         self.temperature_storage = self.t_end
                         self.climate_chamber_num = self.climate_chamber_num + 1
                     self.value_mono_multi = 0
-                    write_doc(f"Start of Test temperature {self.climate_chamber_num}: {self.temperature} degree "
+                    self.write_doc(f"Start of Test temperature {self.climate_chamber_num}: {self.temperature} degree "
                               f"Celsius")
-                    write_doc("Start of Test")
+                    self.write_doc("Start of Test")
                     logger.debug("################################################")
                     logger.debug(f"Start of Test temperature {self.climate_chamber_num}: {self.temperature} degree "
                                  f"Celsius")
@@ -140,7 +142,7 @@ class Threadsensibility(threading.Thread):
                         logger.debug(
                             f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, frequency:"
                             f" {round(self.frequency, 1)}")
-                        write_doc(
+                        self.write_doc(
                             f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, frequency: "
                             f"{round(self.frequency, 1)}")
                         self.script()
@@ -154,7 +156,7 @@ class Threadsensibility(threading.Thread):
                 for p in range(0, self.number_channel):
                     logger.debug(f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, "
                                  f"frequency: {round(self.frequency, 1)}")
-                    write_doc(f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, frequency: "
+                    self.write_doc(f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, frequency: "
                               f"{round(self.frequency, 1)}")
                     self.attenuate = self.attenuate_storage
                     self.script()
@@ -168,6 +170,16 @@ class Threadsensibility(threading.Thread):
                 self.script()
                 self.end_programme()
 
+    def name_files(self):
+        if len(str(time.localtime()[1])) == 1:
+            month = "0" + str(time.localtime()[1])
+        else:
+            month = str(time.localtime()[1])
+        self.data_file = str(("Data_sensibility_" + str(time.localtime()[2]) + "/" + month + "/" + str(time.localtime()[0]) + "_"
+                          + str(time.localtime()[3]) + str(time.localtime()[4]) + str(time.localtime()[5]) + ".txt"))
+        self.report_file = str(("Report_sensibility_" + str(time.localtime()[2]) + "/" + month + "/" + str(time.localtime()[0]) + "_"
+                          + str(time.localtime()[3]) + str(time.localtime()[4]) + str(time.localtime()[5]) + ".txt"))
+
     def climate_chamber_script(self):  # script + control of the climate chamber
         self.launch_climatic_chamber()
         vt.port = self.port_test
@@ -180,8 +192,8 @@ class Threadsensibility(threading.Thread):
         vt.write(ON % self.temperature)
         [self.temp, self.temp2] = self.read(self.port_test)
         while abs(self.temperature - self.t_end) >= abs(self.step_temp):
-            write_doc(f"Start of Test temperature {self.climate_chamber_num}")
-            write_doc("Start of Test")
+            self.write_doc(f"Start of Test temperature {self.climate_chamber_num}")
+            self.write_doc("Start of Test")
             logger.debug("################################################")
             logger.debug(f"Start of Test temperature {self.climate_chamber_num}")
             vt.write(ON % self.temperature)
@@ -194,8 +206,8 @@ class Threadsensibility(threading.Thread):
             if u != 0:
                 self.temperature = self.t_end
                 self.temperature_storage = self.t_end
-            write_doc(f"Start of Test temperature {self.climate_chamber_num}")
-            write_doc("Start of Test")
+            self.write_doc(f"Start of Test temperature {self.climate_chamber_num}")
+            self.write_doc("Start of Test")
             logger.debug("################################################")
             logger.debug(f"Start of Test temperature {self.climate_chamber_num}")
             vt.write(ON % self.temperature)
@@ -248,8 +260,8 @@ class Threadsensibility(threading.Thread):
                 self.VALUE_STABILISATION = 0
         logger.info(f"The climate chamber is stabilized with success")
         logger.info("#################################")
-        write_doc(f"The climate chamber is stabilized with success")
-        write_doc("#################################")
+        self.write_doc(f"The climate chamber is stabilized with success")
+        self.write_doc("#################################")
 
     def read(self, the_port):
         try:  # This try allow the program to survive in a rare case where the climatic
@@ -297,13 +309,13 @@ class Threadsensibility(threading.Thread):
                     logger.critical("Failed to start the concentrator")
                     logger.critical("The Izepto is rebooting, please standby")
                     logger.critical("---------------------------------")
-                    write_doc("---------------------------------")
-                    write_doc(response)
-                    write_doc("Failed to start the concentrator")
-                    write_doc("The Izepto is rebooting, please standby")
+                    self.write_doc("---------------------------------")
+                    self.write_doc(response)
+                    self.write_doc("Failed to start the concentrator")
+                    self.write_doc("The Izepto is rebooting, please standby")
                     for e in range(0, len(self.reponse_storage_izepto)):
-                        write_doc(self.reponse_storage_izepto[e])
-                    write_doc("---------------------------------")
+                        self.write_doc(self.reponse_storage_izepto[e])
+                    self.write_doc("---------------------------------")
                     ssh.exec_command("reboot", get_pty=True)
                     for t in range(0, 10):
                         logger.info("Izepto rebooting, it may take few minutes")
@@ -318,7 +330,7 @@ class Threadsensibility(threading.Thread):
                     if response[19:22] == "EUI":
                         logger.debug("The iZepto is ready")
                         logger.debug("The reboot is completed")
-                        write_doc("The reboot is completed")
+                        self.write_doc("The reboot is completed")
                         break
                 if response[19:22] == "EUI":
                     logger.debug("The iZepto is ready")
@@ -328,7 +340,8 @@ class Threadsensibility(threading.Thread):
                 self.attenuate = self.attenuate_storage
                 self.ready_ibts()  # lunch the initialisation of the IBTS
             else:
-                self.attenuate = float(self.attenuate) + self.step_attenuate  # The value of the frequency_step increase of
+                self.attenuate = float(self.attenuate) + self.step_attenuate  # The value of the frequency_step
+                # increase of
                 # the step frequency_step value
                 self.ready_ibts()
             time.sleep(1)  # 1 second of safety after that the ready_ibts function is completed
@@ -345,19 +358,19 @@ class Threadsensibility(threading.Thread):
             logger.debug(f"The rate is : {round(result, 1)}%")
             logger.debug("---------------------------------")
 
-            write_doc("---------------------------------")
-            write_doc(f"Test {i} of infinity of channel number: {self.value_mono_multi}")
-            write_doc(
+            self.write_doc("---------------------------------")
+            self.write_doc(f"Test {i} of infinity of channel number: {self.value_mono_multi}")
+            self.write_doc(
                 f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
-            write_doc(f"you send {self.number_frames} frames")
-            write_doc(f"you received {number} frames")
-            write_doc(f"The rate is : {round(result, 1)}%")
-            write_doc("---------------------------------")
+            self.write_doc(f"you send {self.number_frames} frames")
+            self.write_doc(f"you received {number} frames")
+            self.write_doc(f"The rate is : {round(result, 1)}%")
+            self.write_doc("---------------------------------")
             self.write_data(round(float(self.attenuate) / 4 + int(self.offset), 2), 100 - round(result, 2),
                             self.power)
             if round(result, 1) == 0:
                 logger.debug(f"fin channel number: {self.value_mono_multi}\n")
-                write_doc(f"fin channel number: {self.value_mono_multi}\n")
+                self.write_doc(f"fin channel number: {self.value_mono_multi}\n")
                 # self.window.destroy()
                 break
 
@@ -666,12 +679,12 @@ class Threadsensibility(threading.Thread):
                 logger.critical("Failed to start the Ibts")
                 logger.critical("The Ibts is rebooting, please standby")
                 logger.critical("---------------------------------")
-                write_doc("---------------------------------")
-                write_doc("Failed to start the Ibts")
-                write_doc("The Ibts is rebooting, please standby")
+                self.write_doc("---------------------------------")
+                self.write_doc("Failed to start the Ibts")
+                self.write_doc("The Ibts is rebooting, please standby")
                 for e in range(0, len(self.reponse_storage_ibts)):
-                    write_doc( self.reponse_storage_ibts[e])
-                write_doc("---------------------------------")
+                    self.write_doc(self.reponse_storage_ibts[e])
+                self.write_doc("---------------------------------")
                 ssh2.exec_command("reboot", get_pty=True)
                 for t in range(0, 10):
                     logger.info("IBTS rebooting, it may take few minutes")
@@ -687,7 +700,7 @@ class Threadsensibility(threading.Thread):
                 stdin, stdout, stderr = ssh2.exec_command(order, get_pty=True)
                 while 1:
                     read_value = stdout.readline()
-                    write_doc(read_value)
+                    self.write_doc(read_value)
                     if read_value[3:5] == "27":
                         logger.debug("The iBTS is ready")
                         break
@@ -710,10 +723,15 @@ class Threadsensibility(threading.Thread):
         logger.debug(f"Number of fail of the Izepto: {self.number_error}")
         b = time.localtime(time.time() - self.time_start)  # Total time of the test
         logger.info(f'Test duration: {b[3] - 1}H{b[4]}min and {b[5]} second(s)')
-        write_doc("End test")
-        write_doc(f"Number of launch of the Izepto: {self.number_launch}")
-        write_doc(f"Number of fail of the Izepto: {self.number_error}")
-        write_doc(f'Test duration: {b[3] - 1}H{b[4]}min and {b[5]} second(s)')
+        self.write_doc("End test")
+        self.write_doc(f"Number of launch of the Izepto: {self.number_launch}")
+        self.write_doc(f"Number of fail of the Izepto: {self.number_error}")
+        self.write_doc(f'Test duration: {b[3] - 1}H{b[4]}min and {b[5]} second(s)')
+
+    def write_doc(self, text):
+        sensibility_result = open(self.report_file, 'a')
+        sensibility_result.write(str(text) + "\n")
+        sensibility_result.close()
 
 
 def simulation_graphic_stair(step, temp_start, temp_end, window):  # create the simulation graph
@@ -784,7 +802,4 @@ def reset_all(frequency, sf, attenuate, number_frames, step, offset, bw):
     bw.insert(0, 125)
 
 
-def write_doc(text):
-    sensibility_result = open("Report_sensibility.txt", 'a')
-    sensibility_result.write(str(text) + "\n")
-    sensibility_result.close()
+

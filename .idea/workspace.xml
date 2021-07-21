@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fdf07519-220c-4a67-ab18-26afab89606e" name="Default Changelist" comment="Rajout du messa&#10;&#10;-création d'un menu et d'un algorithme dasn graph sensibility dédié a la caractérisation du filtre">
+    <list default="true" id="fdf07519-220c-4a67-ab18-26afab89606e" name="Default Changelist" comment="finalisation de la caractérisation du filtre &#10;&#10;-amélioration du fichier de config order&#10;-réinitialisation du fichier de config izepto pour le test de sensi">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data_files/Orders.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Data_files/Orders.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data_files/Orders_secure_save.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Data_files/Orders_secure_save.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/IHM/Graph_sensibility.py" beforeDir="false" afterPath="$PROJECT_DIR$/IHM/Graph_sensibility.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/IHM_piloting/Coroutines_experiment/Coroutines_with_asyncio_V2.py" beforeDir="false" afterPath="$PROJECT_DIR$/IHM_piloting/Coroutines_experiment/Coroutines_with_asyncio_V2.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Test_filter/Filter_script.py" beforeDir="false" afterPath="$PROJECT_DIR$/Test_filter/Filter_script.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Test_sensibility/Sensibility_script.py" beforeDir="false" afterPath="$PROJECT_DIR$/Test_sensibility/Sensibility_script.py" afterDir="false" />
     </list>
@@ -51,7 +48,7 @@
       <recent name="C:\Users\labo\PycharmProjects\automation-of-radio-frequency-tests\SMIQ" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.Menu">
+  <component name="RunManager" selected="Python.Void">
     <configuration name="Graph_sensibility (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="automation-of-radio-frequency-tests" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -189,8 +186,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.Menu" />
         <item itemvalue="Python.Void" />
+        <item itemvalue="Python.Menu" />
         <item itemvalue="Python.Graph_sensibility (1)" />
         <item itemvalue="Python.delet" />
         <item itemvalue="Python.Graph_sensibility" />
@@ -205,13 +202,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1621242487363</updated>
-    </task>
-    <task id="LOCAL-00105" summary="test graphique mode">
-      <created>1624958459618</created>
-      <option name="number" value="00105" />
-      <option name="presentableId" value="LOCAL-00105" />
-      <option name="project" value="LOCAL" />
-      <updated>1624958459618</updated>
     </task>
     <task id="LOCAL-00106" summary="test graphique mode channel">
       <created>1624974805654</created>
@@ -549,7 +539,14 @@
       <option name="project" value="LOCAL" />
       <updated>1626859522803</updated>
     </task>
-    <option name="localTasksCounter" value="154" />
+    <task id="LOCAL-00154" summary="finalisation de la caractérisation du filtre &#10;&#10;-amélioration du fichier de config order&#10;-réinitialisation du fichier de config izepto pour le test de sensi">
+      <created>1626873368581</created>
+      <option name="number" value="00154" />
+      <option name="presentableId" value="LOCAL-00154" />
+      <option name="project" value="LOCAL" />
+      <updated>1626873368581</updated>
+    </task>
+    <option name="localTasksCounter" value="155" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -565,7 +562,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="test graphique tableau etuve en cours" />
     <MESSAGE value="test final N°3" />
     <MESSAGE value="test final N°4" />
     <MESSAGE value="test final N°6 parfait ?" />
@@ -590,6 +586,7 @@
     <MESSAGE value="préparation de la lecture des données de la caractérisation du filtre&#10;&#10;-rajout des limites de selection de valeur" />
     <MESSAGE value="première ébauche de la lecture de données du graph de caractérisation du filtre &#10;&#10;-création d'un menu et d'un algorithme dasn graph sensibility dédié a la caractérisation du filtre" />
     <MESSAGE value="Rajout du messa&#10;&#10;-création d'un menu et d'un algorithme dasn graph sensibility dédié a la caractérisation du filtre" />
-    <option name="LAST_COMMIT_MESSAGE" value="Rajout du messa&#10;&#10;-création d'un menu et d'un algorithme dasn graph sensibility dédié a la caractérisation du filtre" />
+    <MESSAGE value="finalisation de la caractérisation du filtre &#10;&#10;-amélioration du fichier de config order&#10;-réinitialisation du fichier de config izepto pour le test de sensi" />
+    <option name="LAST_COMMIT_MESSAGE" value="finalisation de la caractérisation du filtre &#10;&#10;-amélioration du fichier de config order&#10;-réinitialisation du fichier de config izepto pour le test de sensi" />
   </component>
 </project>

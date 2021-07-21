@@ -83,6 +83,9 @@ def draw_graph():
 
     def change_value_temp():
         choose_temp_combobox.config(values=["2", "3"])
+        data = pd.read_csv(file_entry.get(), sep='\s+', header=None)
+        data = pd.DataFrame(data)
+        print(data[4])
 
     a = IntVar()
     sensibility_radiobutton = Radiobutton(mode_sensibility_graph, text="Choose temp",
