@@ -107,7 +107,7 @@ def draw_graph():
                                                 variable=b, value=0, cursor="right_ptr",
                                                 indicatoron=0, command=lambda:
         [mode_sensibility_graph.grid(row=1, column=2, ipadx=0, ipady=0, padx=0, pady=0),
-         mode_filter_graph.grid_forget()],
+         mode_filter_graph.grid_forget(), filter_choose_packet_rate_combobox.forget(), filter_label.forget()],
                                                 background=THE_COLOR,
                                                 activebackground="green",
                                                 bd=8, selectcolor="green", overrelief="sunken")
@@ -116,7 +116,9 @@ def draw_graph():
                                            variable=b, value=1, cursor="right_ptr",
                                            indicatoron=0, command=lambda:
         [mode_filter_graph.grid(row=1, column=2, ipadx=0, ipady=0, padx=0, pady=0),
-         mode_sensibility_graph.grid_forget()],
+         mode_sensibility_graph.grid_forget(), filter_choose_packet_rate_combobox.pack(padx=50, pady=0, expand=True,
+                                                                                      fill="both", side=BOTTOM),
+         filter_label.pack(expand=False, fill="none", side=TOP)],
                                            background=THE_COLOR,
                                            activebackground="green",
                                            bd=8, selectcolor="green", overrelief="sunken")
@@ -131,23 +133,45 @@ def draw_graph():
                          activebackground="green", cursor="right_ptr", overrelief="sunken",
                          command=lambda: [go_back()])
     back_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
-    filter_button = Button(mode_filter_graph, text="Filter",
-                           borderwidth=8, background=THE_COLOR,
-                           activebackground="green", cursor="right_ptr", overrelief="sunken",
-                           command=lambda: [redirection(0, 2, file_entry.get())])
-    filter_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
+    filter_label = Label(mode_filter_graph, text="filter graph mode", font="arial")
+
+    filter_choose_packet_rate_combobox = ttk.Combobox(mode_filter_graph, values=[
+        "10%",  # The list of measuring tool
+        "20%",
+        "30%",
+        "40%",
+        "50%",
+        "60%",
+        "70%",
+        "80%",
+        "90%"
+    ], state="readonly")
+
+    def filter_chose(e, i=filter_choose_packet_rate_combobox):
+        return filter_validate(e, i)
+
+    def filter_validate(e, bla):
+        redirection(bla.get(), 2, file_entry.get())
+
+    filter_choose_packet_rate_combobox.bind("<<ComboboxSelected>>", filter_chose)
+    filter_choose_packet_rate_combobox.set("-Choose your packet-")
 
     def verification(file_name):
         data = []
         try:
             data = pd.read_csv(file_name, sep='\s+', header=None)
             data = pd.DataFrame(data)
-            choice_frame.grid(row=1, column=1, ipadx=0, ipady=0, padx=0, pady=0)
             menu_frame.grid_forget()
-            radiobutton_sensibility_graph.invoke()
-            sensibility_choose_radiobutton.invoke()
             info_selection.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
-            info_label.config(text=file_name)
+            info_label.config(text=file_name.split("/")[-1])
+            if data[7][0] == "filter":
+                radiobutton_filter_graph.invoke()
+            elif data[7][0] == "sensibility":
+                radiobutton_sensibility_graph.invoke()
+                sensibility_choose_radiobutton.invoke()
+            else:
+                logger.critical(f"The file name {file_name} is invalid")
+
         except:
             logger.critical(f"The file name {file_name} is invalid")
 
@@ -162,6 +186,7 @@ def draw_graph():
         mode_sensibility_graph.grid_forget()
         menu_frame.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
         info_selection.grid_forget()
+        mode_filter_graph.grid_forget()
 
     window_graph_data.mainloop()
 
@@ -181,7 +206,7 @@ def redirection(value, graph_type, file_name):
         else:
             draw_graph_sensibility(value, 0, file_name)
     else:
-        draw_graph_filter(file_name, 50)
+        draw_graph_filter(file_name, value)
 
 
 def draw_graph_sensibility(value, graph_type, name):
@@ -283,7 +308,7 @@ def draw_graph_sensibility(value, graph_type, name):
         plt.show()
 
 
-def draw_graph_filter(name, paket_rate):
+def draw_graph_filter(name, value):
     try:
         plt.close()
     except:
@@ -291,6 +316,7 @@ def draw_graph_filter(name, paket_rate):
     file_name = name
     data = pd.read_csv(file_name, sep='\s+', header=None)
     data = pd.DataFrame(data)
+    paket_rate = int(value[:2])
     sf = data[5][0]
     bw = data[5][0]
     temp = 0
@@ -357,6 +383,5 @@ def draw_graph_filter(name, paket_rate):
     plt.title(f"Graphical representation of sensitivity test results for {paket_rate}% of packet lost\n"
               f"Spreading factor: {sf}, Band width: {bw}")
     plt.show()
-
 
 draw_graph()

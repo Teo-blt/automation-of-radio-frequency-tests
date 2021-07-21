@@ -44,6 +44,8 @@ class Threadfilter(threading.Thread):
         self.frequency_step = 200000
         self.attenuate = 0
         self.stopping = 0
+        self.reponse_storage_izepto = []
+        self.reponse_storage_ibts = []
 
     def run(self):
         self.time_start = time.time()
@@ -96,8 +98,10 @@ class Threadfilter(threading.Thread):
             ssh.connect(hostname=self.ip_izepto, username=username, password=password)
             cmd = file_execution(self.config_file, 3) + "\n" + file_execution(self.config_file, 5)
             stdin, stdout, stderr = ssh.exec_command(cmd, get_pty=True)
+            self.reponse_storage_izepto = []
             while 1:
                 response = stdout.readline()
+                self.reponse_storage_izepto.append(response + '\n')
                 if response[0:5] == "ERROR":
                     self.number_error_izepto += 1
                     logger.critical("---------------------------------")
@@ -107,6 +111,7 @@ class Threadfilter(threading.Thread):
                     write_doc("---------------------------------")
                     write_doc("Failed to start the concentrator")
                     write_doc("The Izepto is rebooting, please standby")
+                    write_doc(self.reponse_storage_izepto)
                     write_doc("---------------------------------")
                     ssh.exec_command("reboot", get_pty=True)
                     for t in range(0, 10):
@@ -187,6 +192,27 @@ class Threadfilter(threading.Thread):
                 write_doc("---------------------------------")
                 self.stopping = 1
                 break
+            elif self.attenuate == 0 and round(result, 1) > 0:
+                self.step_attenuate = 1
+                logger.debug("---------------------------------")
+                logger.debug(f"Test {i} of ∞ of frequency {self.value} Hz")
+                logger.debug(
+                    f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
+                logger.debug(f"you send {self.number_frames} frames")
+                logger.debug(f"you received {number} frames")
+                logger.debug(f"The rate is : {round(result, 1)}%")
+                logger.debug("---------------------------------")
+
+                write_doc("---------------------------------")
+                write_doc(f"Test {i} of infinity of frequency {self.value} Hz")
+                write_doc(
+                    f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
+                write_doc(f"you send {self.number_frames} frames")
+                write_doc(f"you received {number} frames")
+                write_doc(f"The rate is : {round(result, 1)}%")
+                write_doc("---------------------------------")
+                self.write_data(round(float(self.attenuate) / 4 + int(self.offset), 2), 100 - round(result, 2),
+                                self.power)
             else:
                 logger.debug("---------------------------------")
                 logger.debug(f"Test {i} of ∞ of frequency {self.value} Hz")
@@ -199,7 +225,7 @@ class Threadfilter(threading.Thread):
                     f"The attenuation -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB is too high, "
                     f"stepping back...")
                 write_doc("---------------------------------")
-                self.attenuate = float(self.attenuate) - self.step_attenuate
+                self.attenuate = self.attenuate - self.step_attenuate
                 if self.step_attenuate >= 20:
                     self.step_attenuate = self.step_attenuate / 2
                     self.attenuate = float(self.attenuate) + self.step_attenuate
@@ -311,7 +337,7 @@ class Threadfilter(threading.Thread):
             if number_frames < 0 or number_frames > 1000000:
                 logger.critical("Error, The number frames value is not conform")
                 showerror("Error", "The number frames value is not conform")
-            if frequency_step < 200000 or frequency_step > 1000000:
+            if frequency_step < 200000 or frequency_step > 100000000:
                 logger.critical("Error, The frequency_step value is not conform")
                 showerror("Error", "The frequency_step value is not conform")
             if sf < 6 or sf > 12:
@@ -345,8 +371,8 @@ class Threadfilter(threading.Thread):
                 self.bw = bw
                 self.power = power
         except:
-            logger.critical("Error, One or more of the values are not a number")
-            showerror("Error", "One or more of the values are not a number")
+            logger.critical("Error, One or more of the values are not conform")
+            showerror("Error", "One or more of the values are not conform")
 
     def ready_ibts(self):  # initialise the IBTS
         username = "root"
@@ -358,15 +384,21 @@ class Threadfilter(threading.Thread):
         order = (cmd[0] + str(self.value / 1000000) + cmd[2] + str(self.bw) + cmd[4] + str(self.sf) + cmd[6] +
                  str(self.number_frames) + cmd[8] + str(abs(self.attenuate)))
         stdin, stdout, stderr = ssh2.exec_command(order, get_pty=True)
+        self.reponse_storage_ibts = []
         while 1:
             read_value = stdout.readline()
-            write_doc(read_value)
-            #  logger.info(read_value)
-            if read_value[3:5] == "27":
-                logger.debug("The iBTS is ready")
-                break
+            self.reponse_storage_ibts.append(read_value + '\n')
             if read_value[0:5] == "ERROR":
-                self.attenuate = 0
+                logger.critical("---------------------------------")
+                logger.critical("Failed to start the Ibts")
+                logger.critical("The Ibts is rebooting, please standby")
+                logger.critical("---------------------------------")
+                write_doc("---------------------------------")
+                write_doc("Failed to start the Ibts")
+                write_doc("The Ibts is rebooting, please standby")
+                write_doc(self.reponse_storage_ibts)
+                write_doc("---------------------------------")
+                ssh2.exec_command("reboot", get_pty=True)
                 for t in range(0, 10):
                     logger.info("IBTS rebooting, it may take few minutes")
                     time.sleep(5)
@@ -385,6 +417,9 @@ class Threadfilter(threading.Thread):
                     if read_value[3:5] == "27":
                         logger.debug("The iBTS is ready")
                         break
+            if read_value[3:5] == "27":
+                logger.debug("The iBTS is ready")
+                break
         read_value_2 = 0
         while read_value_2 != int("%d" % int(self.number_frames)):
             a = stdout.read(1)

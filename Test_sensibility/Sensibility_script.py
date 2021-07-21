@@ -67,6 +67,8 @@ class Threadsensibility(threading.Thread):
         self.number_error = 0
         self.time_start = 0
         self.number_launch = 0
+        self.reponse_storage_ibts = []
+        self.reponse_storage_izepto = []
 
     def run(self):
         self.time_start = time.time()
@@ -261,8 +263,10 @@ class Threadsensibility(threading.Thread):
             ssh.connect(hostname=self.ip, username=username, password=password)
             cmd = file_execution(self.config_file, 3) + "\n" + file_execution(self.config_file, 5)
             stdin, stdout, stderr = ssh.exec_command(cmd, get_pty=True)
+            self.reponse_storage_izepto = []
             while 1:
                 response = stdout.readline()
+                self.reponse_storage_izepto.append(response + '\n')
                 if response[0:5] == "ERROR":
                     self.number_error += 1
                     logger.critical("---------------------------------")
@@ -274,6 +278,7 @@ class Threadsensibility(threading.Thread):
                     write_doc(response)
                     write_doc("Failed to start the concentrator")
                     write_doc("The Izepto is rebooting, please standby")
+                    write_doc(self.reponse_storage_izepto)
                     write_doc("---------------------------------")
                     ssh.exec_command("reboot", get_pty=True)
                     for t in range(0, 10):
@@ -626,14 +631,21 @@ class Threadsensibility(threading.Thread):
         order = (cmd[0] + str(self.frequency) + cmd[2] + str(self.bw) + cmd[4] + str(self.sf) + cmd[6] +
                  str(self.number_frames) + cmd[8] + str(self.attenuate))
         stdin, stdout, stderr = ssh2.exec_command(order, get_pty=True)
+        self.reponse_storage_ibts = []
         while 1:
             read_value = stdout.readline()
-            #  logger.info(read_value)
-            if read_value[3:5] == "27":
-                logger.debug("The iBTS is ready")
-                break
+            self.reponse_storage_ibts.append(read_value + '\n')
             if read_value[0:5] == "ERROR":
-                self.attenuate = 0
+                logger.critical("---------------------------------")
+                logger.critical("Failed to start the Ibts")
+                logger.critical("The Ibts is rebooting, please standby")
+                logger.critical("---------------------------------")
+                write_doc("---------------------------------")
+                write_doc("Failed to start the Ibts")
+                write_doc("The Ibts is rebooting, please standby")
+                write_doc(self.reponse_storage_ibts)
+                write_doc("---------------------------------")
+                ssh2.exec_command("reboot", get_pty=True)
                 for t in range(0, 10):
                     logger.info("IBTS rebooting, it may take few minutes")
                     time.sleep(5)
@@ -652,6 +664,8 @@ class Threadsensibility(threading.Thread):
                     if read_value[3:5] == "27":
                         logger.debug("The iBTS is ready")
                         break
+            if read_value[3:5] == "27":
+                logger.debug("The iBTS is ready")
                 break
         read_value_2 = 0
         while read_value_2 != int("%d" % int(self.number_frames)):
