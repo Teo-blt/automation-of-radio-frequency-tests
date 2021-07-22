@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fdf07519-220c-4a67-ab18-26afab89606e" name="Default Changelist" comment="correction du bug mineurs&#10;&#10;- fichier order&#10;- ecriture des fichier data">
+    <list default="true" id="fdf07519-220c-4a67-ab18-26afab89606e" name="Default Changelist" comment="correction du bug mineurs v2&#10;&#10;- fichier order&#10;- ecriture des fichier data">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/IHM/Graph_sensibility.py" beforeDir="false" afterPath="$PROJECT_DIR$/IHM/Graph_sensibility.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test_filter/Filter_script.py" beforeDir="false" afterPath="$PROJECT_DIR$/Test_filter/Filter_script.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -201,13 +201,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1621242487363</updated>
-    </task>
-    <task id="LOCAL-00113" summary="test final N°3">
-      <created>1625127363070</created>
-      <option name="number" value="00113" />
-      <option name="presentableId" value="LOCAL-00113" />
-      <option name="project" value="LOCAL" />
-      <updated>1625127363070</updated>
     </task>
     <task id="LOCAL-00114" summary="test final N°4">
       <created>1625132627517</created>
@@ -545,7 +538,14 @@
       <option name="project" value="LOCAL" />
       <updated>1626962656530</updated>
     </task>
-    <option name="localTasksCounter" value="162" />
+    <task id="LOCAL-00162" summary="correction du bug mineurs v2&#10;&#10;- fichier order&#10;- ecriture des fichier data">
+      <created>1626963502791</created>
+      <option name="number" value="00162" />
+      <option name="presentableId" value="LOCAL-00162" />
+      <option name="project" value="LOCAL" />
+      <updated>1626963502791</updated>
+    </task>
+    <option name="localTasksCounter" value="163" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -561,7 +561,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="draw sensi 50% done" />
     <MESSAGE value="test sensi 6h" />
     <MESSAGE value="selection graph et protection des donné done" />
     <MESSAGE value="commentaies completés" />
@@ -586,6 +585,7 @@
     <MESSAGE value="finalisation de la caractérisation du filtre en température&#10;&#10;- ajout de fonctions permettant la possibilité au programme de fonctioner en mode température" />
     <MESSAGE value="création d'une fonction pour permettre le reset du fichier de configuration de la izepto&#10;&#10;- dans la fichier configuration file, on peut maintenant reset la izepto, utile si elle a ete paramétrée par un test de caractérisation" />
     <MESSAGE value="correction du bug mineurs&#10;&#10;- fichier order&#10;- ecriture des fichier data" />
-    <option name="LAST_COMMIT_MESSAGE" value="correction du bug mineurs&#10;&#10;- fichier order&#10;- ecriture des fichier data" />
+    <MESSAGE value="correction du bug mineurs v2&#10;&#10;- fichier order&#10;- ecriture des fichier data" />
+    <option name="LAST_COMMIT_MESSAGE" value="correction du bug mineurs v2&#10;&#10;- fichier order&#10;- ecriture des fichier data" />
   </component>
 </project>

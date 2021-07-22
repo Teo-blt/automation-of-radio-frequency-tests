@@ -333,7 +333,7 @@ class Threadfilter(threading.Thread):
                 logger.debug("---------------------------------")
                 logger.debug(f"Test {i} of ∞ of frequency {self.value} Hz")
                 logger.debug(
-                    f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
+                    f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 2)} dB")
                 logger.debug(f"you send {self.number_frames} frames")
                 logger.debug(f"you received {number} frames")
                 logger.debug(f"The rate is : {round(result, 1)}%")
@@ -342,7 +342,7 @@ class Threadfilter(threading.Thread):
                 self.write_doc("---------------------------------")
                 self.write_doc(f"Test {i} of infinity of frequency {self.value} Hz")
                 self.write_doc(
-                    f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
+                    f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 2)} dB")
                 self.write_doc(f"you send {self.number_frames} frames")
                 self.write_doc(f"you received {number} frames")
                 self.write_doc(f"The rate is : {round(result, 1)}%")
@@ -381,7 +381,7 @@ class Threadfilter(threading.Thread):
                 logger.debug("---------------------------------")
                 logger.debug(f"Test {i} of ∞ of frequency {self.value} Hz")
                 logger.debug(
-                    f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
+                    f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 2)} dB")
                 logger.debug(f"you send {self.number_frames} frames")
                 logger.debug(f"you received {number} frames")
                 logger.debug(f"The rate is : {round(result, 1)}%")
@@ -389,7 +389,7 @@ class Threadfilter(threading.Thread):
                 self.write_doc("---------------------------------")
                 self.write_doc(f"Test {i} of infinity of frequency {self.value} Hz")
                 self.write_doc(
-                    f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
+                    f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 2)} dB")
                 self.write_doc(f"you send {self.number_frames} frames")
                 self.write_doc(f"you received {number} frames")
                 self.write_doc(f"The rate is : {round(result, 1)}%")
@@ -397,11 +397,11 @@ class Threadfilter(threading.Thread):
                 self.write_data(round(float(self.attenuate) / 4 + int(self.offset), 2), 100 - round(result, 2),
                                 self.power)
             elif self.step_attenuate == 4:
-                if round(result, 1) != 100:
+                if round(result, 1) != 0:
                     logger.debug("---------------------------------")
                     logger.debug(f"Test {i} of ∞ of frequency {self.value} Hz")
                     logger.debug(
-                        f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
+                        f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 2)} dB")
                     logger.debug(f"you send {self.number_frames} frames")
                     logger.debug(f"you received {number} frames")
                     logger.debug(f"The rate is : {round(result, 1)}%")
@@ -410,7 +410,7 @@ class Threadfilter(threading.Thread):
                     self.write_doc("---------------------------------")
                     self.write_doc(f"Test {i} of infinity of frequency {self.value} Hz")
                     self.write_doc(
-                        f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
+                        f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 2)} dB")
                     self.write_doc(f"you send {self.number_frames} frames")
                     self.write_doc(f"you received {number} frames")
                     self.write_doc(f"The rate is : {round(result, 1)}%")
@@ -419,19 +419,30 @@ class Threadfilter(threading.Thread):
                                     self.power)
                     self.attenuate = float(self.attenuate) + self.step_attenuate
                 else:
+                    logger.debug("---------------------------------")
+                    logger.debug(f"Test {i} of ∞ of frequency {self.value} Hz")
+                    logger.debug(f"The attenuation -{round(float(self.attenuate) / 4 + int(self.offset), 2)} dB is too "
+                                 f"high, stepping back...")
+                    logger.debug("---------------------------------")
+                    self.write_doc("---------------------------------")
+                    self.write_doc(f"Test {i} of infinity of frequency {self.value} Hz")
+                    self.write_doc(
+                        f"The attenuation -{round(float(self.attenuate) / 4 + int(self.offset), 2)} dB is too high, "
+                        f"stepping back...")
+                    self.write_doc("---------------------------------")
                     self.attenuate = self.attenuate - self.step_attenuate
                     self.step_attenuate = 1
                     self.attenuate = self.attenuate + self.step_attenuate
             else:
                 logger.debug("---------------------------------")
                 logger.debug(f"Test {i} of ∞ of frequency {self.value} Hz")
-                logger.debug(f"The attenuation -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB is too "
+                logger.debug(f"The attenuation -{round(float(self.attenuate) / 4 + int(self.offset), 2)} dB is too "
                              f"high, stepping back...")
                 logger.debug("---------------------------------")
                 self.write_doc("---------------------------------")
                 self.write_doc(f"Test {i} of infinity of frequency {self.value} Hz")
                 self.write_doc(
-                    f"The attenuation -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB is too high, "
+                    f"The attenuation -{round(float(self.attenuate) / 4 + int(self.offset), 2)} dB is too high, "
                     f"stepping back...")
                 self.write_doc("---------------------------------")
                 self.attenuate = self.attenuate - self.step_attenuate
