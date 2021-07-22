@@ -95,7 +95,7 @@ class Threadsensibility(threading.Thread):
                 vt.write(ON % self.temperature)  # ignite the climate chamber at the starting temperature
                 [self.temp, self.temp2] = self.read(self.port_test)  # use the function reed to obtain the
                 # temperature and the order of the climatic chamber
-                while abs(self.temperature - self.t_end) > abs(self.step_temp):
+                while abs(self.temperature - self.t_end) >= abs(self.step_temp):
                     self.value_mono_multi = 0
                     self.frequency = self.frequency_storage  # a variable to store the start frequency
                     self.write_doc("################################################")

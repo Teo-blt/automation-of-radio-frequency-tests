@@ -19,6 +19,11 @@ from matplotlib.figure import Figure
 
 # =============================================================================
 THE_COLOR = "#E76145"
+CLIMATIC_CHAMBER_STOP = b"$00E 0000.0 0000.0 0000.0 0000.0 0000.0 0000000000000000\n\r"
+ON = b"$00E %06.1f 0000.0 0000.0 0000.0 0000.0 0101000000000000\n\r"
+SERIAL_SPEED = 9600
+SERIAL_TIMEOUT = 5
+WRITE_TIMEOUT = 5
 vt = serial.Serial()
 
 
@@ -86,7 +91,7 @@ class Threadfilter(threading.Thread):
             vt.write(ON % self.temperature)  # ignite the climate chamber at the starting temperature
             [self.temp, self.temp2] = self.read(self.port_test)  # use the function reed to obtain the
             # temperature and the order of the climatic chamber
-            while abs(self.temperature - self.t_end) > abs(self.step_temp):
+            while abs(self.temperature - self.t_end) >= abs(self.step_temp):
                 self.value_mono_multi = 0
                 self.write_doc("################################################")
                 self.write_doc(f"Start of Test temperature {self.climate_chamber_num} : {self.temperature} degree "
@@ -262,12 +267,15 @@ class Threadfilter(threading.Thread):
             month = "0" + str(time.localtime()[1])
         else:
             month = str(time.localtime()[1])
-        self.data_file = str(
-            ("Data_sensibility_" + str(time.localtime()[2]) + "_" + month + "_" + str(time.localtime()[0]) + "_"
+        file_name = str(
+            ("Data_filter_" + str(time.localtime()[2]) + "_" + month + "_" + str(time.localtime()[0]) + "_"
              + str(time.localtime()[3]) + str(time.localtime()[4]) + str(time.localtime()[5]) + ".txt"))
-        self.report_file = str(
-            ("Report_sensibility_" + str(time.localtime()[2]) + "_" + month + "_" + str(time.localtime()[0]) + "_"
+        self.data_file = sys.path[1] + f"\\Result_tests\\{file_name}"
+
+        file_name_2 = str(
+            ("Report_filter_" + str(time.localtime()[2]) + "_" + month + "_" + str(time.localtime()[0]) + "_"
              + str(time.localtime()[3]) + str(time.localtime()[4]) + str(time.localtime()[5]) + ".txt"))
+        self.report_file = sys.path[1] + f"\\Result_tests\\{file_name_2}"
 
     def script(self):  # The script to test one channel
         for i in range(0, 1000):  # number of test, generally infinity
@@ -706,7 +714,7 @@ class Threadfilter(threading.Thread):
 
 
 def file_execution(file_name, n):
-    file = open((sys.path[1]) + f"\\Data_files\\{file_name}", "r")
+    file = open((sys.path[1]) + f"\\Order_files\\{file_name}", "r")
     donnees = []
     p = 0
     for line in file:

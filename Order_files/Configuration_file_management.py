@@ -21,14 +21,14 @@ def menu():
     window_graph_data.title("Configuration file management")
     configuration_file_label = Label(window_graph_data, text="Select the name of the configuration file:")
     configuration_file_label.grid(row=0, column=0, ipadx=0, ipady=0, padx=0, pady=0)
-    configuration_file = Entry(window_graph_data, cursor="right_ptr", state="readonly")
+    configuration_file = Entry(window_graph_data, cursor="right_ptr")
     configuration_file.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
     configuration_file.insert(0, "Orders.txt")
     configuration_menu_button = Button(window_graph_data, text="Start analysis", borderwidth=8, background=THE_COLOR,
                                        cursor="right_ptr",
                                        overrelief="sunken",
                                        command=lambda: [file_execution(str(configuration_file.get())),
-                                                        window_graph_data.destroy()])
+                                                        'window_graph_data.destroy()'])
     configuration_menu_button.grid(row=2, column=0, ipadx=0, ipady=0, padx=0, pady=0)
     reset_label = Label(window_graph_data, text="Reset The configuration file")
     reset_label.grid(row=3, column=0, ipadx=0, ipady=0, padx=0, pady=0)
@@ -106,5 +106,6 @@ def change_value():
         new_value_number = "867500000"
         order = (cmd[0] + str(read_original_value()[1][:-1]) + cmd[2] + new_value_number + cmd[4])
         ssh.exec_command(order, get_pty=True)
+        logger.info("The configuration file of the Izepto is completed")
     except:
         logger.critical(f"Impossible to connected to 192.168.4.183")
