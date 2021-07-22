@@ -35,7 +35,8 @@ def draw_graph():
     file_name_label.pack(expand=False, fill="none", side=TOP),
     file_entry = Entry(menu_frame, cursor="right_ptr")
     file_entry.pack(expand=False, fill="none", side=TOP)
-    file_entry.insert(0, 'Data_sensibility_example.txt')
+    file_entry.insert(0, 'C:/Users/labo/PycharmProjects/automation-of-radio-frequency-tests/'
+                         'Result_tests/Data_sensibility_example.txt')
     import_file_button = Button(menu_frame, text="Import file",
                                 borderwidth=8, background=THE_COLOR,
                                 activebackground="green", cursor="right_ptr", overrelief="sunken",
@@ -85,7 +86,7 @@ def draw_graph():
     def change_value_temp():
         data = pd.read_csv(file_entry.get(), sep='\s+', header=None)
         data = pd.DataFrame(data)
-        new_values = []
+        new_values = [str(data[4][0])]
         for i in range(1, len(data[4])):
             if data[4][i - 1] != data[4][i]:
                 new_values.append(str(data[4][i]))
@@ -222,7 +223,7 @@ def redirection(value, graph_type, file_name):
     elif graph_type == 0:
         draw_graph_sensibility(int(value), 0, file_name)
     else:
-        draw_graph_filter(file_name, int(value))
+        draw_graph_filter(file_name, value)
 
 
 def draw_graph_sensibility(value, graph_type, name):
