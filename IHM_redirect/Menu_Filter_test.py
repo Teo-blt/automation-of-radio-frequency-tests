@@ -16,11 +16,8 @@ from IHM import Graph_sensibility
 
 # =============================================================================
 THE_COLOR = "#E76145"
-global launch_safety
-launch_safety = 0
 
-
-def filter_test_menu(self, ip_izepto, ip_ibts):
+def filter_test_menu(self, ip_izepto, ip_ibts, port):
     global number
     number = 0
     scanner_ibts_frame = LabelFrame(self, text="Sensibility Menu")
@@ -53,6 +50,23 @@ def filter_test_menu(self, ip_izepto, ip_ibts):
                                     activebackground="green", cursor="right_ptr", overrelief="sunken",
                                     command=lambda: [Graph_sensibility.draw_graph()])
     make_a_graph_button.pack(padx=0, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
+
+    add_climate_chamber = tk.Button(place, text="Add climate chamber",
+                                    borderwidth=8, background=THE_COLOR,
+                                    activebackground="green", cursor="right_ptr", overrelief="sunken",
+                                    command=lambda: [change()])
+    add_climate_chamber.pack(padx=0, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
+    climate_chamber_label = Label(place, text="Select your climate chamber port com :")
+    climate_chamber_entry = Entry(place)
+    climate_chamber_entry.insert(0, port)
+    def change():
+        global number
+        number = 1
+        add_climate_chamber.forget(),
+        climate_chamber_label.pack(padx=0, pady=10, expand=False,
+                                   fill="none", side=TOP),
+        climate_chamber_entry.pack(padx=0, pady=0, expand=False,
+                                   fill="none", side=TOP)
 
 
 def func_izepto(ip_izepto):

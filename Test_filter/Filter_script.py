@@ -151,7 +151,8 @@ class Threadfilter(threading.Thread):
             a = stdout.readlines()
             number = round((len(a) / 4))
             result = (number / int(self.number_frames)) * 100
-            if round(result, 1) == 100 or self.step_attenuate == 1:
+
+            if (round(result, 1) == 100 and self.step_attenuate != 4) or self.step_attenuate == 1:
                 logger.debug("---------------------------------")
                 logger.debug(f"Test {i} of ∞ of frequency {self.value} Hz")
                 logger.debug(
@@ -208,7 +209,6 @@ class Threadfilter(threading.Thread):
                 logger.debug(f"you received {number} frames")
                 logger.debug(f"The rate is : {round(result, 1)}%")
                 logger.debug("---------------------------------")
-
                 self.write_doc("---------------------------------")
                 self.write_doc(f"Test {i} of infinity of frequency {self.value} Hz")
                 self.write_doc(
@@ -219,6 +219,32 @@ class Threadfilter(threading.Thread):
                 self.write_doc("---------------------------------")
                 self.write_data(round(float(self.attenuate) / 4 + int(self.offset), 2), 100 - round(result, 2),
                                 self.power)
+            elif self.step_attenuate == 4:
+                if round(result, 1) != 100:
+                    logger.debug("---------------------------------")
+                    logger.debug(f"Test {i} of ∞ of frequency {self.value} Hz")
+                    logger.debug(
+                        f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
+                    logger.debug(f"you send {self.number_frames} frames")
+                    logger.debug(f"you received {number} frames")
+                    logger.debug(f"The rate is : {round(result, 1)}%")
+                    logger.debug("---------------------------------")
+
+                    self.write_doc("---------------------------------")
+                    self.write_doc(f"Test {i} of infinity of frequency {self.value} Hz")
+                    self.write_doc(
+                        f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
+                    self.write_doc(f"you send {self.number_frames} frames")
+                    self.write_doc(f"you received {number} frames")
+                    self.write_doc(f"The rate is : {round(result, 1)}%")
+                    self.write_doc("---------------------------------")
+                    self.write_data(round(float(self.attenuate) / 4 + int(self.offset), 2), 100 - round(result, 2),
+                                    self.power)
+                    self.attenuate = float(self.attenuate) + self.step_attenuate
+                else:
+                    self.attenuate = self.attenuate - self.step_attenuate
+                    self.step_attenuate = 1
+                    self.attenuate = self.attenuate + self.step_attenuate
             else:
                 logger.debug("---------------------------------")
                 logger.debug(f"Test {i} of ∞ of frequency {self.value} Hz")
@@ -234,14 +260,10 @@ class Threadfilter(threading.Thread):
                 self.attenuate = self.attenuate - self.step_attenuate
                 if self.step_attenuate >= 20:
                     self.step_attenuate = self.step_attenuate / 2
-                    self.attenuate = float(self.attenuate) + self.step_attenuate
+                    self.attenuate = self.attenuate + self.step_attenuate
                 else:
-                    if self.step_attenuate == 4:
-                        self.step_attenuate = 1
-                        self.attenuate = float(self.attenuate) + self.step_attenuate
-                    else:
-                        self.step_attenuate = 4
-                        self.attenuate = float(self.attenuate) + self.step_attenuate
+                    self.step_attenuate = 4
+                    self.attenuate = self.attenuate + self.step_attenuate
 
     def launch_ibts(self):  # lunch the IBTS settings menu
         new_window_ibts = Tk()

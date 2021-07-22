@@ -357,7 +357,6 @@ class Threadsensibility(threading.Thread):
             logger.debug(f"you received {number} frames")
             logger.debug(f"The rate is : {round(result, 1)}%")
             logger.debug("---------------------------------")
-
             self.write_doc("---------------------------------")
             self.write_doc(f"Test {i} of infinity of channel number: {self.value_mono_multi}")
             self.write_doc(

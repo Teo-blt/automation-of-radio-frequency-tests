@@ -18,8 +18,6 @@ from IHM import Graph_sensibility
 
 # =============================================================================
 THE_COLOR = "#E76145"
-global launch_safety
-launch_safety = 0
 
 
 def sensibility_test_menu(self, port, ip_ibts, ip_izepto):
@@ -50,10 +48,6 @@ def sensibility_test_menu(self, port, ip_ibts, ip_izepto):
     i_zepto_entry = Entry(place)
     i_zepto_entry.pack(padx=0, pady=10, expand=False, fill="none", side=TOP)
     i_zepto_entry.insert(0, ip_izepto)
-
-    climate_chamber_label = Label(place, text="Select your climate chamber port com :")
-    climate_chamber_entry = Entry(place)
-    climate_chamber_entry.insert(0, port)
 
     add_climate_chamber = tk.Button(place, text="Add climate chamber",
                                     borderwidth=8, background=THE_COLOR,

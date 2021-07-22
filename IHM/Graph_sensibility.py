@@ -80,12 +80,18 @@ def draw_graph():
     choose_temp_combobox.set("-Choose your temperature-")
 
     temp_label = Label(mode_sensibility_graph, text="Number of the temperature :")
+    sensi_label = Label(mode_sensibility_graph, text="Sensibility value :")
 
     def change_value_temp():
-        choose_temp_combobox.config(values=["2", "3"])
         data = pd.read_csv(file_entry.get(), sep='\s+', header=None)
         data = pd.DataFrame(data)
-        print(data[4])
+        new_values = []
+        for i in range(1, len(data[4])):
+            if data[4][i - 1] != data[4][i]:
+                new_values.append(str(data[4][i]))
+        choose_temp_combobox.config(values=new_values)
+
+
 
     a = IntVar()
     sensibility_radiobutton = Radiobutton(mode_sensibility_graph, text="Choose temp",
@@ -96,7 +102,7 @@ def draw_graph():
                                                                           choose_temp_combobox.pack(expand=False,
                                                                                                     fill="none",
                                                                                                     side=TOP),
-                                                                          change_value_temp()],
+                                                                          change_value_temp(), sensi_label.forget()],
                                           background=THE_COLOR,
                                           activebackground="green",
                                           bd=8, selectcolor="green", overrelief="sunken")
@@ -104,10 +110,14 @@ def draw_graph():
     sensibility_choose_radiobutton = Radiobutton(mode_sensibility_graph,
                                                  text="Choose sensibility", variable=a, value=1,
                                                  cursor="right_ptr", indicatoron=0,
-                                                 command=lambda: [
-                                                     choose_packet_rate_combobox.pack(padx=50, pady=0, expand=True,
-                                                                                      fill="both", side=TOP),
-                                                     choose_temp_combobox.forget(), temp_label.forget()],
+                                                 command=lambda: [sensi_label.pack(expand=False, fill="none",
+                                                                                   side=TOP),
+                                                                  choose_packet_rate_combobox.pack(padx=50, pady=0,
+                                                                                                   expand=True,
+                                                                                                   fill="both",
+                                                                                                   side=TOP),
+                                                                  choose_temp_combobox.forget(), temp_label.forget(),
+                                                                  ],
                                                  background=THE_COLOR,
                                                  activebackground="green",
                                                  bd=8, selectcolor="green", overrelief="sunken")
@@ -212,12 +222,9 @@ def redirection(value, graph_type, file_name):
     if graph_type == 1:
         draw_graph_sensibility(value, 1, file_name)
     elif graph_type == 0:
-        if value < 0 or value > int(max(data[2])):
-            logger.critical(f"Error, there is only {max(data[2])} temperature")
-        else:
-            draw_graph_sensibility(value, 0, file_name)
+        draw_graph_sensibility(int(value), 0, file_name)
     else:
-        draw_graph_filter(file_name, value)
+        draw_graph_filter(file_name, int(value))
 
 
 def draw_graph_sensibility(value, graph_type, name):
@@ -266,8 +273,11 @@ def draw_graph_sensibility(value, graph_type, name):
         except:
             break
     if graph_type == 0:
+        l = 0
+        while data[4][l] != value:
+            l += 1
+        value = data[2][l]
         for m in range(value, value + 1):
-            # marker = "$" + str(m) + "$"
             marker = ","
             for n in range(0, numbers_of_channel):
                 plt.plot(X[m][n], Y[m][n], color[n], marker=marker)
@@ -394,3 +404,4 @@ def draw_graph_filter(name, value):
     plt.title(f"Graphical representation of sensitivity test results for {paket_rate}% of packet lost\n"
               f"Spreading factor: {sf}, Band width: {bw}")
     plt.show()
+
