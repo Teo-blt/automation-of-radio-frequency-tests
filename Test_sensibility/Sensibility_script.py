@@ -30,7 +30,7 @@ vt = serial.Serial()
 
 class Threadsensibility(threading.Thread):
 
-    def __init__(self, ip_ibts, ip_izepto, port_test, window):
+    def __init__(self, ip_ibts, ip_izepto, port_test):
         threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
         # additional data added to the class
         self.ip_ibts = ip_ibts
@@ -53,7 +53,6 @@ class Threadsensibility(threading.Thread):
         self.VALUE_STABILISATION = 0
         self.power = 0
         self.a = 0
-        self.window = window
         self.climate_chamber_num = 0
         self.b = 0
         self.value_mono_multi = 0

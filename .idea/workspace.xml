@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fdf07519-220c-4a67-ab18-26afab89606e" name="Default Changelist" comment="amélioration des fichier de données&#10;&#10;-les fichiers de données vont maintenant etre placés dans un répertoire a part">
+    <list default="true" id="fdf07519-220c-4a67-ab18-26afab89606e" name="Default Changelist" comment="amélioration de la gstion du fichier de config &#10;&#10;- sécurité suplémentaire pour modifier le fichier de config, indispensable lorsque l'on souhaite utiliser la izepto en sensi">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data_files/Configuration_file_management.py" beforeDir="false" afterPath="$PROJECT_DIR$/Order_files/Configuration_file_management.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data_files/Orders.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Order_files/Orders.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data_files/Orders_secure_save.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Order_files/Orders_secure_save.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/IHM/Graph_sensibility.py" beforeDir="false" afterPath="$PROJECT_DIR$/IHM/Graph_sensibility.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/IHM/Menu.py" beforeDir="false" afterPath="$PROJECT_DIR$/IHM/Menu.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/IHM_redirect/Menu_Sensibility_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/IHM_redirect/Menu_Sensibility_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Order_files/Configuration_file_management.py" beforeDir="false" afterPath="$PROJECT_DIR$/Order_files/Configuration_file_management.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Test_filter/Filter_script.py" beforeDir="false" afterPath="$PROJECT_DIR$/Test_filter/Filter_script.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Test_sensibility/Sensibility_script.py" beforeDir="false" afterPath="$PROJECT_DIR$/Test_sensibility/Sensibility_script.py" afterDir="false" />
     </list>
@@ -206,13 +206,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1621242487363</updated>
-    </task>
-    <task id="LOCAL-00109" summary="test graphique tableau etuve en cours">
-      <created>1625045909717</created>
-      <option name="number" value="00109" />
-      <option name="presentableId" value="LOCAL-00109" />
-      <option name="project" value="LOCAL" />
-      <updated>1625045909717</updated>
     </task>
     <task id="LOCAL-00110" summary="test graphique tableau etuve en cours">
       <created>1625046279276</created>
@@ -550,7 +543,14 @@
       <option name="project" value="LOCAL" />
       <updated>1626946013663</updated>
     </task>
-    <option name="localTasksCounter" value="158" />
+    <task id="LOCAL-00158" summary="amélioration de la gstion du fichier de config &#10;&#10;- sécurité suplémentaire pour modifier le fichier de config, indispensable lorsque l'on souhaite utiliser la izepto en sensi">
+      <created>1626957855425</created>
+      <option name="number" value="00158" />
+      <option name="presentableId" value="LOCAL-00158" />
+      <option name="project" value="LOCAL" />
+      <updated>1626957855425</updated>
+    </task>
+    <option name="localTasksCounter" value="159" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -566,7 +566,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="test final N°7 parfait ? mise en veille XD" />
     <MESSAGE value="test final N°8 parfait ? err temp" />
     <MESSAGE value="test final N°9" />
     <MESSAGE value="test final N°9 envoie des data" />
@@ -591,6 +590,7 @@
     <MESSAGE value="optimisation des fichiers de compte rendu avec des nom automatique&#10;&#10;-rajout de la date dans les nom des compte rendu &#10;-préparation de graph sensibilité et de sa selection de température automatique" />
     <MESSAGE value="finition de la présentation automatique des températures disponibles&#10;&#10;-modification de graph sensibility avec le rajout d'une combobox pour la selection de la température du graph" />
     <MESSAGE value="amélioration des fichier de données&#10;&#10;-les fichiers de données vont maintenant etre placés dans un répertoire a part" />
-    <option name="LAST_COMMIT_MESSAGE" value="amélioration des fichier de données&#10;&#10;-les fichiers de données vont maintenant etre placés dans un répertoire a part" />
+    <MESSAGE value="amélioration de la gstion du fichier de config &#10;&#10;- sécurité suplémentaire pour modifier le fichier de config, indispensable lorsque l'on souhaite utiliser la izepto en sensi" />
+    <option name="LAST_COMMIT_MESSAGE" value="amélioration de la gstion du fichier de config &#10;&#10;- sécurité suplémentaire pour modifier le fichier de config, indispensable lorsque l'on souhaite utiliser la izepto en sensi" />
   </component>
 </project>

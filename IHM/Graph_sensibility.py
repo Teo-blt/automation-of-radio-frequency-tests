@@ -91,8 +91,6 @@ def draw_graph():
                 new_values.append(str(data[4][i]))
         choose_temp_combobox.config(values=new_values)
 
-
-
     a = IntVar()
     sensibility_radiobutton = Radiobutton(mode_sensibility_graph, text="Choose temp",
                                           variable=a, value=0, cursor="right_ptr",
@@ -404,4 +402,3 @@ def draw_graph_filter(name, value):
     plt.title(f"Graphical representation of sensitivity test results for {paket_rate}% of packet lost\n"
               f"Spreading factor: {sf}, Band width: {bw}")
     plt.show()
-

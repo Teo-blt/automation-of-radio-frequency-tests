@@ -35,7 +35,7 @@ def sensibility_test_menu(self, port, ip_ibts, ip_izepto):
                                   borderwidth=8, background=THE_COLOR,
                                   activebackground="green", cursor="right_ptr", overrelief="sunken",
                                   command=lambda: [run(i_bts_entry.get(), i_zepto_entry.get(),
-                                                       climate_chamber_entry.get(), self, number)])
+                                                       climate_chamber_entry.get(), number)])
     start_test_button.pack(padx=0, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
     place = scanner_ibts_frame
 
@@ -121,32 +121,32 @@ def func_climate_chamber(port_test):
         logger.critical(f"Impossible to connected to {port_test}")
 
 
-def three_methods_run_together(ip_ibts, ip_izepto, port_test, self):
+def three_methods_run_together(ip_ibts, ip_izepto, port_test):
     if func_ibts(ip_ibts) == 0:
         if func_izepto(ip_izepto) == 0:
             if func_climate_chamber(port_test) == 0:
-                #self.destroy()
-                Sensibility_script.Threadsensibility(ip_ibts, ip_izepto, port_test, self).start()
+                # self.destroy()
+                Sensibility_script.Threadsensibility(ip_ibts, ip_izepto, port_test).start()
     else:
         logger.warning("Please check your data")
 
 
-def two_methods_run_together(ip_ibts, ip_izepto, self):
+def two_methods_run_together(ip_ibts, ip_izepto):
     if func_ibts(ip_ibts) == 0:
         if func_izepto(ip_izepto) == 0:
-            #self.destroy()
-            Sensibility_script.Threadsensibility(ip_ibts, ip_izepto, -1, self).start()
+            # self.destroy()
+            Sensibility_script.Threadsensibility(ip_ibts, ip_izepto, -1).start()
     else:
         logger.warning("Please check your data")
 
 
-def run(ip_ibts, ip_izepto, port_test, self, number):
+def run(ip_ibts, ip_izepto, port_test, number):
     global launch_safety
     if launch_safety == 1:
         logger.critical("Error, the programme is already running")
     else:
         launch_safety = 1
         if number:
-            three_methods_run_together(ip_ibts, ip_izepto, port_test, self)
+            three_methods_run_together(ip_ibts, ip_izepto, port_test)
         else:
-            two_methods_run_together(ip_ibts, ip_izepto, self)
+            two_methods_run_together(ip_ibts, ip_izepto)

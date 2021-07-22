@@ -20,7 +20,7 @@ def menu():
     window_graph_data.title("Configuration file management")
     configuration_file_label = Label(window_graph_data, text="Select the name of the configuration file:")
     configuration_file_label.grid(row=0, column=0, ipadx=0, ipady=0, padx=0, pady=0)
-    configuration_file = Entry(window_graph_data, cursor="right_ptr")
+    configuration_file = Entry(window_graph_data, cursor="right_ptr", state="readonly")
     configuration_file.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
     configuration_file.insert(0, "Orders.txt")
     configuration_menu_button = Button(window_graph_data, text="Start analysis", borderwidth=8, background=THE_COLOR,
@@ -39,7 +39,7 @@ def menu():
 
 
 def file_execution(file_name):
-    file = open((sys.path[1]) + f"\\Data_files\\{file_name}", "r")
+    file = open((sys.path[1]) + f"\\Order_files\\{file_name}", "r")
     donnees = []
     p = 0
     for line in file:

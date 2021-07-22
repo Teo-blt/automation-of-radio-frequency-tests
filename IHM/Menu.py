@@ -17,7 +17,7 @@ from IHM_redirect import Menu_Climatic_chamber
 
 LOBBY_WINDOW_SIZE = "700x200"
 WINDOW_SIZE = "1200x500"
-THE_COLOR = "blue"#"#E76145"
+THE_COLOR = "#E76145"
 
 
 class Application(Tk):
@@ -114,7 +114,6 @@ class Application(Tk):
             self.create_new_window("SMIQ")  # Call the clear function to clean all the window
             self.sg()  # Open generator
         """
-
 
     def interface_2(self, choice):  # This function open other functions after the choice of the user
         if choice == -1:
