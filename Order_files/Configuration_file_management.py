@@ -10,6 +10,7 @@
 from loguru import logger
 from tkinter import *
 import sys
+import paramiko
 
 # =============================================================================
 THE_COLOR = "#E76145"
@@ -36,6 +37,12 @@ def menu():
                           overrelief="sunken",
                           command=lambda: [file_reset()])
     reset_button.grid(row=4, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+    reset_izepto_button = Button(window_graph_data, text="Reset Izepto configuration file", borderwidth=8,
+                                 background=THE_COLOR,
+                                 cursor="right_ptr",
+                                 overrelief="sunken",
+                                 command=lambda: [change_value()])
+    reset_izepto_button.grid(row=4, column=1, ipadx=0, ipady=0, padx=0, pady=0)
 
 
 def file_execution(file_name):
@@ -60,3 +67,44 @@ def file_reset():
     file.close()
     file2.close()
     logger.info('Reset completed')
+
+
+def file_reading(file_name, n):
+    file = open((sys.path[1]) + f"\\Order_files\\{file_name}", "r")
+    donnees = []
+    p = 0
+    for line in file:
+        donnees = donnees + line.rstrip('\n\r').split("=")
+        p += 1
+    file.close()
+    return donnees[n]
+
+
+def read_original_value():
+    username = "root"
+    password = "root"
+    try:
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(hostname="192.168.4.183", username=username, password=password)
+        cmd = file_reading("Orders.txt", 7)
+        stdin, stdout, stderr = ssh.exec_command(cmd, get_pty=True)
+        wah = stdout.readline()
+        return wah.split()
+    except:
+        logger.critical(f"Impossible to connected to 192.168.4.183")
+
+
+def change_value():
+    username = "root"
+    password = "root"
+    try:
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(hostname="192.168.4.183", username=username, password=password)
+        cmd = file_reading("Orders.txt", 9).split(",")
+        new_value_number = "867500000"
+        order = (cmd[0] + str(read_original_value()[1][:-1]) + cmd[2] + new_value_number + cmd[4])
+        ssh.exec_command(order, get_pty=True)
+    except:
+        logger.critical(f"Impossible to connected to 192.168.4.183")
