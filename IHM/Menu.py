@@ -90,7 +90,7 @@ class Application(Tk):
         choose_scenario_combobox.pack(padx=50, pady=0, expand=False, fill="x", side=TOP)
 
     def configuration_menu(self):
-        from Data_files import Configuration_file_management
+        from Order_files import Configuration_file_management
         configuration_menu_button = Button(self, text="Order file", borderwidth=8, background=THE_COLOR,
                                            cursor="right_ptr",
                                            overrelief="sunken",

@@ -70,7 +70,7 @@ class Threadsensibility(threading.Thread):
         self.number_launch = 0
         self.reponse_storage_ibts = []
         self.reponse_storage_izepto = []
-        self.original_value = 0
+        self.original_value = []
 
     def run(self):
         self.time_start = time.time()
@@ -231,7 +231,7 @@ class Threadsensibility(threading.Thread):
         cmd = file_execution(self.config_file, 7)
         stdin, stdout, stderr = ssh.exec_command(cmd, get_pty=True)
         wah = stdout.readline()
-        self.original_value = wah
+        self.original_value = wah.split()
 
     def change_value(self):
         self.read_original_value()
@@ -242,8 +242,7 @@ class Threadsensibility(threading.Thread):
         ssh.connect(hostname=self.ip_izepto, username=username, password=password)
         cmd = file_execution(self.config_file, 9).split(",")
         new_value_number = "867500000"
-        new_value = '"freq": ' + new_value_number + ','
-        order = (cmd[0] + str(self.original_value) + cmd[2] + new_value + cmd[4])
+        order = (cmd[0] + str(self.original_value[1][:-1]) + cmd[2] + new_value_number + cmd[4])
         ssh.exec_command(order, get_pty=True)
 
     def wait_temperature_reach_consign(self):
@@ -781,7 +780,7 @@ def simulation_graphic_stair(step, temp_start, temp_end, window):  # create the 
 
 
 def file_execution(file_name, n):
-    file = open((sys.path[1]) + f"\\Data_files\\{file_name}", "r")
+    file = open((sys.path[1]) + f"\\Order_files\\{file_name}", "r")
     donnees = []
     p = 0
     for line in file:

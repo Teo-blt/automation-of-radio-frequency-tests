@@ -34,7 +34,7 @@ class Threadfilter(threading.Thread):
         self.step_attenuate = 80
         self.ip_izepto = ip_izepto
         self.ip_ibts = ip_ibts
-        self.original_value = 867500000
+        self.original_value = []
         self.value = 855000000
         self.number_error_izepto = 0
         self.config_file = 0
@@ -78,7 +78,7 @@ class Threadfilter(threading.Thread):
         cmd = file_execution(self.config_file, 7)
         stdin, stdout, stderr = ssh.exec_command(cmd, get_pty=True)
         wah = stdout.readline()
-        self.original_value = wah
+        self.original_value = wah.split()
 
     def change_value(self):
         self.read_original_value()
@@ -88,8 +88,7 @@ class Threadfilter(threading.Thread):
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(hostname=self.ip_izepto, username=username, password=password)
         cmd = file_execution(self.config_file, 9).split(",")
-        new_value = '"freq": ' + str(self.value) + ','
-        order = (cmd[0] + str(self.original_value) + cmd[2] + new_value + cmd[4])
+        order = (cmd[0] + str(self.original_value[1][:-1]) + cmd[2] + str(self.value) + cmd[4])
         ssh.exec_command(order, get_pty=True)
 
     def name_files(self):
