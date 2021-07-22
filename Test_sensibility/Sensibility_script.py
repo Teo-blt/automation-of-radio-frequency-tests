@@ -101,7 +101,7 @@ class Threadsensibility(threading.Thread):
                     self.frequency = self.frequency_storage  # a variable to store the start frequency
                     self.write_doc("################################################")
                     self.write_doc(f"Start of Test temperature {self.climate_chamber_num} : {self.temperature} degree "
-                              f"Celsius")
+                                   f"Celsius")
                     logger.debug("################################################")
                     logger.debug(f"Start of Test temperature {self.climate_chamber_num}: {self.temperature} degree "
                                  f"Celsius")
@@ -114,7 +114,7 @@ class Threadsensibility(threading.Thread):
                         logger.debug(f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, frequency:"
                                      f" {round(self.frequency, 1)}")
                         self.write_doc(f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, "
-                                  f"frequency: {round(self.frequency, 1)}")
+                                       f"frequency: {round(self.frequency, 1)}")
                         self.script()  # use the script function to test one channel
                         self.frequency = self.frequency + 0.2  # The value of the frequency increase of the step
                         # frequency value
@@ -130,7 +130,7 @@ class Threadsensibility(threading.Thread):
                         self.climate_chamber_num = self.climate_chamber_num + 1
                     self.value_mono_multi = 0
                     self.write_doc(f"Start of Test temperature {self.climate_chamber_num}: {self.temperature} degree "
-                              f"Celsius")
+                                   f"Celsius")
                     self.write_doc("Start of Test")
                     logger.debug("################################################")
                     logger.debug(f"Start of Test temperature {self.climate_chamber_num}: {self.temperature} degree "
@@ -157,7 +157,7 @@ class Threadsensibility(threading.Thread):
                     logger.debug(f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, "
                                  f"frequency: {round(self.frequency, 1)}")
                     self.write_doc(f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, frequency: "
-                              f"{round(self.frequency, 1)}")
+                                   f"{round(self.frequency, 1)}")
                     self.attenuate = self.attenuate_storage
                     self.script()
                     self.frequency = self.frequency + 0.2
@@ -175,10 +175,15 @@ class Threadsensibility(threading.Thread):
             month = "0" + str(time.localtime()[1])
         else:
             month = str(time.localtime()[1])
-        self.data_file = str(("Data_sensibility_" + str(time.localtime()[2]) + "/" + month + "/" + str(time.localtime()[0]) + "_"
-                          + str(time.localtime()[3]) + str(time.localtime()[4]) + str(time.localtime()[5]) + ".txt"))
-        self.report_file = str(("Report_sensibility_" + str(time.localtime()[2]) + "/" + month + "/" + str(time.localtime()[0]) + "_"
-                          + str(time.localtime()[3]) + str(time.localtime()[4]) + str(time.localtime()[5]) + ".txt"))
+        file_name = str(
+            ("Data_sensibility_" + str(time.localtime()[2]) + "_" + month + "_" + str(time.localtime()[0]) + "_"
+             + str(time.localtime()[3]) + str(time.localtime()[4]) + str(time.localtime()[5]) + ".txt"))
+        self.data_file = sys.path[1] + f"\\Result_tests\\{file_name}"
+
+        file_name_2 = str(
+            ("Report_sensibility_" + str(time.localtime()[2]) + "_" + month + "_" + str(time.localtime()[0]) + "_"
+             + str(time.localtime()[3]) + str(time.localtime()[4]) + str(time.localtime()[5]) + ".txt"))
+        self.report_file = sys.path[1] + f"\\Result_tests\\{file_name_2}"
 
     def climate_chamber_script(self):  # script + control of the climate chamber
         self.launch_climatic_chamber()
@@ -226,7 +231,7 @@ class Threadsensibility(threading.Thread):
         cmd = file_execution(self.config_file, 7)
         stdin, stdout, stderr = ssh.exec_command(cmd, get_pty=True)
         wah = stdout.readline()
-        self.original_value = wah[19:29]
+        self.original_value = wah
 
     def change_value(self):
         self.read_original_value()
@@ -236,7 +241,9 @@ class Threadsensibility(threading.Thread):
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(hostname=self.ip_izepto, username=username, password=password)
         cmd = file_execution(self.config_file, 9).split(",")
-        order = (cmd[0] + str(self.original_value) + cmd[2] + str(int(self.frequency * 1000000)) + cmd[4])
+        new_value_number = "867500000"
+        new_value = '"freq": ' + new_value_number + ','
+        order = (cmd[0] + str(self.original_value) + cmd[2] + new_value + cmd[4])
         ssh.exec_command(order, get_pty=True)
 
     def wait_temperature_reach_consign(self):
@@ -799,6 +806,3 @@ def reset_all(frequency, sf, attenuate, number_frames, step, offset, bw):
     offset.insert(0, 60)
     bw.delete(0, 20)
     bw.insert(0, 125)
-
-
-

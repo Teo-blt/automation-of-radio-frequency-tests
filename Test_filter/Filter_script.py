@@ -20,9 +20,10 @@ THE_COLOR = "#E76145"
 
 class Threadfilter(threading.Thread):
 
-    def __init__(self, ip_izepto, ip_ibts):
+    def __init__(self, ip_izepto, ip_ibts, port_test):
         threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
         # additional data added to the class
+        self.port_test = port_test
         self.bw = 0
         self.sf = 0
         self.temperature_storage = 0
@@ -77,7 +78,7 @@ class Threadfilter(threading.Thread):
         cmd = file_execution(self.config_file, 7)
         stdin, stdout, stderr = ssh.exec_command(cmd, get_pty=True)
         wah = stdout.readline()
-        self.original_value = wah[19:28]
+        self.original_value = wah
 
     def change_value(self):
         self.read_original_value()
@@ -87,7 +88,8 @@ class Threadfilter(threading.Thread):
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(hostname=self.ip_izepto, username=username, password=password)
         cmd = file_execution(self.config_file, 9).split(",")
-        order = (cmd[0] + str(self.original_value) + cmd[2] + str(self.value) + cmd[4])
+        new_value = '"freq": ' + str(self.value) + ','
+        order = (cmd[0] + str(self.original_value) + cmd[2] + new_value + cmd[4])
         ssh.exec_command(order, get_pty=True)
 
     def name_files(self):
@@ -95,10 +97,12 @@ class Threadfilter(threading.Thread):
             month = "0" + str(time.localtime()[1])
         else:
             month = str(time.localtime()[1])
-        self.data_file = str(("Data_sensibility_" + str(time.localtime()[2]) + "/" + month + "/" + str(time.localtime()[0]) + "_"
-                          + str(time.localtime()[3]) + str(time.localtime()[4]) + str(time.localtime()[5]) + ".txt"))
-        self.report_file = str(("Report_sensibility_" + str(time.localtime()[2]) + "/" + month + "/" + str(time.localtime()[0]) + "_"
-                          + str(time.localtime()[3]) + str(time.localtime()[4]) + str(time.localtime()[5]) + ".txt"))
+        self.data_file = str(
+            ("Data_sensibility_" + str(time.localtime()[2]) + "_" + month + "_" + str(time.localtime()[0]) + "_"
+             + str(time.localtime()[3]) + str(time.localtime()[4]) + str(time.localtime()[5]) + ".txt"))
+        self.report_file = str(
+            ("Report_sensibility_" + str(time.localtime()[2]) + "_" + month + "_" + str(time.localtime()[0]) + "_"
+             + str(time.localtime()[3]) + str(time.localtime()[4]) + str(time.localtime()[5]) + ".txt"))
 
     def script(self):  # The script to test one channel
         for i in range(0, 1000):  # number of test, generally infinity
@@ -494,8 +498,6 @@ def file_execution(file_name, n):
         p += 1
     file.close()
     return donnees[n]
-
-
 
 
 def reset_all(sf, attenuate, number_frames, step, offset, bw, frequency):

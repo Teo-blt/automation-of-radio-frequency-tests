@@ -13,9 +13,14 @@ from Test_filter import Filter_script
 import paramiko
 from loguru import logger
 from IHM import Graph_sensibility
+import serial
+import time
 
 # =============================================================================
 THE_COLOR = "#E76145"
+global launch_safety
+launch_safety = 0
+
 
 def filter_test_menu(self, ip_izepto, ip_ibts, port):
     global number
@@ -29,7 +34,8 @@ def filter_test_menu(self, ip_izepto, ip_ibts, port):
     start_test_button = tk.Button(ibts_scale_frame, text="Ignition of the card",
                                   borderwidth=8, background=THE_COLOR,
                                   activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                  command=lambda: [run(i_bts_entry.get(), i_zepto_entry.get())])
+                                  command=lambda: [run(i_bts_entry.get(), i_zepto_entry.get(),
+                                                       climate_chamber_entry.get(), number)])
     start_test_button.pack(padx=0, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
     place = scanner_ibts_frame
 
@@ -59,6 +65,7 @@ def filter_test_menu(self, ip_izepto, ip_ibts, port):
     climate_chamber_label = Label(place, text="Select your climate chamber port com :")
     climate_chamber_entry = Entry(place)
     climate_chamber_entry.insert(0, port)
+
     def change():
         global number
         number = 1
@@ -82,6 +89,7 @@ def func_izepto(ip_izepto):
     except:
         logger.critical(f"Impossible to connected to {ip_izepto}")
 
+
 def func_ibts(ip_ibts):
     # ip_ibts = "192.168.4.228"
     try:
@@ -96,15 +104,48 @@ def func_ibts(ip_ibts):
         logger.critical(f"Impossible to connected to {ip_ibts}")
 
 
-def run(ip_ibts, ip_izepto):
+def func_climate_chamber(port_test):
+    # port_test = "COM11"
+    try:
+        wah = serial.Serial(port_test, 9600, timeout=5, writeTimeout=5)
+        wah.write(b"$00I\n\r")
+        time.sleep(0.2)
+        received_frame = wah.read_all().decode('utf-8')  # Decipher the frame that was send by the climatic chamber
+        word = received_frame.split(" ")  # Split the decipher the frame that was send by the climatic chamber
+        strings = str(word[1])
+        number = float(strings)
+        logger.info(f"Successfully connected to {port_test}")
+        return 0
+    except:
+        logger.critical(f"Impossible to connected to {port_test}")
+
+
+def three_methods_run_together(ip_ibts, ip_izepto, port_test):
+    if func_ibts(ip_ibts) == 0:
+        if func_izepto(ip_izepto) == 0:
+            if func_climate_chamber(port_test) == 0:
+                # self.destroy()
+                Filter_script.Threadfilter(ip_izepto, ip_ibts, port_test).start()
+    else:
+        logger.warning("Please check your data")
+
+
+def two_methods_run_together(ip_ibts, ip_izepto):
+    if func_ibts(ip_ibts) == 0:
+        if func_izepto(ip_izepto) == 0:
+            # self.destroy()
+            Filter_script.Threadfilter(ip_izepto, ip_ibts, -1).start()
+    else:
+        logger.warning("Please check your data")
+
+
+def run(ip_ibts, ip_izepto, port_test, number):
     global launch_safety
     if launch_safety == 1:
         logger.critical("Error, the programme is already running")
     else:
         launch_safety = 1
-        if func_izepto(ip_izepto) == 0:
-            if func_ibts(ip_ibts) == 0:
-                # self.destroy()
-                Filter_script.Threadfilter(ip_izepto, ip_ibts).start()
+        if number:
+            three_methods_run_together(ip_ibts, ip_izepto, port_test)
         else:
-            logger.warning("Please check your data")
+            two_methods_run_together(ip_ibts, ip_izepto)

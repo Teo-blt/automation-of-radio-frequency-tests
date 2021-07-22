@@ -18,6 +18,8 @@ from IHM import Graph_sensibility
 
 # =============================================================================
 THE_COLOR = "#E76145"
+global launch_safety
+launch_safety = 0
 
 
 def sensibility_test_menu(self, port, ip_ibts, ip_izepto):
@@ -121,22 +123,19 @@ def func_climate_chamber(port_test):
 
 def three_methods_run_together(ip_ibts, ip_izepto, port_test, self):
     if func_ibts(ip_ibts) == 0:
-        func_izepto(ip_izepto)
-    if func_izepto(ip_izepto) == 0:
-        func_climate_chamber(port_test)
-    if func_climate_chamber(port_test) == 0:
-        #self.destroy()
-        Sensibility_script.Threadsensibility(ip_ibts, ip_izepto, port_test, self).start()
+        if func_izepto(ip_izepto) == 0:
+            if func_climate_chamber(port_test) == 0:
+                #self.destroy()
+                Sensibility_script.Threadsensibility(ip_ibts, ip_izepto, port_test, self).start()
     else:
         logger.warning("Please check your data")
 
 
 def two_methods_run_together(ip_ibts, ip_izepto, self):
     if func_ibts(ip_ibts) == 0:
-        func_izepto(ip_izepto)
-    if func_izepto(ip_izepto) == 0:
-        #self.destroy()
-        Sensibility_script.Threadsensibility(ip_ibts, ip_izepto, -1, self).start()
+        if func_izepto(ip_izepto) == 0:
+            #self.destroy()
+            Sensibility_script.Threadsensibility(ip_ibts, ip_izepto, -1, self).start()
     else:
         logger.warning("Please check your data")
 
