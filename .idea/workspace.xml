@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fdf07519-220c-4a67-ab18-26afab89606e" name="Default Changelist" comment="correction du bug mineurs v2&#10;&#10;- fichier order&#10;- ecriture des fichier data">
+    <list default="true" id="fdf07519-220c-4a67-ab18-26afab89606e" name="Default Changelist" comment="mise a jour de l'executable &#10;&#10;- grace a pyinstaller création d'un exécutable">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Result_tests/Data_filter_example.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Result_tests/Data_filter_example.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Test_filter/Filter_script.py" beforeDir="false" afterPath="$PROJECT_DIR$/Test_filter/Filter_script.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test_sensibility/Sensibility_script.py" beforeDir="false" afterPath="$PROJECT_DIR$/Test_sensibility/Sensibility_script.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -201,20 +203,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1621242487363</updated>
-    </task>
-    <task id="LOCAL-00114" summary="test final N°4">
-      <created>1625132627517</created>
-      <option name="number" value="00114" />
-      <option name="presentableId" value="LOCAL-00114" />
-      <option name="project" value="LOCAL" />
-      <updated>1625132627517</updated>
-    </task>
-    <task id="LOCAL-00115" summary="test final N°4">
-      <created>1625145742617</created>
-      <option name="number" value="00115" />
-      <option name="presentableId" value="LOCAL-00115" />
-      <option name="project" value="LOCAL" />
-      <updated>1625145742617</updated>
     </task>
     <task id="LOCAL-00116" summary="test final N°6 parfait ?">
       <created>1625150364019</created>
@@ -545,7 +533,21 @@
       <option name="project" value="LOCAL" />
       <updated>1626963502791</updated>
     </task>
-    <option name="localTasksCounter" value="163" />
+    <task id="LOCAL-00163" summary="correction du bug mineurs v3&#10;&#10;- fichier script&#10;- ecriture des fichier data">
+      <created>1626969021523</created>
+      <option name="number" value="00163" />
+      <option name="presentableId" value="LOCAL-00163" />
+      <option name="project" value="LOCAL" />
+      <updated>1626969021523</updated>
+    </task>
+    <task id="LOCAL-00164" summary="mise a jour de l'executable &#10;&#10;- grace a pyinstaller création d'un exécutable">
+      <created>1626969233115</created>
+      <option name="number" value="00164" />
+      <option name="presentableId" value="LOCAL-00164" />
+      <option name="project" value="LOCAL" />
+      <updated>1626969233115</updated>
+    </task>
+    <option name="localTasksCounter" value="165" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -561,8 +563,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="test sensi 6h" />
-    <MESSAGE value="selection graph et protection des donné done" />
     <MESSAGE value="commentaies completés" />
     <MESSAGE value="commentaies completés + réorganisation des fichiers" />
     <MESSAGE value="draw graph done" />
@@ -586,6 +586,8 @@
     <MESSAGE value="création d'une fonction pour permettre le reset du fichier de configuration de la izepto&#10;&#10;- dans la fichier configuration file, on peut maintenant reset la izepto, utile si elle a ete paramétrée par un test de caractérisation" />
     <MESSAGE value="correction du bug mineurs&#10;&#10;- fichier order&#10;- ecriture des fichier data" />
     <MESSAGE value="correction du bug mineurs v2&#10;&#10;- fichier order&#10;- ecriture des fichier data" />
-    <option name="LAST_COMMIT_MESSAGE" value="correction du bug mineurs v2&#10;&#10;- fichier order&#10;- ecriture des fichier data" />
+    <MESSAGE value="correction du bug mineurs v3&#10;&#10;- fichier script&#10;- ecriture des fichier data" />
+    <MESSAGE value="mise a jour de l'executable &#10;&#10;- grace a pyinstaller création d'un exécutable" />
+    <option name="LAST_COMMIT_MESSAGE" value="mise a jour de l'executable &#10;&#10;- grace a pyinstaller création d'un exécutable" />
   </component>
 </project>

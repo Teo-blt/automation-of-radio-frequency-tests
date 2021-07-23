@@ -351,32 +351,56 @@ class Threadsensibility(threading.Thread):
                 self.ready_ibts()
             time.sleep(1)  # 1 second of safety after that the ready_ibts function is completed
             ssh.close()
-            a = stdout.readlines()
-            number = round((len(a) / 4))
-            result = (number / int(self.number_frames)) * 100
-            logger.debug("---------------------------------")
-            logger.debug(f"Test {i} of ∞ of channel number: {self.value_mono_multi}")
-            logger.debug(
-                f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
-            logger.debug(f"you send {self.number_frames} frames")
-            logger.debug(f"you received {number} frames")
-            logger.debug(f"The rate is : {round(result, 1)}%")
-            logger.debug("---------------------------------")
-            self.write_doc("---------------------------------")
-            self.write_doc(f"Test {i} of infinity of channel number: {self.value_mono_multi}")
-            self.write_doc(
-                f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
-            self.write_doc(f"you send {self.number_frames} frames")
-            self.write_doc(f"you received {number} frames")
-            self.write_doc(f"The rate is : {round(result, 1)}%")
-            self.write_doc("---------------------------------")
-            self.write_data(round(float(self.attenuate) / 4 + int(self.offset), 2), 100 - round(result, 2),
-                            self.power)
-            if round(result, 1) == 0:
-                logger.debug(f"fin channel number: {self.value_mono_multi}\n")
-                self.write_doc(f"fin channel number: {self.value_mono_multi}\n")
-                # self.window.destroy()
-                break
+            a = self.good_launch(stdout, i)
+            if a == 1:
+                pass
+            else:
+                number = round((len(a) / 4))
+                result = (number / int(self.number_frames)) * 100
+                logger.debug("---------------------------------")
+                logger.debug(f"Test {i} of channel number: {self.value_mono_multi}")
+                logger.debug(
+                    f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
+                logger.debug(f"you send {self.number_frames} frames")
+                logger.debug(f"you received {number} frames")
+                logger.debug(f"The rate is : {round(result, 1)}%")
+                logger.debug("---------------------------------")
+                self.write_doc("---------------------------------")
+                self.write_doc(f"Test {i} of channel number: {self.value_mono_multi}")
+                self.write_doc(
+                    f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
+                self.write_doc(f"you send {self.number_frames} frames")
+                self.write_doc(f"you received {number} frames")
+                self.write_doc(f"The rate is : {round(result, 1)}%")
+                self.write_doc("---------------------------------")
+                self.write_data(round(float(self.attenuate) / 4 + int(self.offset), 2), 100 - round(result, 2),
+                                self.power)
+                if round(result, 1) == 0:
+                    logger.debug(f"fin channel number: {self.value_mono_multi}\n")
+                    self.write_doc(f"fin channel number: {self.value_mono_multi}\n")
+                    # self.window.destroy()
+                    break
+
+    def good_launch(self, stdout, i):
+        a = stdout.readlines()
+        for d in range(0, len(a)):
+            if a[d][0:5] == "ERROR":
+                logger.critical("---------------------------------")
+                logger.critical("Failed to receive correctly")
+                logger.critical(f"Test {i} of channel number: {self.value_mono_multi}")
+                logger.critical(f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 2)} dB")
+                logger.critical("The Izepto is retrying")
+                logger.critical("---------------------------------")
+                self.write_doc("---------------------------------")
+                self.write_doc("Failed to receive correctly")
+                self.write_doc(f"Test {i} of channel number: {self.value_mono_multi}")
+                self.write_doc(f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 2)} dB")
+                self.write_doc("The Izepto is retrying")
+                self.write_doc("---------------------------------")
+                return 1
+            else:
+                d += 1
+        return a
 
     def launch_climatic_chamber(self):  # settings menu of the IBTS
         new_window_climatic_chamber = Tk()
