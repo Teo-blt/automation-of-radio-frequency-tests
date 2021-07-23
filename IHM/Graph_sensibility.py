@@ -35,8 +35,7 @@ def draw_graph():
     file_name_label.pack(expand=False, fill="none", side=TOP),
     file_entry = Entry(menu_frame, cursor="right_ptr")
     file_entry.pack(expand=False, fill="none", side=TOP)
-    file_entry.insert(0, 'C:/Users/labo/PycharmProjects/automation-of-radio-frequency-tests/'
-                         'Result_tests/Data_sensibility_example.txt')
+    file_entry.insert(0, 'Select data file')
     import_file_button = Button(menu_frame, text="Import file",
                                 borderwidth=8, background=THE_COLOR,
                                 activebackground="green", cursor="right_ptr", overrelief="sunken",

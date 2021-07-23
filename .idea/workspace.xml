@@ -3,6 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="fdf07519-220c-4a67-ab18-26afab89606e" name="Default Changelist" comment="préparation de la version finale du code&#10;&#10;- création de l'exécutable&#10;- meilleur gestion des fichiers de config">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/IHM/Graph_sensibility.py" beforeDir="false" afterPath="$PROJECT_DIR$/IHM/Graph_sensibility.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/IHM/Menu.py" beforeDir="false" afterPath="$PROJECT_DIR$/IHM/Menu.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Order_files/Configuration_file_management.py" beforeDir="false" afterPath="$PROJECT_DIR$/Order_files/Configuration_file_management.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Order_files/Orders.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Order_files/Orders.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,9 +22,6 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-  </component>
-  <component name="HighlightingSettingsPerFile">
-    <setting file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37-32/Lib/site-packages/serial/serialwin32.py" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectId" id="1seobWopp6hXWYrwvL3jWuIcH3F" />
   <component name="ProjectViewState">
@@ -117,9 +118,9 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="C:\Users\labo\AppData\Local\Programs\Python\Python37-32\python.exe" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/IHM" />
-      <option name="IS_MODULE_SDK" value="false" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/IHM/Menu.py" />
@@ -175,7 +176,6 @@
     </configuration>
     <list>
       <item itemvalue="Python.IHM" />
-      <item itemvalue="Python.Executable" />
       <item itemvalue="Python.Menu" />
       <item itemvalue="Python.Void" />
       <item itemvalue="Python.Graph_sensibility" />

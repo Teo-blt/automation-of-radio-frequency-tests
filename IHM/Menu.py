@@ -12,7 +12,6 @@ from tkinter import *
 from tkinter import ttk
 from tkinter.messagebox import *
 from IHM_redirect import Menu_Climatic_chamber
-
 # ============================================================================
 
 LOBBY_WINDOW_SIZE = "700x200"
