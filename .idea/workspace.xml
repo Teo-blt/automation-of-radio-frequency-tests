@@ -1,14 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fdf07519-220c-4a67-ab18-26afab89606e" name="Default Changelist" comment="amélioration de la gestion d'erreur &#10;&#10;- meilleur protection lors du fail de la izepto">
+    <list default="true" id="fdf07519-220c-4a67-ab18-26afab89606e" name="Default Changelist" comment="préparation de la version finale du code&#10;&#10;- création de l'exécutable&#10;- meilleur gestion des fichiers de config">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/IHM_redirect/Menu_Climatic_chamber.py" beforeDir="false" afterPath="$PROJECT_DIR$/IHM_redirect/Menu_Climatic_chamber.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/IHM_redirect/Menu_IBTS.py" beforeDir="false" afterPath="$PROJECT_DIR$/IHM_redirect/Menu_IBTS.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/IHM_redirect/Menu_Izepto.py" beforeDir="false" afterPath="$PROJECT_DIR$/IHM_redirect/Menu_Izepto.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Order_files/Configuration_file_management.py" beforeDir="false" afterPath="$PROJECT_DIR$/Order_files/Configuration_file_management.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Order_files/Orders.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Order_files/Orders.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Order_files/Orders_secure_save.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Order_files/Orders_secure_save.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -206,13 +200,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1621242487363</updated>
-    </task>
-    <task id="LOCAL-00117" summary="test final N°6 parfait ?">
-      <created>1625150439389</created>
-      <option name="number" value="00117" />
-      <option name="presentableId" value="LOCAL-00117" />
-      <option name="project" value="LOCAL" />
-      <updated>1625150439389</updated>
     </task>
     <task id="LOCAL-00118" summary="test final N°7 parfait ? mise en veille XD">
       <created>1625210451615</created>
@@ -550,7 +537,14 @@
       <option name="project" value="LOCAL" />
       <updated>1627032016691</updated>
     </task>
-    <option name="localTasksCounter" value="166" />
+    <task id="LOCAL-00166" summary="préparation de la version finale du code&#10;&#10;- création de l'exécutable&#10;- meilleur gestion des fichiers de config">
+      <created>1627032935799</created>
+      <option name="number" value="00166" />
+      <option name="presentableId" value="LOCAL-00166" />
+      <option name="project" value="LOCAL" />
+      <updated>1627032935799</updated>
+    </task>
+    <option name="localTasksCounter" value="167" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -566,7 +560,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="commentaies completés + réorganisation des fichiers" />
     <MESSAGE value="draw graph done" />
     <MESSAGE value="amélioration fichier de config" />
     <MESSAGE value="amélioration création de data&#10;&#10;-création de sf et bw dans data" />
@@ -591,6 +584,7 @@
     <MESSAGE value="correction du bug mineurs v3&#10;&#10;- fichier script&#10;- ecriture des fichier data" />
     <MESSAGE value="mise a jour de l'executable &#10;&#10;- grace a pyinstaller création d'un exécutable" />
     <MESSAGE value="amélioration de la gestion d'erreur &#10;&#10;- meilleur protection lors du fail de la izepto" />
-    <option name="LAST_COMMIT_MESSAGE" value="amélioration de la gestion d'erreur &#10;&#10;- meilleur protection lors du fail de la izepto" />
+    <MESSAGE value="préparation de la version finale du code&#10;&#10;- création de l'exécutable&#10;- meilleur gestion des fichiers de config" />
+    <option name="LAST_COMMIT_MESSAGE" value="préparation de la version finale du code&#10;&#10;- création de l'exécutable&#10;- meilleur gestion des fichiers de config" />
   </component>
 </project>
