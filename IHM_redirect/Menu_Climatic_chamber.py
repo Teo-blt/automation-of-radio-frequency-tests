@@ -16,7 +16,7 @@ from loguru import logger
 from IHM import Graphic
 import serial
 from IHM_piloting.Coroutines_experiment.devices_helper import scan_all_ports
-
+from IHM import Graph_sensibility
 # =============================================================================
 ON = b"$00E %06.1f 0000.0 0000.0 0000.0 0000.0 0101000000000000\n\r"
 CLIMATIC_CHAMBER_STOP = b"$00E 0000.0 0000.0 0000.0 0000.0 0000.0 0000000000000000\n\r"
@@ -34,6 +34,8 @@ def start_climatic_chamber(self, port_give):
     scanner_port_com_frame.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
     scanner_port_com_frame_label = Label(scanner_port_com_frame, text="Scanner for connection port")
     scanner_port_com_frame_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+    make_a_graph = LabelFrame(self, text="Make a graph")
+    make_a_graph.grid(row=1, column=1, ipadx=0, ipady=0, padx=0, pady=0)
     place = scanner_port_com_frame
     scanner_port_com_frame_button = Button(place, text="Scan", borderwidth=8, background=THE_COLOR,
                                            activebackground="green", disabledforeground="grey",
@@ -55,6 +57,11 @@ def start_climatic_chamber(self, port_give):
     combobox_scanner = ttk.Combobox(place, values=[0], state="readonly")
     combobox_scanner.set("--choose your port here--")
     combobox_scanner.pack(ipadx=0, ipady=0, padx=20, pady=10, expand=False, fill="x", side=TOP)
+    make_a_graph_button = tk.Button(make_a_graph, text="Draw",
+                                    borderwidth=8, background=THE_COLOR,
+                                    activebackground="green", cursor="right_ptr", overrelief="sunken",
+                                    command=lambda: [Graph_sensibility.draw_graph()])
+    make_a_graph_button.pack(padx=0, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
 
     def automatic_1(e):
         return automatic(combobox_scanner, visual_color_button, port_com_frame_entry)

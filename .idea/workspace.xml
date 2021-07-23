@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fdf07519-220c-4a67-ab18-26afab89606e" name="Default Changelist" comment="mise a jour de l'executable &#10;&#10;- grace a pyinstaller création d'un exécutable">
+    <list default="true" id="fdf07519-220c-4a67-ab18-26afab89606e" name="Default Changelist" comment="amélioration de la gestion d'erreur &#10;&#10;- meilleur protection lors du fail de la izepto">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Result_tests/Data_filter_example.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Result_tests/Data_filter_example.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test_filter/Filter_script.py" beforeDir="false" afterPath="$PROJECT_DIR$/Test_filter/Filter_script.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test_sensibility/Sensibility_script.py" beforeDir="false" afterPath="$PROJECT_DIR$/Test_sensibility/Sensibility_script.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/IHM_redirect/Menu_Climatic_chamber.py" beforeDir="false" afterPath="$PROJECT_DIR$/IHM_redirect/Menu_Climatic_chamber.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/IHM_redirect/Menu_IBTS.py" beforeDir="false" afterPath="$PROJECT_DIR$/IHM_redirect/Menu_IBTS.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/IHM_redirect/Menu_Izepto.py" beforeDir="false" afterPath="$PROJECT_DIR$/IHM_redirect/Menu_Izepto.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Order_files/Configuration_file_management.py" beforeDir="false" afterPath="$PROJECT_DIR$/Order_files/Configuration_file_management.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Order_files/Orders.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Order_files/Orders.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Order_files/Orders_secure_save.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Order_files/Orders_secure_save.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -203,13 +206,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1621242487363</updated>
-    </task>
-    <task id="LOCAL-00116" summary="test final N°6 parfait ?">
-      <created>1625150364019</created>
-      <option name="number" value="00116" />
-      <option name="presentableId" value="LOCAL-00116" />
-      <option name="project" value="LOCAL" />
-      <updated>1625150364019</updated>
     </task>
     <task id="LOCAL-00117" summary="test final N°6 parfait ?">
       <created>1625150439389</created>
@@ -547,7 +543,14 @@
       <option name="project" value="LOCAL" />
       <updated>1626969233115</updated>
     </task>
-    <option name="localTasksCounter" value="165" />
+    <task id="LOCAL-00165" summary="amélioration de la gestion d'erreur &#10;&#10;- meilleur protection lors du fail de la izepto">
+      <created>1627032016691</created>
+      <option name="number" value="00165" />
+      <option name="presentableId" value="LOCAL-00165" />
+      <option name="project" value="LOCAL" />
+      <updated>1627032016691</updated>
+    </task>
+    <option name="localTasksCounter" value="166" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -563,7 +566,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="commentaies completés" />
     <MESSAGE value="commentaies completés + réorganisation des fichiers" />
     <MESSAGE value="draw graph done" />
     <MESSAGE value="amélioration fichier de config" />
@@ -588,6 +590,7 @@
     <MESSAGE value="correction du bug mineurs v2&#10;&#10;- fichier order&#10;- ecriture des fichier data" />
     <MESSAGE value="correction du bug mineurs v3&#10;&#10;- fichier script&#10;- ecriture des fichier data" />
     <MESSAGE value="mise a jour de l'executable &#10;&#10;- grace a pyinstaller création d'un exécutable" />
-    <option name="LAST_COMMIT_MESSAGE" value="mise a jour de l'executable &#10;&#10;- grace a pyinstaller création d'un exécutable" />
+    <MESSAGE value="amélioration de la gestion d'erreur &#10;&#10;- meilleur protection lors du fail de la izepto" />
+    <option name="LAST_COMMIT_MESSAGE" value="amélioration de la gestion d'erreur &#10;&#10;- meilleur protection lors du fail de la izepto" />
   </component>
 </project>

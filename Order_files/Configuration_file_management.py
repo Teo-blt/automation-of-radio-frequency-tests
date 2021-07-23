@@ -59,8 +59,8 @@ def file_execution(file_name):
 
 
 def file_reset():
-    file = open((sys.path[1]) + f"\\Data_files\\Orders.txt", "w+")
-    file2 = open((sys.path[1]) + f"\\Data_files\\Orders_secure_save.txt", "r")
+    file = open((sys.path[1]) + f"\\Order_files\\Orders.txt", "w+")
+    file2 = open((sys.path[1]) + f"\\Order_files\\Orders_secure_save.txt", "r")
     for line in file2:
         file.write(str(line.rstrip('\n\r').split("=")[0] + "="))
         file.write(str(line.rstrip('\n\r').split("=")[1] + "\n"))
@@ -106,6 +106,6 @@ def change_value():
         new_value_number = "867500000"
         order = (cmd[0] + str(read_original_value()[1][:-1]) + cmd[2] + new_value_number + cmd[4])
         ssh.exec_command(order, get_pty=True)
-        logger.info("The configuration file of the Izepto is completed")
+        logger.info("The reset of the configuration file of the Izepto is completed")
     except:
         logger.critical(f"Impossible to connected to 192.168.4.183")

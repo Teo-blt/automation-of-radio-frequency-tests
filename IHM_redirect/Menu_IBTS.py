@@ -13,7 +13,7 @@ from tkinter.messagebox import *
 from loguru import logger
 from IHM_piloting.SSH import Test_SSH
 import paramiko
-
+from IHM import Graph_sensibility
 # =============================================================================
 THE_COLOR = "#E76145"
 global status
@@ -24,6 +24,8 @@ def ibts_menu(self, ip_address):
     scanner_ibts_frame.grid(row=0, column=1, ipadx=40, ipady=20, padx=0, pady=0)
     ibts_scale_frame = LabelFrame(self, text="Start the test")
     ibts_scale_frame.grid(row=0, column=3, ipadx=0, ipady=0, padx=0, pady=0)
+    make_a_graph = LabelFrame(self, text="Make a graph")
+    make_a_graph.grid(row=1, column=1, ipadx=0, ipady=0, padx=0, pady=0)
     start_test_button = tk.Button(ibts_scale_frame, text="Begin transmission",
                                   borderwidth=8, background=THE_COLOR,
                                   activebackground="green", cursor="right_ptr", overrelief="sunken",
@@ -55,6 +57,11 @@ def ibts_menu(self, ip_address):
     visual_color_button_sg = Button(place, state="disabled", disabledforeground="black")
     visual_color_button_sg.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
     try_ibts_connection(port_com_frame_entry, port_com_frame_entry_name, visual_color_button_sg)
+    make_a_graph_button = tk.Button(make_a_graph, text="Draw",
+                                    borderwidth=8, background=THE_COLOR,
+                                    activebackground="green", cursor="right_ptr", overrelief="sunken",
+                                    command=lambda: [Graph_sensibility.draw_graph()])
+    make_a_graph_button.pack(padx=0, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
 
 
 def visual_function(visual_color_button, s):
