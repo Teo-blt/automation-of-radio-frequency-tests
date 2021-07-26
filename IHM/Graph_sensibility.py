@@ -336,6 +336,7 @@ def draw_graph_filter(name, value):
     data = pd.read_csv(file_name, sep='\s+', header=None)
     data = pd.DataFrame(data)
     paket_rate = int(value[:2])
+    color = {0: 'b', 1: 'r', 2: 'g', 3: 'y', 4: 'c', 5: 'lime', 6: 'black', 7: 'pink'}
     sf = data[5][0]
     bw = data[5][0]
     temp = 0
@@ -396,7 +397,7 @@ def draw_graph_filter(name, value):
         except:
             break
     for w in range(0, len(G)):
-        plt.plot(H[w], G[w], "o-", color="red", label=str(temp) + "°C")
+        plt.plot(H[w], G[w], "o-", color=color[data[2][w]], label=str(temp) + "°C")
     plt.xlabel("Channel frequency Hz")
     plt.ylabel("Power at the entrance of the receiver in dBm")
     plt.title(f"Graphical representation of sensitivity test results for {paket_rate}% of packet lost\n"

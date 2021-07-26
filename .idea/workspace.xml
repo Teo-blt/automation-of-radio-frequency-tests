@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fdf07519-220c-4a67-ab18-26afab89606e" name="Default Changelist" comment="préparation de la version finale du code&#10;&#10;- création de l'exécutable&#10;- meilleur gestion des fichiers de config">
+    <list default="true" id="fdf07519-220c-4a67-ab18-26afab89606e" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/IHM/Graph_sensibility.py" beforeDir="false" afterPath="$PROJECT_DIR$/IHM/Graph_sensibility.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/IHM/Menu.py" beforeDir="false" afterPath="$PROJECT_DIR$/IHM/Menu.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Order_files/Configuration_file_management.py" beforeDir="false" afterPath="$PROJECT_DIR$/Order_files/Configuration_file_management.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Order_files/Orders.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Order_files/Orders.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -200,13 +197,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1621242487363</updated>
-    </task>
-    <task id="LOCAL-00118" summary="test final N°7 parfait ? mise en veille XD">
-      <created>1625210451615</created>
-      <option name="number" value="00118" />
-      <option name="presentableId" value="LOCAL-00118" />
-      <option name="project" value="LOCAL" />
-      <updated>1625210451615</updated>
     </task>
     <task id="LOCAL-00119" summary="test final N°7 parfait ? mise en veille XD">
       <created>1625210721593</created>
@@ -544,7 +534,14 @@
       <option name="project" value="LOCAL" />
       <updated>1627032935799</updated>
     </task>
-    <option name="localTasksCounter" value="167" />
+    <task id="LOCAL-00167" summary="préparation de la version finale du code&#10;&#10;- bug avec sys.path, tout recomencer">
+      <created>1627052147631</created>
+      <option name="number" value="00167" />
+      <option name="presentableId" value="LOCAL-00167" />
+      <option name="project" value="LOCAL" />
+      <updated>1627052147631</updated>
+    </task>
+    <option name="localTasksCounter" value="168" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -560,7 +557,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="draw graph done" />
     <MESSAGE value="amélioration fichier de config" />
     <MESSAGE value="amélioration création de data&#10;&#10;-création de sf et bw dans data" />
     <MESSAGE value="réparation graphic sensibility&#10;&#10;-j'ai enlever la milite a 100, qui pouvais se déclancher au mauvais moment" />
@@ -585,6 +581,7 @@
     <MESSAGE value="mise a jour de l'executable &#10;&#10;- grace a pyinstaller création d'un exécutable" />
     <MESSAGE value="amélioration de la gestion d'erreur &#10;&#10;- meilleur protection lors du fail de la izepto" />
     <MESSAGE value="préparation de la version finale du code&#10;&#10;- création de l'exécutable&#10;- meilleur gestion des fichiers de config" />
-    <option name="LAST_COMMIT_MESSAGE" value="préparation de la version finale du code&#10;&#10;- création de l'exécutable&#10;- meilleur gestion des fichiers de config" />
+    <MESSAGE value="préparation de la version finale du code&#10;&#10;- bug avec sys.path, tout recomencer" />
+    <option name="LAST_COMMIT_MESSAGE" value="préparation de la version finale du code&#10;&#10;- bug avec sys.path, tout recomencer" />
   </component>
 </project>
