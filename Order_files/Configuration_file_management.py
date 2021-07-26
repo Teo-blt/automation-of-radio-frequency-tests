@@ -13,15 +13,18 @@ import sys
 import paramiko
 from tkinter import filedialog
 import pandas as pd
+
 # =============================================================================
 THE_COLOR = "#E76145"
+
 
 def menu():
     window_graph_data = Tk()
     info_selection = LabelFrame(window_graph_data, text="Info selection")
     menu_frame = LabelFrame(window_graph_data, text="Menu")
     menu_frame.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
-    choice_frame = LabelFrame(window_graph_data, text="Choice")
+    choice_frame = LabelFrame(window_graph_data, text="Order file settings")
+    izepto_frame = LabelFrame(window_graph_data, text="Izepto")
     window_graph_data.title("Configuration file management")
     configuration_file_label = Label(menu_frame, text="Select the name of the configuration file:")
     configuration_file_label.pack(expand=False, fill="none", side=TOP)
@@ -38,12 +41,18 @@ def menu():
                           overrelief="sunken",
                           command=lambda: [file_reset(str(configuration_file.get()))])
     reset_button.grid(row=1, column=0, ipadx=10, ipady=10, padx=10, pady=10)
-    reset_izepto_button = Button(choice_frame, text="Reset Izepto configuration file", borderwidth=8,
+    reset_izepto_button = Button(izepto_frame, text="Reset Izepto configuration file", borderwidth=8,
                                  background=THE_COLOR,
                                  cursor="right_ptr",
                                  overrelief="sunken",
-                                 command=lambda: [change_value(str(configuration_file.get()))])
+                                 command=lambda: [
+                                     change_value(str(configuration_file.get()), str(configuration_ip.get()))])
     reset_izepto_button.grid(row=1, column=1, ipadx=10, ipady=10, padx=10, pady=10)
+    configuration_file_label = Label(izepto_frame, text="Select your ip:")
+    configuration_file_label.grid(row=2, column=1, ipadx=10, ipady=10, padx=10, pady=10)
+    configuration_ip = Entry(izepto_frame, cursor="right_ptr")
+    configuration_ip.grid(row=3, column=1, ipadx=10, ipady=10, padx=10, pady=10)
+    configuration_ip.insert(0, "192.168.4.183")
     info_file_name_label = Label(info_selection, text="Actual file :")
     info_file_name_label.pack(expand=False, fill="none", side=TOP)
     info_label = Label(info_selection, text="")
@@ -63,13 +72,12 @@ def menu():
                 menu_frame.grid_forget()
                 choice_frame.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
                 info_selection.grid(row=0, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+                izepto_frame.grid(row=1, column=1, ipadx=0, ipady=0, padx=0, pady=0)
                 info_label.config(text=file_name.split("/")[-1])
             else:
                 logger.critical(f"The file is not 'Orders.txt'")
         except:
             logger.critical(f"The file name {file_name} is invalid")
-
-
 
     import_file_button = Button(menu_frame, text="Import file",
                                 borderwidth=8, background=THE_COLOR,
@@ -90,8 +98,8 @@ def menu():
     def go_back():
         choice_frame.grid_forget()
         info_selection.grid_forget()
+        izepto_frame.grid_forget()
         menu_frame.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
-
 
 
 def file_execution(file_name):
@@ -144,17 +152,17 @@ def read_original_value(file_name):
         logger.critical(f"Impossible to connected to 192.168.4.183")
 
 
-def change_value(file_name):
+def change_value(file_name, ip):
     username = "root"
     password = "root"
     try:
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(hostname="192.168.4.183", username=username, password=password)
+        ssh.connect(hostname=ip, username=username, password=password)
         cmd = file_reading(file_name, 9).split(",")
         new_value_number = "867500000"
         order = (cmd[0] + str(read_original_value(file_name)[1][:-1]) + cmd[2] + new_value_number + cmd[4])
         ssh.exec_command(order, get_pty=True)
-        logger.info("The reset of the configuration file of the Izepto is completed")
+        logger.info(f"The reset of the configuration file of the Izepto {ip} is completed")
     except:
         logger.critical(f"Impossible to connected to 192.168.4.183")
