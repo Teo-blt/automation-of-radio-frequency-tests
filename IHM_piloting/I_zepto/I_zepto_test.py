@@ -12,21 +12,23 @@ import threading
 from loguru import logger
 import time
 import sys
-
+import matplotlib
+matplotlib.use('Agg')
+from matplotlib import pyplot
 
 # =============================================================================
 
-def lunch_izepto(ip):
-    Threadizepto(ip).start()
+def lunch_izepto(ip, order_file):
+    Threadizepto(ip, order_file).start()
 
 
 class Threadizepto(threading.Thread):
 
-    def __init__(self, ip):
+    def __init__(self, ip, order_file):
         threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
         # additional data added to the class
         self.ip = ip
-        self.file_name = "Orders.txt"
+        self.file_name = order_file
 
     def run(self):
         izepto_result = open("Report_iZepto.txt", 'w+')
@@ -67,7 +69,7 @@ class Threadizepto(threading.Thread):
         izepto_result.close()
 
     def file_execution(self, file_name, n):
-        file = open((sys.path[1]) + f"\\Data_files\\{file_name}", "r")
+        file = open(file_name, "r")
         donnees = []
         p = 0
         for line in file:

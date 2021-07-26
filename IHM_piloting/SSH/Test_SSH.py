@@ -13,14 +13,16 @@ from tkinter import *
 import tkinter as tk
 from loguru import logger
 from tkinter.messagebox import *
-
+import matplotlib
+matplotlib.use('Agg')
+from matplotlib import pyplot
 # =============================================================================
 global is_killed
 is_killed = 0
 THE_COLOR = "#E76145"
 
 
-def lunch_ibts(ip):
+def lunch_ibts(ip, file_name):
     new_window_main_graphic = tk.Toplevel()
     new_window_main_graphic.title("Signal generator settings")
 
@@ -74,11 +76,11 @@ def lunch_ibts(ip):
     start_button = tk.Button(scale_frame, text="Start",
                              borderwidth=8, background=THE_COLOR,
                              activebackground="green", cursor="right_ptr", overrelief="sunken",
-                             command=lambda: [lunch_safety(frequency, sf, attenuate, number_frames, ip, bw)])
+                             command=lambda: [lunch_safety(frequency, sf, attenuate, number_frames, ip, bw, file_name)])
     start_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
 
 
-def lunch_safety(frequency, sf, attenuate, number_frames, ip, bw):
+def lunch_safety(frequency, sf, attenuate, number_frames, ip, bw, file_name):
     global is_killed
     try:  # to chek if the values are integer
         number_frames = float(number_frames.get())
@@ -105,7 +107,7 @@ def lunch_safety(frequency, sf, attenuate, number_frames, ip, bw):
         else:
             if is_killed == 0:
                 is_killed = 1
-                Threadibts(frequency, sf, attenuate, number_frames, bw, ip).start()
+                Threadibts(frequency, sf, attenuate, number_frames, bw, ip, file_name).start()
             else:
                 logger.info("The smiq program is already running")
     except:
@@ -128,7 +130,7 @@ def reset_all(frequency, sf, attenuate, number_frames, bw):
 
 class Threadibts(threading.Thread):
 
-    def __init__(self, frequency, sf, attenuate, number_frames, bw, ip):
+    def __init__(self, frequency, sf, attenuate, number_frames, bw, ip, file_name):
         threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
         # additional data added to the class
         self.frequency = str(frequency / 1000000)  # Number of sent frames
@@ -137,7 +139,7 @@ class Threadibts(threading.Thread):
         self.number_frames = str(number_frames)
         self.bw = str(bw)
         self.ip = ip
-        self.file_name = "Orders.txt"
+        self.file_name = file_name
 
     def run(self):
         global is_killed
@@ -151,7 +153,7 @@ class Threadibts(threading.Thread):
         ssh.connect(hostname=ip_address, username=username, password=password)
         logger.debug("Successfully connected to", ip_address)
 
-        cmd = self.file_execution("Orders.txt", 1).split(",")
+        cmd = self.file_execution(self.file_name, 1).split(",")
         order = (cmd[0] + self.frequency + cmd[2] + self.bw + cmd[4] + self.sf + cmd[6] + self.number_frames + cmd[8]
                  + self.attenuate)
 
@@ -175,7 +177,7 @@ class Threadibts(threading.Thread):
         is_killed = 0
 
     def file_execution(self, file_name, n):
-        file = open((sys.path[1]) + f"\\Data_files\\{file_name}", "r")
+        file = open(file_name, "r")
         donnees = []
         p = 0
         for line in file:

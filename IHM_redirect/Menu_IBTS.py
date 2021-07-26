@@ -14,6 +14,11 @@ from loguru import logger
 from IHM_piloting.SSH import Test_SSH
 import paramiko
 from IHM import Graph_sensibility
+from tkinter import filedialog
+import pandas as pd
+import matplotlib
+matplotlib.use('Agg')
+from matplotlib import pyplot
 # =============================================================================
 THE_COLOR = "#E76145"
 global status
@@ -95,11 +100,11 @@ def call_graph_ibts(ip_address, port_com_frame_entry, visual_color_button_sg):
     change_ibts(port_com_frame_entry.get())
     if status == 0:
         if askyesno("Warning", "The connection status is : offline\n Do you still want to continue ?"):
-            Test_SSH.lunch_ibts(ip_address)
+            ask_order_file(ip_address)
         else:
             visual_function(visual_color_button_sg, 1)
     else:
-        Test_SSH.lunch_ibts(ip_address)
+        ask_order_file(ip_address)
 
 
 def change_ibts(name):
@@ -116,3 +121,40 @@ def change_ibts(name):
     except:
         status = 0
         logger.critical(f"The IP address [{ip_address}] is not link to the IBTS")
+
+def ask_order_file(ip_address):
+
+    def uploadaction(file_entry):
+        filename = filedialog.askopenfilename(filetypes=[("text files", ".txt")])
+        file_entry.delete(0, 2000)
+        file_entry.insert(0, filename)
+
+    window_graph_data = Tk()
+    menu_frame = LabelFrame(window_graph_data, text="Menu")
+    menu_frame.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+    configuration_file = Entry(menu_frame, cursor="right_ptr")
+    configuration_file.pack(expand=False, fill="none", side=TOP)
+    configuration_file.insert(0, "Select command file")
+    import_file_button = Button(menu_frame, text="Import file",
+                                borderwidth=8, background=THE_COLOR,
+                                activebackground="green", cursor="right_ptr", overrelief="sunken",
+                                command=lambda: [uploadaction(configuration_file)])
+    import_file_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
+    check_button = Button(menu_frame, text="Check file",
+                          borderwidth=8, background=THE_COLOR,
+                          activebackground="green", cursor="right_ptr", overrelief="sunken",
+                          command=lambda: [verification(ip_address, str(configuration_file.get()), window_graph_data)])
+    check_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
+
+def verification(ip_address, file_name, window_graph_data):
+    try:
+        data = pd.read_csv(file_name, sep='\s+', header=None)
+        data = pd.DataFrame(data)
+        a = file_name.split('/')
+        if a[-1] == 'Orders.txt':
+            Test_SSH.lunch_ibts(ip_address, file_name)
+            window_graph_data.destroy()
+        else:
+            logger.critical(f"The file is not 'Orders.txt'")
+    except:
+        logger.critical(f"The file name {file_name} is invalid")

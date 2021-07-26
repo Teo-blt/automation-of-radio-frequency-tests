@@ -30,7 +30,7 @@ vt = serial.Serial()
 
 class Threadsensibility(threading.Thread):
 
-    def __init__(self, ip_ibts, ip_izepto, port_test):
+    def __init__(self, ip_ibts, ip_izepto, port_test, file_name):
         threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
         # additional data added to the class
         self.ip_ibts = ip_ibts
@@ -63,7 +63,7 @@ class Threadsensibility(threading.Thread):
         self.number_channel = 8
         self.time_temp_wait = 120
         self.temperature_storage = 0
-        self.config_file = "Orders.txt"
+        self.config_file = file_name
         self.number_error = 0
         self.time_start = 0
         self.number_launch = 0
@@ -803,7 +803,7 @@ def simulation_graphic_stair(step, temp_start, temp_end, window):  # create the 
 
 
 def file_execution(file_name, n):
-    file = open((sys.path[1]) + f"\\Order_files\\{file_name}", "r")
+    file = open(file_name, "r")
     donnees = []
     p = 0
     for line in file:

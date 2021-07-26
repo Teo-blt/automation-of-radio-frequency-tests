@@ -15,7 +15,11 @@ import time
 from loguru import logger
 import serial
 from IHM import Graph_sensibility
-
+from tkinter import filedialog
+import pandas as pd
+import matplotlib
+matplotlib.use('Agg')
+from matplotlib import pyplot
 # =============================================================================
 THE_COLOR = "#E76145"
 global launch_safety
@@ -121,21 +125,21 @@ def func_climate_chamber(port_test):
         logger.critical(f"Impossible to connected to {port_test}")
 
 
-def three_methods_run_together(ip_ibts, ip_izepto, port_test):
+def three_methods_run_together(ip_ibts, ip_izepto, port_test, file_name):
     if func_ibts(ip_ibts) == 0:
         if func_izepto(ip_izepto) == 0:
             if func_climate_chamber(port_test) == 0:
                 # self.destroy()
-                Sensibility_script.Threadsensibility(ip_ibts, ip_izepto, port_test).start()
+                Sensibility_script.Threadsensibility(ip_ibts, ip_izepto, port_test, file_name).start()
     else:
         logger.warning("Please check your data")
 
 
-def two_methods_run_together(ip_ibts, ip_izepto):
+def two_methods_run_together(ip_ibts, ip_izepto, file_name):
     if func_ibts(ip_ibts) == 0:
         if func_izepto(ip_izepto) == 0:
             # self.destroy()
-            Sensibility_script.Threadsensibility(ip_ibts, ip_izepto, -1).start()
+            Sensibility_script.Threadsensibility(ip_ibts, ip_izepto, -1, file_name).start()
     else:
         logger.warning("Please check your data")
 
@@ -146,7 +150,47 @@ def run(ip_ibts, ip_izepto, port_test, number):
         logger.critical("Error, the programme is already running")
     else:
         launch_safety = 1
-        if number:
-            three_methods_run_together(ip_ibts, ip_izepto, port_test)
+        ask_order_file(ip_ibts, ip_izepto, port_test, number)
+
+
+
+def ask_order_file(ip_ibts, ip_izepto, port_test, number):
+
+    def uploadaction(file_entry):
+        filename = filedialog.askopenfilename(filetypes=[("text files", ".txt")])
+        file_entry.delete(0, 2000)
+        file_entry.insert(0, filename)
+
+    window_graph_data = Tk()
+    menu_frame = LabelFrame(window_graph_data, text="Menu")
+    menu_frame.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
+    configuration_file = Entry(menu_frame, cursor="right_ptr")
+    configuration_file.pack(expand=False, fill="none", side=TOP)
+    configuration_file.insert(0, "Select command file")
+    import_file_button = Button(menu_frame, text="Import file",
+                                borderwidth=8, background=THE_COLOR,
+                                activebackground="green", cursor="right_ptr", overrelief="sunken",
+                                command=lambda: [uploadaction(configuration_file)])
+    import_file_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
+    check_button = Button(menu_frame, text="Check file",
+                          borderwidth=8, background=THE_COLOR,
+                          activebackground="green", cursor="right_ptr", overrelief="sunken",
+                          command=lambda: [verification(ip_ibts, ip_izepto, port_test, number,
+                                                        str(configuration_file.get()), window_graph_data)])
+    check_button.pack(padx=1, pady=1, ipadx=40, ipady=20, expand=False, fill="none", side=RIGHT)
+
+def verification(ip_ibts, ip_izepto, port_test, number, file_name, window_graph_data):
+    try:
+        data = pd.read_csv(file_name, sep='\s+', header=None)
+        data = pd.DataFrame(data)
+        a = file_name.split('/')
+        if a[-1] == 'Orders.txt':
+            window_graph_data.destroy()
+            if number:
+                three_methods_run_together(ip_ibts, ip_izepto, port_test, file_name)
+            else:
+                two_methods_run_together(ip_ibts, ip_izepto, file_name)
         else:
-            two_methods_run_together(ip_ibts, ip_izepto)
+            logger.critical(f"The file is not 'Orders.txt'")
+    except:
+        logger.critical(f"The file name {file_name} is invalid")

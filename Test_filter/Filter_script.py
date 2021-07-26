@@ -29,7 +29,7 @@ vt = serial.Serial()
 
 class Threadfilter(threading.Thread):
 
-    def __init__(self, ip_izepto, ip_ibts, port_test):
+    def __init__(self, ip_izepto, ip_ibts, port_test, file_name):
         threading.Thread.__init__(self)  # do not forget this line ! (call to the constructor of the parent class)
         # additional data added to the class
         self.step_temp = 0
@@ -62,7 +62,7 @@ class Threadfilter(threading.Thread):
         self.time_start = 0
         self.report_file = "Report_filter.txt"
         self.data_file = 'Data_filter.txt'
-        self.config_file = "Orders.txt"
+        self.config_file = file_name
         self.frequency_step = 200000
         self.attenuate = 0
         self.stopping = 0
@@ -753,7 +753,7 @@ class Threadfilter(threading.Thread):
 
 
 def file_execution(file_name, n):
-    file = open((sys.path[1]) + f"\\Order_files\\{file_name}", "r")
+    file = open(file_name, "r")
     donnees = []
     p = 0
     for line in file:
