@@ -30,7 +30,7 @@ launch_safety = 0
 def filter_test_menu(self, ip_izepto, ip_ibts, port):
     global number
     number = 0
-    scanner_ibts_frame = LabelFrame(self, text="Sensibility Menu")
+    scanner_ibts_frame = LabelFrame(self, text="Filter Menu")
     scanner_ibts_frame.grid(row=0, column=1, ipadx=10, ipady=10, padx=0, pady=0)
     ibts_scale_frame = LabelFrame(self, text="Start the test")
     ibts_scale_frame.grid(row=0, column=3, ipadx=0, ipady=0, padx=0, pady=0)

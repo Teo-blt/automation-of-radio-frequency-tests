@@ -17,6 +17,7 @@ import serial
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 import matplotlib
+import sys
 matplotlib.use('Agg')
 
 # =============================================================================

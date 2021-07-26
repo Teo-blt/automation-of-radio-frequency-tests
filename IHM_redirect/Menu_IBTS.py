@@ -87,6 +87,7 @@ def try_ibts_connection(port_com_frame_entry, port_com_frame_entry_name, visual_
         ssh.connect(hostname=ip_address, username=username, password=password, timeout=1)
         status = 1
         visual_function(visual_color_button_sg, 0)
+        logger.debug("The connection was correctly established")
     except:
         status = 0
         visual_function(visual_color_button_sg, 1)
