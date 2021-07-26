@@ -100,11 +100,13 @@ def call_graph_ibts(ip_address, port_com_frame_entry, visual_color_button_sg):
     change_ibts(port_com_frame_entry.get())
     if status == 0:
         if askyesno("Warning", "The connection status is : offline\n Do you still want to continue ?"):
-            ask_order_file(ip_address)
+            Test_SSH.lunch_ibts(ip_address, 0)
+            #ask_order_file(ip_address)
         else:
             visual_function(visual_color_button_sg, 1)
     else:
-        ask_order_file(ip_address)
+        Test_SSH.lunch_ibts(ip_address, 0)
+        #ask_order_file(ip_address)
 
 
 def change_ibts(name):

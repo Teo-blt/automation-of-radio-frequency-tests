@@ -17,6 +17,8 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from loguru import logger
 import serial
 import sys
+import matplotlib
+matplotlib.use('Agg')
 
 # =============================================================================
 THE_COLOR = "#E76145"
@@ -70,6 +72,7 @@ class Threadsensibility(threading.Thread):
         self.reponse_storage_ibts = []
         self.reponse_storage_izepto = []
         self.original_value = []
+        self.file_path = ''
 
     def run(self):
         self.time_start = time.time()
@@ -170,6 +173,15 @@ class Threadsensibility(threading.Thread):
                 self.end_programme()
 
     def name_files(self):
+        a = []
+        i = 0
+        while sys.path[1].split('\\')[i] != 'automation-of-radio-frequency-tests':
+            a.append(sys.path[1].split('\\')[i])
+            i += 1
+        for p in range(0, len(a)):
+            self.file_path += str(a[p]) + '\\\\'
+        self.file_path += 'automation-of-radio-frequency-tests\\\\Result_tests\\\\'
+
         if len(str(time.localtime()[1])) == 1:
             month = "0" + str(time.localtime()[1])
         else:
@@ -177,12 +189,12 @@ class Threadsensibility(threading.Thread):
         file_name = str(
             ("Data_sensibility_" + str(time.localtime()[2]) + "_" + month + "_" + str(time.localtime()[0]) + "_"
              + str(time.localtime()[3]) + str(time.localtime()[4]) + str(time.localtime()[5]) + ".txt"))
-        self.data_file = sys.path[1] + f"\\Result_tests\\{file_name}"
+        self.data_file = self.file_path + file_name
 
         file_name_2 = str(
             ("Report_sensibility_" + str(time.localtime()[2]) + "_" + month + "_" + str(time.localtime()[0]) + "_"
              + str(time.localtime()[3]) + str(time.localtime()[4]) + str(time.localtime()[5]) + ".txt"))
-        self.report_file = sys.path[1] + f"\\Result_tests\\{file_name_2}"
+        self.report_file = self.file_path + file_name_2
 
     def climate_chamber_script(self):  # script + control of the climate chamber
         self.launch_climatic_chamber()
@@ -803,6 +815,16 @@ def simulation_graphic_stair(step, temp_start, temp_end, window):  # create the 
 
 
 def file_execution(file_name, n):
+    a = []
+    i = 0
+    file_path = ''
+    while sys.path[1].split('\\')[i] != 'automation-of-radio-frequency-tests':
+        a.append(sys.path[1].split('\\')[i])
+        i += 1
+    for p in range(0, len(a)):
+        file_path += str(a[p]) + '\\\\'
+    file_path += 'automation-of-radio-frequency-tests\\\\Order_files\\\\'
+    file_name = file_path + "Orders.txt"
     file = open(file_name, "r")
     donnees = []
     p = 0

@@ -16,6 +16,8 @@ from tkinter import *
 import serial
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
+import matplotlib
+matplotlib.use('Agg')
 
 # =============================================================================
 THE_COLOR = "#E76145"
@@ -68,6 +70,7 @@ class Threadfilter(threading.Thread):
         self.stopping = 0
         self.reponse_storage_izepto = []
         self.reponse_storage_ibts = []
+        self.file_path = ''
 
     def run(self):
         self.time_start = time.time()
@@ -266,6 +269,15 @@ class Threadfilter(threading.Thread):
                 self.step_temp = step
 
     def name_files(self):
+        a = []
+        i = 0
+        while sys.path[1].split('\\')[i] != 'automation-of-radio-frequency-tests':
+            a.append(sys.path[1].split('\\')[i])
+            i += 1
+        for p in range(0, len(a)):
+            self.file_path += str(a[p]) + '\\\\'
+        self.file_path += 'automation-of-radio-frequency-tests\\\\Result_tests\\\\'
+
         if len(str(time.localtime()[1])) == 1:
             month = "0" + str(time.localtime()[1])
         else:
@@ -273,12 +285,12 @@ class Threadfilter(threading.Thread):
         file_name = str(
             ("Data_filter_" + str(time.localtime()[2]) + "_" + month + "_" + str(time.localtime()[0]) + "_"
              + str(time.localtime()[3]) + str(time.localtime()[4]) + str(time.localtime()[5]) + ".txt"))
-        self.data_file = sys.path[1] + f"\\Result_tests\\{file_name}"
+        self.data_file = self.file_path + file_name
 
         file_name_2 = str(
             ("Report_filter_" + str(time.localtime()[2]) + "_" + month + "_" + str(time.localtime()[0]) + "_"
              + str(time.localtime()[3]) + str(time.localtime()[4]) + str(time.localtime()[5]) + ".txt"))
-        self.report_file = sys.path[1] + f"\\Result_tests\\{file_name_2}"
+        self.report_file = self.file_path + file_name_2
 
     def script(self):  # The script to test one channel
         for i in range(0, 100):  # number of test, generally infinity
@@ -753,6 +765,16 @@ class Threadfilter(threading.Thread):
 
 
 def file_execution(file_name, n):
+    a = []
+    i = 0
+    file_path = ''
+    while sys.path[1].split('\\')[i] != 'automation-of-radio-frequency-tests':
+        a.append(sys.path[1].split('\\')[i])
+        i += 1
+    for p in range(0, len(a)):
+        file_path += str(a[p]) + '\\\\'
+    file_path += 'automation-of-radio-frequency-tests\\\\Order_files\\\\'
+    file_name = file_path + "Orders.txt"
     file = open(file_name, "r")
     donnees = []
     p = 0

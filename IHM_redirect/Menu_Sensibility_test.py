@@ -150,7 +150,11 @@ def run(ip_ibts, ip_izepto, port_test, number):
         logger.critical("Error, the programme is already running")
     else:
         launch_safety = 1
-        ask_order_file(ip_ibts, ip_izepto, port_test, number)
+        if number:
+            three_methods_run_together(ip_ibts, ip_izepto, port_test, 0)
+        else:
+            two_methods_run_together(ip_ibts, ip_izepto, 0)
+        #ask_order_file(ip_ibts, ip_izepto, port_test, number)
 
 
 

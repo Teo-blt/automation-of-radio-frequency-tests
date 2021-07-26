@@ -176,7 +176,17 @@ class Threadibts(threading.Thread):
         ssh.close()
         is_killed = 0
 
-    def file_execution(self, file_name, n):
+    def file_execution(self,file_name, n):
+        a = []
+        i = 0
+        file_path = ''
+        while sys.path[1].split('\\')[i] != 'automation-of-radio-frequency-tests':
+            a.append(sys.path[1].split('\\')[i])
+            i += 1
+        for p in range(0, len(a)):
+            file_path += str(a[p]) + '\\\\'
+        file_path += 'automation-of-radio-frequency-tests\\\\Order_files\\\\'
+        file_name = file_path + "Orders.txt"
         file = open(file_name, "r")
         donnees = []
         p = 0

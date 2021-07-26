@@ -131,11 +131,13 @@ def call_graph_izepto(ip_address, port_com_frame_entry, visual_color_button_sg, 
     change_izepto(port_com_frame_entry.get(), visual_color_button_sg)
     if status == 0:
         if askyesno("Warning", "The connection status is : offline\n Do you still want to continue ?"):
-            ask_order_file(ip_address)
+            I_zepto_test.lunch_izepto(ip_address, 0)
+            #ask_order_file(ip_address)
         else:
             visual_function(visual_color_button_sg, 1)
     else:
-        ask_order_file(ip_address)
+        I_zepto_test.lunch_izepto(ip_address, 0)
+        #ask_order_file(ip_address)
         izepto_info_label.config(text="The Izepto card is ready to received", bg="light green")
 
 def change_izepto(name, visual_color_button_sg):
