@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fdf07519-220c-4a67-ab18-26afab89606e" name="Default Changelist" comment="" />
+    <list default="true" id="fdf07519-220c-4a67-ab18-26afab89606e" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -194,13 +196,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1621242487363</updated>
-    </task>
-    <task id="LOCAL-00125" summary="test final N°9">
-      <created>1625228020073</created>
-      <option name="number" value="00125" />
-      <option name="presentableId" value="LOCAL-00125" />
-      <option name="project" value="LOCAL" />
-      <updated>1625228020073</updated>
     </task>
     <task id="LOCAL-00126" summary="test final N°9 envoie des data">
       <created>1625230517418</created>
@@ -538,7 +533,14 @@
       <option name="project" value="LOCAL" />
       <updated>1627290316350</updated>
     </task>
-    <option name="localTasksCounter" value="174" />
+    <task id="LOCAL-00174" summary="generation de l'exécutable&#10;&#10;- nouveau excécutable">
+      <created>1627290779187</created>
+      <option name="number" value="00174" />
+      <option name="presentableId" value="LOCAL-00174" />
+      <option name="project" value="LOCAL" />
+      <updated>1627290779187</updated>
+    </task>
+    <option name="localTasksCounter" value="175" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

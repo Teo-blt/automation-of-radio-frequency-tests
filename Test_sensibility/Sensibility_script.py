@@ -74,9 +74,9 @@ class Threadsensibility(threading.Thread):
     def run(self):
         self.time_start = time.time()
         self.name_files()
-        sensibility_result = open(self.report_file, 'w+')  # preparation of the txt files
+        sensibility_result = open(self.report_file, 'x')  # preparation of the txt files
         sensibility_result.close()
-        outfile = open(self.data_file, 'w+')
+        outfile = open(self.data_file, 'x')
         outfile.close()
         self.write_doc("Sensitivity measurement iZepto")
         self.write_doc("Sensitivity measurement iBTS")
