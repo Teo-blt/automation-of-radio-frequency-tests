@@ -195,13 +195,6 @@
       <option name="presentableId" value="Default" />
       <updated>1621242487363</updated>
     </task>
-    <task id="LOCAL-00124" summary="test final N°8 parfait ? err temp">
-      <created>1625220008765</created>
-      <option name="number" value="00124" />
-      <option name="presentableId" value="LOCAL-00124" />
-      <option name="project" value="LOCAL" />
-      <updated>1625220008765</updated>
-    </task>
     <task id="LOCAL-00125" summary="test final N°9">
       <created>1625228020073</created>
       <option name="number" value="00125" />
@@ -538,7 +531,14 @@
       <option name="project" value="LOCAL" />
       <updated>1627289892728</updated>
     </task>
-    <option name="localTasksCounter" value="173" />
+    <task id="LOCAL-00173" summary="generation de l'exécutable&#10;&#10;- nouveau excécutable">
+      <created>1627290316350</created>
+      <option name="number" value="00173" />
+      <option name="presentableId" value="LOCAL-00173" />
+      <option name="project" value="LOCAL" />
+      <updated>1627290316350</updated>
+    </task>
+    <option name="localTasksCounter" value="174" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
