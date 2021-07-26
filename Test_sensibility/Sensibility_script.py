@@ -114,9 +114,9 @@ class Threadsensibility(threading.Thread):
                     # the step temperature value
                     for p in range(0, self.number_channel):  # stay in the boucle until the 8 channel are tested
                         logger.debug(f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, frequency:"
-                                     f" {round(self.frequency, 1)}")
+                                     f" {round(self.frequency, 1)}MHz")
                         self.write_doc(f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, "
-                                       f"frequency: {round(self.frequency, 1)}")
+                                       f"frequency: {round(self.frequency, 1)}MHz")
                         self.script()  # use the script function to test one channel
                         self.frequency = self.frequency + 0.2  # The value of the frequency increase of the step
                         # frequency value
@@ -143,10 +143,10 @@ class Threadsensibility(threading.Thread):
                     for p in range(0, self.number_channel):
                         logger.debug(
                             f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, frequency:"
-                            f" {round(self.frequency, 1)}")
+                            f" {round(self.frequency, 1)}MHz")
                         self.write_doc(
                             f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, frequency: "
-                            f"{round(self.frequency, 1)}")
+                            f"{round(self.frequency, 1)}MHz")
                         self.script()
                         self.frequency = self.frequency + 0.2
                         self.value_mono_multi = self.value_mono_multi + 1
@@ -157,9 +157,9 @@ class Threadsensibility(threading.Thread):
                 self.value_mono_multi = 0
                 for p in range(0, self.number_channel):
                     logger.debug(f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, "
-                                 f"frequency: {round(self.frequency, 1)}")
+                                 f"frequency: {round(self.frequency, 1)}MHz")
                     self.write_doc(f"Channel number: {self.value_mono_multi} of {self.number_channel - 1}, frequency: "
-                                   f"{round(self.frequency, 1)}")
+                                   f"{round(self.frequency, 1)}MHz")
                     self.attenuate = self.attenuate_storage
                     self.script()
                     self.frequency = self.frequency + 0.2
@@ -370,7 +370,8 @@ class Threadsensibility(threading.Thread):
                 number = round((len(a) / 4))
                 result = (number / int(self.number_frames)) * 100
                 logger.debug("---------------------------------")
-                logger.debug(f"Test {i} of channel number: {self.value_mono_multi}")
+                logger.debug(f"Test {i} of channel number: {self.value_mono_multi}, frequency: "
+                             f"{round(self.frequency, 1)}MHz")
                 logger.debug(
                     f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
                 logger.debug(f"you send {self.number_frames} frames")
@@ -378,7 +379,8 @@ class Threadsensibility(threading.Thread):
                 logger.debug(f"The rate is : {round(result, 1)}%")
                 logger.debug("---------------------------------")
                 self.write_doc("---------------------------------")
-                self.write_doc(f"Test {i} of channel number: {self.value_mono_multi}")
+                self.write_doc(f"Test {i} of channel number: {self.value_mono_multi}, frequency: "
+                               f"{round(self.frequency, 1)}MHz")
                 self.write_doc(
                     f"The level of attenuation is : -{round(float(self.attenuate) / 4 + int(self.offset), 1)} dB")
                 self.write_doc(f"you send {self.number_frames} frames")
