@@ -60,7 +60,7 @@ def start_climatic_chamber(self, port_give):
     make_a_graph_button = tk.Button(make_a_graph, text="Draw",
                                     borderwidth=8, background=THE_COLOR,
                                     activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                    command=lambda: [Graph_sensibility.draw_graph()])
+                                    command=lambda: [Graph_sensibility.draw_graph(self)])
     make_a_graph_button.pack(padx=0, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
 
     def automatic_1(e):
@@ -138,7 +138,7 @@ def change_port(combobox_scanner, visual_color_button):
         status = 1
         visual_function(visual_color_button, 0)
     except:
-        logger.critical(f"The port [{port}] is not link to the climate chamber")
+        logger.critical(f"The port [{combobox_scanner.get()}] is not link to the climate chamber")
         status = 0
         visual_function(visual_color_button, 1)
 

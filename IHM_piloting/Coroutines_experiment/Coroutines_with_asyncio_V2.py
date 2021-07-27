@@ -71,7 +71,7 @@ class Thread(threading.Thread):
         if relaunch_safety == 0:  # To forbid the user to multi launch the program
             relaunch_safety = 1
             if self.oof:
-                self.off()  # To shut down the climate chamber
+                off(self._port)  # To shut down the climate chamber
             if self.up_down:  # The user can chose if he want to start with the lowest or the hottest temperature
                 self.temperature = self.temp_min
                 self.timer = self.temp_min_duration_h
@@ -203,7 +203,7 @@ class Thread(threading.Thread):
         self.csv_result.write("\n################################################")
         self.csv_result.write("\nEnd of Test")
         self.csv_result.write(f'\nTest duration: {b[3]}H{b[4]} and {b[5]} second(s)')
-        self.off()
+        off(self._port)
         self.csv_result.close()
         self.ani.pause()
         self.ani2.pause()
@@ -256,14 +256,14 @@ class Thread(threading.Thread):
         except:
             logger.error("too fast, please slow down")
 
-    def off(self):  # The function off, shut down the climatic chamber and reset the relaunch_safety variable
-        # that was use to control the multi launching of the program
-        vt.port = self._port
-        try:
-            vt.open()
-        except:
-            pass
-        vt.write(CLIMATIC_CHAMBER_STOP)  # Stop the climatic chamber
-        global relaunch_safety  # relaunch_safety variable
-        relaunch_safety = 0
-        logger.debug("The climate chamber was correctly arrest")
+def off(value):  # The function off, shut down the climatic chamber and reset the relaunch_safety variable
+    # that was use to control the multi launching of the program
+    vt.port = value
+    try:
+        vt.open()
+    except:
+        pass
+    vt.write(CLIMATIC_CHAMBER_STOP)  # Stop the climatic chamber
+    global relaunch_safety  # relaunch_safety variable
+    relaunch_safety = 0
+    logger.debug("The climate chamber was correctly arrest")

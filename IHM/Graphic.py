@@ -225,7 +225,7 @@ def main_graphic_climatic_chamber(self, port):
                                             borderwidth=8, background=THE_COLOR,
                                             activebackground="green", cursor="right_ptr", overrelief="sunken",
                                             command=lambda: [quit_graph(),
-                                                             VARIABLE.Thread.off(self)])
+                                                             VARIABLE.off(port)])
     off_auto_scale_frame_button.grid(row=0, column=2, ipadx=40, ipady=20, padx=0, pady=0)
 
     temperature_min_scale = Scale(auto_scale_frame, orient='vertical', troughcolor=THE_COLOR, from_=80, to=-40,
@@ -282,7 +282,7 @@ def main_graphic_climatic_chamber(self, port):
                                        borderwidth=8, background=THE_COLOR,
                                        activebackground="green", cursor="right_ptr", overrelief="sunken",
                                        command=lambda: [quit_graph(), send_verification(1),
-                                                        VARIABLE.Thread.off(self)])
+                                                        VARIABLE.off(port)])
     off_scale_frame_button.pack(padx=0, pady=0, ipadx=10, ipady=10, expand=False, fill="none", side=RIGHT)
     graphic_settings_label = tk.Label(button_frame, text="Graphic settings", bg="white", font="arial",
                                       fg="black", relief="groove")
@@ -392,7 +392,7 @@ def main_graphic_climatic_chamber(self, port):
     off_auto_stair_scale_frame_button = tk.Button(auto_stair_scale_frame, text="Stop",
                                                   borderwidth=8, background=THE_COLOR,
                                                   activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                                  command=lambda: [quit_graph(), VARIABLE.Thread.off(self)])
+                                                  command=lambda: [quit_graph(), VARIABLE.off(port)])
     off_auto_stair_scale_frame_button.grid(row=0, column=2, ipadx=40, ipady=20, padx=20, pady=20)
     step_auto_stair_scale_frame_scale = Scale(auto_stair_scale_frame, orient='vertical', troughcolor=THE_COLOR,
                                               from_=120, to=1,

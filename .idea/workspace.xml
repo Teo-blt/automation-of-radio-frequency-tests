@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fdf07519-220c-4a67-ab18-26afab89606e" name="Default Changelist" comment="">
+    <list default="true" id="fdf07519-220c-4a67-ab18-26afab89606e" name="Default Changelist" comment="version finale 3.0&#10;&#10;- correcion de la mise en avant de la fenetre draw &#10;- changement du pas pour la caractérisation du filtre">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/IHM/Graph_sensibility.py" beforeDir="false" afterPath="$PROJECT_DIR$/IHM/Graph_sensibility.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/IHM_redirect/Menu_Filter_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/IHM_redirect/Menu_Filter_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/IHM_redirect/Menu_IBTS.py" beforeDir="false" afterPath="$PROJECT_DIR$/IHM_redirect/Menu_IBTS.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/IHM_redirect/Menu_Izepto.py" beforeDir="false" afterPath="$PROJECT_DIR$/IHM_redirect/Menu_Izepto.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/IHM_redirect/Menu_Sensibility_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/IHM_redirect/Menu_Sensibility_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test_filter/Filter_script.py" beforeDir="false" afterPath="$PROJECT_DIR$/Test_filter/Filter_script.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/IHM/Graphic.py" beforeDir="false" afterPath="$PROJECT_DIR$/IHM/Graphic.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/IHM_piloting/Coroutines_experiment/Coroutines_with_asyncio_V2.py" beforeDir="false" afterPath="$PROJECT_DIR$/IHM_piloting/Coroutines_experiment/Coroutines_with_asyncio_V2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/IHM_redirect/Menu_Climatic_chamber.py" beforeDir="false" afterPath="$PROJECT_DIR$/IHM_redirect/Menu_Climatic_chamber.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/Menu/Analysis-00.toc" beforeDir="false" afterPath="$PROJECT_DIR$/build/Menu/Analysis-00.toc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/Menu/COLLECT-00.toc" beforeDir="false" afterPath="$PROJECT_DIR$/build/Menu/COLLECT-00.toc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/Menu/EXE-00.toc" beforeDir="false" afterPath="$PROJECT_DIR$/build/Menu/EXE-00.toc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/Menu/Menu.exe" beforeDir="false" afterPath="$PROJECT_DIR$/build/Menu/Menu.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/Menu/PKG-00.pkg" beforeDir="false" afterPath="$PROJECT_DIR$/build/Menu/PKG-00.pkg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/Menu/PYZ-00.pyz" beforeDir="false" afterPath="$PROJECT_DIR$/build/Menu/PYZ-00.pyz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/Menu/PYZ-00.toc" beforeDir="false" afterPath="$PROJECT_DIR$/build/Menu/PYZ-00.toc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/Menu/warn-Menu.txt" beforeDir="false" afterPath="$PROJECT_DIR$/build/Menu/warn-Menu.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/Menu/xref-Menu.html" beforeDir="false" afterPath="$PROJECT_DIR$/build/Menu/xref-Menu.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/Menu/Menu.exe" beforeDir="false" afterPath="$PROJECT_DIR$/dist/Menu/Menu.exe" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -210,13 +218,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1621242487363</updated>
-    </task>
-    <task id="LOCAL-00132" summary="selection graph et protection des donné done">
-      <created>1625492862659</created>
-      <option name="number" value="00132" />
-      <option name="presentableId" value="LOCAL-00132" />
-      <option name="project" value="LOCAL" />
-      <updated>1625492862659</updated>
     </task>
     <task id="LOCAL-00133" summary="commentaies completés">
       <created>1625497993498</created>
@@ -554,7 +555,14 @@
       <option name="project" value="LOCAL" />
       <updated>1627377793206</updated>
     </task>
-    <option name="localTasksCounter" value="181" />
+    <task id="LOCAL-00181" summary="version finale 3.0&#10;&#10;- correcion de la mise en avant de la fenetre draw &#10;- changement du pas pour la caractérisation du filtre">
+      <created>1627379666728</created>
+      <option name="number" value="00181" />
+      <option name="presentableId" value="LOCAL-00181" />
+      <option name="project" value="LOCAL" />
+      <updated>1627379666728</updated>
+    </task>
+    <option name="localTasksCounter" value="182" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -570,7 +578,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Rajout du messa&#10;&#10;-création d'un menu et d'un algorithme dasn graph sensibility dédié a la caractérisation du filtre" />
     <MESSAGE value="finalisation de la caractérisation du filtre &#10;&#10;-amélioration du fichier de config order&#10;-réinitialisation du fichier de config izepto pour le test de sensi" />
     <MESSAGE value="optimisation des fichiers de compte rendu avec des nom automatique&#10;&#10;-rajout de la date dans les nom des compte rendu &#10;-préparation de graph sensibilité et de sa selection de température automatique" />
     <MESSAGE value="finition de la présentation automatique des températures disponibles&#10;&#10;-modification de graph sensibility avec le rajout d'une combobox pour la selection de la température du graph" />
@@ -595,6 +602,7 @@
     <MESSAGE value="vertion fianle fonctionelle 1.0&#10;&#10;- cette version est fonctionelle et ne beug pas" />
     <MESSAGE value="vertion fianle fonctionelle 2.0&#10;&#10;- correction filter scenario&#10;- correction test menu_IBTS" />
     <MESSAGE value="correction auvaise lecture graphique &#10;&#10;- delta &gt; 1 pour l'approcimation graphique" />
-    <option name="LAST_COMMIT_MESSAGE" value="correction auvaise lecture graphique &#10;&#10;- delta &gt; 1 pour l'approcimation graphique" />
+    <MESSAGE value="version finale 3.0&#10;&#10;- correcion de la mise en avant de la fenetre draw &#10;- changement du pas pour la caractérisation du filtre" />
+    <option name="LAST_COMMIT_MESSAGE" value="version finale 3.0&#10;&#10;- correcion de la mise en avant de la fenetre draw &#10;- changement du pas pour la caractérisation du filtre" />
   </component>
 </project>
