@@ -16,9 +16,6 @@ import paramiko
 from IHM import Graph_sensibility
 from tkinter import filedialog
 import pandas as pd
-import matplotlib
-matplotlib.use('Agg')
-from matplotlib import pyplot
 # =============================================================================
 THE_COLOR = "#E76145"
 global status

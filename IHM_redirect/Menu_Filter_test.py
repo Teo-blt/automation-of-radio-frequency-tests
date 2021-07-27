@@ -17,9 +17,6 @@ import serial
 import time
 from tkinter import filedialog
 import pandas as pd
-import matplotlib
-matplotlib.use('Agg')
-from matplotlib import pyplot
 
 # =============================================================================
 THE_COLOR = "#E76145"

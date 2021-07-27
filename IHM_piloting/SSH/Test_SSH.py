@@ -13,9 +13,6 @@ from tkinter import *
 import tkinter as tk
 from loguru import logger
 from tkinter.messagebox import *
-import matplotlib
-matplotlib.use('Agg')
-from matplotlib import pyplot
 # =============================================================================
 global is_killed
 is_killed = 0

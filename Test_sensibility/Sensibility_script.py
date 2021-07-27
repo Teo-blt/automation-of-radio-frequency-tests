@@ -17,8 +17,6 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from loguru import logger
 import serial
 import sys
-import matplotlib
-matplotlib.use('Agg')
 
 # =============================================================================
 THE_COLOR = "#E76145"

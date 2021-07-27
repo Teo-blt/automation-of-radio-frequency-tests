@@ -17,9 +17,6 @@ import serial
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 import matplotlib
-import sys
-matplotlib.use('Agg')
-
 # =============================================================================
 THE_COLOR = "#E76145"
 CLIMATIC_CHAMBER_STOP = b"$00E 0000.0 0000.0 0000.0 0000.0 0000.0 0000000000000000\n\r"

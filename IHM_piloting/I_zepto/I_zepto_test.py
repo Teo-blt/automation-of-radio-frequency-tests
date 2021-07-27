@@ -12,9 +12,6 @@ import threading
 from loguru import logger
 import time
 import sys
-import matplotlib
-matplotlib.use('Agg')
-from matplotlib import pyplot
 
 # =============================================================================
 

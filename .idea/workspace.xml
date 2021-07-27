@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fdf07519-220c-4a67-ab18-26afab89606e" name="Default Changelist" comment="vertion fianle fonctionelle 1.0&#10;&#10;- cette version est fonctionelle et ne beug pas">
+    <list default="true" id="fdf07519-220c-4a67-ab18-26afab89606e" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/IHM/Graph_sensibility.py" beforeDir="false" afterPath="$PROJECT_DIR$/IHM/Graph_sensibility.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/IHM_piloting/I_zepto/I_zepto_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/IHM_piloting/I_zepto/I_zepto_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/IHM_piloting/SSH/Test_SSH.py" beforeDir="false" afterPath="$PROJECT_DIR$/IHM_piloting/SSH/Test_SSH.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/IHM_redirect/Menu_Filter_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/IHM_redirect/Menu_Filter_test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/IHM_redirect/Menu_IBTS.py" beforeDir="false" afterPath="$PROJECT_DIR$/IHM_redirect/Menu_IBTS.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Result_tests/Data_filter_example.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Result_tests/Data_filter_example.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Test_filter/Filter_script.py" beforeDir="false" afterPath="$PROJECT_DIR$/Test_filter/Filter_script.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test_sensibility/Sensibility_script.py" beforeDir="false" afterPath="$PROJECT_DIR$/Test_sensibility/Sensibility_script.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,6 +26,14 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
   </component>
   <component name="ProjectId" id="1seobWopp6hXWYrwvL3jWuIcH3F" />
   <component name="ProjectViewState">
@@ -199,13 +212,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1621242487363</updated>
-    </task>
-    <task id="LOCAL-00130" summary="test sensi 6h">
-      <created>1625470046843</created>
-      <option name="number" value="00130" />
-      <option name="presentableId" value="LOCAL-00130" />
-      <option name="project" value="LOCAL" />
-      <updated>1625470046843</updated>
     </task>
     <task id="LOCAL-00131" summary="test sensi 6h">
       <created>1625485873936</created>
@@ -543,7 +549,14 @@
       <option name="project" value="LOCAL" />
       <updated>1627300932637</updated>
     </task>
-    <option name="localTasksCounter" value="179" />
+    <task id="LOCAL-00179" summary="vertion fianle fonctionelle 2.0&#10;&#10;- correction filter scenario&#10;- correction test menu_IBTS">
+      <created>1627310810930</created>
+      <option name="number" value="00179" />
+      <option name="presentableId" value="LOCAL-00179" />
+      <option name="project" value="LOCAL" />
+      <updated>1627310810930</updated>
+    </task>
+    <option name="localTasksCounter" value="180" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -559,7 +572,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="préparation de la lecture des données de la caractérisation du filtre&#10;&#10;-rajout des limites de selection de valeur" />
     <MESSAGE value="première ébauche de la lecture de données du graph de caractérisation du filtre &#10;&#10;-création d'un menu et d'un algorithme dasn graph sensibility dédié a la caractérisation du filtre" />
     <MESSAGE value="Rajout du messa&#10;&#10;-création d'un menu et d'un algorithme dasn graph sensibility dédié a la caractérisation du filtre" />
     <MESSAGE value="finalisation de la caractérisation du filtre &#10;&#10;-amélioration du fichier de config order&#10;-réinitialisation du fichier de config izepto pour le test de sensi" />
@@ -584,6 +596,7 @@
     <MESSAGE value="création de l'éxécutable  &#10;&#10;- création de l'exécutable" />
     <MESSAGE value="amélioration de la selection du fichier order &#10;&#10;- sélection du fichier automatique" />
     <MESSAGE value="vertion fianle fonctionelle 1.0&#10;&#10;- cette version est fonctionelle et ne beug pas" />
-    <option name="LAST_COMMIT_MESSAGE" value="vertion fianle fonctionelle 1.0&#10;&#10;- cette version est fonctionelle et ne beug pas" />
+    <MESSAGE value="vertion fianle fonctionelle 2.0&#10;&#10;- correction filter scenario&#10;- correction test menu_IBTS" />
+    <option name="LAST_COMMIT_MESSAGE" value="vertion fianle fonctionelle 2.0&#10;&#10;- correction filter scenario&#10;- correction test menu_IBTS" />
   </component>
 </project>

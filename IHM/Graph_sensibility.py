@@ -13,6 +13,7 @@ from loguru import logger
 from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
+import matplotlib.patches as mpatches
 
 # =============================================================================
 THE_COLOR = "#E76145"
@@ -339,7 +340,6 @@ def draw_graph_filter(name, value):
     color = {0: 'b', 1: 'r', 2: 'g', 3: 'y', 4: 'c', 5: 'lime', 6: 'black', 7: 'pink'}
     sf = data[5][0]
     bw = data[5][0]
-    temp = 0
     i = 0
     p = 0
     X = {}
@@ -358,7 +358,10 @@ def draw_graph_filter(name, value):
     i = 1
     j = 1
     number_of_frequency = {0: min(data[6])}
+    temp = [min(data[3])]
     while i < len(data[0]):
+        if data[3][i] > max(temp):
+            temp.append(data[3][i])
         if data[6][i] != data[6][i - 1]:
             number_of_frequency[j] = data[6][i]
             j += 1
@@ -375,7 +378,7 @@ def draw_graph_filter(name, value):
                 k += 1
             more_than_paket_rate = k
         try:
-            while Y[more_than_paket_rate] < paket_rate or Y[more_than_paket_rate] == 100:
+            while Y[more_than_paket_rate] < paket_rate:
                 more_than_paket_rate += 1
             if Y[more_than_paket_rate] == paket_rate:
                 G[t] = X[more_than_paket_rate]
@@ -385,21 +388,39 @@ def draw_graph_filter(name, value):
                 b += 1
             else:
                 delta_y = round(abs(X[more_than_paket_rate - 1] - X[more_than_paket_rate]), 10)
-                delta_x = abs(Y[more_than_paket_rate - 1] - Y[more_than_paket_rate])
-                delta = -(delta_x / delta_y)
-                a = Y[more_than_paket_rate] - (delta * X[more_than_paket_rate])
-                value = (50 - a) / delta
-                G[t] = value
-                H[t] = Z[more_than_paket_rate]
-                more_than_paket_rate += 1
-                t += 1
-                b += 1
+                if delta_y > 1:
+                    more_than_paket_rate += 1
+                    b += 1
+                else:
+                    delta_x = abs(Y[more_than_paket_rate - 1] - Y[more_than_paket_rate])
+                    delta = -(delta_x / delta_y)
+                    a = Y[more_than_paket_rate] - (delta * X[more_than_paket_rate])
+                    value = (50 - a) / delta
+                    G[t] = value
+                    H[t] = Z[more_than_paket_rate]
+                    more_than_paket_rate += 1
+                    t += 1
+                    b += 1
         except:
             break
+    a = -1
+    frequency_min = H[0]
+    print(temp)
     for w in range(0, len(G)):
-        plt.plot(H[w], G[w], "o-", color=color[data[2][w]], label=str(temp) + "°C")
+        if H[w] == frequency_min:
+            a += 1
+            if a == 8:
+                a = 0
+        plt.plot(H[w], G[w], "o-", color=color[a])
     plt.xlabel("Channel frequency Hz")
     plt.ylabel("Power at the entrance of the receiver in dBm")
     plt.title(f"Graphical representation of sensitivity test results for {paket_rate}% of packet lost\n"
               f"Spreading factor: {sf}, Band width: {bw}")
+    graph_color = []
+    for t in range(0, len(temp)):
+        a = t
+        if a == 8:
+            a = t - 8
+        graph_color.append(mpatches.Patch(color=color[a], label=temp[t]))
+    plt.legend(handles=graph_color)
     plt.show()
