@@ -16,7 +16,6 @@ from tkinter import *
 import serial
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
-import matplotlib
 import sys
 # =============================================================================
 THE_COLOR = "#E76145"

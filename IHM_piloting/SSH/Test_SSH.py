@@ -13,6 +13,7 @@ from tkinter import *
 import tkinter as tk
 from loguru import logger
 from tkinter.messagebox import *
+import sys
 # =============================================================================
 global is_killed
 is_killed = 0
@@ -173,7 +174,7 @@ class Threadibts(threading.Thread):
         ssh.close()
         is_killed = 0
 
-    def file_execution(self,file_name, n):
+    def file_execution(self, file_name, n):
         a = []
         i = 0
         file_path = ''
