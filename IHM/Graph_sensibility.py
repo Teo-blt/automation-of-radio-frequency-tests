@@ -19,8 +19,10 @@ import matplotlib.patches as mpatches
 THE_COLOR = "#E76145"
 
 
-def draw_graph():
-    window_graph_data = Tk()
+def draw_graph(self):
+    window_graph_data = Toplevel(self)
+    window_graph_data.grab_set()
+    window_graph_data.focus_set()
     window_graph_data.title("Graph data settings")
     verification_frame = LabelFrame(window_graph_data)
     verification_frame.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)
@@ -405,7 +407,6 @@ def draw_graph_filter(name, value):
             break
     a = -1
     frequency_min = H[0]
-    print(temp)
     for w in range(0, len(G)):
         if H[w] == frequency_min:
             a += 1
@@ -421,6 +422,6 @@ def draw_graph_filter(name, value):
         a = t
         if a == 8:
             a = t - 8
-        graph_color.append(mpatches.Patch(color=color[a], label=temp[t]))
+        graph_color.append(mpatches.Patch(color=color[a], label=str(temp[t]) + "°C"))
     plt.legend(handles=graph_color)
     plt.show()

@@ -62,7 +62,7 @@ def ibts_menu(self, ip_address):
     make_a_graph_button = tk.Button(make_a_graph, text="Draw",
                                     borderwidth=8, background=THE_COLOR,
                                     activebackground="green", cursor="right_ptr", overrelief="sunken",
-                                    command=lambda: [Graph_sensibility.draw_graph()])
+                                    command=lambda: [Graph_sensibility.draw_graph(self)])
     make_a_graph_button.pack(padx=0, pady=0, ipadx=40, ipady=10, expand=False, fill="none", side=TOP)
 
 

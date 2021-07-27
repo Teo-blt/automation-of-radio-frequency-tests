@@ -346,7 +346,7 @@ class Threadfilter(threading.Thread):
             else:
                 number = round((len(a) / 4))
                 result = (number / int(self.number_frames)) * 100
-                if (round(result, 1) == 100 and self.step_attenuate != 4) or self.step_attenuate == 1:
+                if (round(result, 1) >= 90 and self.step_attenuate != 4) or self.step_attenuate == 1:
                     logger.debug("---------------------------------")
                     logger.debug(f"Test {i} of frequency {self.value} MHz")
                     logger.debug(
