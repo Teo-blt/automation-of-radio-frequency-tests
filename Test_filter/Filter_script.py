@@ -466,9 +466,9 @@ class Threadfilter(threading.Thread):
                     self.attenuate = self.attenuate - self.step_attenuate
                     if self.step_attenuate == 80:
                         self.step_attenuate = 20
-                    if self.step_attenuate == 20:
+                    elif self.step_attenuate == 20:
                         self.step_attenuate = 4
-                    if self.step_attenuate == 4:
+                    elif self.step_attenuate == 4:
                         pass
                     self.attenuate = self.attenuate + self.step_attenuate
                     '''
