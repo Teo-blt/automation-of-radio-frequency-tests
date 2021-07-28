@@ -464,12 +464,21 @@ class Threadfilter(threading.Thread):
                         f"stepping back...")
                     self.write_doc("---------------------------------")
                     self.attenuate = self.attenuate - self.step_attenuate
+                    if self.step_attenuate == 80:
+                        self.step_attenuate = 20
+                    if self.step_attenuate == 20:
+                        self.step_attenuate = 4
+                    if self.step_attenuate == 4:
+                        pass
+                    self.attenuate = self.attenuate + self.step_attenuate
+                    '''
                     if self.step_attenuate >= 20:
                         self.step_attenuate = self.step_attenuate / 2
                         self.attenuate = self.attenuate + self.step_attenuate
                     else:
                         self.step_attenuate = 4
                         self.attenuate = self.attenuate + self.step_attenuate
+                    '''
 
     def good_launch(self, stdout, i):
         a = stdout.readlines()
