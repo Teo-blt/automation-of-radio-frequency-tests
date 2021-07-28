@@ -653,7 +653,7 @@ class Threadsensibility(threading.Thread):
             if number_frames < 0 or number_frames > 1000000:
                 logger.critical("Error, The number frames value is not conform")
                 showerror("Error", "The number frames value is not conform")
-            if frequency < 800000000 or frequency > 950000000:
+            if frequency < 851000000 or frequency > 950000000:
                 logger.critical("Error, The frequency value is not conform")
                 showerror("Error", "The frequency value is not conform")
             if attenuate < 0 or attenuate > 359:

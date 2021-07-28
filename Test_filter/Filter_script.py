@@ -438,7 +438,8 @@ class Threadfilter(threading.Thread):
                     else:
                         logger.debug("---------------------------------")
                         logger.debug(f"Test {i} of frequency {self.value} MHz")
-                        logger.debug(f"The attenuation -{round(float(self.attenuate) / 4 + int(self.offset), 2)} dB is too "
+                        logger.debug(f"The attenuation -{round(float(self.attenuate) / 4 + int(self.offset), 2)} dB "
+                                     f"is too "
                                      f"high, stepping back...")
                         logger.debug("---------------------------------")
                         self.write_doc("---------------------------------")
@@ -661,7 +662,7 @@ class Threadfilter(threading.Thread):
             if power < 0 or power > 100:
                 logger.critical("Error, The power value is not conform")
                 showerror("Error", "The power value is not conform")
-            if frequency < 800000000 or frequency > 950000000:
+            if frequency < 851000000 or frequency > 950000000:
                 logger.critical("Error, The frequency value is not conform")
                 showerror("Error", "The frequency value is not conform")
             else:
