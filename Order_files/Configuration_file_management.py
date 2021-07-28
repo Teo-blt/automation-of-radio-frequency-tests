@@ -18,8 +18,10 @@ import pandas as pd
 THE_COLOR = "#E76145"
 
 
-def menu():
-    window_graph_data = Tk()
+def menu(self):
+    window_graph_data = Toplevel(self)
+    window_graph_data.grab_set()
+    window_graph_data.focus_set()
     info_selection = LabelFrame(window_graph_data, text="Info selection")
     menu_frame = LabelFrame(window_graph_data, text="Menu")
     menu_frame.grid(row=1, column=0, ipadx=0, ipady=0, padx=0, pady=0)

@@ -10,7 +10,6 @@
 import tkinter as tk
 from tkinter import *
 from tkinter.messagebox import *
-
 import pyvisa as visa
 import serial
 from loguru import logger

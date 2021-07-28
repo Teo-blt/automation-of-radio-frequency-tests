@@ -93,7 +93,7 @@ class Application(Tk):
         configuration_menu_button = Button(self, text="Order file", borderwidth=8, background=THE_COLOR,
                                            cursor="right_ptr",
                                            overrelief="sunken",
-                                           command=lambda: [Configuration_file_management.menu()])
+                                           command=lambda: [Configuration_file_management.menu(self)])
         configuration_menu_button.grid(row=4, column=4, ipadx=0, ipady=0, padx=0, pady=0)
 
     def interface(self, choice):  # This function open other functions after the choice of the user
