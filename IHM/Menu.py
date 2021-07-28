@@ -167,4 +167,6 @@ class Application(Tk):
         Menu_Filter_test.filter_test_menu(self, self._carte_ip_address, self._ip_address, self._port)
 
 
-Application().mainloop()
+if __name__ == "__main__":
+    # execute only if run as a script
+    Application().mainloop()
