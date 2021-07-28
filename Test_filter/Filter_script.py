@@ -336,6 +336,8 @@ class Threadfilter(threading.Thread):
                     self.number_launch += 1
                     break
             self.ready_ibts()
+            #TODO Launch at the same time the initialisation
+            # of the izepto and the ibts to take less time during the tests
             time.sleep(1)  # 1 second of safety after that the ready_ibts function is completed
             ssh.close()
             a = self.good_launch(stdout, i)
@@ -690,6 +692,8 @@ class Threadfilter(threading.Thread):
             showerror("Error", "One or more of the values are not conform")
 
     def ready_ibts(self):  # initialise the IBTS
+        #TODO Allow the modification of ibts attenuation "a la volé" without set up the
+        # ibts at each test ("nx" command with x the attenuation)
         username = "root"
         password = "root"
         ssh2 = paramiko.SSHClient()

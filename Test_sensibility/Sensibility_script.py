@@ -359,6 +359,8 @@ class Threadsensibility(threading.Thread):
                 # increase of
                 # the step frequency_step value
                 self.ready_ibts()
+                #TODO Launch at the same time the initialisation of the izepto and the
+                # ibts to take less time during the tests
             time.sleep(1)  # 1 second of safety after that the ready_ibts function is completed
             ssh.close()
             a = self.good_launch(stdout, i)
@@ -701,6 +703,8 @@ class Threadsensibility(threading.Thread):
         outfile.close()
 
     def ready_ibts(self):  # initialise the IBTS
+        #TODO Allow the modification of ibts attenuation "a la volé" without set up the
+        # ibts at each test ("nx" command with x the attenuation)
         username = "root"
         password = "root"
         ssh2 = paramiko.SSHClient()

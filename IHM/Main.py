@@ -166,6 +166,7 @@ class Application(Tk):
         self.geometry(WINDOW_SIZE)  # set window size
         Menu_Filter_test.filter_test_menu(self, self._carte_ip_address, self._ip_address, self._port)
 
+#TODO Creation of a sequencer
 
 if __name__ == "__main__":
     # execute only if run as a script
