@@ -340,7 +340,7 @@ class Threadfilter(threading.Thread):
             ssh.close()
             a = self.good_launch(stdout, i)
             if a == 1:
-                if self.attenuate >= 140:
+                if round(float(self.attenuate) / 4 + int(self.offset), 2) >= 126:
                     break
                 self.attenuate = self.attenuate + self.step_attenuate
             else:
