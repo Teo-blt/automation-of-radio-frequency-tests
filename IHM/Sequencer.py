@@ -11,7 +11,6 @@ import tkinter as tk
 from tkinter import *
 import tkinter
 import tkinter.messagebox
-from IHM_piloting.EA import Button_jump
 import IHM_piloting.EA.Button_jump
 
 # =============================================================================

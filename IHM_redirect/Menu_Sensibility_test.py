@@ -9,7 +9,7 @@
 # =============================================================================
 import tkinter as tk
 from tkinter import *
-from Test_sensibility import Sensibility_script
+from IHM_piloting.Test_sensibility import Sensibility_script
 import paramiko
 import time
 from loguru import logger

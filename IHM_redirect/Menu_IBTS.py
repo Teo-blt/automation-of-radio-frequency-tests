@@ -11,7 +11,7 @@ import tkinter as tk
 from tkinter import *
 from tkinter.messagebox import *
 from loguru import logger
-from IHM_piloting.SSH import Test_SSH
+from IHM_piloting.IBTS import IBTS
 import paramiko
 from IHM import Graph_sensibility
 from tkinter import filedialog
@@ -98,12 +98,12 @@ def call_graph_ibts(ip_address, port_com_frame_entry, visual_color_button_sg):
     change_ibts(port_com_frame_entry.get())
     if status == 0:
         if askyesno("Warning", "The connection status is : offline\n Do you still want to continue ?"):
-            Test_SSH.lunch_ibts(ip_address, 0)
+            IBTS.lunch_ibts(ip_address, 0)
             #ask_order_file(ip_address)
         else:
             visual_function(visual_color_button_sg, 1)
     else:
-        Test_SSH.lunch_ibts(ip_address, 0)
+        IBTS.lunch_ibts(ip_address, 0)
         #ask_order_file(ip_address)
 
 
@@ -152,7 +152,7 @@ def verification(ip_address, file_name, window_graph_data):
         data = pd.DataFrame(data)
         a = file_name.split('/')
         if a[-1] == 'Orders.txt':
-            Test_SSH.lunch_ibts(ip_address, file_name)
+            IBTS.lunch_ibts(ip_address, file_name)
             window_graph_data.destroy()
         else:
             logger.critical(f"The file is not 'Orders.txt'")

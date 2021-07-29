@@ -9,7 +9,7 @@
 # =============================================================================
 import tkinter as tk
 from tkinter import *
-from Test_filter import Filter_script
+from IHM_piloting.Test_filter import Filter_script
 import paramiko
 from loguru import logger
 from IHM import Graph_sensibility

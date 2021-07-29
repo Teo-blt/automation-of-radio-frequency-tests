@@ -12,6 +12,7 @@ from tkinter import *
 from tkinter import ttk
 from tkinter.messagebox import *
 from IHM_redirect import Menu_Climatic_chamber
+import IHM_piloting.EA.Button_jump
 # ============================================================================
 
 LOBBY_WINDOW_SIZE = "700x200"
@@ -39,6 +40,7 @@ class Application(Tk):
 
         settings_label = Label(instrument_choose_combobox, text="Settings", font="arial", fg="black")
         settings_label.pack(padx=0, pady=0, expand=False, fill="none", side=TOP)
+        settings_label.bind("<Button-2>", IHM_piloting.EA.Button_jump.play)
 
         label_top = Label(instrument_choose_combobox, text="Choose your measuring tool")
         label_top.pack(expand=False, fill="none", side=TOP)

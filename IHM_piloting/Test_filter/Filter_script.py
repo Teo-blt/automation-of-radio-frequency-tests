@@ -294,7 +294,7 @@ class Threadfilter(threading.Thread):
         for i in range(0, 100):  # number of test, generally infinity
             username = "root"
             password = "root"
-            ssh = paramiko.SSHClient()  # initialisation de la liaison SSH
+            ssh = paramiko.SSHClient()  # initialisation de la liaison IBTS
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             ssh.connect(hostname=self.ip_izepto, username=username, password=password)
             cmd = file_execution(self.config_file, 3) + "\n" + file_execution(self.config_file, 5)
