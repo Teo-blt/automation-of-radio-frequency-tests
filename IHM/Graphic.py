@@ -20,10 +20,10 @@ import matplotlib.animation as animation
 from matplotlib import style
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from loguru import logger
-from IHM_piloting.Climate_chamber import Climate_chamber
+from IHM_piloting.Climate_chamber import Climate_chamber_script
 
 # =============================================================================
-VARIABLE = Climate_chamber
+VARIABLE = Climate_chamber_script
 FRAME = (-50, 90)
 THE_COLOR = "#E76145"
 

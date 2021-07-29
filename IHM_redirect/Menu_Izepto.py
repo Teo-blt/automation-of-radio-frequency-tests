@@ -12,7 +12,7 @@ from tkinter import *
 from tkinter.messagebox import *
 from loguru import logger
 import paramiko
-from IHM_piloting.I_zepto import I_zepto_test
+from IHM_piloting.I_zepto import Izepto_script
 from IHM import Graph_sensibility
 import time
 from tkinter import filedialog
@@ -131,12 +131,12 @@ def call_graph_izepto(ip_address, port_com_frame_entry, visual_color_button_sg, 
     change_izepto(port_com_frame_entry.get(), visual_color_button_sg)
     if status == 0:
         if askyesno("Warning", "The connection status is : offline\n Do you still want to continue ?"):
-            I_zepto_test.lunch_izepto(ip_address, 0)
+            Izepto_script.lunch_izepto(ip_address, 0)
             #ask_order_file(ip_address)
         else:
             visual_function(visual_color_button_sg, 1)
     else:
-        I_zepto_test.lunch_izepto(ip_address, 0)
+        Izepto_script.lunch_izepto(ip_address, 0)
         #ask_order_file(ip_address)
         izepto_info_label.config(text="The Izepto card is ready to received", bg="light green")
 
@@ -185,7 +185,7 @@ def verification(ip_address, file_name, window_graph_data):
         data = pd.DataFrame(data)
         a = file_name.split('/')
         if a[-1] == 'Orders.txt':
-            I_zepto_test.lunch_izepto(ip_address, file_name)
+            Izepto_script.lunch_izepto(ip_address, file_name)
             window_graph_data.destroy()
         else:
             logger.critical(f"The file is not 'Orders.txt'")
