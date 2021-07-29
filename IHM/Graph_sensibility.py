@@ -390,7 +390,7 @@ def draw_graph_filter(name, value):
                 b += 1
             else:
                 delta_y = round(abs(X[more_than_paket_rate - 1] - X[more_than_paket_rate]), 10)
-                if delta_y > 1:
+                if delta_y != 1:
                     more_than_paket_rate += 1
                     b += 1
                 else:
